@@ -1,38 +1,295 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>GAME KALI ZA PPSSPP</title>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makyama Games - Free PSP & Android Games</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
-      body{background-color:blue;
-          color:yellow}
-      h1{color:white;
-        text-align:center;}
-      h2{color:white;
-        text-align:center;}
-      a
-      {background-color:white;
-       color:purple;
-       text-decoration:none;
-       padding:12px 25px;
-       border-radius:150px;
-       display:inline-block;
-       font-weight:bold;
-       }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #0f0f12; color: #ffffff; padding-bottom: 40px; }
+        
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, #121212, #1e1e24);
+            padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 3px solid #00e676; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo-area h1 { color: #00e676; font-size: 20px; }
+        .logo-area p { color: #aaa; font-size: 11px; }
+        .nav-btns button {
+            background: #00e676; color: #000; border: none; padding: 8px 15px;
+            border-radius: 6px; font-weight: bold; cursor: pointer;
+        }
+        .btn-logout { background: #ff5252 !important; color: #fff !important; }
+
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+
+        /* MODAL LOGIN */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #1e1e24; padding: 25px; border-radius: 12px; width: 90%; max-width: 380px;
+            border: 1px solid #00e676; position: relative; text-align: center;
+        }
+        .close-btn { position: absolute; top: 10px; right: 15px; color: #aaa; font-size: 22px; cursor: pointer; }
+        
+        input, select {
+            width: 100%; padding: 11px; margin-bottom: 12px; background: #252530;
+            border: 1px solid #3a3a4c; color: #fff; border-radius: 6px;
+        }
+        .btn-submit {
+            background: #00e676; color: #000; font-weight: bold; padding: 12px;
+            border: none; border-radius: 6px; cursor: pointer; width: 100%;
+        }
+
+        /* ADMIN PANEL */
+        #admin-panel {
+            display: none; background: #181820; border: 1px solid #00e676;
+            border-radius: 12px; padding: 20px; margin-bottom: 30px;
+        }
+        .btn-cancel { background: #ff5252; color: #fff; font-weight: bold; padding: 12px; border: none; border-radius: 6px; cursor: pointer; display: none; width:100%; margin-top:10px;}
+
+        /* GAMES GRID */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .game-card {
+            background: #1a1a24; border-radius: 12px; overflow: hidden;
+            border: 1px solid #2a2a38; display: flex; flex-direction: column;
+        }
+        .game-card img { width: 100%; height: 170px; object-fit: cover; }
+        .game-details { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+        .badge { background: rgba(0, 230, 118, 0.15); color: #00e676; padding: 4px 8px; border-radius: 4px; font-size:11px; align-self: flex-start; margin-bottom: 8px;}
+        .game-title { font-size: 17px; font-weight: bold; margin-bottom: 8px; }
+        .download-btn { background: #00e676; color: #000; text-align: center; padding: 10px; text-decoration: none; font-weight: bold; border-radius: 6px; margin-top: auto; }
+        
+        .admin-controls { display: none; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #333; }
+        .btn-edit { background: #29b6f6; color: #000; border: none; padding: 6px; border-radius: 4px; cursor: pointer; flex: 1; font-weight: bold;}
+        .btn-delete { background: #ff5252; color: #fff; border: none; padding: 6px; border-radius: 4px; cursor: pointer; flex: 1; font-weight: bold;}
     </style>
 </head>
-  <body>
-    <h1>Karibu sana download unacho taka</h1>
-    <p>Ukitaka kudowload game njoo tupo kwa ajili yako</p>
-    <hr><h2>Hapa unapata game kali kama</h2>
-    <ul>
-      <li>San andres</li>
-    <li>Vice city</li>
-    <li>Makyama</li>
-    </ul>
-    <hr><h3>Ukitqka taarifa zaidi</h3>
-    <p>wasiliana nasi kwa mawasiliano 0740770786</p>
-    <a href="makyama17@gmail.com">nenda gmail</a>
-    <br><br><hr>
-    <p>Hakimilik&Copy;2026</p>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <h1>🔥 MAKYAMA GAMES</h1>
+            <p>Download Free PSP & Android Games</p>
+        </div>
+        <div class="nav-btns" id="nav-action">
+            <button onclick="funguaLogin()">🔑 Admin Login</button>
+        </div>
+    </header>
+
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="fungaLogin()">&times;</span>
+            <h3 style="color: #00e676; margin-bottom: 15px;">🔒 ADMIN LOGIN</h3>
+            <input type="text" id="login-username" placeholder="Username">
+            <input type="password" id="login-password" placeholder="Password">
+            <button class="btn-submit" onclick="ingiaNdani()">INGIA DASHBOARD</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="admin-panel">
+            <h2 style="color: #00e676; margin-bottom:15px;">👑 DASHBOARD YA ADMIN</h2>
+            
+            <input type="hidden" id="edit-key">
+            <input type="text" id="jina-la-game" placeholder="Jina la Game (Mfano: GTA Vice City)">
+            <input type="text" id="picha-ya-game" placeholder="Link ya Picha/Poster (Sio lazima)">
+            <input type="text" id="link-ya-game" placeholder="Link ya Download (MediaFire)">
+            <select id="aina-ya-game">
+                <option value="PPSSPP">PPSSPP</option>
+                <option value="Android">Android</option>
+            </select>
+
+            <button class="btn-submit" id="btn-save" onclick="hifadhiGame()">PANDISHA GAME LIVE 🚀</button>
+            <button class="btn-cancel" id="btn-cancel" onclick="ghairiEdit()">Ghairi Kuedit</button>
+        </div>
+
+        <h2 style="border-left: 4px solid #00e676; padding-left: 10px; margin-bottom: 15px;">Magemu Yaliyopo</h2>
+        <div id="loading" style="text-align:center; color:#888;">Inapakia magemu... ⏳</div>
+        <div class="grid-container" id="magemu-list"></div>
+    </div>
+
+      <script>
+        // === TAFADHALI BADILISHA MANENO HAYA TU KUWA KODI ZAKO ZA FIREBASE ===
+        var firebaseConfig = {
+            apiKey: "WEKA_API_KEY_YAKO_HAPA",
+            authDomain: "makyama-e5e89.firebaseapp.com",
+            databaseURL: "https://makyama-e5e89-default-rtdb.firebaseio.com/",
+            projectId: "makyama-e5e89",
+            storageBucket: "makyama-e5e89.appspot.com",
+            messagingSenderId: "WEKA_SENDER_ID_HAPA",
+            appId: "WEKA_APP_ID_HAPA"
+        };
+        // === MWISHO WA KUBADILISHA ===
+
+        // Initialize Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            var database = firebase.database();
+            console.log("Firebase Imeunganishwa Kikamilifu!");
+        } catch (error) {
+            console.error("Kuna Shida kwenye Firebase Config:", error);
+            alert("Kuna tatizo la kuunganisha Database. Angalia API Keys zako.");
+        }
+
+        var isAdmin = false;
+
+        // --- MFUMO WA LOGIN ---
+        function funguaLogin() { document.getElementById("loginModal").style.display = "flex"; }
+        function fungaLogin() { document.getElementById("loginModal").style.display = "none"; }
+        
+        function ingiaNdani() {
+            var u = document.getElementById("login-username").value;
+            var p = document.getElementById("login-password").value;
+            if (u === "MAKYAMA" && p === "Makame005@") {
+                isAdmin = true; 
+                fungaLogin(); 
+                document.getElementById("admin-panel").style.display = "block";
+                document.getElementById("nav-action").innerHTML = `<button class="btn-logout" onclick="tokaNje()">🚪 Logout</button>`;
+                somaMagemu(); // Refresh UI kuonyesha vitufe vya admin
+            } else {
+                alert("❌ Username au Password sio sahihi!");
+            }
+        }
+
+        function tokaNje() {
+            isAdmin = false; 
+            ghairiEdit();
+            document.getElementById("admin-panel").style.display = "none";
+            document.getElementById("nav-action").innerHTML = `<button onclick="funguaLogin()">🔑 Admin Login</button>`;
+            somaMagemu(); // Refresh UI kuficha vitufe vya admin
+        }
+
+        // --- MFUMO WA FIREBASE CRUD (CREATE, READ, UPDATE, DELETE) ---
+
+        // 1. Kusoma Magemu (Read)
+        function somaMagemu() {
+            var listNode = document.getElementById("magemu-list");
+            document.getElementById("loading").style.display = "block";
+            listNode.innerHTML = "";
+
+            // Tunavuta data kutoka kwenye 'node' inayoitwa 'magemu'
+            database.ref('magemu').on('value', function(snapshot) {
+                document.getElementById("loading").style.display = "none";
+                listNode.innerHTML = "";
+                
+                if (!snapshot.exists()) {
+                    listNode.innerHTML = "<p style='color:#aaa; text-align:center; width:100%;'>Hakuna magemu yaliyowekwa bado.</p>";
+                    return;
+                }
+
+                snapshot.forEach(function(childSnapshot) {
+                    var key = childSnapshot.key;
+                    var data = childSnapshot.val();
+                    
+                    // Kama admin hajaweka picha, weka picha ya default
+                    var defaultImg = "https://via.placeholder.com/300x170/252530/ffffff?text=Hakuna+Picha";
+                    var picha = data.picha ? data.picha : defaultImg;
+                    
+                    // Vitufe vya Admin (Vitaonekana tu kama amelogin)
+                    var adminBtns = isAdmin ? `
+                        <div class="admin-controls" style="display:flex;">
+                            <button class="btn-edit" onclick="editGame('${key}', '${data.jina}', '${data.picha}', '${data.link}', '${data.aina}')">✏️ Edit</button>
+                            <button class="btn-delete" onclick="futaGame('${key}')">🗑️ Futa</button>
+                        </div>
+                    ` : "";
+
+                    var card = `
+                        <div class="game-card">
+                            <img src="${picha}" alt="${data.jina}">
+                            <div class="game-details">
+                                <span class="badge">${data.aina}</span>
+                                <div class="game-title">${data.jina}</div>
+                                <a href="${data.link}" target="_blank" class="download-btn">⬇️ Download</a>
+                                ${adminBtns}
+                            </div>
+                        </div>
+                    `;
+                    listNode.innerHTML += card;
+                });
+            });
+        }
+
+        // 2. Kupandisha / Kuedit Game (Create / Update)
+        function hifadhiGame() {
+            var key = document.getElementById("edit-key").value;
+            var jina = document.getElementById("jina-la-game").value;
+            var picha = document.getElementById("picha-ya-game").value;
+            var link = document.getElementById("link-ya-game").value;
+            var aina = document.getElementById("aina-ya-game").value;
+
+            if(!jina || !link) {
+                alert("⚠️ Tafadhali weka Jina la Game na Link ya kudownload!");
+                return;
+            }
+
+            var data = { jina: jina, picha: picha, link: link, aina: aina };
+
+            if(key) {
+                // Kama kuna key, maana yake ni Kuedit
+                database.ref('magemu/' + key).update(data).then(() => {
+                    alert("✅ Mabadiliko yamehifadhiwa kikamilifu!");
+                    ghairiEdit();
+                });
+            } else {
+                // Kama hakuna key, maana yake ni Game Jipya
+                database.ref('magemu').push(data).then(() => {
+                    alert("🚀 Game imepanda hewani!");
+                    ghairiEdit();
+                });
+            }
+        }
+
+        // 3. Kufuta Game (Delete)
+        function futaGame(key) {
+            if(confirm("⚠️ Una uhakika unataka kufuta hili game? Halitarudi tena!")) {
+                database.ref('magemu/' + key).remove().then(() => {
+                    // Alert sio lazima sana hapa kwasababu somaMagemu() itaji-refresh yenyewe
+                });
+            }
+        }
+
+        // --- KUDHIBITI FOMU YA ADMIN ---
+
+        // Kuweka data kwenye fomu tayari kwa kuedit
+        function editGame(key, jina, picha, link, aina) {
+            document.getElementById("edit-key").value = key;
+            document.getElementById("jina-la-game").value = jina;
+            document.getElementById("picha-ya-game").value = (picha !== "undefined") ? picha : "";
+            document.getElementById("link-ya-game").value = link;
+            document.getElementById("aina-ya-game").value = aina;
+            
+            document.getElementById("btn-save").innerHTML = "💾 HIFADHI MABADILIKO";
+            document.getElementById("btn-cancel").style.display = "block";
+            
+            // Pandisha ukurasa juu ili admin aone fomu
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        }
+
+        // Kusafisha fomu
+        function ghairiEdit() {
+            document.getElementById("edit-key").value = "";
+            document.getElementById("jina-la-game").value = "";
+            document.getElementById("picha-ya-game").value = "";
+            document.getElementById("link-ya-game").value = "";
+            document.getElementById("aina-ya-game").value = "PPSSPP";
+            
+            document.getElementById("btn-save").innerHTML = "PANDISHA GAME LIVE 🚀";
+            document.getElementById("btn-cancel").style.display = "none";
+        }
+
+        // Fanya magemu yasomeke mara tu website inapofunguka
+        window.onload = somaMagemu;
+
+    </script>
 </body>
 </html>
