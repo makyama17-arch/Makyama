@@ -226,7 +226,7 @@
             <button class="btn-cancel" id="btn-cancel" onclick="cancelEdit()">Cancel Edit</button>
 
             <div class="admin-section-title">📢 Manage Ads (Matangazo)</div>
-            <textarea id="ad-code-input" rows="3" placeholder="Paste Script Code au Banner Link ya Ads hapa..."></textarea>
+            <textarea id="ad-code-input" rows="3" placeholder="Paste Script Code au Link ya Social Bar / Ads hapa..."></textarea>
             <button class="btn-submit" style="background:#29b6f6; color:#000;" onclick="saveAdCode()">UPDATE ADS 📢</button>
         </div>
 
@@ -236,7 +236,7 @@
         </div>
 
         <div class="categories-nav">
-            <button class="cat-btn active" onclick="loadCategory('bongo', '🔥 Bongo Flava Trending', this)">🔥 All Trending</button>
+            <button class="cat-btn active" onclick="loadCategory('bongo', '🔥 All Trending Hits', this)">🔥 All Trending</button>
             <button class="cat-btn" onclick="loadCategory('afrobeats', '🌍 Afrobeats & Amapiano', this)">🎵 Afrobeats</button>
             <button class="cat-btn" onclick="loadCategory('hiphop', '🎤 Top Hip Hop Hits', this)">🎤 Hip Hop</button>
             <button class="cat-btn" onclick="loadCategory('gospel', '🙌 Gospel Hits', this)">🙌 Gospel</button>
@@ -275,8 +275,6 @@
         <audio id="main-audio" controls autoplay controlsList="nodownload"></audio>
         <button class="close-player" onclick="closeAudioPlayer()">✖</button>
     </div>
-
-    <script src="https://pl30999046.profitableratecpmnetwork.com/3b/0d/cf/3b0dcfc863f6547210f9f545864381bf.js"></script>
 
     <script>
         // FIREBASE SETUP
@@ -399,12 +397,15 @@
             }
         }
 
-        // ADS CODE
+        // SMART ADS EXECUTION ENGINE
         function saveAdCode() {
-            var code = document.getElementById('ad-code-input').value;
+            var code = document.getElementById('ad-code-input').value.trim();
             if(!code) return;
             database.ref('settings/adCode').set(code, function(error) {
-                if(!error) alert("Matangazo yamebadilishwa kikamilifu! 📢");
+                if(!error) {
+                    alert("Matangazo yamebadilishwa kikamilifu! 📢");
+                    renderAdScript(code);
+                }
             });
         }
 
@@ -412,12 +413,39 @@
             database.ref('settings/adCode').on('value', function(snapshot) {
                 if(snapshot.exists()) {
                     var code = snapshot.val();
-                    document.getElementById('ad-slot').innerHTML = code;
                     document.getElementById('ad-code-input').value = code;
+                    renderAdScript(code);
                 } else {
-                    document.getElementById('ad-slot').innerHTML = `<script async="async" data-cfasync="false" src="https://pl30999047.profitableratecpmnetwork.com/e12d98b2bda8be9d5a35e86f62ca302e/invoke.js"><\/script><div id="container-e12d98b2bda8be9d5a35e86f62ca302e"></div>`;
+                    renderAdScript('<script type="text/javascript" src="https://pl31012881.profitableratecpmnetwork.com/d8/52/06/d8520637a8affb241cd89ab415486381.js"><\/script>');
                 }
             });
+        }
+
+        function renderAdScript(code) {
+            var adContainer = document.getElementById('ad-slot');
+            adContainer.innerHTML = ''; 
+
+            var existingScripts = document.querySelectorAll('.dynamic-ad-script');
+            existingScripts.forEach(s => s.remove());
+
+            var srcMatches = code.match(/src=["'](.*?)["']/g);
+
+            if (srcMatches) {
+                srcMatches.forEach(function(match) {
+                    var scriptUrl = match.replace(/src=["']/, '').replace(/["']/, '');
+                    var newScript = document.createElement('script');
+                    newScript.type = 'text/javascript';
+                    newScript.src = scriptUrl;
+                    newScript.async = true;
+                    newScript.className = 'dynamic-ad-script';
+                    document.body.appendChild(newScript);
+                });
+            }
+
+            var cleanHTML = code.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            if (cleanHTML.trim() !== '') {
+                adContainer.innerHTML = cleanHTML;
+            }
         }
 
         // PLAYER FUNCTIONS
