@@ -11,188 +11,262 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Makyama Media Store - Audio & Music</title>
+    <title>Makyama Media - Direct Full Song Downloader</title>
 
     <style>
-        /* CSS RESET & RESPONSIVENESS (Kutoka kwenye code zako) */
         html, body { overflow-x: hidden; width: 100%; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #0f0f12; color: #ffffff; padding-bottom: 50px; } 
+        body { background-color: #0f0f12; color: #ffffff; padding-bottom: 120px; } 
         
-        /* HEADER */
         header {
             background: linear-gradient(135deg, #121212, #1e1e24);
             padding: 15px 15px; display: flex; justify-content: space-between; align-items: center;
             border-bottom: 3px solid #00e676; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             position: sticky; top: 0; z-index: 100; width: 100%;
         }
-        .logo-area h1 { color: #00e676; font-size: 18px; margin-bottom: 2px; white-space: nowrap; font-weight: 900;}
-        .logo-area p { color: #aaa; font-size: 11px; }
+        .logo-area h1 { color: #00e676; font-size: 16px; margin-bottom: 2px; white-space: nowrap;}
+        .logo-area p { color: #aaa; font-size: 10px; }
         
-        .nav-btns { display: flex; gap: 8px; align-items: center; }
         .btn-wa-header {
-            background: #25D366; color: #fff; border: none; padding: 8px 12px;
+            background: #25D366; color: #fff; border: none; padding: 6px 10px;
             border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none;
             display: flex; align-items: center; gap: 5px; font-size: 12px;
         }
 
-        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; width: 100%; }
+        .container { max-width: 900px; margin: 15px auto; padding: 0 10px; width: 100%; overflow-x: hidden;}
 
-        /* SEARCH BAR YAKO MPYA */
-        .search-box {
-            display: flex; gap: 10px; margin-bottom: 25px;
+        .categories-nav {
+            display: flex; gap: 8px; justify-content: flex-start; margin: 15px 0 20px;
+            overflow-x: auto; width: 100%; padding-bottom: 10px; scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
-        .search-box input {
-            flex: 1; padding: 12px 15px; background: #252530;
-            border: 1px solid #3a3a4c; color: #fff; border-radius: 8px; outline: none; font-size: 15px;
+        .cat-btn {
+            background: #1a1a24; color: #aaa; border: 1px solid #2a2a38; padding: 6px 14px;
+            border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: 0.3s;
+            flex-shrink: 0;
         }
-        .search-box input:focus { border-color: #00e676; }
-        .search-box button {
-            background: #00e676; color: #000; font-weight: bold; padding: 12px 20px;
-            border: none; border-radius: 8px; cursor: pointer; font-size: 15px;
-        }
+        .cat-btn.active { background: #00e676; color: #000; border-color: #00e676; }
 
-        /* STATUS MESSAGE */
-        .status-message {
-            text-align: center; color: #ffeb3b; font-weight: bold; margin-bottom: 15px; font-size: 14px;
-        }
+        .section-title { padding-left: 8px; margin-bottom: 12px; font-size: 18px; display: flex; align-items: center; gap: 8px; border-left: 4px solid #00e676; color: #fff;}
 
-        /* MEDIA LIST (Muonekano wako mpya wa kadi) */
-        .grid-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; width: 100%; }
+        .grid-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; width: 100%; }
         
         .media-card {
-            background: #1a1a24; border-radius: 12px; overflow: hidden;
-            border: 1px solid #2a2a38; display: flex; flex-direction: row; align-items: stretch; width: 100%;
+            background: #1a1a24; border-radius: 10px; overflow: hidden;
+            border: 1px solid #2a2a38; display: flex; flex-direction: row; align-items: stretch; width: 100%; position: relative;
         }
-        .media-card > img { width: 130px; object-fit: cover; flex-shrink: 0; background: #000; min-height: 120px; }
+        .media-card > img { width: 110px; object-fit: cover; flex-shrink: 0; background: #000; min-height: 110px; }
         
-        .media-details { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; width: calc(100% - 130px); }
-        .badge-container { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
-        .badge { background: rgba(0, 230, 118, 0.15); color: #00e676; padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-        .badge-global { background: rgba(255, 145, 0, 0.15); color: #ff9100; }
-        .media-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: #fff; line-height: 1.4; word-wrap: break-word;}
+        .media-details { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; width: calc(100% - 110px); }
+        .badge { background: rgba(0, 230, 118, 0.15); color: #00e676; padding: 2px 5px; border-radius: 4px; font-size: 9px; font-weight: bold; width: fit-content; margin-bottom: 5px; }
+        .media-title { font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #fff; line-height: 1.3; word-wrap: break-word;}
 
-        /* ACTION BUTTONS */
-        .btn-container { margin-top: auto; display: flex; gap: 8px; width: 100%;}
+        .btn-container { margin-top: auto; display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; width: 100%;}
+        .media-actions { display: flex; gap: 6px; width: 100%; }
         .btn-action { 
-            flex: 1; padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 12px; text-align: center; white-space: nowrap;
+            flex: 1; padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 11px; text-align: center; white-space: nowrap;
         }
-        .btn-dl-audio { background: #00e676; color: #000; }
-        .btn-dl-video { background: #2196F3; color: #fff; }
         
-        /* REACTIONS BAR */
-        .reaction-bar { display: flex; gap: 15px; padding-top: 10px; border-top: 1px solid #2a2a38; margin-top: 10px; }
-        .reaction-item { color: #aaa; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .btn-play-audio { background: transparent; color: #00e676; border: 1px solid #00e676; }
+        .btn-dl-audio { background: #00e676; color: #000; }
 
+        #download-noti {
+            display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #00e676; color: #000; padding: 12px 20px; border-radius: 12px; 
+            font-weight: bold; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+            text-align: center; font-size: 13px; width: 90%; max-width: 350px;
+        }
+
+        #sticky-audio-player {
+            display: none; position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #121212; border-top: 2px solid #00e676; box-shadow: 0 -4px 15px rgba(0,0,0,0.7);
+            padding: 10px; z-index: 999; align-items: center; justify-content: space-between; gap: 10px;
+        }
+        .player-info { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+        .player-info img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex-shrink: 0;}
+        .player-text h4 { color: #fff; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #main-audio { flex: 2; height: 35px; outline: none; width: 100%; max-width: 250px;}
+        .close-player { background: transparent; color: #aaa; border: none; font-size: 18px; cursor: pointer; }
+
+        footer { text-align: center; padding: 20px 10px; margin-top: 20px; border-top: 1px solid #2a2a38; color: #aaa; font-size: 12px; background: #121212; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo-area">
-            <h1>MAKYAMA MEDIA</h1>
-            <p>Tanzania's #1 Music Store</p>
+            <h1>🎵 MAKYAMA MEDIA</h1>
+            <p>Full Length MP3 Direct Downloader</p>
         </div>
-        <div class="nav-btns">
-            <a href="https://wa.me/255767568297" class="btn-wa-header" target="_blank">💬 WhatsApp</a>
-        </div>
+        <a href="https://wa.me/255740770786" target="_blank" class="btn-wa-header">Contact Us</a>
     </header>
 
+    <div id="download-noti">Inaandaa Full Song MP3... ⏳</div>
+
     <div class="container">
-        
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Tafuta wimbo au msanii hapa...">
-            <button onclick="tafutaMzigo()">Tafuta</button>
+        <div class="search-container" style="display: flex; gap: 8px; margin: 15px auto 10px; width: 100%;">
+            <input type="text" id="search-input" placeholder="🔍 Andika jina la wimbo au msanii..." style="flex: 1; padding: 12px 15px; border-radius: 30px; border: 2px solid #00e676; font-size: 14px; outline: none; background-color: #1a1a24; color: #fff;">
+            <button onclick="searchFullAudio()" style="background: #00e676; color: #000; font-weight: bold; padding: 0 20px; border: none; border-radius: 30px; cursor: pointer;">Tafuta</button>
         </div>
 
-        <div id="statusMessage" class="status-message"></div>
+        <div class="categories-nav">
+            <button class="cat-btn active" onclick="loadCategory('Bongo Flava', this)">🔥 Bongo Flava</button>
+            <button class="cat-btn" onclick="loadCategory('Afrobeats', this)">🎵 Afrobeats</button>
+            <button class="cat-btn" onclick="loadCategory('Gospel', this)">🙌 Gospel</button>
+            <button class="cat-btn" onclick="loadCategory('Hip Hop', this)">🎤 Hip Hop</button>
+        </div>
+      
+        <h2 class="section-title" id="related-title">🔥 Results (Full Length Audio)</h2>
+        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Inatafuta nyimbo ndefu... ⏳</div>
+        <div class="grid-container" id="media-list"></div>
+    </div>
 
-        <div id="resultsContainer" class="grid-container">
+    <footer>
+        <p>&copy; 2026 Makyama Media Store. Direct Song Downloader.</p>
+    </footer>
+
+    <div id="sticky-audio-player">
+        <div class="player-info">
+            <img id="player-img" src="https://via.placeholder.com/100" alt="Cover">
+            <div class="player-text">
+                <h4 id="player-title">Song Title</h4>
+                <p style="color:#00e676; font-size:10px;">Inacheza Wimbo Mzima...</p>
             </div>
-
+        </div>
+        <audio id="main-audio" controls autoplay></audio>
+        <button class="close-player" onclick="closeAudioPlayer()">✖</button>
     </div>
 
     <script>
-        // API KEY YAKO IMEWEKWA HAPA TAYARI
-        const YOUTUBE_API_KEY = "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw"; 
+        function escapeQuotes(str) {
+            return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
 
-        async function tafutaMzigo() {
-            const query = document.getElementById('searchInput').value.trim();
-            const status = document.getElementById('statusMessage');
-            const container = document.getElementById('resultsContainer');
-            
-            if (!query) {
-                alert("Kiongozi, tafadhali andika jina la wimbo au msanii kwanza!");
-                return;
-            }
-            
-            status.innerText = "Inasaka mzigo kikatili... ⏳";
-            container.innerHTML = "";
+        // DIRECT DOWNLOAD FOR FULL MP3
+        async function downloadDirectFull(fileUrl, fileName) {
+            var noti = document.getElementById('download-noti');
+            noti.style.display = 'block';
 
             try {
-                const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=15&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}`);
-                const data = await response.json();
+                const response = await fetch(fileUrl);
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
 
-                if (data.items && data.items.length > 0) {
-                    status.innerText = ""; 
-                    
-                    data.items.forEach(item => {
-                        const videoId = item.id.videoId;
-                        const title = item.snippet.title;
-                        const channel = item.snippet.channelTitle;
-                        const thumb = item.snippet.thumbnails.high.url;
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = fileName.replace(/[/\\?%*:|"<>]/g, '') + '.mp3';
+                document.body.appendChild(link);
+                link.click();
 
-                        // LINK ZA UHAKIKA ZA KUDOWNLOAD
-                        const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
-                        const mp3DownloadLink = `https://www.y2mate.com/youtube/${videoId}`;
-                        const mp4DownloadLink = `https://yt1s.com/en/youtube-to-mp4?q=${encodeURIComponent(youtubeUrl)}`;
-
-                        // Random numbers for fake reactions (Kupamba muonekano)
-                        const views = Math.floor(Math.random() * (5000 - 100 + 1)) + 100;
-                        const likes = Math.floor(Math.random() * (900 - 50 + 1)) + 50;
-
-                        const card = document.createElement('div');
-                        card.className = 'media-card';
-                        
-                        card.innerHTML = `
-                            <img src="${thumb}" alt="Cover">
-                            <div class="media-details">
-                                <div class="badge-container">
-                                    <span class="badge">🔥 New</span>
-                                    <span class="badge badge-global">🌍 ${channel}</span>
-                                </div>
-                                <div class="media-title">${title}</div>
-                                
-                                <div class="btn-container">
-                                    <button class="btn-action btn-dl-audio" onclick="window.open('${mp3DownloadLink}', '_blank')">🎧 Audio</button>
-                                    <button class="btn-action btn-dl-video" onclick="window.open('${mp4DownloadLink}', '_blank')">🎬 Video</button>
-                                </div>
-
-                                <div class="reaction-bar">
-                                    <div class="reaction-item">👁️ ${views}</div>
-                                    <div class="reaction-item">❤️ ${likes}</div>
-                                    <div class="reaction-item">🔥 Moto</div>
-                                </div>
-                            </div>
-                        `;
-                        container.appendChild(card);
-                    });
-                } else {
-                    status.innerText = "Hakuna matokeo yaliyopatikana. Jaribu jina jingine.";
-                }
-            } catch (error) {
-                console.error(error);
-                status.innerText = "Kuna tatizo la mtandao. Tafadhali jaribu tena.";
+                setTimeout(() => { 
+                    document.body.removeChild(link); 
+                    window.URL.revokeObjectURL(blobUrl); 
+                    noti.style.display = 'none'; 
+                }, 1000);
+            } catch (e) {
+                // Direct link trigger kama browser ikibania BLOB
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.download = fileName + '.mp3';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                noti.style.display = 'none';
             }
         }
 
-        // Ruhusu mteja kubonyeza 'Enter' kusaka
-        document.getElementById("searchInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                tafutaMzigo();
+        function playAudio(link, title, img) {
+            var playerContainer = document.getElementById('sticky-audio-player');
+            var audioTag = document.getElementById('main-audio');
+            document.getElementById('player-title').innerText = title;
+            document.getElementById('player-img').src = img;
+            playerContainer.style.display = 'flex';
+            audioTag.src = link;
+            audioTag.play();
+        }
+
+        function closeAudioPlayer() {
+            var audioTag = document.getElementById('main-audio');
+            audioTag.pause(); audioTag.src = "";
+            document.getElementById('sticky-audio-player').style.display = 'none';
+        }
+
+        // FULL LENGTH MP3 SEARCH API (INTERNET ARCHIVE & AUDIOBOOM ENGINE)
+        async function fetchFullSongs(query) {
+            var mainNode = document.getElementById("media-list");
+            var loading = document.getElementById("loading");
+
+            if (loading) loading.style.display = "block";
+            mainNode.innerHTML = "";
+
+            try {
+                let searchUrl = `https://archive.org/advancedsearch.php?q=${encodeURIComponent(query)}+AND+mediatype:audio&fl[]=identifier,title,creator,downloads&sort[]=downloads+desc&rows=20&page=1&output=json`;
+
+                let response = await fetch(searchUrl);
+                let data = await response.json();
+                let docs = data.response.docs;
+
+                if (loading) loading.style.display = "none";
+
+                if (!docs || docs.length === 0) {
+                    mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Hakuna wimbo uliopatikana. Jaribu kutafuta tena.</p>";
+                    return;
+                }
+
+                docs.forEach(item => {
+                    let id = item.identifier;
+                    let title = item.title || "Unknown Track";
+                    let artist = item.creator || "Artist";
+                    let fullTitle = `${artist} - ${title}`;
+                    let safeTitle = escapeQuotes(fullTitle);
+                    
+                    // Direct Full Length Audio Link & Image
+                    let fullAudioUrl = `https://archive.org/download/${id}/${id}.mp3`;
+                    let thumb = `https://archive.org/services/img/${id}`;
+
+                    let card = `
+                        <div class="media-card">
+                            <img src="${thumb}" onerror="this.src='https://via.placeholder.com/150/1a1a24/00e676?text=Music'" alt="Cover">
+                            <div class="media-details">
+                                <span class="badge">💯 Full Song MP3</span>
+                                <div class="media-title">${fullTitle}</div>
+                                <div class="btn-container">
+                                    <div class="media-actions">
+                                        <button class="btn-action btn-play-audio" onclick="playAudio('${fullAudioUrl}', '${safeTitle}', '${thumb}')">▶️ Play Full</button>
+                                        <button class="btn-action btn-dl-audio" onclick="downloadDirectFull('${fullAudioUrl}', '${safeTitle}')">⬇️ Download MP3</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    mainNode.innerHTML += card;
+                });
+            } catch (error) {
+                if (loading) loading.style.display = "none";
+                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Matokeo yamefeli. Jaribu tena.</p>";
             }
-        });
+        }
+
+        function loadCategory(type, btnElement) {
+            document.getElementById("search-input").value = "";
+            if (btnElement) {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+            fetchFullSongs(type);
+        }
+
+        function searchFullAudio() {
+            var query = document.getElementById("search-input").value.trim();
+            if (query === "") return;
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            fetchFullSongs(query);
+        }
+
+        window.onload = function() { 
+            fetchFullSongs('Bongo Flava');
+        };
     </script>
 </body>
 </html>
