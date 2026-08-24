@@ -236,15 +236,21 @@
         </div>
 
         <div class="categories-nav">
-            <button class="cat-btn active" onclick="filterMedia('all', this)">All</button>
-            <button class="cat-btn" onclick="filterMedia('music', this)">🎵 Music</button>
-            <button class="cat-btn" onclick="filterMedia('trending', this)">🔥 Trending (Inayotamba)</button>
-            <button class="cat-btn" onclick="filterMedia('afrobeats', this)">🌍 Afrobeats</button>
+            <button class="cat-btn active" onclick="loadCategory('bongo', '🔥 Bongo Flava Trending', this)">🔥 All Trending</button>
+            <button class="cat-btn" onclick="loadCategory('afrobeats', '🌍 Afrobeats & Amapiano', this)">🎵 Afrobeats</button>
+            <button class="cat-btn" onclick="loadCategory('hiphop', '🎤 Top Hip Hop Hits', this)">🎤 Hip Hop</button>
+            <button class="cat-btn" onclick="loadCategory('gospel', '🙌 Gospel Hits', this)">🙌 Gospel</button>
         </div>
       
-        <h2 class="section-title title-related" id="related-title">🎵 All Music</h2>
+        <h2 class="section-title title-related" id="related-title">🔥 Trending Worldwide</h2>
         <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Loading music... ⏳</div>
         <div class="grid-container" id="media-list"></div>
+
+        <!-- SEHEMU YA UPLOAD ZA ADMIN PEKEE -->
+        <div id="admin-uploads-section" style="display:none; margin-top: 30px;">
+            <h2 class="section-title title-related" style="border-left-color:#ff9100;">📌 Direct Admin Uploads</h2>
+            <div class="grid-container" id="admin-media-list"></div>
+        </div>
 
         <!-- SEHEMU YA MATANGAZO (ADS CONTAINER) -->
         <div class="ad-container" id="mid-ad">
@@ -289,7 +295,7 @@
         } catch (error) { console.error("Firebase Error:", error); }
 
         var isAdmin = false;
-        var allFetchedMedia = []; 
+        var adminUploadedMedia = []; 
 
         // LIVE VISITORS COUNTER
         function trackLiveVisitors() {
@@ -322,7 +328,7 @@
                 closeLoginModal();
                 document.getElementById('admin-panel').style.display = 'block';
                 document.getElementById('nav-action').innerHTML = `<button class="btn-logout" onclick="logoutAdmin()">🚪 Log Out</button>`;
-                filterMedia('all'); 
+                renderAdminMedia();
             } else { alert("Incorrect password or username."); }
         }
         
@@ -333,7 +339,7 @@
                 <a href="https://wa.me/255740770786" target="_blank" class="btn-wa-header">Contact</a>
                 <button onclick="openLoginModal()">🔑 Admin</button>
             `;
-            filterMedia('all'); 
+            renderAdminMedia();
         }
 
         // SAVE / EDIT CUSTOM MEDIA
@@ -363,7 +369,6 @@
             cancelEdit();
         }
 
-        // EDIT MEDIA
         function editMedia(key, jina, picha, linkAudio) {
             document.getElementById('edit-key').value = key;
             document.getElementById('media-name').value = jina;
@@ -387,7 +392,6 @@
             document.getElementById('btn-cancel').style.display = "none";
         }
 
-        // DELETE MEDIA
         function deleteMedia(key) {
             if (confirm("Je, una uhakika unataka kufuta wimbo/video hii?")) {
                 database.ref('media/' + key).remove();
@@ -478,19 +482,22 @@
             }
         }
 
-        // GLOBAL SEARCH & CATEGORIES (TRENDING MUSIC)
-        async function fetchExternalCategory(queryTerm, titleText) {
+        // FETCH TRENDING & CATEGORIES (ITUNES GLOBAL MUSIC)
+        async function fetchTrendingCategory(searchTerm, titleText) {
             var mainNode = document.getElementById("media-list");
             var relatedTitle = document.getElementById("related-title");
-            relatedTitle.innerHTML = titleText;
-            mainNode.innerHTML = "<p style='text-align:center; color:#00e676; font-size: 14px; padding: 20px;'>Pakua Nyimbo Zinazotamba... ⚡</p>";
+            var loading = document.getElementById("loading");
+
+            if (relatedTitle) relatedTitle.innerHTML = titleText;
+            if (loading) loading.style.display = "block";
+            mainNode.innerHTML = "";
 
             try {
-                let url = `https://itunes.apple.com/search?term=${encodeURIComponent(queryTerm)}&media=music&limit=15`;
+                let url = `https://itunes.apple.com/search?term=${encodeURIComponent(searchTerm)}&media=music&limit=20`;
                 let response = await fetch(url);
                 let data = await response.json();
                 
-                mainNode.innerHTML = "";
+                if (loading) loading.style.display = "none";
 
                 if (!data.results || data.results.length === 0) {
                     mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Hakuna nyimbo zilizopatikana.</p>";
@@ -525,94 +532,104 @@
                     mainNode.innerHTML += card;
                 });
             } catch (error) {
+                if (loading) loading.style.display = "none";
                 mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Acha kidogo kisha ujaribu tena.</p>";
             }
+        }
+
+        function loadCategory(type, titleText, btnElement) {
+            document.getElementById("search-input").value = "";
+            if (btnElement) {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+
+            var queryMap = {
+                'bongo': 'Bongo Flava Latest',
+                'afrobeats': 'Afrobeats Amapiano Hits',
+                'hiphop': 'Hip Hop World Hits',
+                'gospel': 'Top Gospel Praise'
+            };
+
+            fetchTrendingCategory(queryMap[type] || 'Bongo Flava', titleText);
         }
 
         function searchGlobalMedia() {
             var query = document.getElementById("search-input").value.trim();
             if (query === "") return;
-            fetchExternalCategory(query, "🌍 Global Search Results...");
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            fetchTrendingCategory(query, "🌍 Global Search Results...");
         }
 
-        // DATABASE MEDIA
-        function loadMedia() {
-            document.getElementById("loading").style.display = "block";
+        // DATABASE MEDIA (ADMIN UPLOADS ONLY)
+        function loadAdminMedia() {
             database.ref('media').on('value', function(snapshot) {
-                document.getElementById("loading").style.display = "none";
-                allFetchedMedia = [];
-                if (!snapshot.exists()) return;
-                snapshot.forEach(function(childSnapshot) {
-                    allFetchedMedia.push({ key: childSnapshot.key, data: childSnapshot.val() });
-                });
-                allFetchedMedia.reverse(); 
-                filterMedia('all');
+                adminUploadedMedia = [];
+                if (snapshot.exists()) {
+                    snapshot.forEach(function(childSnapshot) {
+                        adminUploadedMedia.push({ key: childSnapshot.key, data: childSnapshot.val() });
+                    });
+                    adminUploadedMedia.reverse();
+                }
+                renderAdminMedia();
             });
         }
 
-        function createCard(data, key) {
-            var mediaImage = data.picha || "https://via.placeholder.com/300x180/252530/aaa?text=MAKYAMA+MEDIA";
-            var audioLink = data.linkAudio;
-            var safePlayName = data.jina.replace(/'/g, "\\'");
-            var safePlayImage = mediaImage.replace(/'/g, "\\'");
+        function renderAdminMedia() {
+            var section = document.getElementById("admin-uploads-section");
+            var adminNode = document.getElementById("admin-media-list");
 
-            var adminButtons = isAdmin ? `
-                <div class="media-actions" style="margin-top:5px;">
-                    <button class="btn-action btn-edit-admin" onclick="editMedia('${key}', '${safePlayName}', '${safePlayImage}', '${audioLink}')">✏️ Edit</button>
-                    <button class="btn-action btn-delete-admin" onclick="deleteMedia('${key}')">🗑️ Delete</button>
-                </div>
-            ` : "";
+            if (adminUploadedMedia.length === 0) {
+                section.style.display = "none";
+                return;
+            }
 
-            var btnAudioHTML = audioLink ? `
-                <div class="media-actions">
-                    <button class="btn-action btn-play-audio" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')">▶️ Play</button>
-                    <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('${audioLink}', '${safePlayName}', '${key}')">⬇️ Download MP3</button>
-                </div>
-                ${adminButtons}` : "";
+            section.style.display = "block";
+            adminNode.innerHTML = "";
 
-            return `
-                <div class="media-card">
-                    <img src="${mediaImage}" loading="lazy" style="cursor:pointer;" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')">
-                    <div class="media-details">
-                        <div class="badge-container">
-                            <span class="badge">AUDIO / VIDEO</span>
-                        </div>
-                        <div class="media-title">${data.jina}</div>
-                        <div class="btn-container">${btnAudioHTML}</div>
-                        <div class="reaction-bar">
-                            <button class="reaction-item">👁️ ${data.views || 0} Views</button>
+            adminUploadedMedia.forEach(function(item) {
+                var data = item.data;
+                var key = item.key;
+                var mediaImage = data.picha || "https://via.placeholder.com/300x180/252530/aaa?text=MAKYAMA+MEDIA";
+                var audioLink = data.linkAudio;
+                var safePlayName = data.jina.replace(/'/g, "\\'");
+                var safePlayImage = mediaImage.replace(/'/g, "\\'");
+
+                var adminButtons = isAdmin ? `
+                    <div class="media-actions" style="margin-top:5px;">
+                        <button class="btn-action btn-edit-admin" onclick="editMedia('${key}', '${safePlayName}', '${safePlayImage}', '${audioLink}')">✏️ Edit</button>
+                        <button class="btn-action btn-delete-admin" onclick="deleteMedia('${key}')">🗑️ Delete</button>
+                    </div>
+                ` : "";
+
+                var card = `
+                    <div class="media-card">
+                        <img src="${mediaImage}" loading="lazy" style="cursor:pointer;" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')">
+                        <div class="media-details">
+                            <div class="badge-container">
+                                <span class="badge">📌 ADMIN UPLOAD</span>
+                            </div>
+                            <div class="media-title">${data.jina}</div>
+                            <div class="btn-container">
+                                <div class="media-actions">
+                                    <button class="btn-action btn-play-audio" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')">▶️ Play</button>
+                                    <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('${audioLink}', '${safePlayName}', '${key}')">⬇️ Download MP3</button>
+                                </div>
+                                ${adminButtons}
+                            </div>
+                            <div class="reaction-bar">
+                                <button class="reaction-item">👁️ ${data.views || 0} Views</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
-        }
-
-        function filterMedia(category, btnElement) {
-            document.getElementById("search-input").value = "";
-            if(btnElement) {
-                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-                btnElement.classList.add('active');
-            }
-
-            if (category === 'trending') {
-                fetchExternalCategory('Bongo Flava Top Hits', '🔥 Nyimbo Zinazotamba Mtandaoni');
-                return;
-            } else if (category === 'afrobeats') {
-                fetchExternalCategory('Afrobeats Hits', '🌍 Afrobeats & African Music');
-                return;
-            }
-
-            document.getElementById("related-title").innerText = "🎵 All Music";
-            var mainNode = document.getElementById("media-list");
-            mainNode.innerHTML = "";
-            var filteredData = [...allFetchedMedia];
-
-            if(filteredData.length === 0) { mainNode.innerHTML = "<p style='color:#aaa; text-align:center;'>Hakuna Nyimbo/Video kwa sasa.</p>"; return; }
-            filteredData.forEach(function(item) { mainNode.innerHTML += createCard(item.data, item.key); });
+                `;
+                adminNode.innerHTML += card;
+            });
         }
 
         window.onload = function() { 
-            loadMedia(); 
+            fetchTrendingCategory('Bongo Flava Latest', '🔥 All Trending Hits');
+            loadAdminMedia(); 
             loadAdCode();
             trackLiveVisitors();
         };
