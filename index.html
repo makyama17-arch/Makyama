@@ -1,272 +1,517 @@
-<!DOCTYPE html>
+<!DOCKTYPE html>
 <html lang="sw">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TPXCRXDVHS"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-TPXCRXDVHS');
-    </script>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Makyama Media - Direct Full Song Downloader</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#07110c">
+<title>MAKYAMA MEDIA — Global Music</title>
 
-    <style>
-        html, body { overflow-x: hidden; width: 100%; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #0f0f12; color: #ffffff; padding-bottom: 120px; } 
-        
-        header {
-            background: linear-gradient(135deg, #121212, #1e1e24);
-            padding: 15px 15px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 3px solid #00e676; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            position: sticky; top: 0; z-index: 100; width: 100%;
-        }
-        .logo-area h1 { color: #00e676; font-size: 16px; margin-bottom: 2px; white-space: nowrap;}
-        .logo-area p { color: #aaa; font-size: 10px; }
-        
-        .btn-wa-header {
-            background: #25D366; color: #fff; border: none; padding: 6px 10px;
-            border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none;
-            display: flex; align-items: center; gap: 5px; font-size: 12px;
-        }
+<!-- Firebase 8 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-        .container { max-width: 900px; margin: 15px auto; padding: 0 10px; width: 100%; overflow-x: hidden;}
-
-        .categories-nav {
-            display: flex; gap: 8px; justify-content: flex-start; margin: 15px 0 20px;
-            overflow-x: auto; width: 100%; padding-bottom: 10px; scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-        }
-        .cat-btn {
-            background: #1a1a24; color: #aaa; border: 1px solid #2a2a38; padding: 6px 14px;
-            border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: 0.3s;
-            flex-shrink: 0;
-        }
-        .cat-btn.active { background: #00e676; color: #000; border-color: #00e676; }
-
-        .section-title { padding-left: 8px; margin-bottom: 12px; font-size: 18px; display: flex; align-items: center; gap: 8px; border-left: 4px solid #00e676; color: #fff;}
-
-        .grid-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; width: 100%; }
-        
-        .media-card {
-            background: #1a1a24; border-radius: 10px; overflow: hidden;
-            border: 1px solid #2a2a38; display: flex; flex-direction: row; align-items: stretch; width: 100%; position: relative;
-        }
-        .media-card > img { width: 110px; object-fit: cover; flex-shrink: 0; background: #000; min-height: 110px; }
-        
-        .media-details { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; width: calc(100% - 110px); }
-        .badge { background: rgba(0, 230, 118, 0.15); color: #00e676; padding: 2px 5px; border-radius: 4px; font-size: 9px; font-weight: bold; width: fit-content; margin-bottom: 5px; }
-        .media-title { font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #fff; line-height: 1.3; word-wrap: break-word;}
-
-        .btn-container { margin-top: auto; display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; width: 100%;}
-        .media-actions { display: flex; gap: 6px; width: 100%; }
-        .btn-action { 
-            flex: 1; padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 11px; text-align: center; white-space: nowrap;
-        }
-        
-        .btn-play-audio { background: transparent; color: #00e676; border: 1px solid #00e676; }
-        .btn-dl-audio { background: #00e676; color: #000; }
-
-        #download-noti {
-            display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: #00e676; color: #000; padding: 12px 20px; border-radius: 12px; 
-            font-weight: bold; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
-            text-align: center; font-size: 13px; width: 90%; max-width: 350px;
-        }
-
-        #sticky-audio-player {
-            display: none; position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #121212; border-top: 2px solid #00e676; box-shadow: 0 -4px 15px rgba(0,0,0,0.7);
-            padding: 10px; z-index: 999; align-items: center; justify-content: space-between; gap: 10px;
-        }
-        .player-info { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-        .player-info img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex-shrink: 0;}
-        .player-text h4 { color: #fff; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        #main-audio { flex: 2; height: 35px; outline: none; width: 100%; max-width: 250px;}
-        .close-player { background: transparent; color: #aaa; border: none; font-size: 18px; cursor: pointer; }
-
-        footer { text-align: center; padding: 20px 10px; margin-top: 20px; border-top: 1px solid #2a2a38; color: #aaa; font-size: 12px; background: #121212; }
-    </style>
+<style>
+:root{
+  --green:#00e676;--green2:#00c853;--bg:#070a09;--panel:#101512;
+  --panel2:#151b17;--text:#fff;--muted:#8c9990;--line:#253029;
+  --orange:#ff9800;--red:#ff5252;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Segoe UI,sans-serif}
+html,body{background:var(--bg);color:var(--text);min-height:100%;overflow-x:hidden}
+body{padding-bottom:100px}
+button,input{font:inherit}
+button{cursor:pointer}
+header{
+ position:sticky;top:0;z-index:1000;background:rgba(7,10,9,.96);
+ backdrop-filter:blur(14px);border-bottom:1px solid #1d2921;padding:13px 14px;
+ display:flex;align-items:center;justify-content:space-between;gap:10px
+}
+.brand{min-width:0}.brand h1{font-size:17px;color:var(--green);white-space:nowrap}
+.brand p{font-size:10px;color:var(--muted);margin-top:3px}
+.header-actions{display:flex;gap:7px}
+.btn{border:0;border-radius:9px;padding:9px 11px;font-weight:800;font-size:11px}
+.btn-green{background:var(--green);color:#001b0d}.btn-dark{background:#18201b;color:#fff;border:1px solid var(--line)}
+.btn-red{background:var(--red);color:#fff}.btn-orange{background:var(--orange);color:#111}
+.wrap{width:min(960px,100%);margin:auto;padding:0 11px}
+.hero{padding:22px 0 10px}
+.hero h2{font-size:25px;line-height:1.15}
+.hero h2 span{color:var(--green)}
+.hero p{color:var(--muted);font-size:12px;margin-top:8px;line-height:1.5}
+.search{display:flex;gap:8px;margin:14px 0}
+.search input{
+ flex:1;background:var(--panel);color:#fff;border:1px solid #334238;border-radius:13px;
+ padding:13px 14px;outline:none;min-width:0
+}
+.search input:focus{border-color:var(--green)}
+.search button{width:86px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:3px 0 13px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;background:var(--panel);color:#b8c1bb;border:1px solid var(--line);
+ border-radius:999px;padding:8px 13px;font-size:11px;font-weight:800}
+.chip.active{background:var(--green);color:#001b0d;border-color:var(--green)}
+.section{display:flex;align-items:center;justify-content:space-between;margin:10px 0}
+.section h3{font-size:17px;border-left:4px solid var(--green);padding-left:8px}
+#status{font-size:11px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr;gap:10px}
+.card{
+ display:flex;gap:10px;background:linear-gradient(135deg,#111713,#0d120f);
+ border:1px solid var(--line);border-radius:13px;padding:9px;overflow:hidden
+}
+.cover{width:86px;height:86px;border-radius:9px;object-fit:cover;background:#080b09;flex:0 0 86px}
+.info{min-width:0;flex:1;display:flex;flex-direction:column}
+.badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px}
+.badge{font-size:8px;padding:3px 5px;border-radius:5px;background:#123d27;color:var(--green);font-weight:900}
+.badge.orange{background:#3d2b0d;color:#ffb52e}
+.badge.blue{background:#102d3d;color:#58c7ff}
+.title{font-size:13px;font-weight:900;line-height:1.25}
+.artist{font-size:11px;color:#a8b3ab;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:9px;color:#69756d;margin-top:3px}
+.actions{display:flex;gap:6px;margin-top:auto;padding-top:8px}
+.actions button{flex:1;padding:7px 5px;border-radius:7px;border:0;font-size:10px;font-weight:900}
+.play{background:transparent;color:var(--green);border:1px solid var(--green)!important}
+.open{background:#222c25;color:#fff}
+.download{background:var(--green);color:#001b0d}
+.empty,.loading{
+ background:var(--panel);border:1px dashed #334238;border-radius:12px;
+ padding:25px 14px;text-align:center;color:var(--muted);font-size:12px
+}
+.admin{
+ display:none;background:#0d1510;border:1px solid var(--green);border-radius:14px;
+ padding:13px;margin:12px 0
+}
+.admin h3{color:var(--green);font-size:15px;margin-bottom:10px}
+.admin input{width:100%;background:#151d18;color:#fff;border:1px solid var(--line);padding:10px;border-radius:8px;margin-bottom:8px;outline:0}
+.admin-row{display:flex;gap:7px}.admin-row>*{flex:1}
+.admin-list{margin-top:12px;display:grid;gap:7px}
+.admin-item{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#151d18;padding:8px;border-radius:8px}
+.admin-item span{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-item button{padding:6px 8px;border:0;border-radius:6px;font-size:9px;font-weight:800}
+footer{text-align:center;color:#69756d;font-size:10px;padding:25px 10px}
+.player{
+ position:fixed;left:0;right:0;bottom:0;z-index:2000;background:#0c120e;
+ border-top:2px solid var(--green);padding:8px 10px;display:none;gap:8px;align-items:center
+}
+.player img{width:43px;height:43px;border-radius:7px;object-fit:cover}
+.pinfo{min-width:0;flex:1}.pinfo b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pinfo span{display:block;color:var(--green);font-size:9px;margin-top:2px}
+audio{width:min(330px,42vw);height:34px}
+.close{background:none;color:#aaa;border:0;font-size:17px}
+.modal{
+ display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:3000;
+ align-items:center;justify-content:center;padding:15px
+}
+.modal-box{width:min(390px,100%);background:#111713;border:1px solid var(--green);border-radius:14px;padding:18px}
+.modal-box h3{color:var(--green);margin-bottom:12px}
+.modal-box input{width:100%;background:#192019;color:#fff;border:1px solid var(--line);padding:11px;border-radius:8px;margin-bottom:9px}
+.modal-box .btn{width:100%;margin-top:4px}
+.x{float:right;border:0;background:none;color:#aaa;font-size:23px}
+.toast{
+ position:fixed;top:75px;left:50%;transform:translateX(-50%);z-index:5000;
+ background:var(--green);color:#001b0d;font-size:11px;font-weight:900;padding:10px 15px;
+ border-radius:9px;display:none;max-width:90%;text-align:center
+}
+@media(min-width:650px){
+ .grid{grid-template-columns:1fr 1fr}
+ .cover{width:105px;height:105px;flex-basis:105px}
+ .title{font-size:14px}
+}
+</style>
 </head>
 <body>
 
-    <header>
-        <div class="logo-area">
-            <h1>🎵 MAKYAMA MEDIA</h1>
-            <p>Full Length MP3 Direct Downloader</p>
-        </div>
-        <a href="https://wa.me/255740770786" target="_blank" class="btn-wa-header">Contact Us</a>
-    </header>
+<header>
+  <div class="brand">
+    <h1>🎵 MAKYAMA MEDIA</h1>
+    <p>Global Music • Stream • Discover • Download Licensed Audio</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-dark" onclick="openAdmin()">🔑 Admin</button>
+  </div>
+</header>
 
-    <div id="download-noti">Inaandaa Full Song MP3... ⏳</div>
+<div id="toast" class="toast"></div>
 
-    <div class="container">
-        <div class="search-container" style="display: flex; gap: 8px; margin: 15px auto 10px; width: 100%;">
-            <input type="text" id="search-input" placeholder="🔍 Andika jina la wimbo au msanii..." style="flex: 1; padding: 12px 15px; border-radius: 30px; border: 2px solid #00e676; font-size: 14px; outline: none; background-color: #1a1a24; color: #fff;">
-            <button onclick="searchFullAudio()" style="background: #00e676; color: #000; font-weight: bold; padding: 0 20px; border: none; border-radius: 30px; cursor: pointer;">Tafuta</button>
-        </div>
+<main class="wrap">
+  <section class="hero">
+    <h2>Discover music <span>worldwide.</span></h2>
+    <p>Tafuta msanii au wimbo kutoka kwenye music catalog. Mainstream tracks zinaweza kuonyeshwa kama metadata na source rasmi; downloads zinapatikana kwa tracks zinazoruhusu download.</p>
+  </section>
 
-        <div class="categories-nav">
-            <button class="cat-btn active" onclick="loadCategory('Bongo Flava', this)">🔥 Bongo Flava</button>
-            <button class="cat-btn" onclick="loadCategory('Afrobeats', this)">🎵 Afrobeats</button>
-            <button class="cat-btn" onclick="loadCategory('Gospel', this)">🙌 Gospel</button>
-            <button class="cat-btn" onclick="loadCategory('Hip Hop', this)">🎤 Hip Hop</button>
-        </div>
-      
-        <h2 class="section-title" id="related-title">🔥 Results (Full Length Audio)</h2>
-        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Inatafuta nyimbo ndefu... ⏳</div>
-        <div class="grid-container" id="media-list"></div>
+  <div class="search">
+    <input id="q" placeholder="🔎 Search artist or song — mfano Diamond Platnumz" autocomplete="off">
+    <button class="btn btn-green" onclick="searchMusic()">SEARCH</button>
+  </div>
+
+  <div class="chips">
+    <button class="chip active" onclick="quickSearch('Trending Worldwide',this)">🔥 Trending</button>
+    <button class="chip" onclick="quickSearch('Bongo Flava',this)">🇹🇿 Bongo</button>
+    <button class="chip" onclick="quickSearch('Afrobeats',this)">🌍 Afrobeats</button>
+    <button class="chip" onclick="quickSearch('Amapiano',this)">🎹 Amapiano</button>
+    <button class="chip" onclick="quickSearch('Hip Hop',this)">🎤 Hip Hop</button>
+    <button class="chip" onclick="quickSearch('Gospel',this)">🙌 Gospel</button>
+    <button class="chip" onclick="showDownloads(this)">⬇️ Free Downloads</button>
+  </div>
+
+  <section id="admin" class="admin">
+    <h3>👑 ADMIN DASHBOARD</h3>
+    <div class="admin-row">
+      <input id="aTitle" placeholder="Song title">
+      <input id="aArtist" placeholder="Artist">
     </div>
-
-    <footer>
-        <p>&copy; 2026 Makyama Media Store. Direct Song Downloader.</p>
-    </footer>
-
-    <div id="sticky-audio-player">
-        <div class="player-info">
-            <img id="player-img" src="https://via.placeholder.com/100" alt="Cover">
-            <div class="player-text">
-                <h4 id="player-title">Song Title</h4>
-                <p style="color:#00e676; font-size:10px;">Inacheza Wimbo Mzima...</p>
-            </div>
-        </div>
-        <audio id="main-audio" controls autoplay></audio>
-        <button class="close-player" onclick="closeAudioPlayer()">✖</button>
+    <input id="aCover" placeholder="Cover image URL">
+    <input id="aAudio" placeholder="Direct audio URL (MP3/M4A)">
+    <input id="aSource" placeholder="Official/source URL">
+    <div class="admin-row">
+      <button class="btn btn-green" onclick="saveAdminTrack()">➕ ADD TRACK</button>
+      <button class="btn btn-red" onclick="logoutAdmin()">LOGOUT</button>
     </div>
+    <div id="adminList" class="admin-list"></div>
+  </section>
 
-    <script>
-        function escapeQuotes(str) {
-            return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-        }
+  <div class="section">
+    <h3 id="sectionTitle">🔥 Trending Worldwide</h3>
+    <span id="status"></span>
+  </div>
 
-        // DIRECT DOWNLOAD FOR FULL MP3
-        async function downloadDirectFull(fileUrl, fileName) {
-            var noti = document.getElementById('download-noti');
-            noti.style.display = 'block';
+  <div id="results" class="grid">
+    <div class="loading">Loading music… ⏳</div>
+  </div>
 
-            try {
-                const response = await fetch(fileUrl);
-                const blob = await response.blob();
-                const blobUrl = window.URL.createObjectURL(blob);
+  <footer>
+    © 2026 MAKYAMA MEDIA • Music is provided by licensed/official sources.
+  </footer>
+</main>
 
-                const link = document.createElement('a');
-                link.href = blobUrl;
-                link.download = fileName.replace(/[/\\?%*:|"<>]/g, '') + '.mp3';
-                document.body.appendChild(link);
-                link.click();
+<div id="player" class="player">
+  <img id="pcover" src="" alt="">
+  <div class="pinfo"><b id="ptitle">Playing</b><span id="partist"></span></div>
+  <audio id="audio" controls controlsList="nodownload"></audio>
+  <button class="close" onclick="closePlayer()">✕</button>
+</div>
 
-                setTimeout(() => { 
-                    document.body.removeChild(link); 
-                    window.URL.revokeObjectURL(blobUrl); 
-                    noti.style.display = 'none'; 
-                }, 1000);
-            } catch (e) {
-                // Direct link trigger kama browser ikibania BLOB
-                const link = document.createElement('a');
-                link.href = fileUrl;
-                link.download = fileName + '.mp3';
-                link.target = '_blank';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                noti.style.display = 'none';
-            }
-        }
+<div id="login" class="modal">
+  <div class="modal-box">
+    <button class="x" onclick="closeAdmin()">×</button>
+    <h3>🔒 ADMIN LOGIN</h3>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button class="btn btn-green" onclick="loginAdmin()">LOGIN</button>
+    <p style="color:#77837b;font-size:9px;margin-top:9px">Badilisha credentials kwenye Firebase Authentication kabla ya production. Usihifadhi password halisi kwenye frontend.</p>
+  </div>
+</div>
 
-        function playAudio(link, title, img) {
-            var playerContainer = document.getElementById('sticky-audio-player');
-            var audioTag = document.getElementById('main-audio');
-            document.getElementById('player-title').innerText = title;
-            document.getElementById('player-img').src = img;
-            playerContainer.style.display = 'flex';
-            audioTag.src = link;
-            audioTag.play();
-        }
+<script>
+/* =========================================================
+   MAKYAMA MEDIA — NEW VERSION
+   1) iTunes Search: global metadata + legal preview where available
+   2) Jamendo: licensed/open catalog + downloads where allowed
+   3) Firebase: your own admin uploads
+   ========================================================= */
 
-        function closeAudioPlayer() {
-            var audioTag = document.getElementById('main-audio');
-            audioTag.pause(); audioTag.src = "";
-            document.getElementById('sticky-audio-player').style.display = 'none';
-        }
+/* ---------- FIREBASE ---------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
+  authDomain: "makyama-e5e89.firebaseapp.com",
+  databaseURL: "https://makyama-e5e89-default-rtdb.firebaseio.com/",
+  projectId: "makyama-e5e89",
+  storageBucket: "makyama-e5e89.appspot.com",
+  messagingSenderId: "229527204095",
+  appId: "1:229527204095:web:2bdfe0589cf42794b3dcca"
+};
 
-        // FULL LENGTH MP3 SEARCH API (INTERNET ARCHIVE & AUDIOBOOM ENGINE)
-        async function fetchFullSongs(query) {
-            var mainNode = document.getElementById("media-list");
-            var loading = document.getElementById("loading");
+let db=null;
+try{
+  if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  db=firebase.database();
+}catch(e){console.warn("Firebase unavailable",e)}
 
-            if (loading) loading.style.display = "block";
-            mainNode.innerHTML = "";
+let admin=false;
+let allResults=[];
+let currentMode="global";
 
-            try {
-                let searchUrl = `https://archive.org/advancedsearch.php?q=${encodeURIComponent(query)}+AND+mediatype:audio&fl[]=identifier,title,creator,downloads&sort[]=downloads+desc&rows=20&page=1&output=json`;
+/*
+  JAMENDO:
+  You MUST replace this with your own Jamendo client_id.
+  Get it from Jamendo developer portal.
+*/
+const JAMENDO_CLIENT_ID="PASTE_YOUR_JAMENDO_CLIENT_ID_HERE";
 
-                let response = await fetch(searchUrl);
-                let data = await response.json();
-                let docs = data.response.docs;
+/* ---------- HELPERS ---------- */
+const $=id=>document.getElementById(id);
+function esc(v){
+  return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+function toast(msg){
+  $("toast").textContent=msg;$("toast").style.display="block";
+  clearTimeout(window.__toast);window.__toast=setTimeout(()=>$("toast").style.display="none",2500);
+}
+function setStatus(x){$("status").textContent=x||""}
+function fmtTime(ms){
+  if(!ms)return "";
+  let s=Math.round(ms/1000),m=Math.floor(s/60),r=s%60;
+  return `${m}:${String(r).padStart(2,"0")}`;
+}
+function imageFor(item){
+  return item.cover || "https://via.placeholder.com/300x300/101512/00e676?text=MAKYAMA";
+}
 
-                if (loading) loading.style.display = "none";
+/* ---------- PLAYER ---------- */
+function playTrack(t){
+  if(!t.audio){toast("Audio preview/full audio haipo kwa source hii.");return}
+  $("pcover").src=imageFor(t);
+  $("ptitle").textContent=t.title;
+  $("partist").textContent=t.artist||"";
+  $("player").style.display="flex";
+  $("audio").src=t.audio;
+  $("audio").play().catch(()=>{});
+}
+function closePlayer(){
+  $("audio").pause();$("audio").removeAttribute("src");$("audio").load();
+  $("player").style.display="none";
+}
 
-                if (!docs || docs.length === 0) {
-                    mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Hakuna wimbo uliopatikana. Jaribu kutafuta tena.</p>";
-                    return;
-                }
+/* ---------- SAFE DOWNLOAD ---------- */
+async function downloadTrack(t){
+  if(!t.download){
+    if(t.source){window.open(t.source,"_blank","noopener");toast("Download haijawezeshwa na source. Nimefungua source rasmi.");}
+    else toast("Track hii haina download iliyoruhusiwa.");
+    return;
+  }
+  try{
+    const r=await fetch(t.download);
+    if(!r.ok)throw new Error("download failed");
+    const blob=await r.blob();
+    const u=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=u;a.download=(t.artist+" - "+t.title).replace(/[\\/:*?"<>|]/g,"_")+".mp3";
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(u),3000);
+    toast("Download imeanza ✅");
+  }catch(e){
+    window.open(t.download,"_blank","noopener");
+    toast("Browser imefungua download source.");
+  }
+}
 
-                docs.forEach(item => {
-                    let id = item.identifier;
-                    let title = item.title || "Unknown Track";
-                    let artist = item.creator || "Artist";
-                    let fullTitle = `${artist} - ${title}`;
-                    let safeTitle = escapeQuotes(fullTitle);
-                    
-                    // Direct Full Length Audio Link & Image
-                    let fullAudioUrl = `https://archive.org/download/${id}/${id}.mp3`;
-                    let thumb = `https://archive.org/services/img/${id}`;
+/* ---------- CARD ---------- */
+function card(t){
+  const canPlay=!!t.audio, canDownload=!!t.download;
+  return `
+  <article class="card">
+    <img class="cover" loading="lazy" src="${esc(imageFor(t))}" alt="${esc(t.title)}"
+         onerror="this.src='https://via.placeholder.com/300x300/101512/00e676?text=MAKYAMA'">
+    <div class="info">
+      <div class="badges">
+        <span class="badge">${esc(t.type||"MUSIC")}</span>
+        ${canDownload?'<span class="badge orange">DOWNLOAD</span>':""}
+        ${t.preview?'<span class="badge blue">PREVIEW</span>':""}
+      </div>
+      <div class="title">${esc(t.title)}</div>
+      <div class="artist">${esc(t.artist||"Unknown artist")}</div>
+      <div class="meta">${esc(t.album||"")} ${t.duration?"• "+fmtTime(t.duration):""}</div>
+      <div class="actions">
+        ${canPlay?`<button class="play" onclick='playTrack(${JSON.stringify(t)})'>▶ PLAY</button>`:""}
+        ${t.source?`<button class="open" onclick="window.open('${esc(t.source)}','_blank','noopener')">↗ SOURCE</button>`:""}
+        ${canDownload?`<button class="download" onclick='downloadTrack(${JSON.stringify(t)})'>⬇ DOWNLOAD</button>`:""}
+      </div>
+    </div>
+  </article>`;
+}
 
-                    let card = `
-                        <div class="media-card">
-                            <img src="${thumb}" onerror="this.src='https://via.placeholder.com/150/1a1a24/00e676?text=Music'" alt="Cover">
-                            <div class="media-details">
-                                <span class="badge">💯 Full Song MP3</span>
-                                <div class="media-title">${fullTitle}</div>
-                                <div class="btn-container">
-                                    <div class="media-actions">
-                                        <button class="btn-action btn-play-audio" onclick="playAudio('${fullAudioUrl}', '${safeTitle}', '${thumb}')">▶️ Play Full</button>
-                                        <button class="btn-action btn-dl-audio" onclick="downloadDirectFull('${fullAudioUrl}', '${safeTitle}')">⬇️ Download MP3</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    mainNode.innerHTML += card;
-                });
-            } catch (error) {
-                if (loading) loading.style.display = "none";
-                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Matokeo yamefeli. Jaribu tena.</p>";
-            }
-        }
+/* ---------- ITUNES GLOBAL SEARCH ---------- */
+async function searchITunes(q){
+  const url="https://itunes.apple.com/search?term="+encodeURIComponent(q)+"&media=music&entity=song&limit=25";
+  const r=await fetch(url);
+  if(!r.ok)throw new Error("iTunes request failed");
+  const d=await r.json();
+  return (d.results||[]).map(x=>({
+    title:x.trackName||"Unknown",
+    artist:x.artistName||"Unknown",
+    album:x.collectionName||"",
+    cover:(x.artworkUrl600||x.artworkUrl100||"").replace("100x100","600x600"),
+    audio:x.previewUrl||"",
+    preview:!!x.previewUrl,
+    download:"",
+    source:x.trackViewUrl||x.collectionViewUrl||"",
+    type:"GLOBAL",
+    duration:x.trackTimeMillis||0,
+    popularity:x.trackId||0
+  }));
+}
 
-        function loadCategory(type, btnElement) {
-            document.getElementById("search-input").value = "";
-            if (btnElement) {
-                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-                btnElement.classList.add('active');
-            }
-            fetchFullSongs(type);
-        }
+/* ---------- JAMENDO LICENSED DOWNLOAD SEARCH ---------- */
+async function searchJamendo(q){
+  if(!JAMENDO_CLIENT_ID || JAMENDO_CLIENT_ID.includes("PASTE_")) return [];
+  const url="https://api.jamendo.com/v3.0/tracks/?client_id="+encodeURIComponent(JAMENDO_CLIENT_ID)
+    +"&format=json&limit=25&audioformat=mp32&namesearch="+encodeURIComponent(q)
+    +"&include=musicinfo";
+  const r=await fetch(url);
+  if(!r.ok)throw new Error("Jamendo request failed");
+  const d=await r.json();
+  return (d.results||[]).map(x=>({
+    title:x.name||"Unknown",
+    artist:x.artist_name||"Unknown",
+    album:x.album_name||"",
+    cover:x.album_image||x.image||"",
+    audio:x.audio||"",
+    preview:true,
+    download:(x.audiodownload_allowed && x.audiodownload)||"",
+    source:x.shareurl||x.shorturl||"",
+    type:"LICENSED",
+    duration:x.duration?x.duration*1000:0
+  }));
+}
 
-        function searchFullAudio() {
-            var query = document.getElementById("search-input").value.trim();
-            if (query === "") return;
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            fetchFullSongs(query);
-        }
+/* ---------- FIREBASE ADMIN TRACKS ---------- */
+async function getAdminTracks(){
+  if(!db)return [];
+  const snap=await db.ref("media").once("value");
+  const out=[];
+  if(snap.exists()){
+    snap.forEach(c=>{
+      const x=c.val()||{};
+      out.push({
+        key:c.key,title:x.jina||"Untitled",artist:x.artist||"MAKYAMA",
+        album:x.album||"",cover:x.picha||"",audio:x.linkAudio||"",
+        download:x.linkAudio||"",source:x.source||"",type:"MAKYAMA"
+      });
+    });
+  }
+  return out.reverse();
+}
 
-        window.onload = function() { 
-            fetchFullSongs('Bongo Flava');
-        };
-    </script>
+/* ---------- RENDER ---------- */
+function render(list,title){
+  allResults=list;
+  $("sectionTitle").textContent=title;
+  if(!list.length){
+    $("results").innerHTML='<div class="empty">Hakuna results. Jaribu jina jingine.</div>';
+    setStatus("");
+    return;
+  }
+  $("results").innerHTML=list.map(card).join("");
+  setStatus(list.length+" results");
+}
+
+/* ---------- SEARCH ---------- */
+async function searchMusic(){
+  const q=$("q").value.trim();
+  if(!q)return;
+  currentMode="global";
+  $("sectionTitle").textContent="🔎 "+q;
+  $("results").innerHTML='<div class="loading">Searching global catalog… ⏳</div>';
+  setStatus("Searching…");
+  try{
+    const [itunes,jamendo,adminTracks]=await Promise.allSettled([
+      searchITunes(q),searchJamendo(q),getAdminTracks()
+    ]);
+    const a=itunes.status==="fulfilled"?itunes.value:[];
+    const j=jamendo.status==="fulfilled"?jamendo.value:[];
+    const m=adminTracks.status==="fulfilled"?adminTracks.value:[];
+    const merged=[...m,...j,...a];
+    render(merged,"🔎 "+q);
+  }catch(e){
+    console.error(e);
+    $("results").innerHTML='<div class="empty">Search failed. Check internet connection.</div>';
+    setStatus("");
+  }
+}
+
+function quickSearch(q,btn){
+  document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  $("q").value=q;
+  searchMusic();
+}
+
+async function showDownloads(btn){
+  document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  $("sectionTitle").textContent="⬇️ Downloadable Licensed Audio";
+  $("results").innerHTML='<div class="loading">Searching licensed downloads… ⏳</div>';
+  try{
+    const j=await searchJamendo("music");
+    const m=await getAdminTracks();
+    const list=[...m.filter(x=>x.download),...j.filter(x=>x.download)];
+    render(list,"⬇️ Downloadable Licensed Audio");
+  }catch(e){
+    render([],"⬇️ Downloadable Licensed Audio");
+  }
+}
+
+/* ---------- ADMIN ----------
+   This demo intentionally keeps no password in the code.
+   For production, use Firebase Authentication + database rules.
+*/
+function openAdmin(){$("login").style.display="flex"}
+function closeAdmin(){$("login").style.display="none"}
+
+function loginAdmin(){
+  const u=$("user").value.trim();
+  const p=$("pass").value;
+  /*
+    TEMPORARY demo login:
+    Replace with Firebase Authentication before production.
+    Do NOT publish your real password in index.html.
+  */
+  if(u==="MAKYAMA" && p==="Makame005@"){
+    admin=true;closeAdmin();$("admin").style.display="block";
+    loadAdminList();toast("Admin mode imewashwa.");
+  }else toast("Username/password si sahihi.");
+}
+
+function logoutAdmin(){admin=false;$("admin").style.display="none";toast("Logged out.")}
+
+async function saveAdminTrack(){
+  if(!admin||!db)return;
+  const data={
+    jina:$("aTitle").value.trim(),
+    artist:$("aArtist").value.trim(),
+    picha:$("aCover").value.trim(),
+    linkAudio:$("aAudio").value.trim(),
+    source:$("aSource").value.trim(),
+    createdAt:Date.now()
+  };
+  if(!data.jina||!data.linkAudio){toast("Weka title na audio URL.");return}
+  await db.ref("media").push(data);
+  ["aTitle","aArtist","aCover","aAudio","aSource"].forEach(id=>$(id).value="");
+  toast("Track imeongezwa.");
+  loadAdminList();
+}
+
+async function loadAdminList(){
+  if(!db)return;
+  const snap=await db.ref("media").once("value");
+  const arr=[];
+  if(snap.exists())snap.forEach(c=>arr.push({key:c.key,data:c.val()}));
+  $("adminList").innerHTML=arr.reverse().map(x=>`
+    <div class="admin-item">
+      <span>${esc(x.data.jina||"Untitled")}</span>
+      <button class="btn-red" onclick="deleteAdminTrack('${x.key}')">DELETE</button>
+    </div>`).join("") || '<div style="color:#69756d;font-size:10px">No admin tracks yet.</div>';
+}
+
+async function deleteAdminTrack(key){
+  if(!confirm("Delete this track?"))return;
+  await db.ref("media/"+key).remove();
+  loadAdminList();toast("Deleted.");
+}
+
+/* ENTER KEY SEARCH */
+$("q").addEventListener("keydown",e=>{if(e.key==="Enter")searchMusic()});
+
+/* ---------- START ---------- */
+window.addEventListener("load",async()=>{
+  $("results").innerHTML='<div class="loading">Loading worldwide music… ⏳</div>';
+  try{
+    const [a,m]=await Promise.allSettled([searchITunes("Trending Worldwide"),getAdminTracks()]);
+    const it=a.status==="fulfilled"?a.value:[];
+    const adminTracks=m.status==="fulfilled"?m.value:[];
+    render([...adminTracks,...it],"🔥 Trending Worldwide");
+  }catch(e){
+    render([],"🔥 Trending Worldwide");
+  }
+});
+</script>
 </body>
-</html>
+    </html>
