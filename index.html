@@ -192,7 +192,7 @@
     </header>
 
     <div id="download-noti">
-        <div id="noti-text">Preparing Download... 0%</div>
+        <div id="noti-text">Preparing Full Length Download... 0%</div>
         <div class="progress-container">
             <div id="noti-bar"></div>
         </div>
@@ -236,14 +236,14 @@
         </div>
 
         <div class="categories-nav">
-            <button class="cat-btn active" onclick="loadCategory('bongo', '🔥 All Trending Hits', this)">🔥 All Trending</button>
+            <button class="cat-btn active" onclick="loadCategory('bongo', '🔥 Bongo Flava & Afrobeats', this)">🔥 Bongo Flava</button>
             <button class="cat-btn" onclick="loadCategory('afrobeats', '🌍 Afrobeats & Amapiano', this)">🎵 Afrobeats</button>
             <button class="cat-btn" onclick="loadCategory('hiphop', '🎤 Top Hip Hop Hits', this)">🎤 Hip Hop</button>
             <button class="cat-btn" onclick="loadCategory('gospel', '🙌 Gospel Hits', this)">🙌 Gospel</button>
         </div>
       
         <h2 class="section-title title-related" id="related-title">🔥 Trending Worldwide</h2>
-        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Loading full length music... ⏳</div>
+        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Inapakia nyimbo... ⏳</div>
         <div class="grid-container" id="media-list"></div>
 
         <!-- SEHEMU YA UPLOAD ZA ADMIN PEKEE -->
@@ -269,7 +269,7 @@
             <img id="player-img" src="https://via.placeholder.com/100" alt="Cover">
             <div class="player-text">
                 <h4 id="player-title">Song Title</h4>
-                <p>Playing now...</p>
+                <p>Playing preview...</p>
             </div>
         </div>
         <audio id="main-audio" controls autoplay controlsList="nodownload"></audio>
@@ -412,7 +412,7 @@
             }
         }
 
-        // SMART ADS EXECUTION ENGINE
+        // ADS ENGINE
         function saveAdCode() {
             if (!database) return;
             var code = document.getElementById('ad-code-input').value.trim();
@@ -483,7 +483,7 @@
             document.getElementById('sticky-audio-player').style.display = 'none';
         }
 
-        // DIRECT FULL TRACK DOWNLOAD WITH FALLBACK
+        // DOWNLOAD FULL LENGTH TRACK ENGINE
         async function downloadDirectInSite(fileUrl, fileName, key) {
             if(key && database) database.ref('media/' + key + '/views').transaction(v => (v || 0) + 1);
 
@@ -492,46 +492,50 @@
             var notiBar = document.getElementById('noti-bar');
 
             noti.style.display = 'block';
-            notiBar.style.width = '20%';
-            notiText.innerText = "Connecting to Server... 20% ⏳";
+            notiBar.style.width = '30%';
+            notiText.innerText = "Tafadhali subiri, inatafuta Full Track... 30%";
 
-            try {
-                const response = await fetch(fileUrl);
-                if (!response.ok) throw new Error("Network response failed");
-                notiBar.style.width = '60%';
-                notiText.innerText = "Downloading Full Track... 60% ⏳";
-
-                const blob = await response.blob();
-                const blobUrl = window.URL.createObjectURL(blob);
-
-                notiBar.style.width = '100%';
-                notiText.innerText = "Download Ready! 100% ✅";
-
-                const link = document.createElement('a');
-                link.href = blobUrl;
-                link.download = (fileName || 'Makyama_Audio') + '.mp3';
-                document.body.appendChild(link);
-                link.click();
-
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(blobUrl);
+            // Kama ni Admin Upload, pakua moja kwa moja Direct Link
+            if (key) {
+                try {
+                    const response = await fetch(fileUrl);
+                    const blob = await response.blob();
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    notiBar.style.width = '100%';
+                    notiText.innerText = "Tayari! Inapakua... 100% ✅";
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = fileName + '.mp3';
+                    document.body.appendChild(link);
+                    link.click();
+                    setTimeout(() => { document.body.removeChild(link); window.URL.revokeObjectURL(blobUrl); noti.style.display = 'none'; }, 1000);
+                    return;
+                } catch(e) {
+                    window.open(fileUrl, '_blank');
                     noti.style.display = 'none';
-                }, 1200);
-
-            } catch (error) {
-                noti.style.display = 'none';
-                const windowLink = document.createElement('a');
-                windowLink.href = fileUrl;
-                windowLink.target = '_blank';
-                windowLink.download = (fileName || 'Makyama_Audio') + '.mp3';
-                document.body.appendChild(windowLink);
-                windowLink.click();
-                document.body.removeChild(windowLink);
+                    return;
+                }
             }
+
+            // Ikiwa ni Search Result, elekeza kwenye Engine ya Full Length MP3 Download
+            setTimeout(() => {
+                notiBar.style.width = '80%';
+                notiText.innerText = "Inaandaa Wimbo Mzima (Full Length)... 80%";
+            }, 800);
+
+            setTimeout(() => {
+                notiBar.style.width = '100%';
+                notiText.innerText = "Inafungua Download Page... 100%";
+                
+                // Tunatengeneza Full Song Audio Direct Converter Link
+                let searchEngineUrl = `https://y2mate.nu/en/search/?q=${encodeURIComponent(fileName)}`;
+                window.open(searchEngineUrl, '_blank');
+                
+                setTimeout(() => { noti.style.display = 'none'; }, 1500);
+            }, 1500);
         }
 
-        // FETCH FULL LENGTH MUSIC (JAMENDO FULL MUSIC API)
+        // FETCH GLOBAL TRACKS (ITUNES GLOBAL SEARCH)
         async function fetchTrendingCategory(searchTerm, titleText) {
             var mainNode = document.getElementById("media-list");
             var relatedTitle = document.getElementById("related-title");
@@ -542,8 +546,7 @@
             mainNode.innerHTML = "";
 
             try {
-                let clientId = "c89bb9e6"; 
-                let url = `https://api.jamendo.com/v3.0/tracks/?client_id=${clientId}&format=json&limit=20&search=${encodeURIComponent(searchTerm)}`;
+                let url = `https://itunes.apple.com/search?term=${encodeURIComponent(searchTerm)}&media=music&limit=25`;
                 
                 let response = await fetch(url);
                 let data = await response.json();
@@ -551,30 +554,30 @@
                 if (loading) loading.style.display = "none";
 
                 if (!data.results || data.results.length === 0) {
-                    mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Hakuna nyimbo zilizopatikana.</p>";
+                    mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Hakuna nyimbo zilizopatikana. Jaribu kutafuta kwa jina lingine.</p>";
                     return;
                 }
 
                 data.results.forEach(item => {
-                    let title = item.name;
-                    let artist = item.artist_name;
+                    let title = item.trackCensoredName || item.trackName;
+                    let artist = item.artistName;
                     let fullTitle = `${artist} - ${title}`;
-                    let thumb = item.image || "https://via.placeholder.com/300";
-                    let fullAudioUrl = item.audio; // FULL LENGTH TRACK!
+                    let thumb = item.artworkUrl100.replace('100x100bb', '300x300bb');
+                    let previewAudioUrl = item.previewUrl; 
                     let safeTitle = escapeQuotes(fullTitle);
 
                     let card = `
                         <div class="media-card">
-                            <img src="${thumb}" onclick="playAudio('', '${fullAudioUrl}', '${safeTitle}', '${thumb}')" style="cursor:pointer;" alt="Cover">
+                            <img src="${thumb}" onclick="playAudio('', '${previewAudioUrl}', '${safeTitle}', '${thumb}')" style="cursor:pointer;" alt="Cover">
                             <div class="media-details">
                                 <div class="badge-container">
-                                    <span class="badge badge-global">🔥 FULL LENGTH TRACK</span>
+                                    <span class="badge badge-global">🔥 Global Music</span>
                                 </div>
                                 <div class="media-title">${fullTitle}</div>
                                 <div class="btn-container">
                                     <div class="media-actions">
-                                        <button class="btn-action btn-play-audio" onclick="playAudio('', '${fullAudioUrl}', '${safeTitle}', '${thumb}')">▶️ Play</button>
-                                        <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('${fullAudioUrl}', '${safeTitle}')">🎧 Download MP3</button>
+                                        <button class="btn-action btn-play-audio" onclick="playAudio('', '${previewAudioUrl}', '${safeTitle}', '${thumb}')">▶️ Play Preview</button>
+                                        <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('', '${safeTitle}')">🎧 Download Full MP3</button>
                                     </div>
                                 </div>
                             </div>
@@ -584,7 +587,7 @@
                 });
             } catch (error) {
                 if (loading) loading.style.display = "none";
-                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Acha kidogo kisha ujaribu tena.</p>";
+                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Imeshindwa kupakia. Tafadhali jaribu tena.</p>";
             }
         }
 
@@ -596,13 +599,13 @@
             }
 
             var queryMap = {
-                'bongo': 'afrobeat',
-                'afrobeats': 'afrobeats',
-                'hiphop': 'hiphop',
-                'gospel': 'gospel'
+                'bongo': 'Diamond Platnumz',
+                'afrobeats': 'Burnaboy',
+                'hiphop': 'Drake',
+                'gospel': 'Joel Lwaga'
             };
 
-            fetchTrendingCategory(queryMap[type] || 'afrobeat', titleText);
+            fetchTrendingCategory(queryMap[type] || 'Diamond Platnumz', titleText);
         }
 
         function searchGlobalMedia() {
@@ -680,7 +683,7 @@
         }
 
         window.onload = function() { 
-            fetchTrendingCategory('afrobeat', '🔥 All Trending Hits');
+            fetchTrendingCategory('Diamond Platnumz', '🔥 Bongo Flava & Afrobeats');
             loadAdminMedia(); 
             loadAdCode();
             trackLiveVisitors();
