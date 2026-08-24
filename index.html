@@ -221,7 +221,7 @@
             <input type="hidden" id="edit-key">
             <input type="text" id="media-name" placeholder="Song/Video Title (Jina la wimbo)">
             <input type="text" id="media-image" placeholder="Image Cover URL (Picha)">
-            <input type="text" id="media-audio-link" placeholder="Audio / Video MP3 Link">
+            <input type="text" id="media-audio-link" placeholder="Audio / Video Direct MP3 Link">
             <button class="btn-submit" id="btn-save" onclick="saveMedia()">UPLOAD MEDIA 🚀</button>
             <button class="btn-cancel" id="btn-cancel" onclick="cancelEdit()">Cancel Edit</button>
 
@@ -231,7 +231,7 @@
         </div>
 
         <div class="search-container" style="display: flex; gap: 8px; margin: 15px auto 10px; width: 100%;">
-            <input type="text" id="search-input" placeholder="🔍 Search any artist or song globally (e.g. Diamond)..." style="flex: 1; padding: 10px 15px; border-radius: 30px; border: 2px solid #00e676; font-size: 14px; outline: none; background-color: #1a1a24; color: #fff;">
+            <input type="text" id="search-input" placeholder="🔍 Search any artist or song globally..." style="flex: 1; padding: 10px 15px; border-radius: 30px; border: 2px solid #00e676; font-size: 14px; outline: none; background-color: #1a1a24; color: #fff;">
             <button onclick="searchGlobalMedia()" style="background: #00e676; color: #000; font-weight: bold; padding: 0 20px; border: none; border-radius: 30px; cursor: pointer;">Search</button>
         </div>
 
@@ -243,7 +243,7 @@
         </div>
       
         <h2 class="section-title title-related" id="related-title">🔥 Trending Worldwide</h2>
-        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Loading music... ⏳</div>
+        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Loading full length music... ⏳</div>
         <div class="grid-container" id="media-list"></div>
 
         <!-- SEHEMU YA UPLOAD ZA ADMIN PEKEE -->
@@ -266,7 +266,7 @@
     <!-- STICKY AUDIO PLAYER -->
     <div id="sticky-audio-player">
         <div class="player-info">
-            <img id="player-img" src="https://via.placeholder.com/100">
+            <img id="player-img" src="https://via.placeholder.com/100" alt="Cover">
             <div class="player-text">
                 <h4 id="player-title">Song Title</h4>
                 <p>Playing now...</p>
@@ -277,7 +277,7 @@
     </div>
 
     <script>
-        // FIREBASE SETUP
+        // FIREBASE SETUP GLOBAL VARIABLES
         var firebaseConfig = {
             apiKey: "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
             authDomain: "makyama-e5e89.firebaseapp.com",
@@ -287,16 +287,27 @@
             messagingSenderId: "229527204095",
             appId: "1:229527204095:web:2bdfe0589cf42794b3dcca"
         };
+
+        var database;
         try {
-            firebase.initializeApp(firebaseConfig);
-            var database = firebase.database();
-        } catch (error) { console.error("Firebase Error:", error); }
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            database = firebase.database();
+        } catch (error) { 
+            console.error("Firebase Initialization Error:", error); 
+        }
 
         var isAdmin = false;
         var adminUploadedMedia = []; 
 
+        function escapeQuotes(str) {
+            return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+
         // LIVE VISITORS COUNTER
         function trackLiveVisitors() {
+            if (!database) return;
             var myPresenceRef = database.ref('presence/' + Math.random().toString(36).substring(2, 10));
             var connectedRef = database.ref('.info/connected');
 
@@ -327,7 +338,9 @@
                 document.getElementById('admin-panel').style.display = 'block';
                 document.getElementById('nav-action').innerHTML = `<button class="btn-logout" onclick="logoutAdmin()">🚪 Log Out</button>`;
                 renderAdminMedia();
-            } else { alert("Incorrect password or username."); }
+            } else { 
+                alert("Incorrect password or username."); 
+            }
         }
         
         function logoutAdmin() {
@@ -342,6 +355,7 @@
 
         // SAVE / EDIT CUSTOM MEDIA
         function saveMedia() {
+            if (!database) return;
             var name = document.getElementById('media-name').value;
             var image = document.getElementById('media-image').value;
             var audio = document.getElementById('media-audio-link').value;
@@ -391,6 +405,7 @@
         }
 
         function deleteMedia(key) {
+            if (!database) return;
             if (confirm("Je, una uhakika unataka kufuta wimbo/video hii?")) {
                 database.ref('media/' + key).remove();
                 alert("Imefutwa kikamilifu!");
@@ -399,6 +414,7 @@
 
         // SMART ADS EXECUTION ENGINE
         function saveAdCode() {
+            if (!database) return;
             var code = document.getElementById('ad-code-input').value.trim();
             if(!code) return;
             database.ref('settings/adCode').set(code, function(error) {
@@ -410,6 +426,7 @@
         }
 
         function loadAdCode() {
+            if (!database) return;
             database.ref('settings/adCode').on('value', function(snapshot) {
                 if(snapshot.exists()) {
                     var code = snapshot.val();
@@ -450,7 +467,7 @@
 
         // PLAYER FUNCTIONS
         function playAudio(key, link, mediaName, mediaImage) {
-            if(key) database.ref('media/' + key + '/views').transaction(v => (v || 0) + 1);
+            if(key && database) database.ref('media/' + key + '/views').transaction(v => (v || 0) + 1);
             var playerContainer = document.getElementById('sticky-audio-player');
             var audioTag = document.getElementById('main-audio');
             document.getElementById('player-title').innerText = mediaName;
@@ -466,9 +483,9 @@
             document.getElementById('sticky-audio-player').style.display = 'none';
         }
 
-        // DIRECT DOWNLOAD
+        // DIRECT FULL TRACK DOWNLOAD WITH FALLBACK
         async function downloadDirectInSite(fileUrl, fileName, key) {
-            if(key) database.ref('media/' + key + '/views').transaction(v => (v || 0) + 1);
+            if(key && database) database.ref('media/' + key + '/views').transaction(v => (v || 0) + 1);
 
             var noti = document.getElementById('download-noti');
             var notiText = document.getElementById('noti-text');
@@ -480,8 +497,9 @@
 
             try {
                 const response = await fetch(fileUrl);
+                if (!response.ok) throw new Error("Network response failed");
                 notiBar.style.width = '60%';
-                notiText.innerText = "Fetching Audio File... 60% ⏳";
+                notiText.innerText = "Downloading Full Track... 60% ⏳";
 
                 const blob = await response.blob();
                 const blobUrl = window.URL.createObjectURL(blob);
@@ -505,12 +523,15 @@
                 noti.style.display = 'none';
                 const windowLink = document.createElement('a');
                 windowLink.href = fileUrl;
+                windowLink.target = '_blank';
                 windowLink.download = (fileName || 'Makyama_Audio') + '.mp3';
+                document.body.appendChild(windowLink);
                 windowLink.click();
+                document.body.removeChild(windowLink);
             }
         }
 
-        // FETCH TRENDING & CATEGORIES (ITUNES GLOBAL MUSIC)
+        // FETCH FULL LENGTH MUSIC (JAMENDO FULL MUSIC API)
         async function fetchTrendingCategory(searchTerm, titleText) {
             var mainNode = document.getElementById("media-list");
             var relatedTitle = document.getElementById("related-title");
@@ -521,7 +542,9 @@
             mainNode.innerHTML = "";
 
             try {
-                let url = `https://itunes.apple.com/search?term=${encodeURIComponent(searchTerm)}&media=music&limit=20`;
+                let clientId = "c89bb9e6"; 
+                let url = `https://api.jamendo.com/v3.0/tracks/?client_id=${clientId}&format=json&limit=20&search=${encodeURIComponent(searchTerm)}`;
+                
                 let response = await fetch(url);
                 let data = await response.json();
                 
@@ -533,25 +556,25 @@
                 }
 
                 data.results.forEach(item => {
-                    let title = item.trackName;
-                    let artist = item.artistName;
+                    let title = item.name;
+                    let artist = item.artist_name;
                     let fullTitle = `${artist} - ${title}`;
-                    let thumb = item.artworkUrl100.replace('100x100bb', '300x300bb');
-                    let streamUrl = item.previewUrl;
-                    let safeTitle = fullTitle.replace(/'/g, "\\'");
+                    let thumb = item.image || "https://via.placeholder.com/300";
+                    let fullAudioUrl = item.audio; // FULL LENGTH TRACK!
+                    let safeTitle = escapeQuotes(fullTitle);
 
                     let card = `
                         <div class="media-card">
-                            <img src="${thumb}" onclick="playAudio('', '${streamUrl}', '${safeTitle}', '${thumb}')" style="cursor:pointer;">
+                            <img src="${thumb}" onclick="playAudio('', '${fullAudioUrl}', '${safeTitle}', '${thumb}')" style="cursor:pointer;" alt="Cover">
                             <div class="media-details">
                                 <div class="badge-container">
-                                    <span class="badge badge-global">🔥 TRENDING WORLDWIDE</span>
+                                    <span class="badge badge-global">🔥 FULL LENGTH TRACK</span>
                                 </div>
                                 <div class="media-title">${fullTitle}</div>
                                 <div class="btn-container">
                                     <div class="media-actions">
-                                        <button class="btn-action btn-play-audio" onclick="playAudio('', '${streamUrl}', '${safeTitle}', '${thumb}')">▶️ Play</button>
-                                        <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('${streamUrl}', '${safeTitle}')">🎧 Download MP3</button>
+                                        <button class="btn-action btn-play-audio" onclick="playAudio('', '${fullAudioUrl}', '${safeTitle}', '${thumb}')">▶️ Play</button>
+                                        <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('${fullAudioUrl}', '${safeTitle}')">🎧 Download MP3</button>
                                     </div>
                                 </div>
                             </div>
@@ -573,13 +596,13 @@
             }
 
             var queryMap = {
-                'bongo': 'Bongo Flava Latest',
-                'afrobeats': 'Afrobeats Amapiano Hits',
-                'hiphop': 'Hip Hop World Hits',
-                'gospel': 'Top Gospel Praise'
+                'bongo': 'afrobeat',
+                'afrobeats': 'afrobeats',
+                'hiphop': 'hiphop',
+                'gospel': 'gospel'
             };
 
-            fetchTrendingCategory(queryMap[type] || 'Bongo Flava', titleText);
+            fetchTrendingCategory(queryMap[type] || 'afrobeat', titleText);
         }
 
         function searchGlobalMedia() {
@@ -591,6 +614,7 @@
 
         // DATABASE MEDIA (ADMIN UPLOADS ONLY)
         function loadAdminMedia() {
+            if (!database) return;
             database.ref('media').on('value', function(snapshot) {
                 adminUploadedMedia = [];
                 if (snapshot.exists()) {
@@ -620,8 +644,8 @@
                 var key = item.key;
                 var mediaImage = data.picha || "https://via.placeholder.com/300x180/252530/aaa?text=MAKYAMA+MEDIA";
                 var audioLink = data.linkAudio;
-                var safePlayName = data.jina.replace(/'/g, "\\'");
-                var safePlayImage = mediaImage.replace(/'/g, "\\'");
+                var safePlayName = escapeQuotes(data.jina);
+                var safePlayImage = escapeQuotes(mediaImage);
 
                 var adminButtons = isAdmin ? `
                     <div class="media-actions" style="margin-top:5px;">
@@ -632,7 +656,7 @@
 
                 var card = `
                     <div class="media-card">
-                        <img src="${mediaImage}" loading="lazy" style="cursor:pointer;" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')">
+                        <img src="${mediaImage}" loading="lazy" style="cursor:pointer;" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')" alt="Cover">
                         <div class="media-details">
                             <div class="badge-container">
                                 <span class="badge">📌 ADMIN UPLOAD</span>
@@ -656,11 +680,11 @@
         }
 
         window.onload = function() { 
-            fetchTrendingCategory('Bongo Flava Latest', '🔥 All Trending Hits');
+            fetchTrendingCategory('afrobeat', '🔥 All Trending Hits');
             loadAdminMedia(); 
             loadAdCode();
             trackLiveVisitors();
         };
     </script>
 </body>
-                                            </html>
+</html>
