@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sw">
 <head>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TPXCRXDVHS"></script>
     <script>
@@ -11,7 +11,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Makyama Media Store - Audio & Video</title>
+    <title>Makyama Media Store - Audio & Music</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -61,7 +61,7 @@
         }
         .btn-submit {
             background: #00e676; color: #000; font-weight: bold; padding: 12px;
-            border: none; border-radius: 6px; cursor: pointer; width: 100%;
+            border: none; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 5px;
         }
 
         /* CATEGORIES NAV */
@@ -93,8 +93,8 @@
             display: none; background: #181820; border: 1px solid #00e676;
             border-radius: 12px; padding: 15px; margin-bottom: 25px; width: 100%;
         }
+        .admin-section-title { font-size: 14px; color: #00e676; margin: 15px 0 8px; border-bottom: 1px solid #3a3a4c; padding-bottom: 4px; }
         .btn-cancel { background: #ff5252; color: #fff; font-weight: bold; padding: 12px; border: none; border-radius: 6px; cursor: pointer; display: none; width:100%; margin-top:10px;}
-        .link-inputs { display: flex; flex-direction: column; gap: 5px; margin-bottom: 5px; }
 
         /* SECTION TITLES */
         .section-title { padding-left: 8px; margin-bottom: 12px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
@@ -112,8 +112,7 @@
         .media-details { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; width: calc(100% - 110px); }
         .badge-container { display: flex; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
         .badge { background: rgba(0, 230, 118, 0.15); color: #00e676; padding: 2px 5px; border-radius: 4px; font-size: 9px; font-weight: bold; }
-        .badge-video { background: rgba(41, 182, 246, 0.15); color: #29b6f6; }
-        .badge-global { background: rgba(255, 0, 0, 0.15); color: #ff5252; }
+        .badge-global { background: rgba(255, 145, 0, 0.15); color: #ff9100; }
         .media-title { font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #fff; line-height: 1.3; word-wrap: break-word;}
 
         /* ACTION BUTTONS */
@@ -125,8 +124,6 @@
         
         .btn-play-audio { background: transparent; color: #00e676; border: 1px solid #00e676; }
         .btn-dl-audio { background: #00e676; color: #000; }
-        .btn-play-video { background: #29b6f6; color: #000; }
-        .btn-dl-video { background: transparent; color: #29b6f6; border: 1px solid #29b6f6; }
         
         /* REACTIONS BAR */
         .reaction-bar { display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; padding-top: 6px; border-top: 1px solid #2a2a38; gap: 8px; }
@@ -157,7 +154,7 @@
         .player-info img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex-shrink: 0;}
         .player-text h4 { color: #fff; font-size: 13px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .player-text p { color: #00e676; font-size: 10px; font-weight: bold; }
-        #main-audio { flex: 2; height: 35px; outline: none; width: 100%; max-width: 200px;}
+        #main-audio { flex: 2; height: 35px; outline: none; width: 100%; max-width: 250px;}
         .close-player { background: transparent; color: #aaa; border: none; font-size: 18px; cursor: pointer; flex-shrink: 0; padding: 0 5px;}
 
         /* FOOTER */
@@ -180,7 +177,7 @@
     <header>
         <div class="logo-area">
             <h1>🎵 MAKYAMA MEDIA</h1>
-            <p>Stream & Download Free Audio & Videos</p>
+            <p>Stream & Download Free Audio Tracks</p>
         </div>
         <div class="nav-btns" id="nav-action">
             <a href="https://wa.me/255740770786" target="_blank" class="btn-wa-header">Contact</a>
@@ -189,18 +186,9 @@
     </header>
 
     <div id="download-noti">
-        <div id="noti-text">Connecting to Server... 0%</div>
+        <div id="noti-text">Preparing Download... 0%</div>
         <div class="progress-container">
             <div id="noti-bar"></div>
-        </div>
-    </div>
-
-    <div class="modal" id="videoModal">
-        <div class="modal-content" style="max-width: 100%; width: 95%; padding: 10px; border-color: #29b6f6; background: #121212;">
-            <span class="close-btn" onclick="closeVideoModal()">&times;</span>
-            <h3 id="video-title" style="color: #29b6f6; margin-bottom: 10px; font-size: 14px; margin-top: 15px; text-align:center;">Playing Video...</h3>
-            <video id="main-video" controls autoplay controlsList="nodownload" style="width: 100%; max-height: 60vh; border-radius: 8px; outline: none; background: #000; display:none;"></video>
-            <div id="yt-player-container" style="display:none; width: 100%; aspect-ratio: 16/9; border-radius: 8px; overflow:hidden;"></div>
         </div>
     </div>
 
@@ -215,50 +203,54 @@
     </div>
 
     <div class="container">
+        <!-- ADMIN DASHBOARD -->
         <div id="admin-panel">
-            <h2 style="color: #00e676; margin-bottom:15px; font-size: 16px;">👑 ADMIN DASHBOARD</h2>
+            <h2 style="color: #00e676; margin-bottom:10px; font-size: 16px;">👑 ADMIN DASHBOARD</h2>
+            
+            <div class="admin-section-title">📤 Upload New Song</div>
             <input type="hidden" id="edit-key">
-            <input type="text" id="media-name" placeholder="Song/Video Title">
-            <input type="text" id="media-image" placeholder="Image URL (Optional)">
-            <div class="link-inputs">
-                <input type="text" id="media-audio-link" placeholder="Audio MP3 Link">
-                <input type="text" id="media-video-link" placeholder="Video MP4 Link">
-            </div>
-            <button class="btn-submit" id="btn-save" onclick="saveMedia()">UPLOAD MEDIA 🚀</button>
+            <input type="text" id="media-name" placeholder="Song Title (jina la wimbo)">
+            <input type="text" id="media-image" placeholder="Image URL (Picha)">
+            <input type="text" id="media-audio-link" placeholder="Audio MP3 Link">
+            <button class="btn-submit" id="btn-save" onclick="saveMedia()">UPLOAD SONG 🚀</button>
             <button class="btn-cancel" id="btn-cancel" onclick="cancelEdit()">Cancel Edit</button>
+
+            <div class="admin-section-title">📢 Manage Ads (Matangazo)</div>
+            <textarea id="ad-code-input" rows="3" placeholder="Paste Script Code or Banner Link ya Ads hapa..."></textarea>
+            <button class="btn-submit" style="background:#29b6f6; color:#000;" onclick="saveAdCode()">UPDATE ADS 📢</button>
         </div>
 
         <div class="search-container" style="display: flex; gap: 8px; margin: 15px auto 10px; width: 100%;">
-            <input type="text" id="search-input" placeholder="🔍 Search any song globally..." style="flex: 1; padding: 10px 15px; border-radius: 30px; border: 2px solid #00e676; font-size: 14px; outline: none; background-color: #1a1a24; color: #fff;">
+            <input type="text" id="search-input" placeholder="🔍 Search any artist or song globally (e.g. Diamond)..." style="flex: 1; padding: 10px 15px; border-radius: 30px; border: 2px solid #00e676; font-size: 14px; outline: none; background-color: #1a1a24; color: #fff;">
             <button onclick="searchGlobalMedia()" style="background: #00e676; color: #000; font-weight: bold; padding: 0 20px; border: none; border-radius: 30px; cursor: pointer;">Search</button>
         </div>
 
         <div class="categories-nav">
             <button class="cat-btn active" onclick="filterMedia('all', this)">All</button>
             <button class="cat-btn" onclick="filterMedia('music', this)">🎵 Music</button>
-            <button class="cat-btn" onclick="filterMedia('videos', this)">🎬 Videos</button>
             <button class="cat-btn" onclick="filterMedia('new', this)">✨ New</button>
             <button class="cat-btn" onclick="filterMedia('popular', this)">🔥 Popular</button>
         </div>
       
-        <h2 class="section-title title-related" id="related-title">🎵 All Media</h2>
-        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Loading media... ⏳</div>
+        <h2 class="section-title title-related" id="related-title">🎵 All Music</h2>
+        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Loading music... ⏳</div>
         <div class="grid-container" id="media-list"></div>
 
-        <div class="ad-container" id="mid-ad" style="display:none;">
+        <!-- SEHEMU YA MATANGAZO (ADS CONTAINER) -->
+        <div class="ad-container" id="mid-ad">
             <span class="ad-label">- Advertisement -</span>
-            <script async="async" data-cfasync="false" src="https://pl30999047.profitableratecpmnetwork.com/e12d98b2bda8be9d5a35e86f62ca302e/invoke.js"></script>
-            <div id="container-e12d98b2bda8be9d5a35e86f62ca302e" style="max-width:100%; overflow:hidden;"></div>
+            <div id="ad-slot" style="max-width:100%; overflow:hidden;"></div>
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2024 Makyama Media. All Rights Reserved.</p>
+        <p>&copy; 2026 Makyama Media Store. All Rights Reserved.</p>
     </footer>
 
+    <!-- STICKY AUDIO PLAYER -->
     <div id="sticky-audio-player">
         <div class="player-info">
-            <img id="player-img" src="">
+            <img id="player-img" src="https://via.placeholder.com/100">
             <div class="player-text">
                 <h4 id="player-title">Song Title</h4>
                 <p>Playing now...</p>
@@ -315,14 +307,63 @@
             filterMedia('all'); 
         }
 
+        // SAVE CUSTOM MEDIA TO FIREBASE
+        function saveMedia() {
+            var name = document.getElementById('media-name').value;
+            var image = document.getElementById('media-image').value;
+            var audio = document.getElementById('media-audio-link').value;
+            var editKey = document.getElementById('edit-key').value;
+
+            if(!name || !audio) { alert("Tafadhali weka Jina la wimbo na Link ya Audio."); return; }
+
+            var payload = {
+                jina: name,
+                picha: image || "https://via.placeholder.com/300x180/252530/aaa?text=MAKYAMA+MEDIA",
+                linkAudio: audio,
+                views: 0
+            };
+
+            if(editKey) {
+                database.ref('media/' + editKey).update(payload);
+            } else {
+                database.ref('media').push(payload);
+            }
+
+            document.getElementById('media-name').value = "";
+            document.getElementById('media-image').value = "";
+            document.getElementById('media-audio-link').value = "";
+            document.getElementById('edit-key').value = "";
+            alert("Wimbo umewekwa kikamilifu!");
+        }
+
+        // SAVE ADS CODE TO FIREBASE
+        function saveAdCode() {
+            var code = document.getElementById('ad-code-input').value;
+            if(!code) return;
+            database.ref('settings/adCode').set(code, function(error) {
+                if(!error) alert("Matangazo yamebadilishwa kikamilifu! 📢");
+            });
+        }
+
+        function loadAdCode() {
+            database.ref('settings/adCode').on('value', function(snapshot) {
+                if(snapshot.exists()) {
+                    var code = snapshot.val();
+                    document.getElementById('ad-slot').innerHTML = code;
+                    document.getElementById('ad-code-input').value = code;
+                } else {
+                    document.getElementById('ad-slot').innerHTML = `<script async="async" data-cfasync="false" src="https://pl30999047.profitableratecpmnetwork.com/e12d98b2bda8be9d5a35e86f62ca302e/invoke.js"><\/script><div id="container-e12d98b2bda8be9d5a35e86f62ca302e"></div>`;
+                }
+            });
+        }
+
         // PLAYER FUNCTIONS
         function playAudio(key, link, mediaName, mediaImage) {
             if(key) database.ref('media/' + key + '/views').transaction(v => (v || 0) + 1);
-            closeVideoModal(); 
             var playerContainer = document.getElementById('sticky-audio-player');
             var audioTag = document.getElementById('main-audio');
             document.getElementById('player-title').innerText = mediaName;
-            document.getElementById('player-img').src = mediaImage;
+            document.getElementById('player-img').src = mediaImage || "https://via.placeholder.com/100";
             playerContainer.style.display = 'flex';
             audioTag.src = link;
             audioTag.play();
@@ -334,100 +375,51 @@
             document.getElementById('sticky-audio-player').style.display = 'none';
         }
 
-        function watchYouTubeOnline(videoId, mediaName) {
-            closeAudioPlayer(); 
-            var modal = document.getElementById('videoModal');
-            var ytContainer = document.getElementById('yt-player-container');
-            document.getElementById('video-title').innerText = mediaName;
-            document.getElementById('main-video').style.display = 'none';
-            
-            ytContainer.style.display = 'block';
-            ytContainer.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-            modal.style.display = 'flex';
-        }
-
-        function closeVideoModal() {
-            document.getElementById('main-video').pause();
-            var ytContainer = document.getElementById('yt-player-container');
-            if(ytContainer) { ytContainer.innerHTML = ""; ytContainer.style.display = 'none'; }
-            document.getElementById('videoModal').style.display = 'none';
-        }
-
-        function addViewAndDownload(key, link, fileName) {
+        // DIRECT IN-SITE DOWNLOAD FUNCTION
+        async function downloadDirectInSite(fileUrl, fileName, key) {
             if(key) database.ref('media/' + key + '/views').transaction(v => (v || 0) + 1);
-            window.open(link, '_blank');
-        }
 
-        // ==========================================
-        // 3RD PARTY DOWNLOAD API (Loader.to / Free API)
-        // Hii haiitaji tena Render Server, inajitegemea!
-        // ==========================================
-        async function downloadWithCustomAPI(videoId, type) {
             var noti = document.getElementById('download-noti');
             var notiText = document.getElementById('noti-text');
             var notiBar = document.getElementById('noti-bar');
-            
-            noti.style.display = 'block';
-            notiBar.style.width = '10%';
-            notiText.innerText = `Connecting to Server... 10% ⏳`;
 
-            // Chagua format (mp3 au mp4)
-            let format = type === 'audio' ? 'mp3' : 'mp4';
-            let youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+            noti.style.display = 'block';
+            notiBar.style.width = '20%';
+            notiText.innerText = "Connecting to Server... 20% ⏳";
 
             try {
-                // Hatua ya 1: Tuma ombi kwenye 3rd Party API kuanza kuchakata faili
-                let initUrl = `https://loader.to/ajax/download.php?format=${format}&url=${encodeURIComponent(youtubeUrl)}`;
-                let initResponse = await fetch(initUrl);
-                let initData = await initResponse.json();
+                const response = await fetch(fileUrl);
+                notiBar.style.width = '60%';
+                notiText.innerText = "Fetching Audio File... 60% ⏳";
 
-                if (!initData.success) {
-                    throw new Error("API imegoma kuanzisha process");
-                }
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
 
-                let taskId = initData.id;
+                notiBar.style.width = '100%';
+                notiText.innerText = "Download Ready! 100% ✅";
 
-                // Hatua ya 2: Kufuatilia asilimia kiukweli (Polling)
-                let checkProgress = setInterval(async () => {
-                    try {
-                        let progressUrl = `https://loader.to/ajax/progress.php?id=${taskId}`;
-                        let progResponse = await fetch(progressUrl);
-                        let progData = await progResponse.json();
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = (fileName || 'Makyama_Audio') + '.mp3';
+                document.body.appendChild(link);
+                link.click();
 
-                        if (progData.success) {
-                            let currentProgress = progData.progress; // Inasoma kiukweli toka 0 mpaka 100
-                            notiText.innerText = `Extracting ${type.toUpperCase()} File... ${currentProgress}% ⏳`;
-                            notiBar.style.width = `${currentProgress}%`;
-
-                            // Ikishafika 1000 au 100 inamaanisha faili lipo tayari
-                            if (progData.download_url) {
-                                clearInterval(checkProgress); // Simamisha kuangalia
-                                notiBar.style.width = '100%';
-                                notiText.innerText = "File Ready! Downloading... 100% ✅";
-                                
-                                setTimeout(() => {
-                                    noti.style.display = 'none';
-                                    window.open(progData.download_url, '_blank'); // Fungua faili!
-                                }, 1500);
-                            }
-                        }
-                    } catch (e) {
-                        console.log("Subiri kidogo...");
-                    }
-                }, 2500); // Inakagua maendeleo kila baada ya sekunde 2.5
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(blobUrl);
+                    noti.style.display = 'none';
+                }, 1200);
 
             } catch (error) {
-                console.error("Download Error:", error);
                 noti.style.display = 'none';
-                alert("Server busy au faili lina ulinzi mkali. Tafadhali jaribu wimbo mwingine.");
+                const windowLink = document.createElement('a');
+                windowLink.href = fileUrl;
+                windowLink.download = (fileName || 'Makyama_Audio') + '.mp3';
+                windowLink.click();
             }
         }
 
-        // ==========================================
-        // YOUTUBE SEARCH
-        // ==========================================
-        var YOUTUBE_API_KEY = "AIzaSyBmIm_fKvgiZ34N36EtKl-28G0C3c_0d1I"; 
-
+        // GLOBAL SEARCH ENGINE (ITUNES & LOCAL DATABASE)
         async function searchGlobalMedia() {
             var query = document.getElementById("search-input").value.trim();
             if (query === "") return;
@@ -437,42 +429,40 @@
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
 
             relatedTitle.innerHTML = "🌍 Global Search Results...";
-            mainNode.innerHTML = "<p style='text-align:center; color:#00e676; font-size: 14px; padding: 20px;'>Searching at 5G speed... ⚡</p>";
+            mainNode.innerHTML = "<p style='text-align:center; color:#00e676; font-size: 14px; padding: 20px;'>Inatafuta nyimbo... ⚡</p>";
 
             try {
-                let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&q=${encodeURIComponent(query)}&type=video&key=${YOUTUBE_API_KEY}`;
+                let url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=15`;
                 let response = await fetch(url);
-                if (!response.ok) throw new Error("API Issue");
                 let data = await response.json();
-                mainNode.innerHTML = ""; 
+                
+                mainNode.innerHTML = "";
 
-                if (!data.items || data.items.length === 0) {
-                    mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>We couldn't find any results.</p>";
+                if (!data.results || data.results.length === 0) {
+                    mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Hakuna nyimbo zilizopatikana. Jaribu kutafuta tena.</p>";
                     return;
                 }
 
-                data.items.forEach(item => {
-                    let videoId = item.id.videoId;
-                    if (!videoId) return; 
-                    let title = item.snippet.title.replace(/&quot;/g, '"').replace(/&#39;/g, "'");
-                    let thumb = item.snippet.thumbnails?.high?.url || "https://via.placeholder.com/300";
-                    let safePlayName = title.replace(/'/g, "\\'");
+                data.results.forEach(item => {
+                    let title = item.trackName;
+                    let artist = item.artistName;
+                    let fullTitle = `${artist} - ${title}`;
+                    let thumb = item.artworkUrl100.replace('100x100bb', '300x300bb');
+                    let streamUrl = item.previewUrl;
+                    let safeTitle = fullTitle.replace(/'/g, "\\'");
 
                     let card = `
                         <div class="media-card">
-                            <img src="${thumb}" onclick="watchYouTubeOnline('${videoId}', '${safePlayName}')" style="cursor:pointer;">
+                            <img src="${thumb}" onclick="playAudio('', '${streamUrl}', '${safeTitle}', '${thumb}')" style="cursor:pointer;">
                             <div class="media-details">
                                 <div class="badge-container">
-                                    <span class="badge badge-global">🌍 STREAM & DOWNLOAD</span>
+                                    <span class="badge badge-global">🌍 GLOBAL STREAM</span>
                                 </div>
-                                <div class="media-title">${title}</div>
+                                <div class="media-title">${fullTitle}</div>
                                 <div class="btn-container">
-                                    <div class="media-actions" style="margin-bottom: 5px;">
-                                        <button class="btn-action btn-play-video" onclick="watchYouTubeOnline('${videoId}', '${safePlayName}')">▶️ WATCH ONLINE</button>
-                                    </div>
                                     <div class="media-actions">
-                                        <button class="btn-action btn-dl-audio" onclick="downloadWithCustomAPI('${videoId}', 'audio')">🎧 Download MP3</button>
-                                        <button class="btn-action btn-dl-video" onclick="downloadWithCustomAPI('${videoId}', 'video')">🎬 Download MP4</button>
+                                        <button class="btn-action btn-play-audio" onclick="playAudio('', '${streamUrl}', '${safeTitle}', '${thumb}')">▶️ Play</button>
+                                        <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('${streamUrl}', '${safeTitle}')">🎧 Download MP3</button>
                                     </div>
                                 </div>
                             </div>
@@ -482,7 +472,7 @@
                 });
 
             } catch (error) {
-                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>A network error occurred. Please check your YouTube API key.</p>";
+                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Matatizo ya mtandao. Jaribu tena baadae.</p>";
             }
         }
 
@@ -504,33 +494,26 @@
         function createCard(data, key) {
             var mediaImage = data.picha || "https://via.placeholder.com/300x180/252530/aaa?text=MAKYAMA+MEDIA";
             var audioLink = data.linkAudio;
-            var videoLink = data.linkVideo;
             var safePlayName = data.jina.replace(/'/g, "\\'");
             var safePlayImage = mediaImage.replace(/'/g, "\\'");
 
             var btnAudioHTML = audioLink ? `
                 <div class="media-actions">
                     <button class="btn-action btn-play-audio" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')">▶️ Play</button>
-                    <button class="btn-action btn-dl-audio" onclick="addViewAndDownload('${key}', '${audioLink}')">⬇️ Download</button>
-                </div>` : "";
-            var btnVideoHTML = videoLink ? `
-                <div class="media-actions">
-                    <button class="btn-action btn-play-video" onclick="window.open('${videoLink}', '_blank')">▶️ Video</button>
-                    <button class="btn-action btn-dl-video" onclick="addViewAndDownload('${key}', '${videoLink}')">⬇️ Download</button>
+                    <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('${audioLink}', '${safePlayName}', '${key}')">⬇️ Download MP3</button>
                 </div>` : "";
 
             return `
                 <div class="media-card">
-                    <img src="${mediaImage}" loading="lazy" style="cursor:pointer;">
+                    <img src="${mediaImage}" loading="lazy" style="cursor:pointer;" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')">
                     <div class="media-details">
                         <div class="badge-container">
-                            ${audioLink ? '<span class="badge">AUDIO</span>' : ''}
-                            ${videoLink ? '<span class="badge badge-video">VIDEO</span>' : ''}
+                            <span class="badge">AUDIO</span>
                         </div>
                         <div class="media-title">${data.jina}</div>
-                        <div class="btn-container">${btnAudioHTML}${btnVideoHTML}</div>
+                        <div class="btn-container">${btnAudioHTML}</div>
                         <div class="reaction-bar">
-                            <button class="reaction-item">👁️ ${data.views || 0}</button>
+                            <button class="reaction-item">👁️ ${data.views || 0} Views</button>
                         </div>
                     </div>
                 </div>
@@ -548,13 +531,16 @@
             var filteredData = [...allFetchedMedia];
 
             if (category === 'music') { filteredData = filteredData.filter(item => item.data.linkAudio); } 
-            else if (category === 'videos') { filteredData = filteredData.filter(item => item.data.linkVideo); }
             
-            if(filteredData.length === 0) { mainNode.innerHTML = "<p style='color:#aaa; text-align:center;'>No media available.</p>"; return; }
+            if(filteredData.length === 0) { mainNode.innerHTML = "<p style='color:#aaa; text-align:center;'>No music available.</p>"; return; }
             filteredData.forEach(function(item) { mainNode.innerHTML += createCard(item.data, item.key); });
         }
 
-        window.onload = function() { loadMedia(); };
+        window.onload = function() { 
+            loadMedia(); 
+            loadAdCode();
+        };
     </script>
 </body>
 </html>
+ 
