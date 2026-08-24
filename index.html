@@ -88,10 +88,14 @@
         }
         .ad-label { font-size: 10px; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* ADMIN PANEL */
+        /* ADMIN PANEL & COUNTER */
         #admin-panel {
             display: none; background: #181820; border: 1px solid #00e676;
             border-radius: 12px; padding: 15px; margin-bottom: 25px; width: 100%;
+        }
+        .visitor-counter {
+            background: #252530; border: 1px dashed #00e676; border-radius: 8px;
+            padding: 10px; margin-bottom: 15px; text-align: center; color: #00e676; font-weight: bold; font-size: 14px;
         }
         .admin-section-title { font-size: 14px; color: #00e676; margin: 15px 0 8px; border-bottom: 1px solid #3a3a4c; padding-bottom: 4px; }
         .btn-cancel { background: #ff5252; color: #fff; font-weight: bold; padding: 12px; border: none; border-radius: 6px; cursor: pointer; display: none; width:100%; margin-top:10px;}
@@ -105,7 +109,7 @@
         
         .media-card {
             background: #1a1a24; border-radius: 10px; overflow: hidden;
-            border: 1px solid #2a2a38; display: flex; flex-direction: row; align-items: stretch; width: 100%;
+            border: 1px solid #2a2a38; display: flex; flex-direction: row; align-items: stretch; width: 100%; position: relative;
         }
         .media-card > img { width: 110px; object-fit: cover; flex-shrink: 0; background: #000; min-height: 110px; }
         
@@ -124,6 +128,8 @@
         
         .btn-play-audio { background: transparent; color: #00e676; border: 1px solid #00e676; }
         .btn-dl-audio { background: #00e676; color: #000; }
+        .btn-edit-admin { background: #ff9100; color: #000; }
+        .btn-delete-admin { background: #ff5252; color: #fff; }
         
         /* REACTIONS BAR */
         .reaction-bar { display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; padding-top: 6px; border-top: 1px solid #2a2a38; gap: 8px; }
@@ -207,16 +213,20 @@
         <div id="admin-panel">
             <h2 style="color: #00e676; margin-bottom:10px; font-size: 16px;">👑 ADMIN DASHBOARD</h2>
             
-            <div class="admin-section-title">📤 Upload New Song</div>
+            <div class="visitor-counter">
+                🟢 Live Active Visitors: <span id="online-users-count" style="font-size: 18px; color: #fff;">1</span>
+            </div>
+
+            <div class="admin-section-title" id="form-title">📤 Upload New Song / Video</div>
             <input type="hidden" id="edit-key">
-            <input type="text" id="media-name" placeholder="Song Title (jina la wimbo)">
-            <input type="text" id="media-image" placeholder="Image URL (Picha)">
-            <input type="text" id="media-audio-link" placeholder="Audio MP3 Link">
-            <button class="btn-submit" id="btn-save" onclick="saveMedia()">UPLOAD SONG 🚀</button>
+            <input type="text" id="media-name" placeholder="Song/Video Title (Jina la wimbo)">
+            <input type="text" id="media-image" placeholder="Image Cover URL (Picha)">
+            <input type="text" id="media-audio-link" placeholder="Audio / Video MP3 Link">
+            <button class="btn-submit" id="btn-save" onclick="saveMedia()">UPLOAD MEDIA 🚀</button>
             <button class="btn-cancel" id="btn-cancel" onclick="cancelEdit()">Cancel Edit</button>
 
             <div class="admin-section-title">📢 Manage Ads (Matangazo)</div>
-            <textarea id="ad-code-input" rows="3" placeholder="Paste Script Code or Banner Link ya Ads hapa..."></textarea>
+            <textarea id="ad-code-input" rows="3" placeholder="Paste Script Code au Banner Link ya Ads hapa..."></textarea>
             <button class="btn-submit" style="background:#29b6f6; color:#000;" onclick="saveAdCode()">UPDATE ADS 📢</button>
         </div>
 
@@ -228,8 +238,8 @@
         <div class="categories-nav">
             <button class="cat-btn active" onclick="filterMedia('all', this)">All</button>
             <button class="cat-btn" onclick="filterMedia('music', this)">🎵 Music</button>
-            <button class="cat-btn" onclick="filterMedia('new', this)">✨ New</button>
-            <button class="cat-btn" onclick="filterMedia('popular', this)">🔥 Popular</button>
+            <button class="cat-btn" onclick="filterMedia('trending', this)">🔥 Trending (Inayotamba)</button>
+            <button class="cat-btn" onclick="filterMedia('afrobeats', this)">🌍 Afrobeats</button>
         </div>
       
         <h2 class="section-title title-related" id="related-title">🎵 All Music</h2>
@@ -281,6 +291,25 @@
         var isAdmin = false;
         var allFetchedMedia = []; 
 
+        // LIVE VISITORS COUNTER
+        function trackLiveVisitors() {
+            var myPresenceRef = database.ref('presence/' + Math.random().toString(36).substring(2, 10));
+            var connectedRef = database.ref('.info/connected');
+
+            connectedRef.on('value', function(snap) {
+                if (snap.val() === true) {
+                    myPresenceRef.onDisconnect().remove();
+                    myPresenceRef.set(true);
+                }
+            });
+
+            database.ref('presence').on('value', function(snap) {
+                var count = snap.numChildren() || 1;
+                var counterEl = document.getElementById('online-users-count');
+                if (counterEl) counterEl.innerText = count;
+            });
+        }
+
         // ADMIN FUNCTIONS
         function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
         function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
@@ -307,14 +336,14 @@
             filterMedia('all'); 
         }
 
-        // SAVE CUSTOM MEDIA TO FIREBASE
+        // SAVE / EDIT CUSTOM MEDIA
         function saveMedia() {
             var name = document.getElementById('media-name').value;
             var image = document.getElementById('media-image').value;
             var audio = document.getElementById('media-audio-link').value;
             var editKey = document.getElementById('edit-key').value;
 
-            if(!name || !audio) { alert("Tafadhali weka Jina la wimbo na Link ya Audio."); return; }
+            if(!name || !audio) { alert("Tafadhali weka Jina na Link ya Media."); return; }
 
             var payload = {
                 jina: name,
@@ -325,18 +354,48 @@
 
             if(editKey) {
                 database.ref('media/' + editKey).update(payload);
+                alert("Media imebadilishwa kikamilifu!");
             } else {
                 database.ref('media').push(payload);
+                alert("Wimbo/Video umewekwa kikamilifu!");
             }
 
+            cancelEdit();
+        }
+
+        // EDIT MEDIA
+        function editMedia(key, jina, picha, linkAudio) {
+            document.getElementById('edit-key').value = key;
+            document.getElementById('media-name').value = jina;
+            document.getElementById('media-image').value = picha;
+            document.getElementById('media-audio-link').value = linkAudio;
+            
+            document.getElementById('form-title').innerText = "✏️ Edit Existing Media";
+            document.getElementById('btn-save').innerText = "UPDATE MEDIA 🔄";
+            document.getElementById('btn-cancel').style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            document.getElementById('edit-key').value = "";
             document.getElementById('media-name').value = "";
             document.getElementById('media-image').value = "";
             document.getElementById('media-audio-link').value = "";
-            document.getElementById('edit-key').value = "";
-            alert("Wimbo umewekwa kikamilifu!");
+            
+            document.getElementById('form-title').innerText = "📤 Upload New Song / Video";
+            document.getElementById('btn-save').innerText = "UPLOAD MEDIA 🚀";
+            document.getElementById('btn-cancel').style.display = "none";
         }
 
-        // SAVE ADS CODE TO FIREBASE
+        // DELETE MEDIA
+        function deleteMedia(key) {
+            if (confirm("Je, una uhakika unataka kufuta wimbo/video hii?")) {
+                database.ref('media/' + key).remove();
+                alert("Imefutwa kikamilifu!");
+            }
+        }
+
+        // ADS CODE
         function saveAdCode() {
             var code = document.getElementById('ad-code-input').value;
             if(!code) return;
@@ -375,7 +434,7 @@
             document.getElementById('sticky-audio-player').style.display = 'none';
         }
 
-        // DIRECT IN-SITE DOWNLOAD FUNCTION
+        // DIRECT DOWNLOAD
         async function downloadDirectInSite(fileUrl, fileName, key) {
             if(key) database.ref('media/' + key + '/views').transaction(v => (v || 0) + 1);
 
@@ -419,27 +478,22 @@
             }
         }
 
-        // GLOBAL SEARCH ENGINE (ITUNES & LOCAL DATABASE)
-        async function searchGlobalMedia() {
-            var query = document.getElementById("search-input").value.trim();
-            if (query === "") return;
-
+        // GLOBAL SEARCH & CATEGORIES (TRENDING MUSIC)
+        async function fetchExternalCategory(queryTerm, titleText) {
             var mainNode = document.getElementById("media-list");
             var relatedTitle = document.getElementById("related-title");
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-
-            relatedTitle.innerHTML = "🌍 Global Search Results...";
-            mainNode.innerHTML = "<p style='text-align:center; color:#00e676; font-size: 14px; padding: 20px;'>Inatafuta nyimbo... ⚡</p>";
+            relatedTitle.innerHTML = titleText;
+            mainNode.innerHTML = "<p style='text-align:center; color:#00e676; font-size: 14px; padding: 20px;'>Pakua Nyimbo Zinazotamba... ⚡</p>";
 
             try {
-                let url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=15`;
+                let url = `https://itunes.apple.com/search?term=${encodeURIComponent(queryTerm)}&media=music&limit=15`;
                 let response = await fetch(url);
                 let data = await response.json();
                 
                 mainNode.innerHTML = "";
 
                 if (!data.results || data.results.length === 0) {
-                    mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Hakuna nyimbo zilizopatikana. Jaribu kutafuta tena.</p>";
+                    mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Hakuna nyimbo zilizopatikana.</p>";
                     return;
                 }
 
@@ -456,7 +510,7 @@
                             <img src="${thumb}" onclick="playAudio('', '${streamUrl}', '${safeTitle}', '${thumb}')" style="cursor:pointer;">
                             <div class="media-details">
                                 <div class="badge-container">
-                                    <span class="badge badge-global">🌍 GLOBAL STREAM</span>
+                                    <span class="badge badge-global">🔥 TRENDING WORLDWIDE</span>
                                 </div>
                                 <div class="media-title">${fullTitle}</div>
                                 <div class="btn-container">
@@ -470,13 +524,18 @@
                     `;
                     mainNode.innerHTML += card;
                 });
-
             } catch (error) {
-                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Matatizo ya mtandao. Jaribu tena baadae.</p>";
+                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Acha kidogo kisha ujaribu tena.</p>";
             }
         }
 
-        // LOAD NORMAL DATABASE MEDIA
+        function searchGlobalMedia() {
+            var query = document.getElementById("search-input").value.trim();
+            if (query === "") return;
+            fetchExternalCategory(query, "🌍 Global Search Results...");
+        }
+
+        // DATABASE MEDIA
         function loadMedia() {
             document.getElementById("loading").style.display = "block";
             database.ref('media').on('value', function(snapshot) {
@@ -497,18 +556,26 @@
             var safePlayName = data.jina.replace(/'/g, "\\'");
             var safePlayImage = mediaImage.replace(/'/g, "\\'");
 
+            var adminButtons = isAdmin ? `
+                <div class="media-actions" style="margin-top:5px;">
+                    <button class="btn-action btn-edit-admin" onclick="editMedia('${key}', '${safePlayName}', '${safePlayImage}', '${audioLink}')">✏️ Edit</button>
+                    <button class="btn-action btn-delete-admin" onclick="deleteMedia('${key}')">🗑️ Delete</button>
+                </div>
+            ` : "";
+
             var btnAudioHTML = audioLink ? `
                 <div class="media-actions">
                     <button class="btn-action btn-play-audio" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')">▶️ Play</button>
                     <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('${audioLink}', '${safePlayName}', '${key}')">⬇️ Download MP3</button>
-                </div>` : "";
+                </div>
+                ${adminButtons}` : "";
 
             return `
                 <div class="media-card">
                     <img src="${mediaImage}" loading="lazy" style="cursor:pointer;" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')">
                     <div class="media-details">
                         <div class="badge-container">
-                            <span class="badge">AUDIO</span>
+                            <span class="badge">AUDIO / VIDEO</span>
                         </div>
                         <div class="media-title">${data.jina}</div>
                         <div class="btn-container">${btnAudioHTML}</div>
@@ -526,21 +593,29 @@
                 document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
                 btnElement.classList.add('active');
             }
+
+            if (category === 'trending') {
+                fetchExternalCategory('Bongo Flava Top Hits', '🔥 Nyimbo Zinazotamba Mtandaoni');
+                return;
+            } else if (category === 'afrobeats') {
+                fetchExternalCategory('Afrobeats Hits', '🌍 Afrobeats & African Music');
+                return;
+            }
+
+            document.getElementById("related-title").innerText = "🎵 All Music";
             var mainNode = document.getElementById("media-list");
             mainNode.innerHTML = "";
             var filteredData = [...allFetchedMedia];
 
-            if (category === 'music') { filteredData = filteredData.filter(item => item.data.linkAudio); } 
-            
-            if(filteredData.length === 0) { mainNode.innerHTML = "<p style='color:#aaa; text-align:center;'>No music available.</p>"; return; }
+            if(filteredData.length === 0) { mainNode.innerHTML = "<p style='color:#aaa; text-align:center;'>Hakuna Nyimbo/Video kwa sasa.</p>"; return; }
             filteredData.forEach(function(item) { mainNode.innerHTML += createCard(item.data, item.key); });
         }
 
         window.onload = function() { 
             loadMedia(); 
             loadAdCode();
+            trackLiveVisitors();
         };
     </script>
 </body>
 </html>
- 
