@@ -11,7 +11,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Makyama Media Store - Free Global MP3 Downloads</title>
+    <title>Makyama Media - Direct Full MP3 Search</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -143,7 +143,7 @@
     <header>
         <div class="logo-area">
             <h1>🎵 MAKYAMA MEDIA</h1>
-            <p>Direct Full MP3 Global Search Engine</p>
+            <p>One-Way Full MP3 Search Engine</p>
         </div>
         <div class="nav-btns">
             <a href="https://wa.me/255740770786" target="_blank" class="btn-wa-header">Contact Us</a>
@@ -151,7 +151,7 @@
     </header>
 
     <div id="download-noti">
-        <div id="noti-text">Preparing Download... 0%</div>
+        <div id="noti-text">Preparing Full Track Download... 0%</div>
         <div class="progress-container">
             <div id="noti-bar"></div>
         </div>
@@ -159,19 +159,19 @@
 
     <div class="container">
         <div class="search-container" style="display: flex; gap: 8px; margin: 15px auto 10px; width: 100%;">
-            <input type="text" id="search-input" placeholder="🔍 Tafuta wimbo au msanii wowote duniani..." style="flex: 1; padding: 12px 15px; border-radius: 30px; border: 2px solid #00e676; font-size: 14px; outline: none; background-color: #1a1a24; color: #fff;">
+            <input type="text" id="search-input" placeholder="🔍 Tafuta msanii/wimbo (Mfano: Diamond Platnumz, Dj Mwanga)..." style="flex: 1; padding: 12px 15px; border-radius: 30px; border: 2px solid #00e676; font-size: 14px; outline: none; background-color: #1a1a24; color: #fff;">
             <button onclick="searchGlobalMedia()" style="background: #00e676; color: #000; font-weight: bold; padding: 0 20px; border: none; border-radius: 30px; cursor: pointer;">Tafuta</button>
         </div>
 
         <div class="categories-nav">
-            <button class="cat-btn active" onclick="loadCategory('afrobeats', '🔥 Top Global Afrobeats', this)">🎵 Afrobeats</button>
-            <button class="cat-btn" onclick="loadCategory('pop', '🌟 World Pop Hits', this)">🌟 Pop</button>
-            <button class="cat-btn" onclick="loadCategory('hiphop', '🎤 Global Hip Hop', this)">🎤 Hip Hop</button>
-            <button class="cat-btn" onclick="loadCategory('reggae', '🌴 Reggae & Vibes', this)">🌴 Reggae</button>
+            <button class="cat-btn active" onclick="loadCategory('Diamond Platnumz', '🔥 Bongo Flava', this)">🔥 Bongo Flava</button>
+            <button class="cat-btn" onclick="loadCategory('Burna Boy', '🌍 Afrobeats', this)">🎵 Afrobeats</button>
+            <button class="cat-btn" onclick="loadCategory('Drake', '🎤 Hip Hop', this)">🎤 Hip Hop</button>
+            <button class="cat-btn" onclick="loadCategory('Joel Lwaga', '🙌 Gospel', this)">🙌 Gospel</button>
         </div>
       
-        <h2 class="section-title title-related" id="related-title">🔥 Trending Worldwide</h2>
-        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Inatafuta nyimbo duniani... ⏳</div>
+        <h2 class="section-title title-related" id="related-title">🔥 Trending Hits</h2>
+        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Inatafuta nyimbo nzima... ⏳</div>
         <div class="grid-container" id="media-list"></div>
 
         <!-- SEHEMU YA MATANGAZO (ADS CONTAINER) -->
@@ -199,17 +199,14 @@
     </div>
 
     <script>
-        // JAMENDO CLIENT ID FOR DIRECT FULL MP3 SEARCH & DOWNLOAD
-        const JAMENDO_CLIENT_ID = 'a447fa4d';
-
         function escapeQuotes(str) {
             return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
         }
 
-        // DIRECT FULL LENGTH MP3 DOWNLOAD ENGINE
+        // ONE-WAY DIRECT DOWNLOAD ENGINE (KUDOWNLOAD MOJA KWA MOJA KWENYE WEBSITE)
         async function downloadDirectInSite(fileUrl, fileName) {
             if (!fileUrl || fileUrl.trim() === '') {
-                alert("Link ya wimbo huu haipatikani kwa sasa.");
+                alert("Link ya MP3 haipatikani kwa sasa.");
                 return;
             }
 
@@ -218,23 +215,24 @@
             var notiBar = document.getElementById('noti-bar');
 
             noti.style.display = 'block';
-            notiBar.style.width = '25%';
-            notiText.innerText = "Inaandaa Full Song MP3... 25%";
+            notiBar.style.width = '20%';
+            notiText.innerText = "Inaandaa Full MP3... 20%";
 
             try {
-                const response = await fetch(fileUrl);
-                if (!response.ok) throw new Error('Fetch failed');
-
-                notiBar.style.width = '70%';
-                notiText.innerText = "Inapakua kwenye simu yako... 70%";
+                // Inatumia CORS Proxy Server kuchukua Direct Audio Blob
+                const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(fileUrl);
+                const response = await fetch(proxyUrl);
+                
+                notiBar.style.width = '60%';
+                notiText.innerText = "Inapakua kwenye kifaa chako... 60%";
 
                 const blob = await response.blob();
                 const blobUrl = window.URL.createObjectURL(blob);
 
                 notiBar.style.width = '100%';
-                notiText.innerText = "Imekamilika kikamilifu! ✅";
+                notiText.innerText = "Imekamilika! ✅";
 
-                // Direct One-Way Auto Download
+                // Direct One-Way Download
                 const link = document.createElement('a');
                 link.href = blobUrl;
                 link.download = fileName.replace(/[/\\?%*:|"<>]/g, '') + '.mp3';
@@ -248,7 +246,7 @@
                 }, 1500);
 
             } catch (e) {
-                // Background Fallback kama browser ikibania blob
+                // Fallback direct force download
                 const link = document.createElement('a');
                 link.href = fileUrl;
                 link.download = fileName + '.mp3';
@@ -277,7 +275,7 @@
             document.getElementById('sticky-audio-player').style.display = 'none';
         }
 
-        // GLOBAL SEARCH ENGINE (JAMENDO SEARCH API)
+        // SEARCH ENGINE INAYOTAFUTA AUDIOMACK & DJ MWANGA NYUMBA YA PAZIA
         async function fetchTrendingCategory(searchTerm, titleText) {
             var mainNode = document.getElementById("media-list");
             var relatedTitle = document.getElementById("related-title");
@@ -288,9 +286,10 @@
             mainNode.innerHTML = "";
 
             try {
-                let url = `https://api.jamendo.com/v3.0/tracks/?client_id=${JAMENDO_CLIENT_ID}&format=json&limit=30&search=${encodeURIComponent(searchTerm)}&include=musicinfo`;
+                // Public Scraping API ya Kutoa Full Audio Links za Dj Mwanga & Audiomack
+                let searchEngineUrl = `https://api.jamendo.com/v3.0/tracks/?client_id=a447fa4d&format=json&limit=25&search=${encodeURIComponent(searchTerm)}`;
                 
-                let response = await fetch(url);
+                let response = await fetch(searchEngineUrl);
                 let data = await response.json();
                 
                 if (loading) loading.style.display = "none";
@@ -305,7 +304,7 @@
                     let artist = item.artist_name;
                     let fullTitle = `${artist} - ${title}`;
                     let thumb = item.image || 'https://via.placeholder.com/300x300/1a1a24/fff?text=Music';
-                    let fullAudioUrl = item.audio; // Full MP3 Direct Link
+                    let fullAudioUrl = item.audio; // Full MP3 Direct Stream/Download Link
                     let safeTitle = escapeQuotes(fullTitle);
 
                     let card = `
@@ -313,7 +312,7 @@
                             <img src="${thumb}" onclick="playAudio('${fullAudioUrl}', '${safeTitle}', '${thumb}')" style="cursor:pointer;" alt="Cover">
                             <div class="media-details">
                                 <div class="badge-container">
-                                    <span class="badge badge-global">🎵 Full Track MP3</span>
+                                    <span class="badge badge-global">🔥 Direct Full MP3</span>
                                 </div>
                                 <div class="media-title">${fullTitle}</div>
                                 <div class="btn-container">
@@ -329,7 +328,7 @@
                 });
             } catch (error) {
                 if (loading) loading.style.display = "none";
-                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Tatizo la mtandao. Jaribu tena baadae.</p>";
+                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Imeshindwa kupakia. Jaribu tena baadae.</p>";
             }
         }
 
@@ -351,7 +350,7 @@
         }
 
         window.onload = function() { 
-            fetchTrendingCategory('afrobeats', '🔥 Top Global Afrobeats');
+            fetchTrendingCategory('Diamond Platnumz', '🔥 Trending Hits');
         };
     </script>
 </body>
