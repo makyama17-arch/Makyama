@@ -11,7 +11,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Makyama Media Store - Audio & Music</title>
+    <title>Makyama Media Store - Free Global MP3 Downloads</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -39,30 +39,8 @@
             display: flex; align-items: center; gap: 5px; font-size: 12px;
         }
         .btn-wa-header { background: #25D366; color: #fff; }
-        .btn-logout { background: #ff5252 !important; color: #fff !important; }
 
         .container { max-width: 900px; margin: 15px auto; padding: 0 10px; width: 100%; overflow-x: hidden;}
-
-        /* MODALS */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center;
-        }
-        .modal-content {
-            background: #1e1e24; padding: 20px; border-radius: 12px; width: 95%; max-width: 400px;
-            border: 1px solid #00e676; position: relative; max-height: 85vh; display: flex; flex-direction: column;
-            overflow-y: auto;
-        }
-        .close-btn { position: absolute; top: 10px; right: 15px; color: #aaa; font-size: 22px; cursor: pointer; z-index: 10;}
-        
-        input, select, textarea {
-            width: 100%; padding: 10px; margin-bottom: 12px; background: #252530;
-            border: 1px solid #3a3a4c; color: #fff; border-radius: 6px; outline: none; font-size: 14px;
-        }
-        .btn-submit {
-            background: #00e676; color: #000; font-weight: bold; padding: 12px;
-            border: none; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 5px;
-        }
 
         /* CATEGORIES NAV */
         .categories-nav {
@@ -87,18 +65,6 @@
             overflow: hidden;
         }
         .ad-label { font-size: 10px; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* ADMIN PANEL & COUNTER */
-        #admin-panel {
-            display: none; background: #181820; border: 1px solid #00e676;
-            border-radius: 12px; padding: 15px; margin-bottom: 25px; width: 100%;
-        }
-        .visitor-counter {
-            background: #252530; border: 1px dashed #00e676; border-radius: 8px;
-            padding: 10px; margin-bottom: 15px; text-align: center; color: #00e676; font-weight: bold; font-size: 14px;
-        }
-        .admin-section-title { font-size: 14px; color: #00e676; margin: 15px 0 8px; border-bottom: 1px solid #3a3a4c; padding-bottom: 4px; }
-        .btn-cancel { background: #ff5252; color: #fff; font-weight: bold; padding: 12px; border: none; border-radius: 6px; cursor: pointer; display: none; width:100%; margin-top:10px;}
 
         /* SECTION TITLES */
         .section-title { padding-left: 8px; margin-bottom: 12px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
@@ -128,13 +94,7 @@
         
         .btn-play-audio { background: transparent; color: #00e676; border: 1px solid #00e676; }
         .btn-dl-audio { background: #00e676; color: #000; }
-        .btn-edit-admin { background: #ff9100; color: #000; }
-        .btn-delete-admin { background: #ff5252; color: #fff; }
-        
-        /* REACTIONS BAR */
-        .reaction-bar { display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; padding-top: 6px; border-top: 1px solid #2a2a38; gap: 8px; }
-        .reaction-item { background: transparent; border: none; color: #aaa; cursor: pointer; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 3px; }
-        
+
         /* NOTIFICATION & PROGRESS BAR */
         #download-noti {
             display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
@@ -183,74 +143,36 @@
     <header>
         <div class="logo-area">
             <h1>🎵 MAKYAMA MEDIA</h1>
-            <p>Stream & Download Free Audio Tracks</p>
+            <p>Direct Full MP3 Global Search Engine</p>
         </div>
-        <div class="nav-btns" id="nav-action">
-            <a href="https://wa.me/255740770786" target="_blank" class="btn-wa-header">Contact</a>
-            <button onclick="openLoginModal()">🔑 Admin</button>
+        <div class="nav-btns">
+            <a href="https://wa.me/255740770786" target="_blank" class="btn-wa-header">Contact Us</a>
         </div>
     </header>
 
     <div id="download-noti">
-        <div id="noti-text">Preparing Full Length Download... 0%</div>
+        <div id="noti-text">Preparing Download... 0%</div>
         <div class="progress-container">
             <div id="noti-bar"></div>
         </div>
     </div>
 
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeLoginModal()">&times;</span>
-            <h3 style="color: #00e676; margin-bottom: 15px;">🔒 ADMIN LOGIN</h3>
-            <input type="text" id="login-username" placeholder="Username">
-            <input type="password" id="login-password" placeholder="Password">
-            <button class="btn-submit" onclick="loginAdmin()">LOGIN</button>
-        </div>
-    </div>
-
     <div class="container">
-        <!-- ADMIN DASHBOARD -->
-        <div id="admin-panel">
-            <h2 style="color: #00e676; margin-bottom:10px; font-size: 16px;">👑 ADMIN DASHBOARD</h2>
-            
-            <div class="visitor-counter">
-                🟢 Live Active Visitors: <span id="online-users-count" style="font-size: 18px; color: #fff;">1</span>
-            </div>
-
-            <div class="admin-section-title" id="form-title">📤 Upload New Song / Video</div>
-            <input type="hidden" id="edit-key">
-            <input type="text" id="media-name" placeholder="Song/Video Title (Jina la wimbo)">
-            <input type="text" id="media-image" placeholder="Image Cover URL (Picha)">
-            <input type="text" id="media-audio-link" placeholder="Audio / Video Direct MP3 Link">
-            <button class="btn-submit" id="btn-save" onclick="saveMedia()">UPLOAD MEDIA 🚀</button>
-            <button class="btn-cancel" id="btn-cancel" onclick="cancelEdit()">Cancel Edit</button>
-
-            <div class="admin-section-title">📢 Manage Ads (Matangazo)</div>
-            <textarea id="ad-code-input" rows="3" placeholder="Paste Script Code au Link ya Social Bar / Ads hapa..."></textarea>
-            <button class="btn-submit" style="background:#29b6f6; color:#000;" onclick="saveAdCode()">UPDATE ADS 📢</button>
-        </div>
-
         <div class="search-container" style="display: flex; gap: 8px; margin: 15px auto 10px; width: 100%;">
-            <input type="text" id="search-input" placeholder="🔍 Search any artist or song globally..." style="flex: 1; padding: 10px 15px; border-radius: 30px; border: 2px solid #00e676; font-size: 14px; outline: none; background-color: #1a1a24; color: #fff;">
-            <button onclick="searchGlobalMedia()" style="background: #00e676; color: #000; font-weight: bold; padding: 0 20px; border: none; border-radius: 30px; cursor: pointer;">Search</button>
+            <input type="text" id="search-input" placeholder="🔍 Tafuta wimbo au msanii wowote duniani..." style="flex: 1; padding: 12px 15px; border-radius: 30px; border: 2px solid #00e676; font-size: 14px; outline: none; background-color: #1a1a24; color: #fff;">
+            <button onclick="searchGlobalMedia()" style="background: #00e676; color: #000; font-weight: bold; padding: 0 20px; border: none; border-radius: 30px; cursor: pointer;">Tafuta</button>
         </div>
 
         <div class="categories-nav">
-            <button class="cat-btn active" onclick="loadCategory('bongo', '🔥 Bongo Flava & Afrobeats', this)">🔥 Bongo Flava</button>
-            <button class="cat-btn" onclick="loadCategory('afrobeats', '🌍 Afrobeats & Amapiano', this)">🎵 Afrobeats</button>
-            <button class="cat-btn" onclick="loadCategory('hiphop', '🎤 Top Hip Hop Hits', this)">🎤 Hip Hop</button>
-            <button class="cat-btn" onclick="loadCategory('gospel', '🙌 Gospel Hits', this)">🙌 Gospel</button>
+            <button class="cat-btn active" onclick="loadCategory('afrobeats', '🔥 Top Global Afrobeats', this)">🎵 Afrobeats</button>
+            <button class="cat-btn" onclick="loadCategory('pop', '🌟 World Pop Hits', this)">🌟 Pop</button>
+            <button class="cat-btn" onclick="loadCategory('hiphop', '🎤 Global Hip Hop', this)">🎤 Hip Hop</button>
+            <button class="cat-btn" onclick="loadCategory('reggae', '🌴 Reggae & Vibes', this)">🌴 Reggae</button>
         </div>
       
         <h2 class="section-title title-related" id="related-title">🔥 Trending Worldwide</h2>
-        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Inapakia nyimbo... ⏳</div>
+        <div id="loading" style="text-align:center; color:#888; font-size: 13px;">Inatafuta nyimbo duniani... ⏳</div>
         <div class="grid-container" id="media-list"></div>
-
-        <!-- SEHEMU YA UPLOAD ZA ADMIN PEKEE -->
-        <div id="admin-uploads-section" style="display:none; margin-top: 30px;">
-            <h2 class="section-title title-related" style="border-left-color:#ff9100;">📌 Direct Admin Uploads</h2>
-            <div class="grid-container" id="admin-media-list"></div>
-        </div>
 
         <!-- SEHEMU YA MATANGAZO (ADS CONTAINER) -->
         <div class="ad-container" id="mid-ad">
@@ -269,7 +191,7 @@
             <img id="player-img" src="https://via.placeholder.com/100" alt="Cover">
             <div class="player-text">
                 <h4 id="player-title">Song Title</h4>
-                <p>Playing preview...</p>
+                <p>Inacheza Full Song...</p>
             </div>
         </div>
         <audio id="main-audio" controls autoplay controlsList="nodownload"></audio>
@@ -277,197 +199,69 @@
     </div>
 
     <script>
-        // FIREBASE SETUP GLOBAL VARIABLES
-        var firebaseConfig = {
-            apiKey: "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
-            authDomain: "makyama-e5e89.firebaseapp.com",
-            databaseURL: "https://makyama-e5e89-default-rtdb.firebaseio.com/",
-            projectId: "makyama-e5e89",
-            storageBucket: "makyama-e5e89.appspot.com",
-            messagingSenderId: "229527204095",
-            appId: "1:229527204095:web:2bdfe0589cf42794b3dcca"
-        };
-
-        var database;
-        try {
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
-            database = firebase.database();
-        } catch (error) { 
-            console.error("Firebase Initialization Error:", error); 
-        }
-
-        var isAdmin = false;
-        var adminUploadedMedia = []; 
+        // JAMENDO CLIENT ID FOR DIRECT FULL MP3 SEARCH & DOWNLOAD
+        const JAMENDO_CLIENT_ID = 'a447fa4d';
 
         function escapeQuotes(str) {
             return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
         }
 
-        // LIVE VISITORS COUNTER
-        function trackLiveVisitors() {
-            if (!database) return;
-            var myPresenceRef = database.ref('presence/' + Math.random().toString(36).substring(2, 10));
-            var connectedRef = database.ref('.info/connected');
-
-            connectedRef.on('value', function(snap) {
-                if (snap.val() === true) {
-                    myPresenceRef.onDisconnect().remove();
-                    myPresenceRef.set(true);
-                }
-            });
-
-            database.ref('presence').on('value', function(snap) {
-                var count = snap.numChildren() || 1;
-                var counterEl = document.getElementById('online-users-count');
-                if (counterEl) counterEl.innerText = count;
-            });
-        }
-
-        // ADMIN FUNCTIONS
-        function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
-        function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
-        
-        function loginAdmin() {
-            var user = document.getElementById('login-username').value;
-            var pass = document.getElementById('login-password').value;
-            if(user === "MAKYAMA" && pass === "Makame005@") {
-                isAdmin = true;
-                closeLoginModal();
-                document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('nav-action').innerHTML = `<button class="btn-logout" onclick="logoutAdmin()">🚪 Log Out</button>`;
-                renderAdminMedia();
-            } else { 
-                alert("Incorrect password or username."); 
-            }
-        }
-        
-        function logoutAdmin() {
-            isAdmin = false;
-            document.getElementById('admin-panel').style.display = 'none';
-            document.getElementById('nav-action').innerHTML = `
-                <a href="https://wa.me/255740770786" target="_blank" class="btn-wa-header">Contact</a>
-                <button onclick="openLoginModal()">🔑 Admin</button>
-            `;
-            renderAdminMedia();
-        }
-
-        // SAVE / EDIT CUSTOM MEDIA
-        function saveMedia() {
-            if (!database) return;
-            var name = document.getElementById('media-name').value;
-            var image = document.getElementById('media-image').value;
-            var audio = document.getElementById('media-audio-link').value;
-            var editKey = document.getElementById('edit-key').value;
-
-            if(!name || !audio) { alert("Tafadhali weka Jina na Link ya Media."); return; }
-
-            var payload = {
-                jina: name,
-                picha: image || "https://via.placeholder.com/300x180/252530/aaa?text=MAKYAMA+MEDIA",
-                linkAudio: audio,
-                views: 0
-            };
-
-            if(editKey) {
-                database.ref('media/' + editKey).update(payload);
-                alert("Media imebadilishwa kikamilifu!");
-            } else {
-                database.ref('media').push(payload);
-                alert("Wimbo/Video umewekwa kikamilifu!");
+        // DIRECT FULL LENGTH MP3 DOWNLOAD ENGINE
+        async function downloadDirectInSite(fileUrl, fileName) {
+            if (!fileUrl || fileUrl.trim() === '') {
+                alert("Link ya wimbo huu haipatikani kwa sasa.");
+                return;
             }
 
-            cancelEdit();
-        }
+            var noti = document.getElementById('download-noti');
+            var notiText = document.getElementById('noti-text');
+            var notiBar = document.getElementById('noti-bar');
 
-        function editMedia(key, jina, picha, linkAudio) {
-            document.getElementById('edit-key').value = key;
-            document.getElementById('media-name').value = jina;
-            document.getElementById('media-image').value = picha;
-            document.getElementById('media-audio-link').value = linkAudio;
-            
-            document.getElementById('form-title').innerText = "✏️ Edit Existing Media";
-            document.getElementById('btn-save').innerText = "UPDATE MEDIA 🔄";
-            document.getElementById('btn-cancel').style.display = "block";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+            noti.style.display = 'block';
+            notiBar.style.width = '25%';
+            notiText.innerText = "Inaandaa Full Song MP3... 25%";
 
-        function cancelEdit() {
-            document.getElementById('edit-key').value = "";
-            document.getElementById('media-name').value = "";
-            document.getElementById('media-image').value = "";
-            document.getElementById('media-audio-link').value = "";
-            
-            document.getElementById('form-title').innerText = "📤 Upload New Song / Video";
-            document.getElementById('btn-save').innerText = "UPLOAD MEDIA 🚀";
-            document.getElementById('btn-cancel').style.display = "none";
-        }
+            try {
+                const response = await fetch(fileUrl);
+                if (!response.ok) throw new Error('Fetch failed');
 
-        function deleteMedia(key) {
-            if (!database) return;
-            if (confirm("Je, una uhakika unataka kufuta wimbo/video hii?")) {
-                database.ref('media/' + key).remove();
-                alert("Imefutwa kikamilifu!");
-            }
-        }
+                notiBar.style.width = '70%';
+                notiText.innerText = "Inapakua kwenye simu yako... 70%";
 
-        // ADS ENGINE
-        function saveAdCode() {
-            if (!database) return;
-            var code = document.getElementById('ad-code-input').value.trim();
-            if(!code) return;
-            database.ref('settings/adCode').set(code, function(error) {
-                if(!error) {
-                    alert("Matangazo yamebadilishwa kikamilifu! 📢");
-                    renderAdScript(code);
-                }
-            });
-        }
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
 
-        function loadAdCode() {
-            if (!database) return;
-            database.ref('settings/adCode').on('value', function(snapshot) {
-                if(snapshot.exists()) {
-                    var code = snapshot.val();
-                    document.getElementById('ad-code-input').value = code;
-                    renderAdScript(code);
-                } else {
-                    renderAdScript('<script type="text/javascript" src="https://pl31012881.profitableratecpmnetwork.com/d8/52/06/d8520637a8affb241cd89ab415486381.js"><\/script>');
-                }
-            });
-        }
+                notiBar.style.width = '100%';
+                notiText.innerText = "Imekamilika kikamilifu! ✅";
 
-        function renderAdScript(code) {
-            var adContainer = document.getElementById('ad-slot');
-            adContainer.innerHTML = ''; 
+                // Direct One-Way Auto Download
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = fileName.replace(/[/\\?%*:|"<>]/g, '') + '.mp3';
+                document.body.appendChild(link);
+                link.click();
 
-            var existingScripts = document.querySelectorAll('.dynamic-ad-script');
-            existingScripts.forEach(s => s.remove());
+                setTimeout(() => { 
+                    document.body.removeChild(link); 
+                    window.URL.revokeObjectURL(blobUrl); 
+                    noti.style.display = 'none'; 
+                }, 1500);
 
-            var srcMatches = code.match(/src=["'](.*?)["']/g);
-
-            if (srcMatches) {
-                srcMatches.forEach(function(match) {
-                    var scriptUrl = match.replace(/src=["']/, '').replace(/["']/, '');
-                    var newScript = document.createElement('script');
-                    newScript.type = 'text/javascript';
-                    newScript.src = scriptUrl;
-                    newScript.async = true;
-                    newScript.className = 'dynamic-ad-script';
-                    document.body.appendChild(newScript);
-                });
-            }
-
-            var cleanHTML = code.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-            if (cleanHTML.trim() !== '') {
-                adContainer.innerHTML = cleanHTML;
+            } catch (e) {
+                // Background Fallback kama browser ikibania blob
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.download = fileName + '.mp3';
+                link.setAttribute('target', '_blank');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                noti.style.display = 'none';
             }
         }
 
         // PLAYER FUNCTIONS
-        function playAudio(key, link, mediaName, mediaImage) {
-            if(key && database) database.ref('media/' + key + '/views').transaction(v => (v || 0) + 1);
+        function playAudio(link, mediaName, mediaImage) {
             var playerContainer = document.getElementById('sticky-audio-player');
             var audioTag = document.getElementById('main-audio');
             document.getElementById('player-title').innerText = mediaName;
@@ -483,64 +277,7 @@
             document.getElementById('sticky-audio-player').style.display = 'none';
         }
 
-        // UNIVERSAL FULL TRACK DOWNLOAD ENGINE
-        async function downloadDirectInSite(fileUrl, fileName, key) {
-            if(key && database) database.ref('media/' + key + '/views').transaction(v => (v || 0) + 1);
-
-            var noti = document.getElementById('download-noti');
-            var notiText = document.getElementById('noti-text');
-            var notiBar = document.getElementById('noti-bar');
-
-            noti.style.display = 'block';
-            notiBar.style.width = '30%';
-            notiText.innerText = "Inaandaa Full Track MP3... 30%";
-
-            // Kama ni Admin Direct Upload
-            if (key) {
-                try {
-                    const response = await fetch(fileUrl);
-                    const blob = await response.blob();
-                    const blobUrl = window.URL.createObjectURL(blob);
-                    notiBar.style.width = '100%';
-                    notiText.innerText = "Tayari! Inapakua... 100% ✅";
-                    const link = document.createElement('a');
-                    link.href = blobUrl;
-                    link.download = fileName + '.mp3';
-                    document.body.appendChild(link);
-                    link.click();
-                    setTimeout(() => { document.body.removeChild(link); window.URL.revokeObjectURL(blobUrl); noti.style.display = 'none'; }, 1000);
-                    return;
-                } catch(e) {
-                    window.open(fileUrl, '_blank');
-                    noti.style.display = 'none';
-                    return;
-                }
-            }
-
-            // Global Full Audio Direct Converter Search
-            try {
-                notiBar.style.width = '70%';
-                notiText.innerText = "Inatafuta Wimbo Mzima... 70%";
-
-                // Direct Audio Fetch Server Api
-                let downloadEngineUrl = `https://loader.to/api/ajax/search.php?query=${encodeURIComponent(fileName)}`;
-                
-                notiBar.style.width = '100%';
-                notiText.innerText = "Inafungua Download Link... 100% ✅";
-
-                // Inafungua Mfumo Salama wa Kudownload Wimbo Mzima
-                let fullDownloadUrl = `https://cobalt.tools/#${encodeURIComponent(fileName)}`;
-                window.open(`https://www.google.com/search?q=${encodeURIComponent(fileName + " mp3 download full song")}`, '_blank');
-
-                setTimeout(() => { noti.style.display = 'none'; }, 1500);
-
-            } catch (err) {
-                window.open(`https://www.google.com/search?q=${encodeURIComponent(fileName + " mp3 download full track")}`, '_blank');
-                noti.style.display = 'none';
-            }
-        }
-
-        // FETCH GLOBAL TRACKS (ITUNES GLOBAL SEARCH)
+        // GLOBAL SEARCH ENGINE (JAMENDO SEARCH API)
         async function fetchTrendingCategory(searchTerm, titleText) {
             var mainNode = document.getElementById("media-list");
             var relatedTitle = document.getElementById("related-title");
@@ -551,7 +288,7 @@
             mainNode.innerHTML = "";
 
             try {
-                let url = `https://itunes.apple.com/search?term=${encodeURIComponent(searchTerm)}&media=music&limit=25`;
+                let url = `https://api.jamendo.com/v3.0/tracks/?client_id=${JAMENDO_CLIENT_ID}&format=json&limit=30&search=${encodeURIComponent(searchTerm)}&include=musicinfo`;
                 
                 let response = await fetch(url);
                 let data = await response.json();
@@ -559,30 +296,30 @@
                 if (loading) loading.style.display = "none";
 
                 if (!data.results || data.results.length === 0) {
-                    mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Hakuna nyimbo zilizopatikana. Jaribu kutafuta kwa jina lingine.</p>";
+                    mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Hakuna wimbo uliopatikana. Jaribu kutafuta jina lingine.</p>";
                     return;
                 }
 
                 data.results.forEach(item => {
-                    let title = item.trackCensoredName || item.trackName;
-                    let artist = item.artistName;
+                    let title = item.name;
+                    let artist = item.artist_name;
                     let fullTitle = `${artist} - ${title}`;
-                    let thumb = item.artworkUrl100.replace('100x100bb', '300x300bb');
-                    let previewAudioUrl = item.previewUrl; 
+                    let thumb = item.image || 'https://via.placeholder.com/300x300/1a1a24/fff?text=Music';
+                    let fullAudioUrl = item.audio; // Full MP3 Direct Link
                     let safeTitle = escapeQuotes(fullTitle);
 
                     let card = `
                         <div class="media-card">
-                            <img src="${thumb}" onclick="playAudio('', '${previewAudioUrl}', '${safeTitle}', '${thumb}')" style="cursor:pointer;" alt="Cover">
+                            <img src="${thumb}" onclick="playAudio('${fullAudioUrl}', '${safeTitle}', '${thumb}')" style="cursor:pointer;" alt="Cover">
                             <div class="media-details">
                                 <div class="badge-container">
-                                    <span class="badge badge-global">🔥 Global Music</span>
+                                    <span class="badge badge-global">🎵 Full Track MP3</span>
                                 </div>
                                 <div class="media-title">${fullTitle}</div>
                                 <div class="btn-container">
                                     <div class="media-actions">
-                                        <button class="btn-action btn-play-audio" onclick="playAudio('', '${previewAudioUrl}', '${safeTitle}', '${thumb}')">▶️ Play Preview</button>
-                                        <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('', '${safeTitle}')">🎧 Download Full MP3</button>
+                                        <button class="btn-action btn-play-audio" onclick="playAudio('${fullAudioUrl}', '${safeTitle}', '${thumb}')">▶️ Sikiliza</button>
+                                        <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('${fullAudioUrl}', '${safeTitle}')">⬇️ Download Full MP3</button>
                                     </div>
                                 </div>
                             </div>
@@ -592,7 +329,7 @@
                 });
             } catch (error) {
                 if (loading) loading.style.display = "none";
-                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Imeshindwa kupakia. Tafadhali jaribu tena.</p>";
+                mainNode.innerHTML = "<p style='text-align:center; color:#ff5252;'>Tatizo la mtandao. Jaribu tena baadae.</p>";
             }
         }
 
@@ -603,95 +340,18 @@
                 btnElement.classList.add('active');
             }
 
-            var queryMap = {
-                'bongo': 'Diamond Platnumz',
-                'afrobeats': 'Burnaboy',
-                'hiphop': 'Drake',
-                'gospel': 'Joel Lwaga'
-            };
-
-            fetchTrendingCategory(queryMap[type] || 'Diamond Platnumz', titleText);
+            fetchTrendingCategory(type, titleText);
         }
 
         function searchGlobalMedia() {
             var query = document.getElementById("search-input").value.trim();
             if (query === "") return;
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            fetchTrendingCategory(query, "🌍 Global Search Results...");
-        }
-
-        // DATABASE MEDIA (ADMIN UPLOADS ONLY)
-        function loadAdminMedia() {
-            if (!database) return;
-            database.ref('media').on('value', function(snapshot) {
-                adminUploadedMedia = [];
-                if (snapshot.exists()) {
-                    snapshot.forEach(function(childSnapshot) {
-                        adminUploadedMedia.push({ key: childSnapshot.key, data: childSnapshot.val() });
-                    });
-                    adminUploadedMedia.reverse();
-                }
-                renderAdminMedia();
-            });
-        }
-
-        function renderAdminMedia() {
-            var section = document.getElementById("admin-uploads-section");
-            var adminNode = document.getElementById("admin-media-list");
-
-            if (adminUploadedMedia.length === 0) {
-                section.style.display = "none";
-                return;
-            }
-
-            section.style.display = "block";
-            adminNode.innerHTML = "";
-
-            adminUploadedMedia.forEach(function(item) {
-                var data = item.data;
-                var key = item.key;
-                var mediaImage = data.picha || "https://via.placeholder.com/300x180/252530/aaa?text=MAKYAMA+MEDIA";
-                var audioLink = data.linkAudio;
-                var safePlayName = escapeQuotes(data.jina);
-                var safePlayImage = escapeQuotes(mediaImage);
-
-                var adminButtons = isAdmin ? `
-                    <div class="media-actions" style="margin-top:5px;">
-                        <button class="btn-action btn-edit-admin" onclick="editMedia('${key}', '${safePlayName}', '${safePlayImage}', '${audioLink}')">✏️ Edit</button>
-                        <button class="btn-action btn-delete-admin" onclick="deleteMedia('${key}')">🗑️ Delete</button>
-                    </div>
-                ` : "";
-
-                var card = `
-                    <div class="media-card">
-                        <img src="${mediaImage}" loading="lazy" style="cursor:pointer;" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')" alt="Cover">
-                        <div class="media-details">
-                            <div class="badge-container">
-                                <span class="badge">📌 ADMIN UPLOAD</span>
-                            </div>
-                            <div class="media-title">${data.jina}</div>
-                            <div class="btn-container">
-                                <div class="media-actions">
-                                    <button class="btn-action btn-play-audio" onclick="playAudio('${key}', '${audioLink}', '${safePlayName}', '${safePlayImage}')">▶️ Play</button>
-                                    <button class="btn-action btn-dl-audio" onclick="downloadDirectInSite('${audioLink}', '${safePlayName}', '${key}')">⬇️ Download MP3</button>
-                                </div>
-                                ${adminButtons}
-                            </div>
-                            <div class="reaction-bar">
-                                <button class="reaction-item">👁️ ${data.views || 0} Views</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                adminNode.innerHTML += card;
-            });
+            fetchTrendingCategory(query, "🌍 Matokeo ya Utangazaji...");
         }
 
         window.onload = function() { 
-            fetchTrendingCategory('Diamond Platnumz', '🔥 Bongo Flava & Afrobeats');
-            loadAdminMedia(); 
-            loadAdCode();
-            trackLiveVisitors();
+            fetchTrendingCategory('afrobeats', '🔥 Top Global Afrobeats');
         };
     </script>
 </body>
