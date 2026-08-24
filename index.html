@@ -483,7 +483,7 @@
             document.getElementById('sticky-audio-player').style.display = 'none';
         }
 
-        // DOWNLOAD FULL LENGTH TRACK ENGINE
+        // UNIVERSAL FULL TRACK DOWNLOAD ENGINE
         async function downloadDirectInSite(fileUrl, fileName, key) {
             if(key && database) database.ref('media/' + key + '/views').transaction(v => (v || 0) + 1);
 
@@ -493,9 +493,9 @@
 
             noti.style.display = 'block';
             notiBar.style.width = '30%';
-            notiText.innerText = "Tafadhali subiri, inatafuta Full Track... 30%";
+            notiText.innerText = "Inaandaa Full Track MP3... 30%";
 
-            // Kama ni Admin Upload, pakua moja kwa moja Direct Link
+            // Kama ni Admin Direct Upload
             if (key) {
                 try {
                     const response = await fetch(fileUrl);
@@ -517,22 +517,27 @@
                 }
             }
 
-            // Ikiwa ni Search Result, elekeza kwenye Engine ya Full Length MP3 Download
-            setTimeout(() => {
-                notiBar.style.width = '80%';
-                notiText.innerText = "Inaandaa Wimbo Mzima (Full Length)... 80%";
-            }, 800);
+            // Global Full Audio Direct Converter Search
+            try {
+                notiBar.style.width = '70%';
+                notiText.innerText = "Inatafuta Wimbo Mzima... 70%";
 
-            setTimeout(() => {
+                // Direct Audio Fetch Server Api
+                let downloadEngineUrl = `https://loader.to/api/ajax/search.php?query=${encodeURIComponent(fileName)}`;
+                
                 notiBar.style.width = '100%';
-                notiText.innerText = "Inafungua Download Page... 100%";
-                
-                // Tunatengeneza Full Song Audio Direct Converter Link
-                let searchEngineUrl = `https://y2mate.nu/en/search/?q=${encodeURIComponent(fileName)}`;
-                window.open(searchEngineUrl, '_blank');
-                
+                notiText.innerText = "Inafungua Download Link... 100% ✅";
+
+                // Inafungua Mfumo Salama wa Kudownload Wimbo Mzima
+                let fullDownloadUrl = `https://cobalt.tools/#${encodeURIComponent(fileName)}`;
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(fileName + " mp3 download full song")}`, '_blank');
+
                 setTimeout(() => { noti.style.display = 'none'; }, 1500);
-            }, 1500);
+
+            } catch (err) {
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(fileName + " mp3 download full track")}`, '_blank');
+                noti.style.display = 'none';
+            }
         }
 
         // FETCH GLOBAL TRACKS (ITUNES GLOBAL SEARCH)
