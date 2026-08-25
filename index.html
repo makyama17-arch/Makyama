@@ -18,7 +18,17 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Segoe UI,sans-serif}
 html,body{background:var(--bg);color:var(--text);min-height:100%;overflow-x:hidden}
-body{padding-bottom:100px}
+
+/* BACKGROUND NA LOGO KAMA ULIVYOTAKA */
+body{
+  padding-bottom:100px;
+  background-image: linear-gradient(rgba(7, 10, 9, 0.90), rgba(7, 10, 9, 0.90)), url('https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 button,input,textarea,select{font:inherit}
 button{cursor:pointer}
 header{
@@ -26,8 +36,11 @@ header{
  backdrop-filter:blur(14px);border-bottom:1px solid #1d2921;padding:13px 14px;
  display:flex;align-items:center;justify-content:space-between;gap:10px
 }
-.brand{min-width:0}.brand h1{font-size:17px;color:var(--green);white-space:nowrap}
-.brand p{font-size:10px;color:var(--muted);margin-top:3px}
+.brand{min-width:0;display:flex;align-items:center;gap:10px}
+.brand img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid var(--green)}
+.brand-text h1{font-size:17px;color:var(--green);white-space:nowrap}
+.brand-text p{font-size:10px;color:var(--muted);margin-top:3px}
+
 .header-actions{display:flex;gap:7px}
 .btn{border:0;border-radius:9px;padding:9px 11px;font-weight:800;font-size:11px}
 .btn-green{background:var(--green);color:#001b0d}.btn-dark{background:#18201b;color:#fff;border:1px solid var(--line)}
@@ -133,8 +146,11 @@ audio{width:min(330px,42vw);height:34px}
 
 <header>
   <div class="brand">
-    <h1>🎵 MAKYAMA MEDIA</h1>
-    <p>Global Music • Stream • Discover • Download Licensed Audio</p>
+    <img src="https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png" alt="Makyama Logo">
+    <div class="brand-text">
+      <h1>MAKYAMA MEDIA</h1>
+      <p>Global Music • Stream • Discover • Download Licensed Audio</p>
+    </div>
   </div>
   <div class="header-actions">
     <button class="btn btn-dark" onclick="openAdmin()">🔑 Admin</button>
@@ -269,7 +285,8 @@ function toast(msg){
 function setStatus(x){$("status").textContent=x||""}
 
 function imageFor(item){
-  return item.cover || "https://via.placeholder.com/300x300/101512/00e676?text=MAKYAMA";
+  // Inatumia picha halisi ya wimbo, kama haipo inatumia logo ya Makyama kama akiba
+  return item.cover || "https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png";
 }
 
 function injectScriptInto(container, code) {
@@ -306,7 +323,6 @@ function initAdsRealtimeListener(){
         if(ad.position === "social") {
           injectScriptInto(socialArea, ad.script);
         } else if(ad.position === "banner") {
-          // Inazalisha kadi ya matangazo chini ya search bar
           bannerArea.innerHTML += adCard(ad.script);
         }
       });
@@ -387,7 +403,7 @@ function card(t){
   return `
   <article class="card">
     <img class="cover" loading="lazy" src="${esc(imageFor(t))}" alt="${esc(t.title)}"
-         onerror="this.src='https://via.placeholder.com/300x300/101512/00e676?text=MAKYAMA'">
+         onerror="this.src='https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png'">
     <div class="info">
       <div class="badges">
         <span class="badge">${esc(t.type||"MUSIC")}</span>
@@ -415,7 +431,7 @@ function initRealtimeListener(){
           key: c.key,
           title: x.jina || "Untitled",
           artist: x.artist || "MAKYAMA",
-          cover: x.picha || "",
+          cover: x.picha || "", // Inachukua picha halisi ya wimbo kutoka Firebase
           audio: x.linkAudio || "",
           download: x.linkAudio || "",
           views: x.views || 0,
