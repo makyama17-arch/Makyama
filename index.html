@@ -49,6 +49,15 @@ header{
 .chip{flex:0 0 auto;background:var(--panel);color:#b8c1bb;border:1px solid var(--line);
  border-radius:999px;padding:8px 13px;font-size:11px;font-weight:800}
 .chip.active{background:var(--green);color:#001b0d;border-color:var(--green)}
+
+/* Eneo la Native Banners chini ya Search Bar / Chips */
+.banner-ads-container{margin:12px 0;display:flex;flex-direction:column;gap:10px}
+.ad-card{
+ background:linear-gradient(135deg,#151f18,#0f1712);
+ border:1px dashed var(--orange);border-radius:13px;padding:12px;
+ text-align:center;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:90px
+}
+
 .section{display:flex;align-items:center;justify-content:space-between;margin:10px 0}
 .section h3{font-size:17px;border-left:4px solid var(--green);padding-left:8px}
 #status{font-size:11px;color:var(--muted)}
@@ -86,15 +95,8 @@ header{
 .admin-item span{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .admin-item button{padding:6px 8px;border:0;border-radius:6px;font-size:9px;font-weight:800}
 
-/* Eneo la Social Bar juu kabisa */
+/* Social Bar ya Juu Kabisa */
 .social-wrap{margin:8px 0;text-align:center;min-height:20px}
-
-/* Muonekano wa Native Ad inayokaa katikati ya nyimbo */
-.ad-card{
- background:linear-gradient(135deg,#151f18,#0f1712);
- border:1px dashed var(--orange);border-radius:13px;padding:12px;
- text-align:center;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:90px
-}
 
 footer{text-align:center;color:#69756d;font-size:10px;padding:25px 10px}
 .player{
@@ -165,6 +167,9 @@ audio{width:min(330px,42vw);height:34px}
     <button class="chip" onclick="showDownloads(this)">⬇️ Free Downloads</button>
   </div>
 
+  <!-- NATIVE BANNERS ZINAKAA HAPA CHINI YA SEARCH BAR -->
+  <div id="bannerAdsArea" class="banner-ads-container"></div>
+
   <!-- ADMIN DASHBOARD -->
   <section id="admin" class="admin">
     <h3>👑 ADMIN DASHBOARD</h3>
@@ -174,7 +179,7 @@ audio{width:min(330px,42vw);height:34px}
       <input id="aAdName" placeholder="Jina la Ad (Mfano: Social Bar, Native Banner)">
       <select id="aAdPosition">
         <option value="social">📌 Social Bar (Sehemu ya Juu Kabisa)</option>
-        <option value="banner">📄 Native Banner (Itakaa kati-kati ya nyimbo)</option>
+        <option value="banner">📄 Native Banner (Chini ya Search Bar)</option>
       </select>
       <textarea id="aAdScript" placeholder="Weka script tag ya ad hapa..."></textarea>
       <button class="btn btn-orange" style="width:100%" onclick="addNewAd()">➕ ONGEZA AD HII</button>
@@ -203,7 +208,6 @@ audio{width:min(330px,42vw);height:34px}
     <span id="status"></span>
   </div>
 
-  <!-- Orodha ya nyimbo na Native Ads katikati yake -->
   <div id="results" class="grid">
     <div class="loading">Loading music… ⏳</div>
   </div>
@@ -249,7 +253,6 @@ try{
 
 let admin=false;
 let allTracksList=[];
-let globalAdsList=[];
 let currentFilter = "trending";
 
 const $=id=>document.getElementById(id);
@@ -276,27 +279,40 @@ function injectScriptInto(container, code) {
   container.appendChild(fragment);
 }
 
+function adCard(adCode){
+  return `
+  <div class="ad-card">
+    <span style="font-size:9px;color:var(--orange);margin-bottom:4px;font-weight:bold">ADVERTISEMENT</span>
+    <div style="width:100%;overflow:hidden">${adCode}</div>
+  </div>`;
+}
+
 function initAdsRealtimeListener(){
   if(!db) return;
   db.ref("ads").on("value", snap => {
     const socialArea = $("socialAdsArea");
+    const bannerArea = $("bannerAdsArea");
     socialArea.innerHTML = "";
-    globalAdsList = [];
+    bannerArea.innerHTML = "";
+    
+    const adsList = [];
 
     if(snap.exists()){
       snap.forEach(child => {
         const ad = child.val();
         ad.key = child.key;
-        globalAdsList.push(ad);
+        adsList.push(ad);
 
         if(ad.position === "social") {
           injectScriptInto(socialArea, ad.script);
+        } else if(ad.position === "banner") {
+          // Inazalisha kadi ya matangazo chini ya search bar
+          bannerArea.innerHTML += adCard(ad.script);
         }
       });
     }
 
-    if(admin) renderAdminAdsList(globalAdsList);
-    applyCurrentFilter();
+    if(admin) renderAdminAdsList(adsList);
   });
 }
 
@@ -388,14 +404,6 @@ function card(t){
   </article>`;
 }
 
-function adCard(adCode){
-  return `
-  <div class="ad-card">
-    <span style="font-size:9px;color:var(--orange);margin-bottom:4px;font-weight:bold">ADVERTISEMENT</span>
-    <div style="width:100%;overflow:hidden">${adCode}</div>
-  </div>`;
-}
-
 function initRealtimeListener(){
   if(!db) return;
   db.ref("media").on("value", snap => {
@@ -434,21 +442,7 @@ function render(list, title){
     return;
   }
 
-  const bannerAds = globalAdsList.filter(a => a.position === "banner");
-  let htmlContent = "";
-  let adIndex = 0;
-
-  list.forEach((t, index) => {
-    htmlContent += card(t);
-
-    if((index + 1) % 4 === 0 && bannerAds.length > 0) {
-      const currentAd = bannerAds[adIndex % bannerAds.length];
-      htmlContent += adCard(currentAd.script);
-      adIndex++;
-    }
-  });
-
-  $("results").innerHTML = htmlContent;
+  $("results").innerHTML = list.map(card).join("");
   setStatus(list.length + " results");
 }
 
