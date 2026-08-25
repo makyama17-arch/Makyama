@@ -19,7 +19,6 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Segoe UI,sans-serif}
 html,body{background:var(--bg);color:var(--text);min-height:100%;overflow-x:hidden}
 
-/* BACKGROUND NA LOGO KAMA ULIVYOTAKA */
 body{
   padding-bottom:100px;
   background-image: linear-gradient(rgba(7, 10, 9, 0.90), rgba(7, 10, 9, 0.90)), url('https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png');
@@ -63,7 +62,6 @@ header{
  border-radius:999px;padding:8px 13px;font-size:11px;font-weight:800}
 .chip.active{background:var(--green);color:#001b0d;border-color:var(--green)}
 
-/* Eneo la Native Banners chini ya Search Bar / Chips */
 .banner-ads-container{margin:12px 0;display:flex;flex-direction:column;gap:10px}
 .ad-card{
  background:linear-gradient(135deg,#151f18,#0f1712);
@@ -108,7 +106,6 @@ header{
 .admin-item span{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .admin-item button{padding:6px 8px;border:0;border-radius:6px;font-size:9px;font-weight:800}
 
-/* Social Bar ya Juu Kabisa */
 .social-wrap{margin:8px 0;text-align:center;min-height:20px}
 
 footer{text-align:center;color:#69756d;font-size:10px;padding:25px 10px}
@@ -159,7 +156,6 @@ audio{width:min(330px,42vw);height:34px}
 
 <div id="toast" class="toast"></div>
 
-<!-- Social Bar / Ad ya Juu Kabisa -->
 <div id="socialAdsArea" class="social-wrap"></div>
 
 <main class="wrap">
@@ -183,10 +179,8 @@ audio{width:min(330px,42vw);height:34px}
     <button class="chip" onclick="showDownloads(this)">⬇️ Free Downloads</button>
   </div>
 
-  <!-- NATIVE BANNERS ZINAKAA HAPA CHINI YA SEARCH BAR -->
   <div id="bannerAdsArea" class="banner-ads-container"></div>
 
-  <!-- ADMIN DASHBOARD -->
   <section id="admin" class="admin">
     <h3>👑 ADMIN DASHBOARD</h3>
     
@@ -285,7 +279,6 @@ function toast(msg){
 function setStatus(x){$("status").textContent=x||""}
 
 function imageFor(item){
-  // Inatumia picha halisi ya wimbo, kama haipo inatumia logo ya Makyama kama akiba
   return item.cover || "https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png";
 }
 
@@ -393,8 +386,25 @@ function closePlayer(){
 }
 
 async function downloadTrack(t){
-  if(!t.download){toast("Haipakiliki moja kwa moja.");return;}
-  window.open(t.download,"_blank");
+  if(!t.download){ toast("Haipakiliki moja kwa moja."); return; }
+  
+  toast("Inapakua faili lenye kava...");
+  try {
+    const response = await fetch(t.download);
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = (t.title || 'Makyama_Music') + '.mp3';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (err) {
+    window.open(t.download, '_blank');
+  }
 }
 
 function card(t){
@@ -408,7 +418,7 @@ function card(t){
       <div class="badges">
         <span class="badge">${esc(t.type||"MUSIC")}</span>
         <span class="badge views">🎧 ${views} views</span>
-        ${canDownload?'<span class="badge orange">DOWNLOAD</span>':""}
+        ${canDownload?'<span class="badge orange">WITH COVER</span>':""}
       </div>
       <div class="title">${esc(t.title)}</div>
       <div class="artist">${esc(t.artist||"Unknown artist")}</div>
@@ -431,7 +441,7 @@ function initRealtimeListener(){
           key: c.key,
           title: x.jina || "Untitled",
           artist: x.artist || "MAKYAMA",
-          cover: x.picha || "", // Inachukua picha halisi ya wimbo kutoka Firebase
+          cover: x.picha || "", 
           audio: x.linkAudio || "",
           download: x.linkAudio || "",
           views: x.views || 0,
@@ -594,3 +604,5 @@ window.addEventListener("load",()=>{
 </script>
 </body>
 </html>
+
+
