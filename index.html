@@ -291,41 +291,52 @@ function imageFor(item){
   return item.cover || "https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png";
 }
 
+// SEHEMU ILIYOREKEBISHWA ILI KUSOMA NA KUWEZESHA SCRIPT ZA ADS KUFANYA KAZI
 function injectScriptInto(container, code) {
-  container.innerHTML = ""; // Safisha kwanza kama kulikuwa na kitu
+  container.innerHTML = "";
   
-  // Tunachuja na kuangalia kama script inaandikwa kwa tag ya <script> au ni plain text
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = code;
   
   const scripts = tempDiv.getElementsByTagName('script');
   
   if (scripts.length > 0) {
-    // Kama kuna script tag, tunazitengeneza upya na kuzi-inject kwa usahihi ili browser izisome
+    // Tunachukua maandishi yote yaliyo nje ya script kwanza kama yapo
+    const cloneContainer = tempDiv.cloneNode(true);
+    Array.from(cloneContainer.getElementsByTagName('script')).forEach(s => s.remove());
+    if(cloneContainer.innerHTML.trim()){
+      const htmlDiv = document.createElement('div');
+      htmlDiv.innerHTML = cloneContainer.innerHTML;
+      container.appendChild(htmlDiv);
+    }
+
+    // Tunatengeneza upya script zote na kuzisukuma kwenye ukurasa ili kivinjari kiweze kuzi-run
     Array.from(scripts).forEach(oldScript => {
       const newScript = document.createElement('script');
-      // Nakili attributes zote (mfano: src, async, data-cfasync, n.k.)
       Array.from(oldScript.attributes).forEach(attr => {
         newScript.setAttribute(attr.name, attr.value);
       });
-      // Kama ina script ndani yake (inline script)
       if (oldScript.innerHTML) {
         newScript.innerHTML = oldScript.innerHTML;
       }
       container.appendChild(newScript);
     });
   } else {
-    // Kama ni HTML/CSS ya kawaida bila script tag
     container.innerHTML = code;
   }
 }
 
-
 function adCard(adCode){
+  const wrapperId = "ad_box_" + Math.random().toString(36.substring(2, 9));
+  setTimeout(() => {
+    const el = document.getElementById(wrapperId);
+    if(el) injectScriptInto(el, adCode);
+  }, 100);
+
   return `
   <div class="ad-card">
     <span style="font-size:9px;color:var(--orange);margin-bottom:4px;font-weight:bold">ADVERTISEMENT</span>
-    <div style="width:100%;overflow:hidden">${adCode}</div>
+    <div id="${wrapperId}" style="width:100%;overflow:hidden"></div>
   </div>`;
 }
 
@@ -342,7 +353,6 @@ function initPresenceSystem(){
     }
   });
 
-  // Kusikiliza idadi na kuonyesha kwenye dashboard
   connectionsRef.on("value", snap => {
     const count = snap.numChildren();
     const counterEl = $("liveUsersCount");
@@ -443,23 +453,15 @@ function closePlayer(){
 async function downloadTrack(t){
   if(!t.download){ toast("Haipakiliki moja kwa moja."); return; }
   
-  toast("Inapakua faili lenye kava...");
-  try {
-    const response = await fetch(t.download);
-    const blob = await response.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = blobUrl;
-    a.download = (t.title || 'Makyama_Music') + '.mp3';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    
-    window.URL.revokeObjectURL(blobUrl);
-  } catch (err) {
-    window.open(t.download, '_blank');
-  }
+  toast("Inapakua faili...");
+  const a = document.createElement('a');
+  a.href = t.download;
+  const fileName = (t.title ? t.title.replace(/[^a-zA-Z0-9]/g, '_') : 'Makyama_Music') + '.mp3';
+  a.setAttribute('download', fileName);
+  a.setAttribute('target', '_self');
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 function card(t){
@@ -589,7 +591,6 @@ function loadTrending(btn){
 function quickFilter(keyword, btn){
   document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
   if(btn) btn.classList.add("active");
-  $("q5").value = keyword; // keeping safe reference
   $("q").value = keyword;
   searchMusic();
 }
@@ -656,9 +657,8 @@ $("q").addEventListener("keydown",e=>{if(e.key==="Enter")searchMusic()});
 window.addEventListener("load",()=>{
   initRealtimeListener();
   initAdsRealtimeListener();
-  initPresenceSystem(); // Inaanzisha ufuatiliaji wa watu wote waliopo live
+  initPresenceSystem();
 });
 </script>
 </body>
 </html>
-
