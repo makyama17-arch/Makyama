@@ -62,14 +62,13 @@ header{
 .badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px}
 .badge{font-size:8px;padding:3px 5px;border-radius:5px;background:#123d27;color:var(--green);font-weight:900}
 .badge.orange{background:#3d2b0d;color:#ffb52e}
-.badge.blue{background:#102d3d;color:#58c7ff}
+.badge.views{background:#1a2733;color:#64b5f6}
 .title{font-size:13px;font-weight:900;line-height:1.25}
 .artist{font-size:11px;color:#a8b3ab;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .meta{font-size:9px;color:#69756d;margin-top:3px}
 .actions{display:flex;gap:6px;margin-top:auto;padding-top:8px}
 .actions button{flex:1;padding:7px 5px;border-radius:7px;border:0;font-size:10px;font-weight:900}
 .play{background:transparent;color:var(--green);border:1px solid var(--green)!important}
-.open{background:#222c25;color:#fff}
 .download{background:var(--green);color:#001b0d}
 .empty,.loading{
  background:var(--panel);border:1px dashed #334238;border-radius:12px;
@@ -143,7 +142,7 @@ audio{width:min(330px,42vw);height:34px}
   </div>
 
   <div class="chips">
-    <button class="chip active" onclick="loadAllMusic('🔥 Trending Worldwide', this)">🔥 Trending</button>
+    <button class="chip active" onclick="loadTrending(this)">🔥 Trending</button>
     <button class="chip" onclick="quickFilter('Bongo', this)">🇹🇿 Bongo</button>
     <button class="chip" onclick="quickFilter('Afrobeats', this)">🌍 Afrobeats</button>
     <button class="chip" onclick="quickFilter('Amapiano', this)">🎹 Amapiano</button>
@@ -218,7 +217,7 @@ try{
 
 let admin=false;
 let allTracksList=[];
-let activeListener=null;
+let currentFilter = "trending";
 
 const $=id=>document.getElementById(id);
 
@@ -237,8 +236,18 @@ function imageFor(item){
   return item.cover || "https://via.placeholder.com/300x300/101512/00e676?text=MAKYAMA";
 }
 
+// Function ya kuongeza view count mtumiaji akibonyeza Play
+function incrementView(key){
+  if(!db || !key) return;
+  db.ref("media/" + key + "/views").transaction(current => (current || 0) + 1);
+}
+
 function playTrack(t){
   if(!t.audio){toast("Audio haipo kwa sasa.");return}
+  
+  // Ongeza View
+  incrementView(t.key);
+
   $("pcover").src=imageFor(t);
   $("ptitle").textContent=t.title;
   $("partist").textContent=t.artist||"";
@@ -259,6 +268,7 @@ async function downloadTrack(t){
 
 function card(t){
   const canPlay=!!t.audio, canDownload=!!t.download;
+  const views = t.views || 0;
   return `
   <article class="card">
     <img class="cover" loading="lazy" src="${esc(imageFor(t))}" alt="${esc(t.title)}"
@@ -266,6 +276,7 @@ function card(t){
     <div class="info">
       <div class="badges">
         <span class="badge">${esc(t.type||"MUSIC")}</span>
+        <span class="badge views">🎧 ${views} views</span>
         ${canDownload?'<span class="badge orange">DOWNLOAD</span>':""}
       </div>
       <div class="title">${esc(t.title)}</div>
@@ -278,25 +289,37 @@ function card(t){
   </article>`;
 }
 
-async function getAdminTracks(){
-  if(!db)return [];
-  const snap=await db.ref("media").once("value");
-  const out=[];
-  if(snap.exists()){
-    snap.forEach(c=>{
-      const x=c.val()||{};
-      out.push({
-        key:c.key,title:x.jina||"Untitled",artist:x.artist||"MAKYAMA",
-        cover:x.picha||"",audio:x.linkAudio||"",
-        download:x.linkAudio||"",type:"MAKYAMA"
+// Real-time listener: Website inaji-update yenyewe nyimbo mpya zikiingia au views zikiongezeka
+function initRealtimeListener(){
+  if(!db) return;
+  db.ref("media").on("value", snap => {
+    const out = [];
+    if(snap.exists()){
+      snap.forEach(c => {
+        const x = c.val() || {};
+        out.push({
+          key: c.key,
+          title: x.jina || "Untitled",
+          artist: x.artist || "MAKYAMA",
+          cover: x.picha || "",
+          audio: x.linkAudio || "",
+          download: x.linkAudio || "",
+          views: x.views || 0,
+          type: "MAKYAMA"
+        });
       });
-    });
-  }
-  return out.reverse();
+    }
+
+    // Panga kwa Trending (Zenye views nyingi zikae juu kabisa)
+    allTracksList = out.sort((a, b) => (b.views || 0) - (a.views || 0));
+    
+    // Refresh muonekano
+    applyCurrentFilter();
+  });
 }
 
-function render(list,title){
-  $("sectionTitle").textContent=title;
+function render(list, title){
+  $("sectionTitle").textContent = title;
   if(!list.length){
     $("results").innerHTML=`
       <div class="empty">
@@ -307,94 +330,82 @@ function render(list,title){
     setStatus("0 results");
     return;
   }
-  $("results").innerHTML=list.map(card).join("");
-  setStatus(list.length+" results");
+  $("results").innerHTML = list.map(card).join("");
+  setStatus(list.length + " results");
 }
 
 async function sendTermuxRequest(query) {
   if(!db) return;
-  const reqRef = db.ref("requests");
-  await reqRef.push({
+  await db.ref("requests").push({
     query: query,
     timestamp: Date.now()
   });
 }
 
-function listenForNewTracks(query) {
-  if(!db) return;
-  if(activeListener) db.ref("media").off("child_added", activeListener);
-
-  activeListener = db.ref("media").limitToLast(1).on("child_added", (snap) => {
-    const val = snap.val();
-    if (val && val.jina) {
-      const jinaLower = val.jina.toLowerCase();
-      const queryLower = query.toLowerCase();
-      
-      if (jinaLower.includes(queryLower) || queryLower.includes(jinaLower)) {
-        toast("🎉 Wimbo mpya umeongezwa kikamilifu!");
-        searchMusic();
-      }
-    }
-  });
-}
-
-async function searchMusic(){
-  const q=$("q").value.trim();
-  if(!q) return;
-
-  $("sectionTitle").textContent="🔎 "+q;
-  $("results").innerHTML='<div class="loading">Searching database… ⏳</div>';
-  setStatus("Searching…");
-
-  try {
-    allTracksList = await getAdminTracks();
-    
-    const searchTerms = q.toLowerCase().split(" ").filter(term => term.length > 0);
-    
+function applyCurrentFilter(){
+  const q = $("q").value.trim().toLowerCase();
+  
+  if(q){
+    const searchTerms = q.split(" ").filter(term => term.length > 0);
     const filtered = allTracksList.filter(x => {
-      const title = (x.title || '').toLowerCase();
-      const artist = (x.artist || '').toLowerCase();
-      const combined = title + " " + artist;
-      
+      const combined = ((x.title || '') + " " + (x.artist || '')).toLowerCase();
       return searchTerms.every(term => combined.includes(term));
     });
 
     if (filtered.length === 0) {
-      await sendTermuxRequest(q);
-      render([], "🔎 "+q);
-      listenForNewTracks(q);
+      render([], "🔎 " + $("q").value);
     } else {
-      render(filtered, "🔎 "+q);
+      render(filtered, "🔎 " + $("q").value);
     }
-  } catch(e) {
-    console.error(e);
-    $("results").innerHTML='<div class="empty">Search failed. Try again.</div>';
+  } else if(currentFilter === "downloads"){
+    const downloadsOnly = allTracksList.filter(x => !!x.download);
+    render(downloadsOnly, "⬇️ Downloadable Audio");
+  } else {
+    render(allTracksList, "🔥 Trending Worldwide");
   }
 }
 
-async function loadAllMusic(title, btn){
+async function searchMusic(){
+  const q = $("q").value.trim();
+  if(!q) return;
+
+  $("results").innerHTML = '<div class="loading">Searching database… ⏳</div>';
+  
+  const searchTerms = q.toLowerCase().split(" ").filter(term => term.length > 0);
+  const filtered = allTracksList.filter(x => {
+    const combined = ((x.title || '') + " " + (x.artist || '')).toLowerCase();
+    return searchTerms.every(term => combined.includes(term));
+  });
+
+  if (filtered.length === 0) {
+    await sendTermuxRequest(q);
+    render([], "🔎 " + q);
+  } else {
+    render(filtered, "🔎 " + q);
+  }
+}
+
+function loadTrending(btn){
   document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
   if(btn) btn.classList.add("active");
   $("q").value = "";
-  $("results").innerHTML='<div class="loading">Loading music… ⏳</div>';
-  allTracksList = await getAdminTracks();
-  render(allTracksList, title);
+  currentFilter = "trending";
+  applyCurrentFilter();
 }
 
-async function quickFilter(keyword, btn){
+function quickFilter(keyword, btn){
   document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
   if(btn) btn.classList.add("active");
   $("q").value = keyword;
   searchMusic();
 }
 
-async function showDownloads(btn){
+function showDownloads(btn){
   document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
   if(btn) btn.classList.add("active");
   $("q").value = "";
-  allTracksList = await getAdminTracks();
-  const downloadsOnly = allTracksList.filter(x => !!x.download);
-  render(downloadsOnly, "⬇️ Downloadable Audio");
+  currentFilter = "downloads";
+  applyCurrentFilter();
 }
 
 function openAdmin(){$("login").style.display="flex"}
@@ -418,6 +429,7 @@ async function saveAdminTrack(){
     artist:$("aArtist").value.trim(),
     picha:$("aCover").value.trim(),
     linkAudio:$("aAudio").value.trim(),
+    views: 0,
     createdAt:Date.now()
   };
   if(!data.jina||!data.linkAudio){toast("Weka title na audio URL.");return}
@@ -434,7 +446,7 @@ async function loadAdminList(){
   if(snap.exists())snap.forEach(c=>arr.push({key:c.key,data:c.val()}));
   $("adminList").innerHTML=arr.reverse().map(x=>`
     <div class="admin-item">
-      <span>${esc(x.data.jina||"Untitled")}</span>
+      <span>${esc(x.data.jina||"Untitled")} (${x.data.views||0} views)</span>
       <button class="btn-red" onclick="deleteAdminTrack('${x.key}')">DELETE</button>
     </div>`).join("") || '<div style="color:#69756d;font-size:10px">No tracks.</div>';
 }
@@ -448,7 +460,7 @@ async function deleteAdminTrack(key){
 $("q").addEventListener("keydown",e=>{if(e.key==="Enter")searchMusic()});
 
 window.addEventListener("load",()=>{
-  loadAllMusic("🔥 Trending Worldwide", null);
+  initRealtimeListener();
 });
 </script>
 </body>
