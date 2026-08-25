@@ -19,7 +19,7 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Segoe UI,sans-serif}
 html,body{background:var(--bg);color:var(--text);min-height:100%;overflow-x:hidden}
 body{padding-bottom:100px}
-button,input{font:inherit}
+button,input,textarea,select{font:inherit}
 button{cursor:pointer}
 header{
  position:sticky;top:0;z-index:1000;background:rgba(7,10,9,.96);
@@ -65,7 +65,6 @@ header{
 .badge.views{background:#1a2733;color:#64b5f6}
 .title{font-size:13px;font-weight:900;line-height:1.25}
 .artist{font-size:11px;color:#a8b3ab;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.meta{font-size:9px;color:#69756d;margin-top:3px}
 .actions{display:flex;gap:6px;margin-top:auto;padding-top:8px}
 .actions button{flex:1;padding:7px 5px;border-radius:7px;border:0;font-size:10px;font-weight:900}
 .play{background:transparent;color:var(--green);border:1px solid var(--green)!important}
@@ -79,12 +78,18 @@ header{
  padding:13px;margin:12px 0
 }
 .admin h3{color:var(--green);font-size:15px;margin-bottom:10px}
-.admin input{width:100%;background:#151d18;color:#fff;border:1px solid var(--line);padding:10px;border-radius:8px;margin-bottom:8px;outline:0}
+.admin input,.admin textarea,.admin select{width:100%;background:#151d18;color:#fff;border:1px solid var(--line);padding:10px;border-radius:8px;margin-bottom:8px;outline:0}
+.admin textarea{height:60px;resize:none;font-size:11px;font-family:monospace}
 .admin-row{display:flex;gap:7px}.admin-row>*{flex:1}
 .admin-list{margin-top:12px;display:grid;gap:7px}
 .admin-item{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#151d18;padding:8px;border-radius:8px}
 .admin-item span{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .admin-item button{padding:6px 8px;border:0;border-radius:6px;font-size:9px;font-weight:800}
+
+/* Container za maeneo ya Ads */
+.ads-wrapper{margin:10px 0;display:flex;flex-direction:column;gap:10px}
+.ad-box{text-align:center;min-height:40px;background:var(--panel);border:1px dashed var(--line);border-radius:10px;padding:5px;overflow:hidden}
+
 footer{text-align:center;color:#69756d;font-size:10px;padding:25px 10px}
 .player{
  position:fixed;left:0;right:0;bottom:0;z-index:2000;background:#0c120e;
@@ -130,11 +135,17 @@ audio{width:min(330px,42vw);height:34px}
 
 <div id="toast" class="toast"></div>
 
+<!-- Container ya Ads za Juu (Mfano: Social Banner) -->
+<div id="socialAdsArea" class="ads-wrapper"></div>
+
 <main class="wrap">
   <section class="hero">
     <h2>Discover music <span>worldwide.</span></h2>
     <p>Tafuta msanii au wimbo kutoka kwenye music catalog.</p>
   </section>
+
+  <!-- Container ya Ads za Kawaida (Native Banner) -->
+  <div id="bannerAdsArea" class="ads-wrapper"></div>
 
   <div class="search">
     <input id="q" placeholder="🔎 Search artist or song — mfano Alan Walker" autocomplete="off">
@@ -151,15 +162,35 @@ audio{width:min(330px,42vw);height:34px}
     <button class="chip" onclick="showDownloads(this)">⬇️ Free Downloads</button>
   </div>
 
+  <!-- ADMIN DASHBOARD -->
   <section id="admin" class="admin">
     <h3>👑 ADMIN DASHBOARD</h3>
+    
+    <!-- SEHEMU YA KU-ADD AD MPYA -->
+    <div style="background:#151d18;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line)">
+      <h4 style="color:var(--orange);font-size:12px;margin-bottom:6px">📢 ONGEZA AD MPYA (ADD AD)</h4>
+      <input id="aAdName" placeholder="Jina la Ad (Mfano: Social Banner, Popunder, Banner 1)">
+      <select id="aAdPosition">
+        <option value="social">📌 Sehemu ya Juu (Social Banner / Popunder)</option>
+        <option value="banner">📄 Sehemu ya Kati (Native / Banner Ad)</option>
+      </select>
+      <textarea id="aAdScript" placeholder="Weka script tag ya ad hapa..."></textarea>
+      <button class="btn btn-orange" style="width:100%" onclick="addNewAd()">➕ ONGEZA AD HII</button>
+    </div>
+
+    <!-- Orodha ya Ads zilizopo ili uzione au kuzifuta -->
+    <div style="background:#151d18;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line)">
+      <h4 style="color:var(--green);font-size:12px;margin-bottom:6px">📋 ORODHA YA ADS ZINAZOFANYA KAZI</h4>
+      <div id="adminAdsList" class="admin-list"></div>
+    </div>
+
+    <!-- Sehemu ya Kuweka Nyimbo -->
     <div class="admin-row">
       <input id="aTitle" placeholder="Song title">
       <input id="aArtist" placeholder="Artist">
     </div>
     <input id="aCover" placeholder="Cover image URL">
     <input id="aAudio" placeholder="Direct audio URL (MP3/M4A)">
-    <input id="aSource" placeholder="Official/source URL">
     <div class="admin-row">
       <button class="btn btn-green" onclick="saveAdminTrack()">➕ ADD TRACK</button>
       <button class="btn btn-red" onclick="logoutAdmin()">LOGOUT</button>
@@ -236,7 +267,88 @@ function imageFor(item){
   return item.cover || "https://via.placeholder.com/300x300/101512/00e676?text=MAKYAMA";
 }
 
-// Function ya kuongeza view count mtumiaji akibonyeza Play
+// Function ya ku-execute Script za Ads kikamilifu kwenye HTML Container
+function renderAdScriptInto(container, code) {
+  const box = document.createElement("div");
+  box.className = "ad-box";
+  container.appendChild(box);
+  
+  const range = document.createRange();
+  range.selectNode(box);
+  const fragment = range.createContextualFragment(code);
+  box.appendChild(fragment);
+}
+
+// System ya kusoma na kuonyesha Ads ZOTE zilizohifadhiwa
+function initAdsRealtimeListener(){
+  if(!db) return;
+  db.ref("ads").on("value", snap => {
+    const socialArea = $("socialAdsArea");
+    const bannerArea = $("bannerAdsArea");
+    socialArea.innerHTML = "";
+    bannerArea.innerHTML = "";
+
+    const adsList = [];
+
+    if(snap.exists()){
+      snap.forEach(child => {
+        const ad = child.val();
+        ad.key = child.key;
+        adsList.push(ad);
+
+        if(ad.position === "social") {
+          renderAdScriptInto(socialArea, ad.script);
+        } else {
+          renderAdScriptInto(bannerArea, ad.script);
+        }
+      });
+    }
+
+    if(admin) renderAdminAdsList(adsList);
+  });
+}
+
+// Function ya Kuongeza Ad Mpya (ADD AD)
+async function addNewAd(){
+  if(!admin || !db) return;
+  const name = $("aAdName").value.trim() || "Ad";
+  const position = $("aAdPosition").value;
+  const script = $("aAdScript").value.trim();
+
+  if(!script){ toast("Tafadhali weka script tag ya Ad!"); return; }
+
+  await db.ref("ads").push({
+    name: name,
+    position: position,
+    script: script,
+    createdAt: Date.now()
+  });
+
+  $("aAdName").value = "";
+  $("aAdScript").value = "";
+  toast("🎉 Ad mpya imeongezwa kikamilifu!");
+}
+
+// Orodha ya Ads kwenye Admin Dashboard
+function renderAdminAdsList(ads){
+  if(!ads.length){
+    $("adminAdsList").innerHTML = '<div style="color:#69756d;font-size:10px">Hakuna Ads kwa sasa.</div>';
+    return;
+  }
+  $("adminAdsList").innerHTML = ads.map(a => `
+    <div class="admin-item">
+      <span>📢 ${esc(a.name)} (${a.position})</span>
+      <button class="btn-red" onclick="deleteAd('${a.key}')">FUTA</button>
+    </div>
+  `).join("");
+}
+
+async function deleteAd(key){
+  if(!confirm("Unahakika unataka kufuta Ad hii?")) return;
+  await db.ref("ads/" + key).remove();
+  toast("Ad imefutwa.");
+}
+
 function incrementView(key){
   if(!db || !key) return;
   db.ref("media/" + key + "/views").transaction(current => (current || 0) + 1);
@@ -244,10 +356,7 @@ function incrementView(key){
 
 function playTrack(t){
   if(!t.audio){toast("Audio haipo kwa sasa.");return}
-  
-  // Ongeza View
   incrementView(t.key);
-
   $("pcover").src=imageFor(t);
   $("ptitle").textContent=t.title;
   $("partist").textContent=t.artist||"";
@@ -289,7 +398,6 @@ function card(t){
   </article>`;
 }
 
-// Real-time listener: Website inaji-update yenyewe nyimbo mpya zikiingia au views zikiongezeka
 function initRealtimeListener(){
   if(!db) return;
   db.ref("media").on("value", snap => {
@@ -310,10 +418,7 @@ function initRealtimeListener(){
       });
     }
 
-    // Panga kwa Trending (Zenye views nyingi zikae juu kabisa)
     allTracksList = out.sort((a, b) => (b.views || 0) - (a.views || 0));
-    
-    // Refresh muonekano
     applyCurrentFilter();
   });
 }
@@ -461,6 +566,7 @@ $("q").addEventListener("keydown",e=>{if(e.key==="Enter")searchMusic()});
 
 window.addEventListener("load",()=>{
   initRealtimeListener();
+  initAdsRealtimeListener();
 });
 </script>
 </body>
