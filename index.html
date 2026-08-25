@@ -86,9 +86,15 @@ header{
 .admin-item span{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .admin-item button{padding:6px 8px;border:0;border-radius:6px;font-size:9px;font-weight:800}
 
-/* Container za maeneo ya Ads */
-.ads-wrapper{margin:10px 0;display:flex;flex-direction:column;gap:10px}
-.ad-box{text-align:center;min-height:40px;background:var(--panel);border:1px dashed var(--line);border-radius:10px;padding:5px;overflow:hidden}
+/* Sehemu ya Social Bar ya Juu kabisa */
+.social-wrap{margin:10px 0;text-align:center;min-height:30px}
+
+/* Staili ya Native Ad itakayokaa kati ya nyimbo */
+.ad-card{
+ background:linear-gradient(135deg,#151f18,#0f1712);
+ border:1px dashed var(--orange);border-radius:13px;padding:12px;
+ text-align:center;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:90px
+}
 
 footer{text-align:center;color:#69756d;font-size:10px;padding:25px 10px}
 .player{
@@ -135,17 +141,14 @@ audio{width:min(330px,42vw);height:34px}
 
 <div id="toast" class="toast"></div>
 
-<!-- Container ya Ads za Juu (Mfano: Social Banner) -->
-<div id="socialAdsArea" class="ads-wrapper"></div>
+<!-- Social Bar / Ad ya Juu Kabisa -->
+<div id="socialAdsArea" class="social-wrap"></div>
 
 <main class="wrap">
   <section class="hero">
     <h2>Discover music <span>worldwide.</span></h2>
     <p>Tafuta msanii au wimbo kutoka kwenye music catalog.</p>
   </section>
-
-  <!-- Container ya Ads za Kawaida (Native Banner) -->
-  <div id="bannerAdsArea" class="ads-wrapper"></div>
 
   <div class="search">
     <input id="q" placeholder="🔎 Search artist or song — mfano Alan Walker" autocomplete="off">
@@ -169,16 +172,16 @@ audio{width:min(330px,42vw);height:34px}
     <!-- SEHEMU YA KU-ADD AD MPYA -->
     <div style="background:#151d18;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line)">
       <h4 style="color:var(--orange);font-size:12px;margin-bottom:6px">📢 ONGEZA AD MPYA (ADD AD)</h4>
-      <input id="aAdName" placeholder="Jina la Ad (Mfano: Social Banner, Popunder, Banner 1)">
+      <input id="aAdName" placeholder="Jina la Ad (Mfano: Social Bar, Native Banner)">
       <select id="aAdPosition">
-        <option value="social">📌 Sehemu ya Juu (Social Banner / Popunder)</option>
-        <option value="banner">📄 Sehemu ya Kati (Native / Banner Ad)</option>
+        <option value="social">📌 Social Bar (Sehemu ya Juu Kabisa)</option>
+        <option value="banner">📄 Native Banner (Itakaa kati-kati ya nyimbo)</option>
       </select>
       <textarea id="aAdScript" placeholder="Weka script tag ya ad hapa..."></textarea>
       <button class="btn btn-orange" style="width:100%" onclick="addNewAd()">➕ ONGEZA AD HII</button>
     </div>
 
-    <!-- Orodha ya Ads zilizopo ili uzione au kuzifuta -->
+    <!-- Orodha ya Ads zilizopo -->
     <div style="background:#151d18;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line)">
       <h4 style="color:var(--green);font-size:12px;margin-bottom:6px">📋 ORODHA YA ADS ZINAZOFANYA KAZI</h4>
       <div id="adminAdsList" class="admin-list"></div>
@@ -203,6 +206,7 @@ audio{width:min(330px,42vw);height:34px}
     <span id="status"></span>
   </div>
 
+  <!-- Hapa ndipo Grid ya Nyimbo na Native Ads zitakapochanganywa katikati -->
   <div id="results" class="grid">
     <div class="loading">Loading music… ⏳</div>
   </div>
@@ -248,6 +252,7 @@ try{
 
 let admin=false;
 let allTracksList=[];
+let globalAdsList=[];
 let currentFilter = "trending";
 
 const $=id=>document.getElementById(id);
@@ -267,48 +272,40 @@ function imageFor(item){
   return item.cover || "https://via.placeholder.com/300x300/101512/00e676?text=MAKYAMA";
 }
 
-// Function ya ku-execute Script za Ads kikamilifu kwenye HTML Container
-function renderAdScriptInto(container, code) {
-  const box = document.createElement("div");
-  box.className = "ad-box";
-  container.appendChild(box);
-  
+// Kuweka script kwenye container husika
+function injectScriptInto(container, code) {
   const range = document.createRange();
-  range.selectNode(box);
+  range.selectNode(container);
   const fragment = range.createContextualFragment(code);
-  box.appendChild(fragment);
+  container.appendChild(fragment);
 }
 
-// System ya kusoma na kuonyesha Ads ZOTE zilizohifadhiwa
+// Kusoma Ads kutoka Firebase Realtime
 function initAdsRealtimeListener(){
   if(!db) return;
   db.ref("ads").on("value", snap => {
     const socialArea = $("socialAdsArea");
-    const bannerArea = $("bannerAdsArea");
     socialArea.innerHTML = "";
-    bannerArea.innerHTML = "";
-
-    const adsList = [];
+    globalAdsList = [];
 
     if(snap.exists()){
       snap.forEach(child => {
         const ad = child.val();
         ad.key = child.key;
-        adsList.push(ad);
+        globalAdsList.push(ad);
 
+        // Kama ni Social Bar, iweke juu kabisa
         if(ad.position === "social") {
-          renderAdScriptInto(socialArea, ad.script);
-        } else {
-          renderAdScriptInto(bannerArea, ad.script);
+          injectScriptInto(socialArea, ad.script);
         }
       });
     }
 
-    if(admin) renderAdminAdsList(adsList);
+    if(admin) renderAdminAdsList(globalAdsList);
+    applyCurrentFilter(); // Re-render ili Native ads zijipange kati ya nyimbo
   });
 }
 
-// Function ya Kuongeza Ad Mpya (ADD AD)
 async function addNewAd(){
   if(!admin || !db) return;
   const name = $("aAdName").value.trim() || "Ad";
@@ -329,7 +326,6 @@ async function addNewAd(){
   toast("🎉 Ad mpya imeongezwa kikamilifu!");
 }
 
-// Orodha ya Ads kwenye Admin Dashboard
 function renderAdminAdsList(ads){
   if(!ads.length){
     $("adminAdsList").innerHTML = '<div style="color:#69756d;font-size:10px">Hakuna Ads kwa sasa.</div>';
@@ -398,6 +394,14 @@ function card(t){
   </article>`;
 }
 
+function adCard(adCode){
+  return `
+  <div class="ad-card">
+    <span style="font-size:9px;color:var(--orange);margin-bottom:4px;font-weight:bold">ADVERTISEMENT</span>
+    <div style="width:100%;overflow:hidden">${adCode}</div>
+  </div>`;
+}
+
 function initRealtimeListener(){
   if(!db) return;
   db.ref("media").on("value", snap => {
@@ -435,7 +439,24 @@ function render(list, title){
     setStatus("0 results");
     return;
   }
-  $("results").innerHTML = list.map(card).join("");
+
+  // Chuja Native Ads pekee zinazotakiwa kukaa kati ya nyimbo
+  const bannerAds = globalAdsList.filter(a => a.position === "banner");
+  let htmlContent = "";
+  let adIndex = 0;
+
+  list.forEach((t, index) => {
+    htmlContent += card(t);
+
+    // Kila baada ya nyimbo 4, ingiza Native Banner moja katikati (kama ipo)
+    if((index + 1) % 4 === 0 && bannerAds.length > 0) {
+      const currentAd = bannerAds[adIndex % bannerAds.length];
+      htmlContent += adCard(currentAd.script);
+      adIndex++;
+    }
+  });
+
+  $("results").innerHTML = htmlContent;
   setStatus(list.length + " results");
 }
 
