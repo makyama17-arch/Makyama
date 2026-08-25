@@ -86,10 +86,10 @@ header{
 .admin-item span{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .admin-item button{padding:6px 8px;border:0;border-radius:6px;font-size:9px;font-weight:800}
 
-/* Sehemu ya Social Bar ya Juu kabisa */
-.social-wrap{margin:10px 0;text-align:center;min-height:30px}
+/* Eneo la Social Bar juu kabisa */
+.social-wrap{margin:8px 0;text-align:center;min-height:20px}
 
-/* Staili ya Native Ad itakayokaa kati ya nyimbo */
+/* Muonekano wa Native Ad inayokaa katikati ya nyimbo */
 .ad-card{
  background:linear-gradient(135deg,#151f18,#0f1712);
  border:1px dashed var(--orange);border-radius:13px;padding:12px;
@@ -169,7 +169,6 @@ audio{width:min(330px,42vw);height:34px}
   <section id="admin" class="admin">
     <h3>👑 ADMIN DASHBOARD</h3>
     
-    <!-- SEHEMU YA KU-ADD AD MPYA -->
     <div style="background:#151d18;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line)">
       <h4 style="color:var(--orange);font-size:12px;margin-bottom:6px">📢 ONGEZA AD MPYA (ADD AD)</h4>
       <input id="aAdName" placeholder="Jina la Ad (Mfano: Social Bar, Native Banner)">
@@ -181,13 +180,11 @@ audio{width:min(330px,42vw);height:34px}
       <button class="btn btn-orange" style="width:100%" onclick="addNewAd()">➕ ONGEZA AD HII</button>
     </div>
 
-    <!-- Orodha ya Ads zilizopo -->
     <div style="background:#151d18;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line)">
       <h4 style="color:var(--green);font-size:12px;margin-bottom:6px">📋 ORODHA YA ADS ZINAZOFANYA KAZI</h4>
       <div id="adminAdsList" class="admin-list"></div>
     </div>
 
-    <!-- Sehemu ya Kuweka Nyimbo -->
     <div class="admin-row">
       <input id="aTitle" placeholder="Song title">
       <input id="aArtist" placeholder="Artist">
@@ -206,7 +203,7 @@ audio{width:min(330px,42vw);height:34px}
     <span id="status"></span>
   </div>
 
-  <!-- Hapa ndipo Grid ya Nyimbo na Native Ads zitakapochanganywa katikati -->
+  <!-- Orodha ya nyimbo na Native Ads katikati yake -->
   <div id="results" class="grid">
     <div class="loading">Loading music… ⏳</div>
   </div>
@@ -272,7 +269,6 @@ function imageFor(item){
   return item.cover || "https://via.placeholder.com/300x300/101512/00e676?text=MAKYAMA";
 }
 
-// Kuweka script kwenye container husika
 function injectScriptInto(container, code) {
   const range = document.createRange();
   range.selectNode(container);
@@ -280,7 +276,6 @@ function injectScriptInto(container, code) {
   container.appendChild(fragment);
 }
 
-// Kusoma Ads kutoka Firebase Realtime
 function initAdsRealtimeListener(){
   if(!db) return;
   db.ref("ads").on("value", snap => {
@@ -294,7 +289,6 @@ function initAdsRealtimeListener(){
         ad.key = child.key;
         globalAdsList.push(ad);
 
-        // Kama ni Social Bar, iweke juu kabisa
         if(ad.position === "social") {
           injectScriptInto(socialArea, ad.script);
         }
@@ -302,7 +296,7 @@ function initAdsRealtimeListener(){
     }
 
     if(admin) renderAdminAdsList(globalAdsList);
-    applyCurrentFilter(); // Re-render ili Native ads zijipange kati ya nyimbo
+    applyCurrentFilter();
   });
 }
 
@@ -440,7 +434,6 @@ function render(list, title){
     return;
   }
 
-  // Chuja Native Ads pekee zinazotakiwa kukaa kati ya nyimbo
   const bannerAds = globalAdsList.filter(a => a.position === "banner");
   let htmlContent = "";
   let adIndex = 0;
@@ -448,7 +441,6 @@ function render(list, title){
   list.forEach((t, index) => {
     htmlContent += card(t);
 
-    // Kila baada ya nyimbo 4, ingiza Native Banner moja katikati (kama ipo)
     if((index + 1) % 4 === 0 && bannerAds.length > 0) {
       const currentAd = bannerAds[adIndex % bannerAds.length];
       htmlContent += adCard(currentAd.script);
