@@ -1,0 +1,42 @@
+{
+  "name": "MAKYAMA MEDIA",
+  "short_name": "Makyama",
+  "description": "Global Music, Stream, Discover and Download audio tracks easily.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#070a09",
+  "theme_color": "#07110c",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["music", "entertainment", "media"],
+  "screenshots": [
+    {
+      "src": "https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Makyama Media Desktop View"
+    },
+    {
+      "src": "https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Makyama Media Mobile View"
+    }
+  ]
+}
