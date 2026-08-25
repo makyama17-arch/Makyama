@@ -108,7 +108,7 @@ audio{width:min(330px,42vw);height:34px}
 .toast{
  position:fixed;top:75px;left:50%;transform:translateX(-50%);z-index:5000;
  background:var(--green);color:#001b0d;font-size:11px;font-weight:900;padding:10px 15px;
- border-radius:9px;display:none;max-width:90%;text-align:center
+ border-radius:99px;display:none;max-width:90%;text-align:center;box-shadow: 0 4px 15px rgba(0,230,118,0.3)
 }
 @media(min-width:650px){
  .grid{grid-template-columns:1fr 1fr}
@@ -138,17 +138,17 @@ audio{width:min(330px,42vw);height:34px}
   </section>
 
   <div class="search">
-    <input id="q" placeholder="🔎 Search artist or song — mfano Diamond Platnumz" autocomplete="off">
+    <input id="q" placeholder="🔎 Search artist or song — mfano Alan Walker" autocomplete="off">
     <button class="btn btn-green" onclick="searchMusic()">SEARCH</button>
   </div>
 
   <div class="chips">
-    <button class="chip active" onclick="quickSearch('Trending Worldwide',this)">🔥 Trending</button>
-    <button class="chip" onclick="quickSearch('Bongo Flava',this)">🇹🇿 Bongo</button>
-    <button class="chip" onclick="quickSearch('Afrobeats',this)">🌍 Afrobeats</button>
-    <button class="chip" onclick="quickSearch('Amapiano',this)">🎹 Amapiano</button>
-    <button class="chip" onclick="quickSearch('Hip Hop',this)">🎤 Hip Hop</button>
-    <button class="chip" onclick="quickSearch('Gospel',this)">🙌 Gospel</button>
+    <button class="chip active" onclick="loadAllMusic('🔥 Trending Worldwide', this)">🔥 Trending</button>
+    <button class="chip" onclick="quickFilter('Bongo', this)">🇹🇿 Bongo</button>
+    <button class="chip" onclick="quickFilter('Afrobeats', this)">🌍 Afrobeats</button>
+    <button class="chip" onclick="quickFilter('Amapiano', this)">🎹 Amapiano</button>
+    <button class="chip" onclick="quickFilter('Hip Hop', this)">🎤 Hip Hop</button>
+    <button class="chip" onclick="quickFilter('Gospel', this)">🙌 Gospel</button>
     <button class="chip" onclick="showDownloads(this)">⬇️ Free Downloads</button>
   </div>
 
@@ -217,17 +217,22 @@ try{
 }catch(e){console.warn("Firebase unavailable",e)}
 
 let admin=false;
-let allResults=[];
+let allTracksList=[];
+let activeListener=null;
 
 const $=id=>document.getElementById(id);
+
 function esc(v){
   return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 }
+
 function toast(msg){
   $("toast").textContent=msg;$("toast").style.display="block";
-  clearTimeout(window.__toast);window.__toast=setTimeout(()=>$("toast").style.display="none",3000);
+  clearTimeout(window.__toast);window.__toast=setTimeout(()=>$("toast").style.display="none",4000);
 }
+
 function setStatus(x){$("status").textContent=x||""}
+
 function imageFor(item){
   return item.cover || "https://via.placeholder.com/300x300/101512/00e676?text=MAKYAMA";
 }
@@ -241,6 +246,7 @@ function playTrack(t){
   $("audio").src=t.audio;
   $("audio").play().catch(()=>{});
 }
+
 function closePlayer(){
   $("audio").pause();$("audio").removeAttribute("src");$("audio").load();
   $("player").style.display="none";
@@ -290,23 +296,21 @@ async function getAdminTracks(){
 }
 
 function render(list,title){
-  allResults=list;
   $("sectionTitle").textContent=title;
   if(!list.length){
     $("results").innerHTML=`
       <div class="empty">
-        <p>⚠️ Wimbo haujapatikana kwenye Server.</p>
-        <p style="margin-top:8px;color:var(--green)"><strong>Bot ya Termux imejulishwa! Inautafuta na kuupakia sasa hivi... 🚀</strong></p>
-        <p style="margin-top:5px;font-size:10px">Subiri sekunde chache kisha u-refresh ukurasa.</p>
+        <p style="font-size:14px;font-weight:bold;color:#fff">⚠️ Wimbo huu haujapatikana kwa sasa.</p>
+        <p style="margin-top:10px;color:var(--green);font-size:13px"><strong>Tafadhali subiri wimbo wako unatafutwa na kuandaliwa... 🚀</strong></p>
+        <p style="margin-top:6px;color:var(--muted);font-size:11px">Usiangalie sehemu nyingine, ukipatikana utatokea hapa hapa kiotomatiki!</p>
       </div>`;
-    setStatus("");
+    setStatus("0 results");
     return;
   }
   $("results").innerHTML=list.map(card).join("");
   setStatus(list.length+" results");
 }
 
-// Lengo la kutuma maombi kwenye Firebase `requests` wakati wimbo haupo
 async function sendTermuxRequest(query) {
   if(!db) return;
   const reqRef = db.ref("requests");
@@ -316,54 +320,81 @@ async function sendTermuxRequest(query) {
   });
 }
 
+function listenForNewTracks(query) {
+  if(!db) return;
+  if(activeListener) db.ref("media").off("child_added", activeListener);
+
+  activeListener = db.ref("media").limitToLast(1).on("child_added", (snap) => {
+    const val = snap.val();
+    if (val && val.jina) {
+      const jinaLower = val.jina.toLowerCase();
+      const queryLower = query.toLowerCase();
+      
+      if (jinaLower.includes(queryLower) || queryLower.includes(jinaLower)) {
+        toast("🎉 Wimbo mpya umeongezwa kikamilifu!");
+        searchMusic();
+      }
+    }
+  });
+}
+
 async function searchMusic(){
   const q=$("q").value.trim();
-  if(!q)return;
+  if(!q) return;
+
   $("sectionTitle").textContent="🔎 "+q;
   $("results").innerHTML='<div class="loading">Searching database… ⏳</div>';
   setStatus("Searching…");
-  try{
-    const m=await getAdminTracks();
-    const filtered = m.filter(x => 
-      x.title.toLowerCase().includes(q.toLowerCase()) || 
-      x.artist.toLowerCase().includes(q.toLowerCase())
-    );
+
+  try {
+    allTracksList = await getAdminTracks();
+    
+    const searchTerms = q.toLowerCase().split(" ").filter(term => term.length > 0);
+    
+    const filtered = allTracksList.filter(x => {
+      const title = (x.title || '').toLowerCase();
+      const artist = (x.artist || '').toLowerCase();
+      const combined = title + " " + artist;
+      
+      return searchTerms.every(term => combined.includes(term));
+    });
 
     if (filtered.length === 0) {
-      // Wimbo haupo - Tuma ombi kwenda Termux
       await sendTermuxRequest(q);
       render([], "🔎 "+q);
-      
-      // Kusikiliza ikiwa Termux imekamilisha na kuweka wimbo
-      db.ref("media").limitToLast(1).on("child_added", (snap) => {
-        const val = snap.val();
-        if (val && val.jina && val.jina.toLowerCase().includes(q.toLowerCase())) {
-          toast("🎉 Wimbo mpya umeongezwa na Bot!");
-          searchMusic();
-        }
-      });
+      listenForNewTracks(q);
     } else {
       render(filtered, "🔎 "+q);
     }
-  }catch(e){
+  } catch(e) {
     console.error(e);
-    $("results").innerHTML='<div class="empty">Search failed.</div>';
+    $("results").innerHTML='<div class="empty">Search failed. Try again.</div>';
   }
 }
 
-function quickSearch(q,btn){
+async function loadAllMusic(title, btn){
   document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
-  if(btn)btn.classList.add("active");
-  $("q").value=q;
+  if(btn) btn.classList.add("active");
+  $("q").value = "";
+  $("results").innerHTML='<div class="loading">Loading music… ⏳</div>';
+  allTracksList = await getAdminTracks();
+  render(allTracksList, title);
+}
+
+async function quickFilter(keyword, btn){
+  document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  $("q").value = keyword;
   searchMusic();
 }
 
 async function showDownloads(btn){
   document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
-  if(btn)btn.classList.add("active");
-  $("sectionTitle").textContent="⬇️ Downloadable Audio";
-  const m=await getAdminTracks();
-  render(m,"⬇️ Downloadable Audio");
+  if(btn) btn.classList.add("active");
+  $("q").value = "";
+  allTracksList = await getAdminTracks();
+  const downloadsOnly = allTracksList.filter(x => !!x.download);
+  render(downloadsOnly, "⬇️ Downloadable Audio");
 }
 
 function openAdmin(){$("login").style.display="flex"}
@@ -416,10 +447,8 @@ async function deleteAdminTrack(key){
 
 $("q").addEventListener("keydown",e=>{if(e.key==="Enter")searchMusic()});
 
-window.addEventListener("load",async()=>{
-  $("results").innerHTML='<div class="loading">Loading music… ⏳</div>';
-  const m=await getAdminTracks();
-  render(m,"🔥 Trending Worldwide");
+window.addEventListener("load",()=>{
+  loadAllMusic("🔥 Trending Worldwide", null);
 });
 </script>
 </body>
