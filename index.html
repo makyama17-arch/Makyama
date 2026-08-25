@@ -99,7 +99,7 @@ header{
 }
 .admin h3{color:var(--green);font-size:15px;margin-bottom:10px}
 .admin input,.admin textarea,.admin select{width:100%;background:#151d18;color:#fff;border:1px solid var(--line);padding:10px;border-radius:8px;margin-bottom:8px;outline:0}
-.admin textarea{height:60px;resize:none;font-size:11px;font-family:monospace}
+.admin textarea{height:80px;resize:none;font-size:11px;font-family:monospace}
 .admin-row{display:flex;gap:7px}.admin-row>*{flex:1}
 .admin-list{margin-top:12px;display:grid;gap:7px}
 .admin-item{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#151d18;padding:8px;border-radius:8px}
@@ -156,6 +156,7 @@ audio{width:min(330px,42vw);height:34px}
 
 <div id="toast" class="toast"></div>
 
+<!-- ENEO LA SOCIAL BAR -->
 <div id="socialAdsArea" class="social-wrap"></div>
 
 <main class="wrap">
@@ -179,28 +180,28 @@ audio{width:min(330px,42vw);height:34px}
     <button class="chip" onclick="showDownloads(this)">⬇️ Free Downloads</button>
   </div>
 
+  <!-- ENEO LA NATIVE BANNER -->
   <div id="bannerAdsArea" class="banner-ads-container"></div>
 
   <section id="admin" class="admin">
     <h3>👑 ADMIN DASHBOARD</h3>
     
-    <!-- KISANDUKU CHA LIVE USERS KUONEYSHA WOTE WALIOMO SASA HIVI -->
     <div style="background:#151d18;padding:12px;border-radius:10px;margin-bottom:12px;border:1px solid var(--green);display:flex;align-items:center;justify-content:space-between">
       <div>
         <h4 style="color:var(--green);font-size:13px">🟢 WATU WAPO LIVE KWENYE WEBSITE</h4>
-        <p style="font-size:10px;color:var(--muted);margin-top:2px">IDadi ya watumiaji waliounganishwa sasa hivi</p>
+        <p style="font-size:10px;color:var(--muted);margin-top:2px">Idadi ya watumiaji waliounganishwa sasa hivi</p>
       </div>
       <div id="liveUsersCount" style="background:var(--green);color:#001b0d;font-weight:900;font-size:16px;padding:6px 14px;border-radius:99px">0</div>
     </div>
 
     <div style="background:#151d18;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line)">
-      <h4 style="color:var(--orange);font-size:12px;margin-bottom:6px">📢 ONGEZA AD MPYA (ADD AD)</h4>
+      <h4 style="color:var(--orange);font-size:12px;margin-bottom:6px">📢 ONGEZA AD MPYA (Copy & Paste toka Adsterra)</h4>
       <input id="aAdName" placeholder="Jina la Ad (Mfano: Social Bar, Native Banner)">
       <select id="aAdPosition">
         <option value="social">📌 Social Bar (Sehemu ya Juu Kabisa)</option>
         <option value="banner">📄 Native Banner (Chini ya Search Bar)</option>
       </select>
-      <textarea id="aAdScript" placeholder="Weka script tag ya ad hapa..."></textarea>
+      <textarea id="aAdScript" placeholder="Paste script na div zote kutoka Adsterra hapa moja kwa moja..."></textarea>
       <button class="btn btn-orange" style="width:100%" onclick="addNewAd()">➕ ONGEZA AD HII</button>
     </div>
 
@@ -291,56 +292,52 @@ function imageFor(item){
   return item.cover || "https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png";
 }
 
-// SEHEMU ILIYOREKEBISHWA ILI KUSOMA NA KUWEZESHA SCRIPT ZA ADS KUFANYA KAZI
+// INJECT SCRIPT NA HTML NZIMA KUTOKA ADSTERRA BILA KUCHAGUA KITU
 function injectScriptInto(container, code) {
   container.innerHTML = "";
-  
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = code;
   
-  const scripts = tempDiv.getElementsByTagName('script');
-  
-  if (scripts.length > 0) {
-    // Tunachukua maandishi yote yaliyo nje ya script kwanza kama yapo
-    const cloneContainer = tempDiv.cloneNode(true);
-    Array.from(cloneContainer.getElementsByTagName('script')).forEach(s => s.remove());
-    if(cloneContainer.innerHTML.trim()){
-      const htmlDiv = document.createElement('div');
-      htmlDiv.innerHTML = cloneContainer.innerHTML;
-      container.appendChild(htmlDiv);
+  // Hamisha HTML tags zote za kawaida (kama vile div za Native Banner)
+  const children = Array.from(tempDiv.children);
+  children.forEach(child => {
+    if(child.tagName.toLowerCase() !== 'script') {
+      container.appendChild(child);
     }
+  });
 
-    // Tunatengeneza upya script zote na kuzisukuma kwenye ukurasa ili kivinjari kiweze kuzi-run
-    Array.from(scripts).forEach(oldScript => {
-      const newScript = document.createElement('script');
-      Array.from(oldScript.attributes).forEach(attr => {
-        newScript.setAttribute(attr.name, attr.value);
-      });
-      if (oldScript.innerHTML) {
-        newScript.innerHTML = oldScript.innerHTML;
-      }
-      container.appendChild(newScript);
-    });
-  } else {
+  // Ikiwa hakuna HTML tag maalum, weka code yote kama ilivyo kwenye container
+  if(container.children.length === 0) {
     container.innerHTML = code;
   }
+
+  // Chomoa script zote zilizomo na uzirudishe upya ili kivinjari kiweze kuzi-run
+  const scripts = tempDiv.getElementsByTagName('script');
+  Array.from(scripts).forEach(oldScript => {
+    const newScript = document.createElement('script');
+    Array.from(oldScript.attributes).forEach(attr => {
+      newScript.setAttribute(attr.name, attr.value);
+    });
+    if (oldScript.innerHTML) {
+      newScript.innerHTML = oldScript.innerHTML;
+    }
+    container.appendChild(newScript);
+  });
 }
 
 function adCard(adCode){
-  const wrapperId = "ad_box_" + Math.random().toString(36.substring(2, 9));
+  const wrapperId = "ad_box_" + Math.random().toString(36).substring(2, 9);
   setTimeout(() => {
     const el = document.getElementById(wrapperId);
     if(el) injectScriptInto(el, adCode);
-  }, 100);
+  }, 150);
 
   return `
   <div class="ad-card">
-    <span style="font-size:9px;color:var(--orange);margin-bottom:4px;font-weight:bold">ADVERTISEMENT</span>
     <div id="${wrapperId}" style="width:100%;overflow:hidden"></div>
   </div>`;
 }
 
-// MFUMO WA KUFUATILIA WATU WAPO LIVE KWENYE WEBSITE
 function initPresenceSystem(){
   if(!db) return;
   const connectionsRef = db.ref("server_stats/connected_users");
@@ -407,7 +404,7 @@ async function addNewAd(){
 
   $("aAdName").value = "";
   $("aAdScript").value = "";
-  toast("🎉 Ad mpya imeongezwa kikamilifu!");
+  toast("🎉 Ad imewekwa na itasoma moja kwa moja!");
 }
 
 function renderAdminAdsList(ads){
