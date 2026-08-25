@@ -1,4 +1,4 @@
-<!DOCKTYPE html>
+<!DOCTYPE html>
 <html lang="sw">
 <head>
 <meta charset="UTF-8">
@@ -134,7 +134,7 @@ audio{width:min(330px,42vw);height:34px}
 <main class="wrap">
   <section class="hero">
     <h2>Discover music <span>worldwide.</span></h2>
-    <p>Tafuta msanii au wimbo kutoka kwenye music catalog. Mainstream tracks zinaweza kuonyeshwa kama metadata na source rasmi; downloads zinapatikana kwa tracks zinazoruhusu download.</p>
+    <p>Tafuta msanii au wimbo kutoka kwenye music catalog.</p>
   </section>
 
   <div class="search">
@@ -196,19 +196,10 @@ audio{width:min(330px,42vw);height:34px}
     <input id="user" placeholder="Username">
     <input id="pass" type="password" placeholder="Password">
     <button class="btn btn-green" onclick="loginAdmin()">LOGIN</button>
-    <p style="color:#77837b;font-size:9px;margin-top:9px">Badilisha credentials kwenye Firebase Authentication kabla ya production. Usihifadhi password halisi kwenye frontend.</p>
   </div>
 </div>
 
 <script>
-/* =========================================================
-   MAKYAMA MEDIA — NEW VERSION
-   1) iTunes Search: global metadata + legal preview where available
-   2) Jamendo: licensed/open catalog + downloads where allowed
-   3) Firebase: your own admin uploads
-   ========================================================= */
-
-/* ---------- FIREBASE ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
   authDomain: "makyama-e5e89.firebaseapp.com",
@@ -227,37 +218,22 @@ try{
 
 let admin=false;
 let allResults=[];
-let currentMode="global";
 
-/*
-  JAMENDO:
-  You MUST replace this with your own Jamendo client_id.
-  Get it from Jamendo developer portal.
-*/
-const JAMENDO_CLIENT_ID="PASTE_YOUR_JAMENDO_CLIENT_ID_HERE";
-
-/* ---------- HELPERS ---------- */
 const $=id=>document.getElementById(id);
 function esc(v){
   return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 }
 function toast(msg){
   $("toast").textContent=msg;$("toast").style.display="block";
-  clearTimeout(window.__toast);window.__toast=setTimeout(()=>$("toast").style.display="none",2500);
+  clearTimeout(window.__toast);window.__toast=setTimeout(()=>$("toast").style.display="none",3000);
 }
 function setStatus(x){$("status").textContent=x||""}
-function fmtTime(ms){
-  if(!ms)return "";
-  let s=Math.round(ms/1000),m=Math.floor(s/60),r=s%60;
-  return `${m}:${String(r).padStart(2,"0")}`;
-}
 function imageFor(item){
   return item.cover || "https://via.placeholder.com/300x300/101512/00e676?text=MAKYAMA";
 }
 
-/* ---------- PLAYER ---------- */
 function playTrack(t){
-  if(!t.audio){toast("Audio preview/full audio haipo kwa source hii.");return}
+  if(!t.audio){toast("Audio haipo kwa sasa.");return}
   $("pcover").src=imageFor(t);
   $("ptitle").textContent=t.title;
   $("partist").textContent=t.artist||"";
@@ -270,30 +246,11 @@ function closePlayer(){
   $("player").style.display="none";
 }
 
-/* ---------- SAFE DOWNLOAD ---------- */
 async function downloadTrack(t){
-  if(!t.download){
-    if(t.source){window.open(t.source,"_blank","noopener");toast("Download haijawezeshwa na source. Nimefungua source rasmi.");}
-    else toast("Track hii haina download iliyoruhusiwa.");
-    return;
-  }
-  try{
-    const r=await fetch(t.download);
-    if(!r.ok)throw new Error("download failed");
-    const blob=await r.blob();
-    const u=URL.createObjectURL(blob);
-    const a=document.createElement("a");
-    a.href=u;a.download=(t.artist+" - "+t.title).replace(/[\\/:*?"<>|]/g,"_")+".mp3";
-    document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(u),3000);
-    toast("Download imeanza ✅");
-  }catch(e){
-    window.open(t.download,"_blank","noopener");
-    toast("Browser imefungua download source.");
-  }
+  if(!t.download){toast("Haipakiliki moja kwa moja.");return;}
+  window.open(t.download,"_blank");
 }
 
-/* ---------- CARD ---------- */
 function card(t){
   const canPlay=!!t.audio, canDownload=!!t.download;
   return `
@@ -304,65 +261,17 @@ function card(t){
       <div class="badges">
         <span class="badge">${esc(t.type||"MUSIC")}</span>
         ${canDownload?'<span class="badge orange">DOWNLOAD</span>':""}
-        ${t.preview?'<span class="badge blue">PREVIEW</span>':""}
       </div>
       <div class="title">${esc(t.title)}</div>
       <div class="artist">${esc(t.artist||"Unknown artist")}</div>
-      <div class="meta">${esc(t.album||"")} ${t.duration?"• "+fmtTime(t.duration):""}</div>
       <div class="actions">
         ${canPlay?`<button class="play" onclick='playTrack(${JSON.stringify(t)})'>▶ PLAY</button>`:""}
-        ${t.source?`<button class="open" onclick="window.open('${esc(t.source)}','_blank','noopener')">↗ SOURCE</button>`:""}
         ${canDownload?`<button class="download" onclick='downloadTrack(${JSON.stringify(t)})'>⬇ DOWNLOAD</button>`:""}
       </div>
     </div>
   </article>`;
 }
 
-/* ---------- ITUNES GLOBAL SEARCH ---------- */
-async function searchITunes(q){
-  const url="https://itunes.apple.com/search?term="+encodeURIComponent(q)+"&media=music&entity=song&limit=25";
-  const r=await fetch(url);
-  if(!r.ok)throw new Error("iTunes request failed");
-  const d=await r.json();
-  return (d.results||[]).map(x=>({
-    title:x.trackName||"Unknown",
-    artist:x.artistName||"Unknown",
-    album:x.collectionName||"",
-    cover:(x.artworkUrl600||x.artworkUrl100||"").replace("100x100","600x600"),
-    audio:x.previewUrl||"",
-    preview:!!x.previewUrl,
-    download:"",
-    source:x.trackViewUrl||x.collectionViewUrl||"",
-    type:"GLOBAL",
-    duration:x.trackTimeMillis||0,
-    popularity:x.trackId||0
-  }));
-}
-
-/* ---------- JAMENDO LICENSED DOWNLOAD SEARCH ---------- */
-async function searchJamendo(q){
-  if(!JAMENDO_CLIENT_ID || JAMENDO_CLIENT_ID.includes("PASTE_")) return [];
-  const url="https://api.jamendo.com/v3.0/tracks/?client_id="+encodeURIComponent(JAMENDO_CLIENT_ID)
-    +"&format=json&limit=25&audioformat=mp32&namesearch="+encodeURIComponent(q)
-    +"&include=musicinfo";
-  const r=await fetch(url);
-  if(!r.ok)throw new Error("Jamendo request failed");
-  const d=await r.json();
-  return (d.results||[]).map(x=>({
-    title:x.name||"Unknown",
-    artist:x.artist_name||"Unknown",
-    album:x.album_name||"",
-    cover:x.album_image||x.image||"",
-    audio:x.audio||"",
-    preview:true,
-    download:(x.audiodownload_allowed && x.audiodownload)||"",
-    source:x.shareurl||x.shorturl||"",
-    type:"LICENSED",
-    duration:x.duration?x.duration*1000:0
-  }));
-}
-
-/* ---------- FIREBASE ADMIN TRACKS ---------- */
 async function getAdminTracks(){
   if(!db)return [];
   const snap=await db.ref("media").once("value");
@@ -372,20 +281,24 @@ async function getAdminTracks(){
       const x=c.val()||{};
       out.push({
         key:c.key,title:x.jina||"Untitled",artist:x.artist||"MAKYAMA",
-        album:x.album||"",cover:x.picha||"",audio:x.linkAudio||"",
-        download:x.linkAudio||"",source:x.source||"",type:"MAKYAMA"
+        cover:x.picha||"",audio:x.linkAudio||"",
+        download:x.linkAudio||"",type:"MAKYAMA"
       });
     });
   }
   return out.reverse();
 }
 
-/* ---------- RENDER ---------- */
 function render(list,title){
   allResults=list;
   $("sectionTitle").textContent=title;
   if(!list.length){
-    $("results").innerHTML='<div class="empty">Hakuna results. Jaribu jina jingine.</div>';
+    $("results").innerHTML=`
+      <div class="empty">
+        <p>⚠️ Wimbo haujapatikana kwenye Server.</p>
+        <p style="margin-top:8px;color:var(--green)"><strong>Bot ya Termux imejulishwa! Inautafuta na kuupakia sasa hivi... 🚀</strong></p>
+        <p style="margin-top:5px;font-size:10px">Subiri sekunde chache kisha u-refresh ukurasa.</p>
+      </div>`;
     setStatus("");
     return;
   }
@@ -393,27 +306,48 @@ function render(list,title){
   setStatus(list.length+" results");
 }
 
-/* ---------- SEARCH ---------- */
+// Lengo la kutuma maombi kwenye Firebase `requests` wakati wimbo haupo
+async function sendTermuxRequest(query) {
+  if(!db) return;
+  const reqRef = db.ref("requests");
+  await reqRef.push({
+    query: query,
+    timestamp: Date.now()
+  });
+}
+
 async function searchMusic(){
   const q=$("q").value.trim();
   if(!q)return;
-  currentMode="global";
   $("sectionTitle").textContent="🔎 "+q;
-  $("results").innerHTML='<div class="loading">Searching global catalog… ⏳</div>';
+  $("results").innerHTML='<div class="loading">Searching database… ⏳</div>';
   setStatus("Searching…");
   try{
-    const [itunes,jamendo,adminTracks]=await Promise.allSettled([
-      searchITunes(q),searchJamendo(q),getAdminTracks()
-    ]);
-    const a=itunes.status==="fulfilled"?itunes.value:[];
-    const j=jamendo.status==="fulfilled"?jamendo.value:[];
-    const m=adminTracks.status==="fulfilled"?adminTracks.value:[];
-    const merged=[...m,...j,...a];
-    render(merged,"🔎 "+q);
+    const m=await getAdminTracks();
+    const filtered = m.filter(x => 
+      x.title.toLowerCase().includes(q.toLowerCase()) || 
+      x.artist.toLowerCase().includes(q.toLowerCase())
+    );
+
+    if (filtered.length === 0) {
+      // Wimbo haupo - Tuma ombi kwenda Termux
+      await sendTermuxRequest(q);
+      render([], "🔎 "+q);
+      
+      // Kusikiliza ikiwa Termux imekamilisha na kuweka wimbo
+      db.ref("media").limitToLast(1).on("child_added", (snap) => {
+        const val = snap.val();
+        if (val && val.jina && val.jina.toLowerCase().includes(q.toLowerCase())) {
+          toast("🎉 Wimbo mpya umeongezwa na Bot!");
+          searchMusic();
+        }
+      });
+    } else {
+      render(filtered, "🔎 "+q);
+    }
   }catch(e){
     console.error(e);
-    $("results").innerHTML='<div class="empty">Search failed. Check internet connection.</div>';
-    setStatus("");
+    $("results").innerHTML='<div class="empty">Search failed.</div>';
   }
 }
 
@@ -427,33 +361,17 @@ function quickSearch(q,btn){
 async function showDownloads(btn){
   document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
   if(btn)btn.classList.add("active");
-  $("sectionTitle").textContent="⬇️ Downloadable Licensed Audio";
-  $("results").innerHTML='<div class="loading">Searching licensed downloads… ⏳</div>';
-  try{
-    const j=await searchJamendo("music");
-    const m=await getAdminTracks();
-    const list=[...m.filter(x=>x.download),...j.filter(x=>x.download)];
-    render(list,"⬇️ Downloadable Licensed Audio");
-  }catch(e){
-    render([],"⬇️ Downloadable Licensed Audio");
-  }
+  $("sectionTitle").textContent="⬇️ Downloadable Audio";
+  const m=await getAdminTracks();
+  render(m,"⬇️ Downloadable Audio");
 }
 
-/* ---------- ADMIN ----------
-   This demo intentionally keeps no password in the code.
-   For production, use Firebase Authentication + database rules.
-*/
 function openAdmin(){$("login").style.display="flex"}
 function closeAdmin(){$("login").style.display="none"}
 
 function loginAdmin(){
   const u=$("user").value.trim();
   const p=$("pass").value;
-  /*
-    TEMPORARY demo login:
-    Replace with Firebase Authentication before production.
-    Do NOT publish your real password in index.html.
-  */
   if(u==="MAKYAMA" && p==="Makame005@"){
     admin=true;closeAdmin();$("admin").style.display="block";
     loadAdminList();toast("Admin mode imewashwa.");
@@ -469,12 +387,11 @@ async function saveAdminTrack(){
     artist:$("aArtist").value.trim(),
     picha:$("aCover").value.trim(),
     linkAudio:$("aAudio").value.trim(),
-    source:$("aSource").value.trim(),
     createdAt:Date.now()
   };
   if(!data.jina||!data.linkAudio){toast("Weka title na audio URL.");return}
   await db.ref("media").push(data);
-  ["aTitle","aArtist","aCover","aAudio","aSource"].forEach(id=>$(id).value="");
+  ["aTitle","aArtist","aCover","aAudio"].forEach(id=>$(id).value="");
   toast("Track imeongezwa.");
   loadAdminList();
 }
@@ -488,7 +405,7 @@ async function loadAdminList(){
     <div class="admin-item">
       <span>${esc(x.data.jina||"Untitled")}</span>
       <button class="btn-red" onclick="deleteAdminTrack('${x.key}')">DELETE</button>
-    </div>`).join("") || '<div style="color:#69756d;font-size:10px">No admin tracks yet.</div>';
+    </div>`).join("") || '<div style="color:#69756d;font-size:10px">No tracks.</div>';
 }
 
 async function deleteAdminTrack(key){
@@ -497,21 +414,13 @@ async function deleteAdminTrack(key){
   loadAdminList();toast("Deleted.");
 }
 
-/* ENTER KEY SEARCH */
 $("q").addEventListener("keydown",e=>{if(e.key==="Enter")searchMusic()});
 
-/* ---------- START ---------- */
 window.addEventListener("load",async()=>{
-  $("results").innerHTML='<div class="loading">Loading worldwide music… ⏳</div>';
-  try{
-    const [a,m]=await Promise.allSettled([searchITunes("Trending Worldwide"),getAdminTracks()]);
-    const it=a.status==="fulfilled"?a.value:[];
-    const adminTracks=m.status==="fulfilled"?m.value:[];
-    render([...adminTracks,...it],"🔥 Trending Worldwide");
-  }catch(e){
-    render([],"🔥 Trending Worldwide");
-  }
+  $("results").innerHTML='<div class="loading">Loading music… ⏳</div>';
+  const m=await getAdminTracks();
+  render(m,"🔥 Trending Worldwide");
 });
 </script>
 </body>
-    </html>
+</html>
