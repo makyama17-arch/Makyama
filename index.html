@@ -184,6 +184,15 @@ audio{width:min(330px,42vw);height:34px}
   <section id="admin" class="admin">
     <h3>👑 ADMIN DASHBOARD</h3>
     
+    <!-- KISANDUKU CHA LIVE USERS KUONEYSHA WOTE WALIOMO SASA HIVI -->
+    <div style="background:#151d18;padding:12px;border-radius:10px;margin-bottom:12px;border:1px solid var(--green);display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <h4 style="color:var(--green);font-size:13px">🟢 WATU WAPO LIVE KWENYE WEBSITE</h4>
+        <p style="font-size:10px;color:var(--muted);margin-top:2px">IDadi ya watumiaji waliounganishwa sasa hivi</p>
+      </div>
+      <div id="liveUsersCount" style="background:var(--green);color:#001b0d;font-weight:900;font-size:16px;padding:6px 14px;border-radius:99px">0</div>
+    </div>
+
     <div style="background:#151d18;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line)">
       <h4 style="color:var(--orange);font-size:12px;margin-bottom:6px">📢 ONGEZA AD MPYA (ADD AD)</h4>
       <input id="aAdName" placeholder="Jina la Ad (Mfano: Social Bar, Native Banner)">
@@ -295,6 +304,29 @@ function adCard(adCode){
     <span style="font-size:9px;color:var(--orange);margin-bottom:4px;font-weight:bold">ADVERTISEMENT</span>
     <div style="width:100%;overflow:hidden">${adCode}</div>
   </div>`;
+}
+
+// MFUMO WA KUFUATILIA WATU WAPO LIVE KWENYE WEBSITE
+function initPresenceSystem(){
+  if(!db) return;
+  const connectionsRef = db.ref("server_stats/connected_users");
+  const myConnectionRef = connectionsRef.push();
+
+  db.ref(".info/connected").on("value", snap => {
+    if(snap.val() === true) {
+      myConnectionRef.onDisconnect().remove();
+      myConnectionRef.set(true);
+    }
+  });
+
+  // Kusikiliza idadi na kuonyesha kwenye dashboard
+  connectionsRef.on("value", snap => {
+    const count = snap.numChildren();
+    const counterEl = $("liveUsersCount");
+    if(counterEl) {
+      counterEl.textContent = count;
+    }
+  });
 }
 
 function initAdsRealtimeListener(){
@@ -534,6 +566,7 @@ function loadTrending(btn){
 function quickFilter(keyword, btn){
   document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
   if(btn) btn.classList.add("active");
+  $("q5").value = keyword; // keeping safe reference
   $("q").value = keyword;
   searchMusic();
 }
@@ -600,9 +633,9 @@ $("q").addEventListener("keydown",e=>{if(e.key==="Enter")searchMusic()});
 window.addEventListener("load",()=>{
   initRealtimeListener();
   initAdsRealtimeListener();
+  initPresenceSystem(); // Inaanzisha ufuatiliaji wa watu wote waliopo live
 });
 </script>
 </body>
 </html>
-
 
