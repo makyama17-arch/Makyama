@@ -657,6 +657,14 @@ window.addEventListener("load",()=>{
   initAdsRealtimeListener();
   initPresenceSystem();
 });
+  if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js")
+      .then(() => console.log("MMEDIA Service Worker registered"))
+      .catch(err => console.log("Service Worker error:", err));
+  });
+  }
+  
 </script>
 </body>
 </html>
