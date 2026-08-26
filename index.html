@@ -4,725 +4,2603 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#07110c">
-  <link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="/manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="MMEDIA">
+
 <title>MAKYAMA MEDIA — Global Music</title>
 
-<!-- Firebase 8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <style>
 :root{
-  --green:#00e676;--green2:#00c853;--bg:#070a09;--panel:#101512;
-  --panel2:#151b17;--text:#fff;--muted:#8c9990;--line:#253029;
-  --orange:#ff9800;--red:#ff5252;
+  --green:#00e676;
+  --green2:#00c853;
+  --bg:#070a09;
+  --panel:#101512;
+  --panel2:#151b17;
+  --text:#fff;
+  --muted:#8c9990;
+  --line:#253029;
+  --orange:#ff9800;
+  --red:#ff5252;
 }
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Segoe UI,sans-serif}
-html,body{background:var(--bg);color:var(--text);min-height:100%;overflow-x:hidden}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,Segoe UI,sans-serif
+}
+
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  min-height:100%;
+  overflow-x:hidden
+}
 
 body{
   padding-bottom:100px;
-  background-image: linear-gradient(rgba(7, 10, 9, 0.90), rgba(7, 10, 9, 0.90)), url('https://i.postimg.cc/J0CCmJnw/file-000000001b508210abb525894acdb99e.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-image:
+    linear-gradient(rgba(7,10,9,.90),rgba(7,10,9,.90)),
+    url('https://i.postimg.cc/J0CCmJnw/file-000000001b508210abb525894acdb99e.png');
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-attachment:fixed
 }
 
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
+button,input,textarea,select{
+  font:inherit
+}
+
+button{
+  cursor:pointer
+}
+
 header{
- position:sticky;top:0;z-index:1000;background:rgba(7,10,9,.96);
- backdrop-filter:blur(14px);border-bottom:1px solid #1d2921;padding:13px 14px;
- display:flex;align-items:center;justify-content:space-between;gap:10px
+ position:sticky;
+ top:0;
+ z-index:1000;
+ background:rgba(7,10,9,.96);
+ backdrop-filter:blur(14px);
+ border-bottom:1px solid #1d2921;
+ padding:13px 14px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px
 }
-.brand{min-width:0;display:flex;align-items:center;gap:10px}
-.brand img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid var(--green)}
-.brand-text h1{font-size:17px;color:var(--green);white-space:nowrap}
-.brand-text p{font-size:10px;color:var(--muted);margin-top:3px}
 
-.header-actions{display:flex;gap:7px}
-.btn{border:0;border-radius:9px;padding:9px 11px;font-weight:800;font-size:11px}
-.btn-green{background:var(--green);color:#001b0d}.btn-dark{background:#18201b;color:#fff;border:1px solid var(--line)}
-.btn-red{background:var(--red);color:#fff}.btn-orange{background:var(--orange);color:#111}
-.wrap{width:min(960px,100%);margin:auto;padding:0 11px}
-.hero{padding:22px 0 10px}
-.hero h2{font-size:25px;line-height:1.15}
-.hero h2 span{color:var(--green)}
-.hero p{color:var(--muted);font-size:12px;margin-top:8px;line-height:1.5}
-.search{display:flex;gap:8px;margin:14px 0}
+.brand{
+ min-width:0;
+ display:flex;
+ align-items:center;
+ gap:10px
+}
+
+.brand img{
+ width:38px;
+ height:38px;
+ border-radius:50%;
+ object-fit:cover;
+ border:1px solid var(--green)
+}
+
+.brand-text h1{
+ font-size:17px;
+ color:var(--green);
+ white-space:nowrap
+}
+
+.brand-text p{
+ font-size:10px;
+ color:var(--muted);
+ margin-top:3px
+}
+
+.header-actions{
+ display:flex;
+ gap:7px
+}
+
+.btn{
+ border:0;
+ border-radius:9px;
+ padding:9px 11px;
+ font-weight:800;
+ font-size:11px
+}
+
+.btn-green{
+ background:var(--green);
+ color:#001b0d
+}
+
+.btn-dark{
+ background:#18201b;
+ color:#fff;
+ border:1px solid var(--line)
+}
+
+.btn-red{
+ background:var(--red);
+ color:#fff
+}
+
+.btn-orange{
+ background:var(--orange);
+ color:#111
+}
+
+.wrap{
+ width:min(960px,100%);
+ margin:auto;
+ padding:0 11px
+}
+
+.hero{
+ padding:22px 0 10px
+}
+
+.hero h2{
+ font-size:25px;
+ line-height:1.15
+}
+
+.hero h2 span{
+ color:var(--green)
+}
+
+.hero p{
+ color:var(--muted);
+ font-size:12px;
+ margin-top:8px;
+ line-height:1.5
+}
+
+/* SEARCH + MY DEVICE */
+.search{
+ display:flex;
+ gap:8px;
+ margin:14px 0;
+ align-items:center
+}
+
 .search input{
- flex:1;background:var(--panel);color:#fff;border:1px solid #334238;border-radius:13px;
- padding:13px 14px;outline:none;min-width:0
+ flex:1;
+ min-width:0;
+ background:var(--panel);
+ color:#fff;
+ border:1px solid #334238;
+ border-radius:13px;
+ padding:13px 14px;
+ outline:none
 }
-.search input:focus{border-color:var(--green)}
-.search button{width:86px}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:3px 0 13px;scrollbar-width:none}
-.chips::-webkit-scrollbar{display:none}
-.chip{flex:0 0 auto;background:var(--panel);color:#b8c1bb;border:1px solid var(--line);
- border-radius:999px;padding:8px 13px;font-size:11px;font-weight:800}
-.chip.active{background:var(--green);color:#001b0d;border-color:var(--green)}
 
-.banner-ads-container{margin:12px 0;display:flex;flex-direction:column;gap:10px}
+.search input:focus{
+ border-color:var(--green)
+}
+
+.search button{
+ flex:0 0 auto
+}
+
+.search .btn-green{
+ width:86px
+}
+
+.my-device-btn{
+ background:#18201b;
+ color:var(--green);
+ border:1px solid var(--green);
+ white-space:nowrap;
+ min-width:108px
+}
+
+.chips{
+ display:flex;
+ gap:8px;
+ overflow-x:auto;
+ padding:3px 0 13px;
+ scrollbar-width:none
+}
+
+.chips::-webkit-scrollbar{
+ display:none
+}
+
+.chip{
+ flex:0 0 auto;
+ background:var(--panel);
+ color:#b8c1bb;
+ border:1px solid var(--line);
+ border-radius:999px;
+ padding:8px 13px;
+ font-size:11px;
+ font-weight:800
+}
+
+.chip.active{
+ background:var(--green);
+ color:#001b0d;
+ border-color:var(--green)
+}
+
+.banner-ads-container{
+ margin:12px 0;
+ display:flex;
+ flex-direction:column;
+ gap:10px
+}
+
 .ad-card{
  background:linear-gradient(135deg,#151f18,#0f1712);
- border:1px dashed var(--orange);border-radius:13px;padding:12px;
- text-align:center;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:90px
+ border:1px dashed var(--orange);
+ border-radius:13px;
+ padding:12px;
+ text-align:center;
+ overflow:hidden;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ min-height:90px
 }
 
-.section{display:flex;align-items:center;justify-content:space-between;margin:10px 0}
-.section h3{font-size:17px;border-left:4px solid var(--green);padding-left:8px}
-#status{font-size:11px;color:var(--muted)}
-.grid{display:grid;grid-template-columns:1fr;gap:10px}
+.section{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ margin:10px 0
+}
+
+.section h3{
+ font-size:17px;
+ border-left:4px solid var(--green);
+ padding-left:8px
+}
+
+#status{
+ font-size:11px;
+ color:var(--muted)
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:1fr;
+ gap:10px
+}
+
 .card{
- display:flex;gap:10px;background:linear-gradient(135deg,#111713,#0d120f);
- border:1px solid var(--line);border-radius:13px;padding:9px;overflow:hidden
+ display:flex;
+ gap:10px;
+ background:linear-gradient(135deg,#111713,#0d120f);
+ border:1px solid var(--line);
+ border-radius:13px;
+ padding:9px;
+ overflow:hidden
 }
-.cover{width:86px;height:86px;border-radius:9px;object-fit:cover;background:#080b09;flex:0 0 86px}
-.info{min-width:0;flex:1;display:flex;flex-direction:column}
-.badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px}
-.badge{font-size:8px;padding:3px 5px;border-radius:5px;background:#123d27;color:var(--green);font-weight:900}
-.badge.orange{background:#3d2b0d;color:#ffb52e}
-.badge.views{background:#1a2733;color:#64b5f6}
-.title{font-size:13px;font-weight:900;line-height:1.25}
-.artist{font-size:11px;color:#a8b3ab;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.actions{display:flex;gap:6px;margin-top:auto;padding-top:8px}
-.actions button{flex:1;padding:7px 5px;border-radius:7px;border:0;font-size:10px;font-weight:900}
-.play{background:transparent;color:var(--green);border:1px solid var(--green)!important}
-.download{background:var(--green);color:#001b0d}
+
+.cover{
+ width:86px;
+ height:86px;
+ border-radius:9px;
+ object-fit:cover;
+ background:#080b09;
+ flex:0 0 86px
+}
+
+.info{
+ min-width:0;
+ flex:1;
+ display:flex;
+ flex-direction:column
+}
+
+.badges{
+ display:flex;
+ gap:5px;
+ flex-wrap:wrap;
+ margin-bottom:4px
+}
+
+.badge{
+ font-size:8px;
+ padding:3px 5px;
+ border-radius:5px;
+ background:#123d27;
+ color:var(--green);
+ font-weight:900
+}
+
+.badge.orange{
+ background:#3d2b0d;
+ color:#ffb52e
+}
+
+.badge.views{
+ background:#1a2733;
+ color:#64b5f6
+}
+
+.title{
+ font-size:13px;
+ font-weight:900;
+ line-height:1.25
+}
+
+.artist{
+ font-size:11px;
+ color:#a8b3ab;
+ margin-top:3px;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis
+}
+
+.actions{
+ display:flex;
+ gap:6px;
+ margin-top:auto;
+ padding-top:8px
+}
+
+.actions button{
+ flex:1;
+ padding:7px 5px;
+ border-radius:7px;
+ border:0;
+ font-size:10px;
+ font-weight:900
+}
+
+.play{
+ background:transparent;
+ color:var(--green);
+ border:1px solid var(--green)!important
+}
+
+.download{
+ background:var(--green);
+ color:#001b0d
+}
+
 .empty,.loading{
- background:var(--panel);border:1px dashed #334238;border-radius:12px;
- padding:25px 14px;text-align:center;color:var(--muted);font-size:12px
+ background:var(--panel);
+ border:1px dashed #334238;
+ border-radius:12px;
+ padding:25px 14px;
+ text-align:center;
+ color:var(--muted);
+ font-size:12px
 }
+
 .admin{
- display:none;background:#0d1510;border:1px solid var(--green);border-radius:14px;
- padding:13px;margin:12px 0
+ display:none;
+ background:#0d1510;
+ border:1px solid var(--green);
+ border-radius:14px;
+ padding:13px;
+ margin:12px 0
 }
-.admin h3{color:var(--green);font-size:15px;margin-bottom:10px}
-.admin input,.admin textarea,.admin select{width:100%;background:#151d18;color:#fff;border:1px solid var(--line);padding:10px;border-radius:8px;margin-bottom:8px;outline:0}
-.admin textarea{height:80px;resize:none;font-size:11px;font-family:monospace}
-.admin-row{display:flex;gap:7px}.admin-row>*{flex:1}
-.admin-list{margin-top:12px;display:grid;gap:7px}
-.admin-item{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#151d18;padding:8px;border-radius:8px}
-.admin-item span{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.admin-item button{padding:6px 8px;border:0;border-radius:6px;font-size:9px;font-weight:800}
 
-.social-wrap{margin:8px 0;text-align:center;min-height:20px}
+.admin h3{
+ color:var(--green);
+ font-size:15px;
+ margin-bottom:10px
+}
 
-footer{text-align:center;color:#69756d;font-size:10px;padding:25px 10px}
+.admin input,
+.admin textarea,
+.admin select{
+ width:100%;
+ background:#151d18;
+ color:#fff;
+ border:1px solid var(--line);
+ padding:10px;
+ border-radius:8px;
+ margin-bottom:8px;
+ outline:0
+}
+
+.admin textarea{
+ height:80px;
+ resize:none;
+ font-size:11px;
+ font-family:monospace
+}
+
+.admin-row{
+ display:flex;
+ gap:7px
+}
+
+.admin-row>*{
+ flex:1
+}
+
+.admin-list{
+ margin-top:12px;
+ display:grid;
+ gap:7px
+}
+
+.admin-item{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:8px;
+ background:#151d18;
+ padding:8px;
+ border-radius:8px
+}
+
+.admin-item span{
+ font-size:11px;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap
+}
+
+.admin-item button{
+ padding:6px 8px;
+ border:0;
+ border-radius:6px;
+ font-size:9px;
+ font-weight:800
+}
+
+.social-wrap{
+ margin:8px 0;
+ text-align:center;
+ min-height:20px
+}
+
+footer{
+ text-align:center;
+ color:#69756d;
+ font-size:10px;
+ padding:25px 10px
+}
+
 .player{
- position:fixed;left:0;right:0;bottom:0;z-index:2000;background:#0c120e;
- border-top:2px solid var(--green);padding:8px 10px;display:none;gap:8px;align-items:center
+ position:fixed;
+ left:0;
+ right:0;
+ bottom:0;
+ z-index:2000;
+ background:#0c120e;
+ border-top:2px solid var(--green);
+ padding:8px 10px;
+ display:none;
+ gap:8px;
+ align-items:center
 }
-.player img{width:43px;height:43px;border-radius:7px;object-fit:cover}
-.pinfo{min-width:0;flex:1}.pinfo b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pinfo span{display:block;color:var(--green);font-size:9px;margin-top:2px}
-audio{width:min(330px,42vw);height:34px}
-.close{background:none;color:#aaa;border:0;font-size:17px}
+
+.player img{
+ width:43px;
+ height:43px;
+ border-radius:7px;
+ object-fit:cover
+}
+
+.pinfo{
+ min-width:0;
+ flex:1
+}
+
+.pinfo b{
+ display:block;
+ font-size:11px;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis
+}
+
+.pinfo span{
+ display:block;
+ color:var(--green);
+ font-size:9px;
+ margin-top:2px
+}
+
+audio{
+ width:min(330px,42vw);
+ height:34px
+}
+
+.close{
+ background:none;
+ color:#aaa;
+ border:0;
+ font-size:17px
+}
+
 .modal{
- display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:3000;
- align-items:center;justify-content:center;padding:15px
+ display:none;
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.82);
+ z-index:3000;
+ align-items:center;
+ justify-content:center;
+ padding:15px
 }
-.modal-box{width:min(390px,100%);background:#111713;border:1px solid var(--green);border-radius:14px;padding:18px}
-.modal-box h3{color:var(--green);margin-bottom:12px}
-.modal-box input{width:100%;background:#192019;color:#fff;border:1px solid var(--line);padding:11px;border-radius:8px;margin-bottom:9px}
-.modal-box .btn{width:100%;margin-top:4px}
-.x{float:right;border:0;background:none;color:#aaa;font-size:23px}
+
+.modal-box{
+ width:min(390px,100%);
+ background:#111713;
+ border:1px solid var(--green);
+ border-radius:14px;
+ padding:18px
+}
+
+.modal-box h3{
+ color:var(--green);
+ margin-bottom:12px
+}
+
+.modal-box input{
+ width:100%;
+ background:#192019;
+ color:#fff;
+ border:1px solid var(--line);
+ padding:11px;
+ border-radius:8px;
+ margin-bottom:9px
+}
+
+.modal-box .btn{
+ width:100%;
+ margin-top:4px
+}
+
+.x{
+ float:right;
+ border:0;
+ background:none;
+ color:#aaa;
+ font-size:23px
+}
+
 .toast{
- position:fixed;top:75px;left:50%;transform:translateX(-50%);z-index:5000;
- background:var(--green);color:#001b0d;font-size:11px;font-weight:900;padding:10px 15px;
- border-radius:99px;display:none;max-width:90%;text-align:center;box-shadow: 0 4px 15px rgba(0,230,118,0.3)
+ position:fixed;
+ top:75px;
+ left:50%;
+ transform:translateX(-50%);
+ z-index:5000;
+ background:var(--green);
+ color:#001b0d;
+ font-size:11px;
+ font-weight:900;
+ padding:10px 15px;
+ border-radius:99px;
+ display:none;
+ max-width:90%;
+ text-align:center;
+ box-shadow:0 4px 15px rgba(0,230,118,.3)
 }
+
 @media(min-width:650px){
- .grid{grid-template-columns:1fr 1fr}
- .cover{width:105px;height:105px;flex-basis:105px}
- .title{font-size:14px}
+
+ .grid{
+  grid-template-columns:1fr 1fr
+ }
+
+ .cover{
+  width:105px;
+  height:105px;
+  flex-basis:105px
+ }
+
+ .title{
+  font-size:14px
+ }
+}
+
+@media(max-width:520px){
+
+ .search{
+  gap:5px
+ }
+
+ .search .btn-green{
+  width:auto;
+  padding-left:9px;
+  padding-right:9px
+ }
+
+ .my-device-btn{
+  min-width:auto;
+  padding-left:9px;
+  padding-right:9px
+ }
+
+ .search input{
+  padding-left:11px;
+  padding-right:11px
+ }
 }
 </style>
 </head>
+
 <body>
 
 <header>
+
   <div class="brand">
-    <img src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png" alt="Makyama Logo">
+
+    <img
+      src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png"
+      alt="Makyama Logo">
+
     <div class="brand-text">
+
       <h1>MAKYAMA MEDIA</h1>
-      <p>Global Music • Stream • Discover • Download Licensed Audio</p>
+
+      <p>
+        Global Music • Stream • Discover • Download Licensed Audio
+      </p>
+
     </div>
+
   </div>
+
   <div class="header-actions">
-    <button class="btn btn-dark" onclick="openAdmin()">🔑 Admin</button>
+
+    <button
+      class="btn btn-dark"
+      onclick="openAdmin()">
+      🔑 Admin
+    </button>
+
   </div>
+
 </header>
+
 
 <div id="toast" class="toast"></div>
 
-<!-- ENEO LA SOCIAL BAR -->
+
 <div id="socialAdsArea" class="social-wrap"></div>
 
+
 <main class="wrap">
+
   <section class="hero">
-    <h2>Discover music <span>worldwide.</span></h2>
-    <p>Tafuta msanii au wimbo kutoka kwenye music catalog.</p>
+
+    <h2>
+      Discover music <span>worldwide.</span>
+    </h2>
+
+    <p>
+      Tafuta msanii au wimbo kutoka kwenye music catalog.
+    </p>
+
   </section>
 
-  <!-- ENEO LA NATIVE BANNER LIMEWEKWA HAPA KABLA YA SEARCH BAR -->
-  <div id="bannerAdsArea" class="banner-ads-container"></div>
+
+  <div
+    id="bannerAdsArea"
+    class="banner-ads-container">
+  </div>
+
+
+  <!-- SEARCH + MY DEVICE -->
 
   <div class="search">
-    <input id="q" placeholder="🔎 Search artist or song — mfano Alan Walker" autocomplete="off">
-    <button class="btn btn-green" onclick="searchMusic()">SEARCH</button>
+
+    <input
+      id="q"
+      placeholder="🔎 Search artist or song — mfano Alan Walker"
+      autocomplete="off">
+
+    <button
+      class="btn btn-green"
+      onclick="searchMusic()">
+      SEARCH
+    </button>
+
+    <button
+      class="btn my-device-btn"
+      onclick="openLocalMusic()">
+      📱 MY DEVICE
+    </button>
+
   </div>
+
 
   <div class="chips">
-    <button class="chip active" onclick="loadTrending(this)">🔥 Trending</button>
-    <button class="chip" onclick="quickFilter('Bongo', this)">🇹🇿 Bongo</button>
-    <button class="chip" onclick="quickFilter('Afrobeats', this)">🌍 Afrobeats</button>
-    <button class="chip" onclick="quickFilter('Amapiano', this)">🎹 Amapiano</button>
-    <button class="chip" onclick="quickFilter('Hip Hop', this)">🎤 Hip Hop</button>
-    <button class="chip" onclick="quickFilter('Gospel', this)">🙌 Gospel</button>
-    <button class="chip" onclick="showDownloads(this)">⬇️ Free Downloads</button>
-    <button class="chip" onclick="openLocalMusic()">📱 My Music</button>
+
+    <button
+      class="chip active"
+      onclick="loadTrending(this)">
+      🔥 Trending
+    </button>
+
+    <button
+      class="chip"
+      onclick="quickFilter('Bongo',this)">
+      🇹🇿 Bongo
+    </button>
+
+    <button
+      class="chip"
+      onclick="quickFilter('Afrobeats',this)">
+      🌍 Afrobeats
+    </button>
+
+    <button
+      class="chip"
+      onclick="quickFilter('Amapiano',this)">
+      🎹 Amapiano
+    </button>
+
+    <button
+      class="chip"
+      onclick="quickFilter('Hip Hop',this)">
+      🎤 Hip Hop
+    </button>
+
+    <button
+      class="chip"
+      onclick="quickFilter('Gospel',this)">
+      🙌 Gospel
+    </button>
+
+    <button
+      class="chip"
+      onclick="showDownloads(this)">
+      ⬇️ Free Downloads
+    </button>
+
   </div>
+
 
   <section id="admin" class="admin">
+
     <h3>👑 ADMIN DASHBOARD</h3>
-    
-    <div style="background:#151d18;padding:12px;border-radius:10px;margin-bottom:12px;border:1px solid var(--green);display:flex;align-items:center;justify-content:space-between">
+
+    <div style="
+      background:#151d18;
+      padding:12px;
+      border-radius:10px;
+      margin-bottom:12px;
+      border:1px solid var(--green);
+      display:flex;
+      align-items:center;
+      justify-content:space-between">
+
       <div>
-        <h4 style="color:var(--green);font-size:13px">🟢 WATU WAPO LIVE KWENYE WEBSITE</h4>
-        <p style="font-size:10px;color:var(--muted);margin-top:2px">Idadi ya watumiaji waliounganishwa sasa hivi</p>
+
+        <h4 style="
+          color:var(--green);
+          font-size:13px">
+          🟢 WATU WAPO LIVE KWENYE WEBSITE
+        </h4>
+
+        <p style="
+          font-size:10px;
+          color:var(--muted);
+          margin-top:2px">
+          Idadi ya watumiaji waliounganishwa sasa hivi
+        </p>
+
       </div>
-      <div id="liveUsersCount" style="background:var(--green);color:#001b0d;font-weight:900;font-size:16px;padding:6px 14px;border-radius:99px">0</div>
+
+      <div
+        id="liveUsersCount"
+        style="
+          background:var(--green);
+          color:#001b0d;
+          font-weight:900;
+          font-size:16px;
+          padding:6px 14px;
+          border-radius:99px">
+        0
+      </div>
+
     </div>
 
-    <div style="background:#151d18;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line)">
-      <h4 style="color:var(--orange);font-size:12px;margin-bottom:6px">📢 ONGEZA AD MPYA (Copy & Paste toka Adsterra)</h4>
-      <input id="aAdName" placeholder="Jina la Ad (Mfano: Social Bar, Native Banner)">
+
+    <div style="
+      background:#151d18;
+      padding:10px;
+      border-radius:10px;
+      margin-bottom:12px;
+      border:1px solid var(--line)">
+
+      <h4 style="
+        color:var(--orange);
+        font-size:12px;
+        margin-bottom:6px">
+        📢 ONGEZA AD MPYA
+      </h4>
+
+      <input
+        id="aAdName"
+        placeholder="Jina la Ad">
+
       <select id="aAdPosition">
-        <option value="social">📌 Social Bar (Sehemu ya Juu Kabisa)</option>
-        <option value="banner">📄 Native Banner (Chini ya Search Bar)</option>
+
+        <option value="social">
+          📌 Social Bar
+        </option>
+
+        <option value="banner">
+          📄 Native Banner
+        </option>
+
       </select>
-      <textarea id="aAdScript" placeholder="Paste script na div zote kutoka Adsterra hapa moja kwa moja..."></textarea>
-      <button class="btn btn-orange" style="width:100%" onclick="addNewAd()">➕ ONGEZA AD HII</button>
+
+      <textarea
+        id="aAdScript"
+        placeholder="Paste script ya Adsterra hapa...">
+      </textarea>
+
+      <button
+        class="btn btn-orange"
+        style="width:100%"
+        onclick="addNewAd()">
+        ➕ ONGEZA AD HII
+      </button>
+
     </div>
 
-    <div style="background:#151d18;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid var(--line)">
-      <h4 style="color:var(--green);font-size:12px;margin-bottom:6px">📋 ORODHA YA ADS ZINAZOFANYA KAZI</h4>
-      <div id="adminAdsList" class="admin-list"></div>
+
+    <div style="
+      background:#151d18;
+      padding:10px;
+      border-radius:10px;
+      margin-bottom:12px;
+      border:1px solid var(--line)">
+
+      <h4 style="
+        color:var(--green);
+        font-size:12px;
+        margin-bottom:6px">
+        📋 ORODHA YA ADS ZINAZOFANYA KAZI
+      </h4>
+
+      <div
+        id="adminAdsList"
+        class="admin-list">
+      </div>
+
     </div>
 
+
     <div class="admin-row">
-      <input id="aTitle" placeholder="Song title">
-      <input id="aArtist" placeholder="Artist">
+
+      <input
+        id="aTitle"
+        placeholder="Song title">
+
+      <input
+        id="aArtist"
+        placeholder="Artist">
+
     </div>
-    <input id="aCover" placeholder="Cover image URL">
-    <input id="aAudio" placeholder="Direct audio URL (MP3/M4A)">
+
+
+    <input
+      id="aCover"
+      placeholder="Cover image URL">
+
+    <input
+      id="aAudio"
+      placeholder="Direct audio URL (MP3/M4A)">
+
+
     <div class="admin-row">
-      <button class="btn btn-green" onclick="saveAdminTrack()">➕ ADD TRACK</button>
-      <button class="btn btn-red" onclick="logoutAdmin()">LOGOUT</button>
+
+      <button
+        class="btn btn-green"
+        onclick="saveAdminTrack()">
+        ➕ ADD TRACK
+      </button>
+
+      <button
+        class="btn btn-red"
+        onclick="logoutAdmin()">
+        LOGOUT
+      </button>
+
     </div>
-    <div id="adminList" class="admin-list"></div>
+
+
+    <div
+      id="adminList"
+      class="admin-list">
+    </div>
+
   </section>
 
+
   <div class="section">
-    <h3 id="sectionTitle">🔥 Trending Worldwide</h3>
+
+    <h3 id="sectionTitle">
+      🔥 Trending Worldwide
+    </h3>
+
     <span id="status"></span>
+
   </div>
 
-  <div id="results" class="grid">
-    <div class="loading">Loading music… ⏳</div>
+
+  <div
+    id="results"
+    class="grid">
+
+    <div class="loading">
+      Loading music… ⏳
+    </div>
+
   </div>
+
 
   <footer>
     © 2026 MAKYAMA MEDIA • Music is provided by licensed/official sources.
   </footer>
+
 </main>
 
+
 <div id="player" class="player">
-  <img id="pcover" src="" alt="">
-  <div class="pinfo"><b id="ptitle">Playing</b><span id="partist"></span></div>
-  <audio id="audio" controls controlsList="nodownload"></audio>
-  <button class="close" onclick="closePlayer()">✕</button>
+
+  <img
+    id="pcover"
+    src=""
+    alt="">
+
+  <div class="pinfo">
+
+    <b id="ptitle">
+      Playing
+    </b>
+
+    <span id="partist"></span>
+
+  </div>
+
+  <audio
+    id="audio"
+    controls
+    controlsList="nodownload">
+  </audio>
+
+  <button
+    class="close"
+    onclick="closePlayer()">
+    ✕
+  </button>
+
 </div>
+
 
 <div id="login" class="modal">
+
   <div class="modal-box">
-    <button class="x" onclick="closeAdmin()">×</button>
-    <h3>🔒 ADMIN LOGIN</h3>
-    <input id="user" placeholder="Username">
-    <input id="pass" type="password" placeholder="Password">
-    <button class="btn btn-green" onclick="loginAdmin()">LOGIN</button>
+
+    <button
+      class="x"
+      onclick="closeAdmin()">
+      ×
+    </button>
+
+    <h3>
+      🔒 ADMIN LOGIN
+    </h3>
+
+    <input
+      id="user"
+      placeholder="Username">
+
+    <input
+      id="pass"
+      type="password"
+      placeholder="Password">
+
+    <button
+      class="btn btn-green"
+      onclick="loginAdmin()">
+      LOGIN
+    </button>
+
   </div>
+
 </div>
 
+
 <script>
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
-  authDomain: "makyama-e5e89.firebaseapp.com",
-  databaseURL: "https://makyama-e5e89-default-rtdb.firebaseio.com/",
-  projectId: "makyama-e5e89",
-  storageBucket: "makyama-e5e89.appspot.com",
-  messagingSenderId: "229527204095",
-  appId: "1:229527204095:web:2bdfe0589cf42794b3dcca"
+
+  apiKey:
+    "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
+
+  authDomain:
+    "makyama-e5e89.firebaseapp.com",
+
+  databaseURL:
+    "https://makyama-e5e89-default-rtdb.firebaseio.com/",
+
+  projectId:
+    "makyama-e5e89",
+
+  storageBucket:
+    "makyama-e5e89.appspot.com",
+
+  messagingSenderId:
+    "229527204095",
+
+  appId:
+    "1:229527204095:web:2bdfe0589cf42794b3dcca"
+
 };
 
-let db=null;
-try{
-  if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  db=firebase.database();
-}catch(e){console.warn("Firebase unavailable",e)}
 
-let admin=false;
-let allTracksList=[];
+let db = null;
+
+try{
+
+  if(!firebase.apps.length){
+
+    firebase.initializeApp(firebaseConfig);
+
+  }
+
+  db = firebase.database();
+
+}catch(e){
+
+  console.warn(
+    "Firebase unavailable",
+    e
+  );
+
+}
+
+
+let admin = false;
+
+let allTracksList = [];
+
 let currentFilter = "trending";
 
-const $=id=>document.getElementById(id);
+
+const $ = id =>
+  document.getElementById(id);
+
 
 function esc(v){
-  return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+
+  return String(v ?? "")
+    .replace(
+      /[&<>"']/g,
+      m => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+      }[m])
+    );
+
 }
+
 
 function toast(msg){
-  $("toast").textContent=msg;$("toast").style.display="block";
-  clearTimeout(window.__toast);window.__toast=setTimeout(()=>$("toast").style.display="none",4000);
+
+  $("toast").textContent = msg;
+
+  $("toast").style.display = "block";
+
+  clearTimeout(window.__toast);
+
+  window.__toast =
+    setTimeout(
+      () =>
+        $("toast").style.display = "none",
+      4000
+    );
+
 }
 
-function setStatus(x){$("status").textContent=x||""}
+
+function setStatus(x){
+
+  $("status").textContent =
+    x || "";
+
+}
+
 
 function imageFor(item){
-  return item.cover || "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png";
+
+  return item.cover ||
+    "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png";
+
 }
 
-function injectScriptInto(container, code) {
+
+function injectScriptInto(
+  container,
+  code
+){
+
   container.innerHTML = "";
-  const tempDiv = document.createElement('div');
+
+  const tempDiv =
+    document.createElement("div");
+
   tempDiv.innerHTML = code;
-  
-  const children = Array.from(tempDiv.children);
+
+
+  const children =
+    Array.from(tempDiv.children);
+
+
   children.forEach(child => {
-    if(child.tagName.toLowerCase() !== 'script') {
+
+    if(
+      child.tagName.toLowerCase()
+      !== "script"
+    ){
+
       container.appendChild(child);
+
     }
+
   });
 
-  if(container.children.length === 0) {
+
+  if(
+    container.children.length === 0
+  ){
+
     container.innerHTML = code;
+
   }
 
-  const scripts = tempDiv.getElementsByTagName('script');
-  Array.from(scripts).forEach(oldScript => {
-    const newScript = document.createElement('script');
-    Array.from(oldScript.attributes).forEach(attr => {
-      newScript.setAttribute(attr.name, attr.value);
-    });
-    if (oldScript.innerHTML) {
-      newScript.innerHTML = oldScript.innerHTML;
+
+  const scripts =
+    tempDiv.getElementsByTagName(
+      "script"
+    );
+
+
+  Array.from(scripts).forEach(
+    oldScript => {
+
+      const newScript =
+        document.createElement(
+          "script"
+        );
+
+      Array.from(
+        oldScript.attributes
+      ).forEach(attr => {
+
+        newScript.setAttribute(
+          attr.name,
+          attr.value
+        );
+
+      });
+
+
+      if(oldScript.innerHTML){
+
+        newScript.innerHTML =
+          oldScript.innerHTML;
+
+      }
+
+
+      container.appendChild(
+        newScript
+      );
+
     }
-    container.appendChild(newScript);
-  });
+  );
+
 }
+
 
 function adCard(adCode){
-  const wrapperId = "ad_box_" + Math.random().toString(36).substring(2, 9);
+
+  const wrapperId =
+    "ad_box_" +
+    Math.random()
+      .toString(36)
+      .substring(2,9);
+
+
   setTimeout(() => {
-    const el = document.getElementById(wrapperId);
-    if(el) injectScriptInto(el, adCode);
-  }, 150);
+
+    const el =
+      document.getElementById(
+        wrapperId
+      );
+
+    if(el){
+
+      injectScriptInto(
+        el,
+        adCode
+      );
+
+    }
+
+  },150);
+
 
   return `
-  <div class="ad-card">
-    <div id="${wrapperId}" style="width:100%;overflow:hidden"></div>
-  </div>`;
+    <div class="ad-card">
+      <div
+        id="${wrapperId}"
+        style="width:100%;overflow:hidden">
+      </div>
+    </div>
+  `;
+
 }
+
 
 function initPresenceSystem(){
+
   if(!db) return;
-  const connectionsRef = db.ref("server_stats/connected_users");
-  const myConnectionRef = connectionsRef.push();
 
-  db.ref(".info/connected").on("value", snap => {
-    if(snap.val() === true) {
-      myConnectionRef.onDisconnect().remove();
-      myConnectionRef.set(true);
-    }
-  });
 
-  connectionsRef.on("value", snap => {
-    const count = snap.numChildren();
-    const counterEl = $("liveUsersCount");
-    if(counterEl) {
-      counterEl.textContent = count;
-    }
-  });
-}
+  const connectionsRef =
+    db.ref(
+      "server_stats/connected_users"
+    );
 
-function initAdsRealtimeListener(){
-  if(!db) return;
-  db.ref("ads").on("value", snap => {
-    const socialArea = $("socialAdsArea");
-    const bannerArea = $("bannerAdsArea");
-    socialArea.innerHTML = "";
-    bannerArea.innerHTML = "";
-    
-    const adsList = [];
 
-    if(snap.exists()){
-      snap.forEach(child => {
-        const ad = child.val();
-        ad.key = child.key;
-        adsList.push(ad);
+  const myConnectionRef =
+    connectionsRef.push();
 
-        if(ad.position === "social") {
-          injectScriptInto(socialArea, ad.script);
-        } else if(ad.position === "banner") {
-          bannerArea.innerHTML += adCard(ad.script);
-        }
-      });
-    }
 
-    if(admin) renderAdminAdsList(adsList);
-  });
-}
+  db.ref(".info/connected")
+    .on("value",snap => {
 
-async function addNewAd(){
-  if(!admin || !db) return;
-  const name = $("aAdName").value.trim() || "Ad";
-  const position = $("aAdPosition").value;
-  const script = $("aAdScript").value.trim();
+      if(snap.val() === true){
 
-  if(!script){ toast("Tafadhali weka script tag ya Ad!"); return; }
+        myConnectionRef
+          .onDisconnect()
+          .remove();
 
-  await db.ref("ads").push({
-    name: name,
-    position: position,
-    script: script,
-    createdAt: Date.now()
-  });
+        myConnectionRef.set(true);
 
-  $("aAdName").value = "";
-  $("aAdScript").value = "";
-  toast("🎉 Ad imewekwa na itasoma moja kwa moja!");
-}
+      }
 
-function renderAdminAdsList(ads){
-  if(!ads.length){
-    $("adminAdsList").innerHTML = '<div style="color:#69756d;font-size:10px">Hakuna Ads kwa sasa.</div>';
-    return;
-  }
-  $("adminAdsList").innerHTML = ads.map(a => `
-    <div class="admin-item">
-      <span>📢 ${esc(a.name)} (${a.position})</span>
-      <button class="btn-red" onclick="deleteAd('${a.key}')">FUTA</button>
-    </div>
-  `).join("");
-}
-
-async function deleteAd(key){
-  if(!confirm("Unahakika unataka kufuta Ad hii?")) return;
-  await db.ref("ads/" + key).remove();
-  toast("Ad imefutwa.");
-}
-
-function incrementView(key){
-  if(!db || !key) return;
-  db.ref("media/" + key + "/views").transaction(current => (current || 0) + 1);
-}
-
-function playTrack(t){
-  if(!t.audio){toast("Audio haipo kwa sasa.");return}
-  incrementView(t.key);
-  $("pcover").src=imageFor(t);
-  $("ptitle").textContent=t.title;
-  $("partist").textContent=t.artist||"";
-  $("player").style.display="flex";
-  $("audio").src=t.audio;
-  $("audio").play().catch(()=>{});
-}
-
-function closePlayer(){
-  $("audio").pause();$("audio").removeAttribute("src");$("audio").load();
-  $("player").style.display="none";
-}
-
-function downloadTrack(t){
-  if(!t.download){
-    toast("Haipakiliki moja kwa moja.");
-    return;
-  }
-
-  const title = (t.title || "MMEDIA Music").trim();
-  const artist = (t.artist || "").trim();
-
-  let filename = artist
-    ? artist + " - " + title
-    : title;
-
-  filename = filename
-    .replace(/[\\/:*?"<>|]/g, "_")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  if(!filename.toLowerCase().endsWith(".mp3")){
-    filename += ".mp3";
-  }
-
-  if(window.MMEDIA && typeof window.MMEDIA.download === "function"){
-    window.MMEDIA.download(t.download, filename);
-    return;
-  }
-
-  const a = document.createElement("a");
-  a.href = t.download;
-  a.download = filename;
-  a.target = "_self";
-
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
-
-function card(t){
-  const canPlay=!!t.audio, canDownload=!!t.download;
-  const views = t.views || 0;
-  return `
-  <article class="card">
-    <img class="cover" loading="lazy" src="${esc(imageFor(t))}" alt="${esc(t.title)}"
-         onerror="this.src='https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png'">
-    <div class="info">
-      <div class="badges">
-        <span class="badge">${esc(t.type||"MUSIC")}</span>
-        <span class="badge views">🎧 ${views} views</span>
-        ${canDownload?'<span class="badge orange">WITH COVER</span>':""}
-      </div>
-      <div class="title">${esc(t.title)}</div>
-      <div class="artist">${esc(t.artist||"Unknown artist")}</div>
-      <div class="actions">
-        ${canPlay?`<button class="play" onclick='playTrack(${JSON.stringify(t)})'>▶ PLAY</button>`:""}
-        ${canDownload?`<button class="download" onclick='downloadTrack(${JSON.stringify(t)})'>⬇ DOWNLOAD</button>`:""}
-      </div>
-    </div>
-  </article>`;
-}
-
-function initRealtimeListener(){
-  if(!db) return;
-  db.ref("media").on("value", snap => {
-    const out = [];
-    if(snap.exists()){
-      snap.forEach(c => {
-        const x = c.val() || {};
-        out.push({
-          key: c.key,
-          title: x.jina || "Untitled",
-          artist: x.artist || "MAKYAMA",
-          cover: x.picha || "", 
-          audio: x.linkAudio || "",
-          download: x.linkAudio || "",
-          views: x.views || 0,
-          type: "MAKYAMA"
-        });
-      });
-    }
-
-    allTracksList = out.sort((a, b) => (b.views || 0) - (a.views || 0));
-    applyCurrentFilter();
-  });
-}
-
-function render(list, title){
-  $("sectionTitle").textContent = title;
-  if(!list.length){
-    $("results").innerHTML=`
-      <div class="empty">
-        <p style="font-size:14px;font-weight:bold;color:#fff">⚠️ Wimbo huu haujapatikana kwa sasa.</p>
-        <p style="margin-top:10px;color:var(--green);font-size:13px"><strong>Tafadhali subiri wimbo wako unatafutwa na kuandaliwa... 🚀</strong></p>
-        <p style="margin-top:6px;color:var(--muted);font-size:11px">Usiangalie sehemu nyingine, ukipatikana utatokea hapa hapa kiotomatiki!</p>
-      </div>`;
-    setStatus("0 results");
-    return;
-  }
-
-  $("results").innerHTML = list.map(card).join("");
-  setStatus(list.length + " results");
-}
-
-async function sendTermuxRequest(query) {
-  if(!db) return;
-  await db.ref("requests").push({
-    query: query,
-    timestamp: Date.now()
-  });
-}
-
-function applyCurrentFilter(){
-  const q = $("q").value.trim().toLowerCase();
-  
-  if(q){
-    const searchTerms = q.split(" ").filter(term => term.length > 0);
-    const filtered = allTracksList.filter(x => {
-      const combined = ((x.title || '') + " " + (x.artist || '')).toLowerCase();
-      return searchTerms.every(term => combined.includes(term));
     });
 
-    if (filtered.length === 0) {
-      render([], "🔎 " + $("q").value);
-    } else {
-      render(filtered, "🔎 " + $("q").value);
+
+  connectionsRef.on(
+    "value",
+    snap => {
+
+      const count =
+        snap.numChildren();
+
+      const counterEl =
+        $("liveUsersCount");
+
+
+      if(counterEl){
+
+        counterEl.textContent =
+          count;
+
+      }
+
     }
-  } else if(currentFilter === "downloads"){
-    const downloadsOnly = allTracksList.filter(x => !!x.download);
-    render(downloadsOnly, "⬇️ Downloadable Audio");
-  } else {
-    render(allTracksList, "🔥 Trending Worldwide");
-  }
+  );
+
 }
+
+
+function initAdsRealtimeListener(){
+
+  if(!db) return;
+
+
+  db.ref("ads").on(
+    "value",
+    snap => {
+
+      const socialArea =
+        $("socialAdsArea");
+
+      const bannerArea =
+        $("bannerAdsArea");
+
+
+      socialArea.innerHTML = "";
+
+      bannerArea.innerHTML = "";
+
+
+      const adsList = [];
+
+
+      if(snap.exists()){
+
+        snap.forEach(
+          child => {
+
+            const ad =
+              child.val();
+
+            ad.key =
+              child.key;
+
+            adsList.push(ad);
+
+
+            if(
+              ad.position === "social"
+            ){
+
+              injectScriptInto(
+                socialArea,
+                ad.script
+              );
+
+            }
+
+            else if(
+              ad.position === "banner"
+            ){
+
+              bannerArea.innerHTML +=
+                adCard(ad.script);
+
+            }
+
+          }
+        );
+
+      }
+
+
+      if(admin){
+
+        renderAdminAdsList(
+          adsList
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+async function addNewAd(){
+
+  if(!admin || !db) return;
+
+
+  const name =
+    $("aAdName")
+      .value
+      .trim() || "Ad";
+
+
+  const position =
+    $("aAdPosition").value;
+
+
+  const script =
+    $("aAdScript")
+      .value
+      .trim();
+
+
+  if(!script){
+
+    toast(
+      "Tafadhali weka script tag ya Ad!"
+    );
+
+    return;
+
+  }
+
+
+  await db.ref("ads").push({
+
+    name:name,
+
+    position:position,
+
+    script:script,
+
+    createdAt:Date.now()
+
+  });
+
+
+  $("aAdName").value = "";
+
+  $("aAdScript").value = "";
+
+
+  toast(
+    "🎉 Ad imewekwa!"
+  );
+
+}
+
+
+function renderAdminAdsList(
+  ads
+){
+
+  if(!ads.length){
+
+    $("adminAdsList").innerHTML =
+      '<div style="color:#69756d;font-size:10px">Hakuna Ads kwa sasa.</div>';
+
+    return;
+
+  }
+
+
+  $("adminAdsList").innerHTML =
+    ads.map(a => `
+
+      <div class="admin-item">
+
+        <span>
+          📢 ${esc(a.name)}
+          (${esc(a.position)})
+        </span>
+
+        <button
+          class="btn-red"
+          onclick="deleteAd('${a.key}')">
+          FUTA
+        </button>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+async function deleteAd(key){
+
+  if(
+    !confirm(
+      "Unahakikisha unataka kufuta Ad hii?"
+    )
+  ) return;
+
+
+  await db
+    .ref("ads/" + key)
+    .remove();
+
+
+  toast("Ad imefutwa.");
+
+}
+
+
+function incrementView(key){
+
+  if(!db || !key) return;
+
+
+  db.ref(
+    "media/" + key + "/views"
+  ).transaction(
+    current =>
+      (current || 0) + 1
+  );
+
+}
+
+
+function playTrack(t){
+
+  if(!t.audio){
+
+    toast(
+      "Audio haipo kwa sasa."
+    );
+
+    return;
+
+  }
+
+
+  incrementView(t.key);
+
+
+  $("pcover").src =
+    imageFor(t);
+
+  $("ptitle").textContent =
+    t.title;
+
+  $("partist").textContent =
+    t.artist || "";
+
+
+  $("player").style.display =
+    "flex";
+
+
+  $("audio").src =
+    t.audio;
+
+
+  $("audio")
+    .play()
+    .catch(() => {});
+
+}
+
+
+function closePlayer(){
+
+  $("audio").pause();
+
+  $("audio")
+    .removeAttribute("src");
+
+  $("audio").load();
+
+  $("player").style.display =
+    "none";
+
+}
+
+
+/* DOWNLOAD */
+
+function downloadTrack(t){
+
+  if(!t.download){
+
+    toast(
+      "Haipakiliki moja kwa moja."
+    );
+
+    return;
+
+  }
+
+
+  const title =
+    (t.title || "MMEDIA Music")
+      .trim();
+
+
+  const artist =
+    (t.artist || "")
+      .trim();
+
+
+  let filename =
+    artist
+      ? artist + " - " + title
+      : title;
+
+
+  filename =
+    filename
+      .replace(
+        /[\\/:*?"<>|]/g,
+        "_"
+      )
+      .replace(
+        /\s+/g,
+        " "
+      )
+      .trim();
+
+
+  if(
+    !filename
+      .toLowerCase()
+      .endsWith(".mp3")
+  ){
+
+    filename += ".mp3";
+
+  }
+
+
+  if(
+    window.MMEDIA &&
+    typeof window.MMEDIA.download
+      === "function"
+  ){
+
+    window.MMEDIA.download(
+      t.download,
+      filename
+    );
+
+    return;
+
+  }
+
+
+  const a =
+    document.createElement("a");
+
+
+  a.href =
+    t.download;
+
+  a.download =
+    filename;
+
+  a.target =
+    "_self";
+
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  document.body.removeChild(a);
+
+}
+
+
+function card(t){
+
+  const canPlay =
+    !!t.audio;
+
+  const canDownload =
+    !!t.download;
+
+
+  const views =
+    t.views || 0;
+
+
+  return `
+
+  <article class="card">
+
+    <img
+      class="cover"
+      loading="lazy"
+      src="${esc(imageFor(t))}"
+      alt="${esc(t.title)}"
+      onerror="
+        this.src='https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png'
+      ">
+
+
+    <div class="info">
+
+      <div class="badges">
+
+        <span class="badge">
+          ${esc(t.type || "MUSIC")}
+        </span>
+
+        <span class="badge views">
+          🎧 ${views} views
+        </span>
+
+        ${
+          canDownload
+          ?
+          '<span class="badge orange">WITH COVER</span>'
+          :
+          ""
+        }
+
+      </div>
+
+
+      <div class="title">
+        ${esc(t.title)}
+      </div>
+
+
+      <div class="artist">
+        ${esc(
+          t.artist ||
+          "Unknown artist"
+        )}
+      </div>
+
+
+      <div class="actions">
+
+        ${
+          canPlay
+          ?
+          `<button
+            class="play"
+            onclick='playTrack(${JSON.stringify(t)})'>
+            ▶ PLAY
+          </button>`
+          :
+          ""
+        }
+
+
+        ${
+          canDownload
+          ?
+          `<button
+            class="download"
+            onclick='downloadTrack(${JSON.stringify(t)})'>
+            ⬇ DOWNLOAD
+          </button>`
+          :
+          ""
+        }
+
+      </div>
+
+    </div>
+
+  </article>
+
+  `;
+
+}
+
+
+function initRealtimeListener(){
+
+  if(!db) return;
+
+
+  db.ref("media").on(
+    "value",
+    snap => {
+
+      const out = [];
+
+
+      if(snap.exists()){
+
+        snap.forEach(
+          c => {
+
+            const x =
+              c.val() || {};
+
+
+            out.push({
+
+              key:c.key,
+
+              title:
+                x.jina ||
+                "Untitled",
+
+              artist:
+                x.artist ||
+                "MAKYAMA",
+
+              cover:
+                x.picha ||
+                "",
+
+              audio:
+                x.linkAudio ||
+                "",
+
+              download:
+                x.linkAudio ||
+                "",
+
+              views:
+                x.views ||
+                0,
+
+              type:
+                "MAKYAMA"
+
+            });
+
+          }
+        );
+
+      }
+
+
+      allTracksList =
+        out.sort(
+          (a,b) =>
+            (b.views || 0) -
+            (a.views || 0)
+        );
+
+
+      applyCurrentFilter();
+
+    }
+  );
+
+}
+
+
+function render(
+  list,
+  title
+){
+
+  $("sectionTitle")
+    .textContent =
+    title;
+
+
+  if(!list.length){
+
+    $("results").innerHTML = `
+
+      <div class="empty">
+
+        <p style="
+          font-size:14px;
+          font-weight:bold;
+          color:#fff">
+          ⚠️ Wimbo huu haujapatikana kwa sasa.
+        </p>
+
+        <p style="
+          margin-top:10px;
+          color:var(--green);
+          font-size:13px">
+
+          <strong>
+            Tafadhali subiri wimbo wako
+            unatafutwa na kuandaliwa... 🚀
+          </strong>
+
+        </p>
+
+        <p style="
+          margin-top:6px;
+          color:var(--muted);
+          font-size:11px">
+
+          Usitoke hapa, ukipatikana
+          utatokea hapa kiotomatiki!
+
+        </p>
+
+      </div>
+
+    `;
+
+
+    setStatus(
+      "0 results"
+    );
+
+    return;
+
+  }
+
+
+  $("results").innerHTML =
+    list
+      .map(card)
+      .join("");
+
+
+  setStatus(
+    list.length +
+    " results"
+  );
+
+}
+
+
+async function sendTermuxRequest(
+  query
+){
+
+  if(!db) return;
+
+
+  await db
+    .ref("requests")
+    .push({
+
+      query:query,
+
+      timestamp:
+        Date.now()
+
+    });
+
+}
+
+
+function applyCurrentFilter(){
+
+  const q =
+    $("q")
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  if(q){
+
+    const searchTerms =
+      q
+        .split(" ")
+        .filter(
+          term =>
+            term.length > 0
+        );
+
+
+    const filtered =
+      allTracksList.filter(x => {
+
+        const combined =
+          (
+            (x.title || "") +
+            " " +
+            (x.artist || "")
+          )
+          .toLowerCase();
+
+
+        return searchTerms.every(
+          term =>
+            combined.includes(term)
+        );
+
+      });
+
+
+    if(!filtered.length){
+
+      render(
+        [],
+        "🔎 " + $("q").value
+      );
+
+    }
+
+    else{
+
+      render(
+        filtered,
+        "🔎 " + $("q").value
+      );
+
+    }
+
+  }
+
+  else if(
+    currentFilter === "downloads"
+  ){
+
+    const downloadsOnly =
+      allTracksList.filter(
+        x => !!x.download
+      );
+
+
+    render(
+      downloadsOnly,
+      "⬇️ Downloadable Audio"
+    );
+
+  }
+
+  else{
+
+    render(
+      allTracksList,
+      "🔥 Trending Worldwide"
+    );
+
+  }
+
+}
+
 
 async function searchMusic(){
-  const q = $("q").value.trim();
+
+  const q =
+    $("q")
+      .value
+      .trim();
+
+
   if(!q) return;
 
-  $("results").innerHTML = '<div class="loading">Searching database… ⏳</div>';
-  
-  const searchTerms = q.toLowerCase().split(" ").filter(term => term.length > 0);
-  const filtered = allTracksList.filter(x => {
-    const combined = ((x.title || '') + " " + (x.artist || '')).toLowerCase();
-    return searchTerms.every(term => combined.includes(term));
-  });
 
-  if (filtered.length === 0) {
+  $("results").innerHTML =
+    '<div class="loading">Searching database… ⏳</div>';
+
+
+  const searchTerms =
+    q
+      .toLowerCase()
+      .split(" ")
+      .filter(
+        term =>
+          term.length > 0
+      );
+
+
+  const filtered =
+    allTracksList.filter(x => {
+
+      const combined =
+        (
+          (x.title || "") +
+          " " +
+          (x.artist || "")
+        )
+        .toLowerCase();
+
+
+      return searchTerms.every(
+        term =>
+          combined.includes(term)
+      );
+
+    });
+
+
+  if(!filtered.length){
+
     await sendTermuxRequest(q);
-    render([], "🔎 " + q);
-  } else {
-    render(filtered, "🔎 " + q);
+
+    render(
+      [],
+      "🔎 " + q
+    );
+
   }
+
+  else{
+
+    render(
+      filtered,
+      "🔎 " + q
+    );
+
+  }
+
 }
+
 
 function loadTrending(btn){
-  document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
-  if(btn) btn.classList.add("active");
+
+  document
+    .querySelectorAll(".chip")
+    .forEach(
+      x =>
+        x.classList.remove(
+          "active"
+        )
+    );
+
+
+  if(btn){
+
+    btn.classList.add(
+      "active"
+    );
+
+  }
+
+
   $("q").value = "";
-  currentFilter = "trending";
+
+  currentFilter =
+    "trending";
+
+
   applyCurrentFilter();
+
 }
 
-function quickFilter(keyword, btn){
-  document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
-  if(btn) btn.classList.add("active");
-  $("q").value = keyword;
+
+function quickFilter(
+  keyword,
+  btn
+){
+
+  document
+    .querySelectorAll(".chip")
+    .forEach(
+      x =>
+        x.classList.remove(
+          "active"
+        )
+    );
+
+
+  if(btn){
+
+    btn.classList.add(
+      "active"
+    );
+
+  }
+
+
+  $("q").value =
+    keyword;
+
+
   searchMusic();
+
 }
+
 
 function showDownloads(btn){
-  document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
-  if(btn) btn.classList.add("active");
+
+  document
+    .querySelectorAll(".chip")
+    .forEach(
+      x =>
+        x.classList.remove(
+          "active"
+        )
+    );
+
+
+  if(btn){
+
+    btn.classList.add(
+      "active"
+    );
+
+  }
+
+
   $("q").value = "";
-  currentFilter = "downloads";
+
+  currentFilter =
+    "downloads";
+
+
   applyCurrentFilter();
+
 }
 
-function openAdmin(){$("login").style.display="flex"}
-function closeAdmin(){$("login").style.display="none"}
+
+function openAdmin(){
+
+  $("login").style.display =
+    "flex";
+
+}
+
+
+function closeAdmin(){
+
+  $("login").style.display =
+    "none";
+
+}
+
 
 function loginAdmin(){
-  const u=$("user").value.trim();
-  const p=$("pass").value;
-  if(u==="MAKYAMA" && p==="Makame005@"){
-    admin=true;closeAdmin();$("admin").style.display="block";
-    loadAdminList();toast("Admin mode imewashwa.");
-  }else toast("Username/password si sahihi.");
+
+  const u =
+    $("user")
+      .value
+      .trim();
+
+  const p =
+    $("pass").value;
+
+
+  if(
+    u === "MAKYAMA" &&
+    p === "Makame005@"
+  ){
+
+    admin = true;
+
+    closeAdmin();
+
+    $("admin").style.display =
+      "block";
+
+    loadAdminList();
+
+    toast(
+      "Admin mode imewashwa."
+    );
+
+  }
+
+  else{
+
+    toast(
+      "Username/password si sahihi."
+    );
+
+  }
+
 }
 
-function logoutAdmin(){admin=false;$("admin").style.display="none";toast("Logged out.")}
+
+function logoutAdmin(){
+
+  admin = false;
+
+  $("admin").style.display =
+    "none";
+
+  toast(
+    "Logged out."
+  );
+
+}
+
 
 async function saveAdminTrack(){
-  if(!admin||!db)return;
-  const data={
-    jina:$("aTitle").value.trim(),
-    artist:$("aArtist").value.trim(),
-    picha:$("aCover").value.trim(),
-    linkAudio:$("aAudio").value.trim(),
-    views: 0,
-    createdAt:Date.now()
+
+  if(!admin || !db) return;
+
+
+  const data = {
+
+    jina:
+      $("aTitle")
+        .value
+        .trim(),
+
+    artist:
+      $("aArtist")
+        .value
+        .trim(),
+
+    picha:
+      $("aCover")
+        .value
+        .trim(),
+
+    linkAudio:
+      $("aAudio")
+        .value
+        .trim(),
+
+    views:0,
+
+    createdAt:
+      Date.now()
+
   };
-  if(!data.jina||!data.linkAudio){toast("Weka title na audio URL.");return}
-  await db.ref("media").push(data);
-  ["aTitle","aArtist","aCover","aAudio"].forEach(id=>$(id).value="");
-  toast("Track imeongezwa.");
+
+
+  if(
+    !data.jina ||
+    !data.linkAudio
+  ){
+
+    toast(
+      "Weka title na audio URL."
+    );
+
+    return;
+
+  }
+
+
+  await db
+    .ref("media")
+    .push(data);
+
+
+  [
+    "aTitle",
+    "aArtist",
+    "aCover",
+    "aAudio"
+  ]
+  .forEach(
+    id =>
+      $(id).value = ""
+  );
+
+
+  toast(
+    "Track imeongezwa."
+  );
+
+
   loadAdminList();
+
 }
+
 
 async function loadAdminList(){
-  if(!db)return;
-  const snap=await db.ref("media").once("value");
-  const arr=[];
-  if(snap.exists())snap.forEach(c=>arr.push({key:c.key,data:c.val()}));
-  $("adminList").innerHTML=arr.reverse().map(x=>`
-    <div class="admin-item">
-      <span>${esc(x.data.jina||"Untitled")} (${x.data.views||0} views)</span>
-      <button class="btn-red" onclick="deleteAdminTrack('${x.key}')">DELETE</button>
-    </div>`).join("") || '<div style="color:#69756d;font-size:10px">No tracks.</div>';
-}
 
-async function deleteAdminTrack(key){
-  if(!confirm("Delete this track?"))return;
-  await db.ref("media/"+key).remove();
-  loadAdminList();toast("Deleted.");
-}
+  if(!db) return;
 
-$("q").addEventListener("keydown",e=>{if(e.key==="Enter")searchMusic()});
 
-window.addEventListener("load",()=>{
-  initRealtimeListener();
-  initAdsRealtimeListener();
-  initPresenceSystem();
-});
-  if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js")
-      .then(() => console.log("MMEDIA Service Worker registered"))
-      .catch(err => console.log("Service Worker error:", err));
-  });
+  const snap =
+    await db
+      .ref("media")
+      .once("value");
+
+
+  const arr = [];
+
+
+  if(snap.exists()){
+
+    snap.forEach(
+      c =>
+        arr.push({
+          key:c.key,
+          data:c.val()
+        })
+    );
+
   }
-  function openLocalMusic(){
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "audio/*";
-  input.multiple = true;
 
-  input.onchange = function(){
-    const files = Array.from(input.files || []);
 
-    if(!files.length) return;
+  $("adminList").innerHTML =
 
-    const localTracks = files.map((file,index)=>({
-      key: "local_" + index,
-      title: file.name.replace(/\.[^/.]+$/, ""),
-      artist: "My Music",
-      cover: "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png",
-      audio: URL.createObjectURL(file),
-      download: "",
-      views: 0,
-      type: "LOCAL"
-    }));
+    arr
+      .reverse()
+      .map(
+        x => `
 
-    renderLocalMusic(localTracks);
-  };
+        <div class="admin-item">
+
+          <span>
+            ${esc(
+              x.data.jina ||
+              "Untitled"
+            )}
+
+            (${x.data.views || 0} views)
+
+          </span>
+
+          <button
+            class="btn-red"
+            onclick="
+              deleteAdminTrack('${x.key}')
+            ">
+            DELETE
+          </button>
+
+        </div>
+
+      `
+      )
+      .join("")
+
+    ||
+
+    '<div style="color:#69756d;font-size:10px">No tracks.</div>';
+
+}
+
+
+async function deleteAdminTrack(
+  key
+){
+
+  if(
+    !confirm(
+      "Delete this track?"
+    )
+  ) return;
+
+
+  await db
+    .ref("media/" + key)
+    .remove();
+
+
+  loadAdminList();
+
+  toast(
+    "Deleted."
+  );
+
+}
+
+
+$("q").addEventListener(
+  "keydown",
+  e => {
+
+    if(
+      e.key === "Enter"
+    ){
+
+      searchMusic();
+
+    }
+
+  }
+);
+
+
+/* MY DEVICE */
+
+function openLocalMusic(){
+
+  const input =
+    document.createElement(
+      "input"
+    );
+
+
+  input.type =
+    "file";
+
+
+  input.accept =
+    "audio/*";
+
+
+  input.multiple =
+    true;
+
+
+  input.onchange =
+    function(){
+
+      const files =
+        Array.from(
+          input.files || []
+        );
+
+
+      if(!files.length){
+
+        return;
+
+      }
+
+
+      const localTracks =
+        files.map(
+          (file,index) => ({
+
+            key:
+              "local_" +
+              index,
+
+            title:
+              file.name.replace(
+                /\.[^/.]+$/,
+                ""
+              ),
+
+            artist:
+              "My Device",
+
+            cover:
+              "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png",
+
+            audio:
+              URL.createObjectURL(
+                file
+              ),
+
+            download:"",
+
+            views:0,
+
+            type:"LOCAL"
+
+          })
+        );
+
+
+      renderLocalMusic(
+        localTracks
+      );
+
+    };
+
 
   input.click();
+
 }
 
-function renderLocalMusic(tracks){
-  $("sectionTitle").textContent = "📱 My Music";
-  $("status").textContent = tracks.length + " songs";
 
-  $("results").innerHTML = tracks.map(card).join("");
+function renderLocalMusic(
+  tracks
+){
+
+  $("sectionTitle")
+    .textContent =
+    "📱 My Device";
+
+
+  $("status")
+    .textContent =
+    tracks.length +
+    " songs";
+
+
+  $("results").innerHTML =
+    tracks
+      .map(card)
+      .join("");
+
 }
-  
+
+
+/* SERVICE WORKER */
+
+if(
+  "serviceWorker" in navigator
+){
+
+  window.addEventListener(
+    "load",
+    () => {
+
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(
+          () =>
+            console.log(
+              "MMEDIA Service Worker registered"
+            )
+        )
+        .catch(
+          err =>
+            console.log(
+              "Service Worker error:",
+              err
+            )
+        );
+
+    }
+  );
+
+}
+
+
+/* START */
+
+window.addEventListener(
+  "load",
+  () => {
+
+    initRealtimeListener();
+
+    initAdsRealtimeListener();
+
+    initPresenceSystem();
+
+  }
+);
+
 </script>
+
 </body>
-</html>
+  </html>
