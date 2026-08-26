@@ -11,6 +11,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -24,7 +25,6 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +33,7 @@ public class MainActivity extends Activity {
     private WebView webView;
 
     private static final int AUDIO_PERMISSION_CODE = 1001;
+    private static final int NOTIFICATION_PERMISSION_CODE = 1002;
 
     private MediaPlayer mediaPlayer;
 
@@ -42,8 +43,7 @@ public class MainActivity extends Activity {
 
     private Runnable downloadRunnable;
 
-    private final List<Long> downloadIds =
-            new ArrayList<>();
+    private final List<Long> downloadIds = new ArrayList<>();
 
 
     // =====================================================
@@ -78,6 +78,14 @@ public class MainActivity extends Activity {
 
 
         // =================================================
+        // REQUEST NOTIFICATION PERMISSION
+        // Android 13+
+        // =================================================
+
+        requestNotificationPermission();
+
+
+        // =================================================
         // WEBVIEW
         // =================================================
 
@@ -101,6 +109,10 @@ public class MainActivity extends Activity {
         settings.setDisplayZoomControls(false);
 
 
+        // =================================================
+        // WEBVIEW CLIENT
+        // =================================================
+
         webView.setWebViewClient(
                 new WebViewClient()
         );
@@ -122,7 +134,7 @@ public class MainActivity extends Activity {
 
 
         // =================================================
-        // LOAD WEBSITE
+        // LOAD MAKYAMA
         // =================================================
 
         webView.loadUrl(
@@ -135,6 +147,40 @@ public class MainActivity extends Activity {
         // =================================================
 
         startDownloadMonitor();
+
+    }
+
+
+    // =====================================================
+    // NOTIFICATION PERMISSION
+    // =====================================================
+
+    private void requestNotificationPermission() {
+
+        if (
+                Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.TIRAMISU
+        ) {
+
+            if (
+                    checkSelfPermission(
+                            Manifest.permission.POST_NOTIFICATIONS
+                    ) != PackageManager.PERMISSION_GRANTED
+            ) {
+
+                requestPermissions(
+
+                        new String[]{
+                                Manifest.permission.POST_NOTIFICATIONS
+                        },
+
+                        NOTIFICATION_PERMISSION_CODE
+
+                );
+
+            }
+
+        }
 
     }
 
@@ -300,10 +346,6 @@ public class MainActivity extends Activity {
                 Uri collection;
 
 
-                // =================================================
-                // MEDIASTORE URI
-                // =================================================
-
                 if (
                         Build.VERSION.SDK_INT >=
                         Build.VERSION_CODES.Q
@@ -321,10 +363,6 @@ public class MainActivity extends Activity {
 
                 }
 
-
-                // =================================================
-                // COLUMNS
-                // =================================================
 
                 String[] projection = {
 
@@ -344,10 +382,6 @@ public class MainActivity extends Activity {
 
                 };
 
-
-                // =================================================
-                // ONLY MUSIC
-                // =================================================
 
                 String selection =
                         MediaStore.Audio.Media.IS_MUSIC +
@@ -382,36 +416,30 @@ public class MainActivity extends Activity {
                                     MediaStore.Audio.Media._ID
                             );
 
-
                     int titleColumn =
                             cursor.getColumnIndex(
                                     MediaStore.Audio.Media.TITLE
                             );
-
 
                     int artistColumn =
                             cursor.getColumnIndex(
                                     MediaStore.Audio.Media.ARTIST
                             );
 
-
                     int albumColumn =
                             cursor.getColumnIndex(
                                     MediaStore.Audio.Media.ALBUM
                             );
-
 
                     int displayNameColumn =
                             cursor.getColumnIndex(
                                     MediaStore.Audio.Media.DISPLAY_NAME
                             );
 
-
                     int mimeColumn =
                             cursor.getColumnIndex(
                                     MediaStore.Audio.Media.MIME_TYPE
                             );
-
 
                     int durationColumn =
                             cursor.getColumnIndex(
@@ -470,8 +498,7 @@ public class MainActivity extends Activity {
                                     title.trim().isEmpty()
                             ) {
 
-                                title =
-                                        filename;
+                                title = filename;
 
                             }
 
@@ -481,8 +508,7 @@ public class MainActivity extends Activity {
                                     title.trim().isEmpty()
                             ) {
 
-                                title =
-                                        "Unknown Song";
+                                title = "Unknown Song";
 
                             }
 
@@ -490,13 +516,10 @@ public class MainActivity extends Activity {
                             if (
                                     artist == null ||
                                     artist.trim().isEmpty() ||
-                                    artist.equals(
-                                            "<unknown>"
-                                    )
+                                    artist.equals("<unknown>")
                             ) {
 
-                                artist =
-                                        "Unknown Artist";
+                                artist = "Unknown Artist";
 
                             }
 
@@ -576,9 +599,7 @@ public class MainActivity extends Activity {
                             );
 
 
-                            audioArray.put(
-                                    audio
-                            );
+                            audioArray.put(audio);
 
 
                         } catch (Exception itemError) {
@@ -601,30 +622,21 @@ public class MainActivity extends Activity {
 
                 runOnUiThread(() -> {
 
-                    try {
-
-                        if (webView == null) {
-                            return;
-                        }
-
-
-                        String js =
-                                "window.showAndroidMusic(" +
-                                JSONObject.quote(json) +
-                                ");";
-
-
-                        webView.evaluateJavascript(
-                                js,
-                                null
-                        );
-
-
-                    } catch (Exception e) {
-
-                        e.printStackTrace();
-
+                    if (webView == null) {
+                        return;
                     }
+
+
+                    String js =
+                            "window.showAndroidMusic(" +
+                            JSONObject.quote(json) +
+                            ");";
+
+
+                    webView.evaluateJavascript(
+                            js,
+                            null
+                    );
 
                 });
 
@@ -653,9 +665,9 @@ public class MainActivity extends Activity {
         }
 
 
-        // =====================================================
+        // =================================================
         // PLAY DEVICE AUDIO
-        // =====================================================
+        // =================================================
 
         @JavascriptInterface
         public void playDeviceAudio(
@@ -696,9 +708,7 @@ public class MainActivity extends Activity {
 
 
                     Uri audioUri =
-                            Uri.parse(
-                                    uriString
-                            );
+                            Uri.parse(uriString);
 
 
                     mediaPlayer =
@@ -790,8 +800,7 @@ public class MainActivity extends Activity {
                                 } catch (Exception ignored) {}
 
 
-                                mediaPlayer =
-                                        null;
+                                mediaPlayer = null;
 
                             }
                     );
@@ -813,21 +822,16 @@ public class MainActivity extends Activity {
 
 
                                 try {
-
                                     mp.reset();
-
                                 } catch (Exception ignored) {}
 
 
                                 try {
-
                                     mp.release();
-
                                 } catch (Exception ignored) {}
 
 
-                                mediaPlayer =
-                                        null;
+                                mediaPlayer = null;
 
 
                                 return true;
@@ -864,9 +868,9 @@ public class MainActivity extends Activity {
         }
 
 
-        // =====================================================
+        // =================================================
         // STOP DEVICE AUDIO
-        // =====================================================
+        // =================================================
 
         @JavascriptInterface
         public void stopDeviceAudio() {
@@ -880,9 +884,9 @@ public class MainActivity extends Activity {
         }
 
 
-        // =====================================================
+        // =================================================
         // DOWNLOAD
-        // =====================================================
+        // =================================================
 
         @JavascriptInterface
         public void download(
@@ -919,6 +923,10 @@ public class MainActivity extends Activity {
 
             try {
 
+                // =================================================
+                // CLEAN FILE NAME
+                // =================================================
+
                 String cleanFilename =
                         filename;
 
@@ -929,49 +937,22 @@ public class MainActivity extends Activity {
                 ) {
 
                     cleanFilename =
-                            "MMEDIA_Music.mp3";
+                            "MAKYAMA_Music.mp3";
 
                 }
 
 
                 cleanFilename =
                         cleanFilename
-                                .replace(
-                                        "/",
-                                        "_"
-                                )
-                                .replace(
-                                        "\\",
-                                        "_"
-                                )
-                                .replace(
-                                        ":",
-                                        "_"
-                                )
-                                .replace(
-                                        "*",
-                                        "_"
-                                )
-                                .replace(
-                                        "?",
-                                        "_"
-                                )
-                                .replace(
-                                        "\"",
-                                        "_"
-                                )
-                                .replace(
-                                        "<",
-                                        "_"
-                                )
-                                .replace(
-                                        ">",
-                                        "_"
-                                )
-                                .replace(
-                                        "|",
-                                        "_"
-                                );
+                                .replace("/", "_")
+                                .replace("\\", "_")
+                                .replace(":", "_")
+                                .replace("*", "_")
+                                .replace("?", "_")
+                                .replace("\"", "_")
+                                .replace("<", "_")
+                                .replace(">", "_")
+                                .replace("|", "_");
 
 
                 // =================================================
@@ -984,30 +965,51 @@ public class MainActivity extends Activity {
                         );
 
 
+                // =================================================
+                // TITLE
+                // =================================================
+
                 request.setTitle(
                         cleanFilename
                 );
 
 
+                // =================================================
+                // DESCRIPTION
+                // =================================================
+
                 request.setDescription(
-                        "Downloading from MAKYAMA MEDIA"
+                        "MAKYAMA MEDIA • Downloading..."
                 );
 
+
+                // =================================================
+                // SHOW ANDROID DOWNLOAD NOTIFICATION
+                // =================================================
 
                 request.setNotificationVisibility(
-                        DownloadManager
-                                .Request
-                                .VISIBILITY_VISIBLE
+
+                        DownloadManager.Request
+                                .VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+
                 );
 
 
-                request.setAllowedOverMetered(
-                        true
-                );
+                // =================================================
+                // NETWORK
+                // =================================================
+
+                request.setAllowedOverMetered(true);
+
+                request.setAllowedOverRoaming(true);
 
 
-                request.setAllowedOverRoaming(
-                        true
+                // =================================================
+                // MIME TYPE
+                // =================================================
+
+                request.setMimeType(
+                        "audio/*"
                 );
 
 
@@ -1017,8 +1019,7 @@ public class MainActivity extends Activity {
 
                 request.setDestinationInExternalPublicDir(
 
-                        android.os.Environment
-                                .DIRECTORY_DOWNLOADS,
+                        Environment.DIRECTORY_DOWNLOADS,
 
                         cleanFilename
 
@@ -1026,7 +1027,7 @@ public class MainActivity extends Activity {
 
 
                 // =================================================
-                // START DOWNLOAD
+                // START
                 // =================================================
 
                 long downloadId =
@@ -1034,6 +1035,10 @@ public class MainActivity extends Activity {
                                 request
                         );
 
+
+                // =================================================
+                // SAVE ID
+                // =================================================
 
                 synchronized (downloadIds) {
 
@@ -1043,6 +1048,17 @@ public class MainActivity extends Activity {
 
                 }
 
+
+                // =================================================
+                // IMMEDIATE WEBSITE UPDATE
+                // =================================================
+
+                sendDownloadsToWebsite();
+
+
+                // =================================================
+                // MESSAGE
+                // =================================================
 
                 runOnUiThread(() -> {
 
@@ -1055,9 +1071,6 @@ public class MainActivity extends Activity {
                             Toast.LENGTH_SHORT
 
                     ).show();
-
-
-                    sendDownloadsToWebsite();
 
                 });
 
@@ -1086,9 +1099,9 @@ public class MainActivity extends Activity {
         }
 
 
-        // =====================================================
+        // =================================================
         // GET DOWNLOADS
-        // =====================================================
+        // =================================================
 
         @JavascriptInterface
         public String getDownloads() {
@@ -1118,8 +1131,11 @@ public class MainActivity extends Activity {
                         if (downloadHandler != null) {
 
                             downloadHandler.postDelayed(
+
                                     this,
+
                                     500
+
                             );
 
                         }
@@ -1137,7 +1153,7 @@ public class MainActivity extends Activity {
 
 
     // =====================================================
-    // SEND DOWNLOADS TO HTML
+    // SEND DOWNLOADS TO WEBSITE
     // =====================================================
 
     private void sendDownloadsToWebsite() {
@@ -1159,16 +1175,25 @@ public class MainActivity extends Activity {
 
 
             String js =
+
                     "if(typeof window.showAndroidDownloads===" +
                     "'function')" +
-                    "{window.showAndroidDownloads(" +
+
+                    "{" +
+
+                    "window.showAndroidDownloads(" +
                     JSONObject.quote(json) +
-                    ");}";
+                    ");" +
+
+                    "}";
 
 
             webView.evaluateJavascript(
+
                     js,
+
                     null
+
             );
 
         });
@@ -1177,7 +1202,7 @@ public class MainActivity extends Activity {
 
 
     // =====================================================
-    // DOWNLOAD JSON
+    // GET DOWNLOAD JSON
     // =====================================================
 
     private String getDownloadsJson() {
@@ -1198,25 +1223,27 @@ public class MainActivity extends Activity {
                         downloadIds.get(i);
 
 
+                Cursor cursor = null;
+
+
                 try {
 
                     DownloadManager.Query query =
                             new DownloadManager.Query();
 
 
-                    query.setFilterById(
-                            id
-                    );
+                    query.setFilterById(id);
 
 
-                    Cursor cursor =
+                    cursor =
                             downloadManager.query(
                                     query
                             );
 
 
                     if (
-                            cursor == null
+                            cursor == null ||
+                            !cursor.moveToFirst()
                     ) {
 
                         continue;
@@ -1224,209 +1251,215 @@ public class MainActivity extends Activity {
                     }
 
 
-                    if (
-                            cursor.moveToFirst()
-                    ) {
+                    int statusColumn =
+                            cursor.getColumnIndex(
+                                    DownloadManager.COLUMN_STATUS
+                            );
 
-                        int statusColumn =
-                                cursor.getColumnIndex(
-                                        DownloadManager.COLUMN_STATUS
+
+                    int titleColumn =
+                            cursor.getColumnIndex(
+                                    DownloadManager.COLUMN_TITLE
+                            );
+
+
+                    int totalColumn =
+                            cursor.getColumnIndex(
+                                    DownloadManager.COLUMN_TOTAL_SIZE_BYTES
+                            );
+
+
+                    int downloadedColumn =
+                            cursor.getColumnIndex(
+                                    DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
+                            );
+
+
+                    int reasonColumn =
+                            cursor.getColumnIndex(
+                                    DownloadManager.COLUMN_REASON
+                            );
+
+
+                    int status =
+                            cursor.getInt(
+                                    statusColumn
+                            );
+
+
+                    String title =
+                            cursor.getString(
+                                    titleColumn
+                            );
+
+
+                    long total =
+                            cursor.getLong(
+                                    totalColumn
+                            );
+
+
+                    long downloaded =
+                            cursor.getLong(
+                                    downloadedColumn
+                            );
+
+
+                    int reason =
+                            cursor.getInt(
+                                    reasonColumn
+                            );
+
+
+                    // =================================================
+                    // CALCULATE PERCENT
+                    // =================================================
+
+                    int progress = 0;
+
+
+                    if (total > 0) {
+
+                        progress =
+                                (int)
+                                (
+                                        (
+                                                downloaded * 100
+                                        )
+                                        /
+                                        total
                                 );
-
-
-                        int titleColumn =
-                                cursor.getColumnIndex(
-                                        DownloadManager.COLUMN_TITLE
-                                );
-
-
-                        int totalColumn =
-                                cursor.getColumnIndex(
-                                        DownloadManager.COLUMN_TOTAL_SIZE_BYTES
-                                );
-
-
-                        int downloadedColumn =
-                                cursor.getColumnIndex(
-                                        DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
-                                );
-
-
-                        int reasonColumn =
-                                cursor.getColumnIndex(
-                                        DownloadManager.COLUMN_REASON
-                                );
-
-
-                        int status =
-                                cursor.getInt(
-                                        statusColumn
-                                );
-
-
-                        String title =
-                                cursor.getString(
-                                        titleColumn
-                                );
-
-
-                        long total =
-                                cursor.getLong(
-                                        totalColumn
-                                );
-
-
-                        long downloaded =
-                                cursor.getLong(
-                                        downloadedColumn
-                                );
-
-
-                        int reason =
-                                cursor.getInt(
-                                        reasonColumn
-                                );
-
-
-                        int progress =
-                                0;
-
-
-                        if (
-                                total > 0
-                        ) {
-
-                            progress =
-                                    (int)
-                                    (
-                                            (
-                                                    downloaded
-                                                    * 100
-                                            )
-                                            /
-                                            total
-                                    );
-
-                        }
-
-
-                        String state =
-                                "downloading";
-
-
-                        if (
-                                status ==
-                                DownloadManager
-                                        .STATUS_SUCCESSFUL
-                        ) {
-
-                            state =
-                                    "completed";
-
-                            progress =
-                                    100;
-
-                        }
-
-
-                        else if (
-                                status ==
-                                DownloadManager
-                                        .STATUS_FAILED
-                        ) {
-
-                            state =
-                                    "failed";
-
-                        }
-
-
-                        else if (
-                                status ==
-                                DownloadManager
-                                        .STATUS_PAUSED
-                        ) {
-
-                            state =
-                                    "paused";
-
-                        }
-
-
-                        else if (
-                                status ==
-                                DownloadManager
-                                        .STATUS_PENDING
-                        ) {
-
-                            state =
-                                    "pending";
-
-                        }
-
-
-                        JSONObject item =
-                                new JSONObject();
-
-
-                        item.put(
-                                "id",
-                                id
-                        );
-
-
-                        item.put(
-                                "title",
-                                title != null
-                                        ? title
-                                        : "Download"
-                        );
-
-
-                        item.put(
-                                "progress",
-                                progress
-                        );
-
-
-                        item.put(
-                                "downloaded",
-                                downloaded
-                        );
-
-
-                        item.put(
-                                "total",
-                                total
-                        );
-
-
-                        item.put(
-                                "status",
-                                state
-                        );
-
-
-                        item.put(
-                                "reason",
-                                reason
-                        );
-
-
-                        array.put(
-                                item
-                        );
-
 
                     }
 
 
-                    cursor.close();
+                    // =================================================
+                    // STATUS
+                    // =================================================
+
+                    String state =
+                            "downloading";
+
+
+                    if (
+                            status ==
+                            DownloadManager.STATUS_PENDING
+                    ) {
+
+                        state =
+                                "pending";
+
+                    }
+
+                    else if (
+                            status ==
+                            DownloadManager.STATUS_RUNNING
+                    ) {
+
+                        state =
+                                "downloading";
+
+                    }
+
+                    else if (
+                            status ==
+                            DownloadManager.STATUS_PAUSED
+                    ) {
+
+                        state =
+                                "paused";
+
+                    }
+
+                    else if (
+                            status ==
+                            DownloadManager.STATUS_SUCCESSFUL
+                    ) {
+
+                        state =
+                                "completed";
+
+                        progress = 100;
+
+                    }
+
+                    else if (
+                            status ==
+                            DownloadManager.STATUS_FAILED
+                    ) {
+
+                        state =
+                                "failed";
+
+                    }
+
+
+                    // =================================================
+                    // JSON ITEM
+                    // =================================================
+
+                    JSONObject item =
+                            new JSONObject();
+
+
+                    item.put(
+                            "id",
+                            id
+                    );
+
+
+                    item.put(
+                            "title",
+                            title != null
+                                    ? title
+                                    : "Download"
+                    );
+
+
+                    item.put(
+                            "progress",
+                            progress
+                    );
+
+
+                    item.put(
+                            "downloaded",
+                            downloaded
+                    );
+
+
+                    item.put(
+                            "total",
+                            total
+                    );
+
+
+                    item.put(
+                            "status",
+                            state
+                    );
+
+
+                    item.put(
+                            "reason",
+                            reason
+                    );
+
+
+                    array.put(item);
 
 
                 } catch (Exception e) {
 
                     e.printStackTrace();
+
+                } finally {
+
+                    if (cursor != null) {
+
+                        cursor.close();
+
+                    }
 
                 }
 
@@ -1450,9 +1483,7 @@ public class MainActivity extends Activity {
 
             try {
 
-                if (
-                        mediaPlayer.isPlaying()
-                ) {
+                if (mediaPlayer.isPlaying()) {
 
                     mediaPlayer.stop();
 
@@ -1475,8 +1506,7 @@ public class MainActivity extends Activity {
             } catch (Exception ignored) {}
 
 
-            mediaPlayer =
-                    null;
+            mediaPlayer = null;
 
         }
 
@@ -1498,4 +1528,162 @@ public class MainActivity extends Activity {
 
     ) {
 
-        super.onRequestPermissions
+        super.onRequestPermissionsResult(
+
+                requestCode,
+
+                permissions,
+
+                grantResults
+
+        );
+
+
+        if (
+                requestCode ==
+                AUDIO_PERMISSION_CODE
+        ) {
+
+            if (
+                    grantResults.length > 0 &&
+                    grantResults[0] ==
+                            PackageManager.PERMISSION_GRANTED
+            ) {
+
+                new MMEDIAInterface(
+                        MainActivity.this
+                ).loadDeviceMusic();
+
+
+                sendDownloadsToWebsite();
+
+
+            } else {
+
+                Toast.makeText(
+
+                        this,
+
+                        "Ruhusa ya kusoma audio haijatolewa.",
+
+                        Toast.LENGTH_LONG
+
+                ).show();
+
+            }
+
+        }
+
+
+        if (
+                requestCode ==
+                NOTIFICATION_PERMISSION_CODE
+        ) {
+
+            if (
+                    grantResults.length > 0 &&
+                    grantResults[0] ==
+                            PackageManager.PERMISSION_GRANTED
+            ) {
+
+                Toast.makeText(
+
+                        this,
+
+                        "Download notifications zimewashwa.",
+
+                        Toast.LENGTH_SHORT
+
+                ).show();
+
+            }
+
+        }
+
+    }
+
+
+    // =====================================================
+    // BACK BUTTON
+    // =====================================================
+
+    @Override
+    public void onBackPressed() {
+
+        if (webView != null) {
+
+            webView.evaluateJavascript(
+
+                    "typeof window.exitDevicePage===" +
+                    "'function' ? " +
+                    "window.exitDevicePage() : false;",
+
+                    value -> {
+
+                        if (
+                                "false".equals(value) ||
+                                "null".equals(value)
+                        ) {
+
+                            if (webView.canGoBack()) {
+
+                                webView.goBack();
+
+                            } else {
+
+                                MainActivity.super
+                                        .onBackPressed();
+
+                            }
+
+                        }
+
+                    }
+
+            );
+
+        } else {
+
+            super.onBackPressed();
+
+        }
+
+    }
+
+
+    // =====================================================
+    // DESTROY
+    // =====================================================
+
+    @Override
+    protected void onDestroy() {
+
+        if (
+                downloadHandler != null &&
+                downloadRunnable != null
+        ) {
+
+            downloadHandler.removeCallbacks(
+                    downloadRunnable
+            );
+
+        }
+
+
+        releasePlayer();
+
+
+        if (webView != null) {
+
+            webView.destroy();
+
+            webView = null;
+
+        }
+
+
+        super.onDestroy();
+
+    }
+
+                        }
