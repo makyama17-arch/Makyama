@@ -169,7 +169,6 @@ header{
   line-height:1.5;
 }
 
-/* SEARCH + MY DEVICE */
 .search-row{
   display:flex;
   gap:7px;
@@ -493,7 +492,6 @@ footer{
   padding:25px 10px;
 }
 
-/* PLAYER */
 .player{
   position:fixed;
   left:0;
@@ -628,6 +626,7 @@ audio{
 }
 
 @media(max-width:520px){
+
   .search-row{
     gap:6px;
   }
@@ -652,9 +651,11 @@ audio{
   .brand-text p{
     display:none;
   }
+
 }
 
 @media(min-width:650px){
+
   .grid{
     grid-template-columns:1fr 1fr;
   }
@@ -668,6 +669,7 @@ audio{
   .title{
     font-size:14px;
   }
+
 }
 </style>
 </head>
@@ -675,40 +677,76 @@ audio{
 <body>
 
 <header>
+
   <div class="brand">
+
     <img
       src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png"
       alt="Makyama Logo"
     >
 
     <div class="brand-text">
+
       <h1>MAKYAMA MEDIA</h1>
-      <p>Global Music • Stream • Discover • Download Licensed Audio</p>
+
+      <p>
+        Global Music • Stream • Discover • Download Licensed Audio
+      </p>
+
     </div>
+
   </div>
 
   <div class="header-actions">
-    <button class="btn btn-dark" onclick="openAdmin()">🔑 Admin</button>
+
+    <button
+      class="btn btn-dark"
+      onclick="openAdmin()"
+    >
+      🔑 Admin
+    </button>
+
   </div>
+
 </header>
+
 
 <div id="toast" class="toast"></div>
 
-<div id="socialAdsArea" class="social-wrap"></div>
+<div
+  id="socialAdsArea"
+  class="social-wrap"
+></div>
+
 
 <main class="wrap">
 
   <section class="hero">
-    <h2>Discover music <span>worldwide.</span></h2>
-    <p>Tafuta msanii au wimbo kutoka kwenye music catalog.</p>
+
+    <h2>
+      Discover music
+      <span>worldwide.</span>
+    </h2>
+
+    <p>
+      Tafuta msanii au wimbo kutoka kwenye music catalog.
+    </p>
+
   </section>
 
-  <div id="bannerAdsArea" class="banner-ads-container"></div>
+
+  <div
+    id="bannerAdsArea"
+    class="banner-ads-container"
+  ></div>
+
 
   <!-- SEARCH + MY DEVICE -->
+
   <div class="search-row">
 
     <div class="search">
+
       <input
         id="q"
         placeholder="🔎 Search artist or song"
@@ -721,32 +759,44 @@ audio{
       >
         SEARCH
       </button>
+
     </div>
 
+
     <!-- MY DEVICE -->
+
     <button
       class="device-btn"
       onclick="openLocalMusic()"
       type="button"
     >
-      📱<br>MY DEVICE
+      📱<br>
+      MY DEVICE
     </button>
 
   </div>
 
-  <!-- Hidden file picker -->
-  <input
-    id="localMusicInput"
-    type="file"
-    accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg,.flac"
-    multiple
-    style="display:none"
+
+  <!--
+    HAKUNA FILE PICKER TENA.
+    Android MainActivity ndiyo itasoma
+    MediaStore ya simu.
+  -->
+
+
+  <div
+    id="localInfo"
+    class="local-info"
   >
 
-  <div id="localInfo" class="local-info">
-    <strong>📱 My Device</strong>
+    <strong>
+      📱 My Device
+    </strong>
+
     <span id="localInfoText"></span>
+
   </div>
+
 
   <div class="chips">
 
@@ -808,10 +858,18 @@ audio{
 
   </div>
 
-  <!-- ADMIN -->
-  <section id="admin" class="admin">
 
-    <h3>👑 ADMIN DASHBOARD</h3>
+  <!-- ADMIN -->
+
+  <section
+    id="admin"
+    class="admin"
+  >
+
+    <h3>
+      👑 ADMIN DASHBOARD
+    </h3>
+
 
     <div
       style="
@@ -827,13 +885,26 @@ audio{
     >
 
       <div>
-        <h4 style="color:var(--green);font-size:13px">
+
+        <h4
+          style="
+            color:var(--green);
+            font-size:13px
+          "
+        >
           🟢 WATU WAPO LIVE KWENYE WEBSITE
         </h4>
 
-        <p style="font-size:10px;color:var(--muted);margin-top:2px">
+        <p
+          style="
+            font-size:10px;
+            color:var(--muted);
+            margin-top:2px
+          "
+        >
           Idadi ya watumiaji waliounganishwa sasa hivi
         </p>
+
       </div>
 
       <div
@@ -852,6 +923,7 @@ audio{
 
     </div>
 
+
     <div
       style="
         background:#151d18;
@@ -862,7 +934,13 @@ audio{
       "
     >
 
-      <h4 style="color:var(--orange);font-size:12px;margin-bottom:6px">
+      <h4
+        style="
+          color:var(--orange);
+          font-size:12px;
+          margin-bottom:6px
+        "
+      >
         📢 ONGEZA AD MPYA
       </h4>
 
@@ -872,6 +950,7 @@ audio{
       >
 
       <select id="aAdPosition">
+
         <option value="social">
           📌 Social Bar
         </option>
@@ -879,6 +958,7 @@ audio{
         <option value="banner">
           📄 Native Banner
         </option>
+
       </select>
 
       <textarea
@@ -896,6 +976,7 @@ audio{
 
     </div>
 
+
     <div
       style="
         background:#151d18;
@@ -906,13 +987,23 @@ audio{
       "
     >
 
-      <h4 style="color:var(--green);font-size:12px;margin-bottom:6px">
+      <h4
+        style="
+          color:var(--green);
+          font-size:12px;
+          margin-bottom:6px
+        "
+      >
         📋 ORODHA YA ADS
       </h4>
 
-      <div id="adminAdsList" class="admin-list"></div>
+      <div
+        id="adminAdsList"
+        class="admin-list"
+      ></div>
 
     </div>
+
 
     <div class="admin-row">
 
@@ -928,6 +1019,7 @@ audio{
 
     </div>
 
+
     <input
       id="aCover"
       placeholder="Cover image URL"
@@ -937,6 +1029,7 @@ audio{
       id="aAudio"
       placeholder="Direct audio URL (MP3/M4A)"
     >
+
 
     <div class="admin-row">
 
@@ -956,9 +1049,14 @@ audio{
 
     </div>
 
-    <div id="adminList" class="admin-list"></div>
+
+    <div
+      id="adminList"
+      class="admin-list"
+    ></div>
 
   </section>
+
 
   <div class="section">
 
@@ -970,7 +1068,11 @@ audio{
 
   </div>
 
-  <div id="results" class="grid">
+
+  <div
+    id="results"
+    class="grid"
+  >
 
     <div class="loading">
       Loading music… ⏳
@@ -978,14 +1080,20 @@ audio{
 
   </div>
 
+
   <footer>
     © 2026 MAKYAMA MEDIA • Music is provided by licensed/official sources.
   </footer>
 
 </main>
 
+
 <!-- PLAYER -->
-<div id="player" class="player">
+
+<div
+  id="player"
+  class="player"
+>
 
   <img
     id="pcover"
@@ -1018,8 +1126,13 @@ audio{
 
 </div>
 
+
 <!-- ADMIN LOGIN -->
-<div id="login" class="modal">
+
+<div
+  id="login"
+  class="modal"
+>
 
   <div class="modal-box">
 
@@ -1030,7 +1143,9 @@ audio{
       ×
     </button>
 
-    <h3>🔒 ADMIN LOGIN</h3>
+    <h3>
+      🔒 ADMIN LOGIN
+    </h3>
 
     <input
       id="user"
@@ -1054,11 +1169,12 @@ audio{
 
 </div>
 
+
 <script>
 
-/* =========================
+/* =========================================================
    FIREBASE
-========================= */
+========================================================= */
 
 const firebaseConfig = {
 
@@ -1085,15 +1201,21 @@ const firebaseConfig = {
 
 };
 
+
 let db = null;
 
-try {
+try{
 
   if(!firebase.apps.length){
-    firebase.initializeApp(firebaseConfig);
+
+    firebase.initializeApp(
+      firebaseConfig
+    );
+
   }
 
-  db = firebase.database();
+  db =
+    firebase.database();
 
 }catch(e){
 
@@ -1105,32 +1227,40 @@ try {
 }
 
 
-/* =========================
+/* =========================================================
    GLOBAL VARIABLES
-========================= */
+========================================================= */
 
 let admin = false;
 
 let allTracksList = [];
 
-let currentFilter = "trending";
-
-let localTracks = [];
-
-let currentLocalFiles = [];
+let currentFilter =
+  "trending";
 
 
-/* =========================
-   SHORT SELECTOR
-========================= */
+/*
+ * Hii sasa ndiyo list ya audio
+ * zilizopatikana kutoka Android.
+ */
 
-const $ = id =>
-  document.getElementById(id);
+let deviceTracks = [];
+
+let inDeviceMode = false;
 
 
-/* =========================
+/* =========================================================
+   SELECTOR
+========================================================= */
+
+const $ =
+  id =>
+    document.getElementById(id);
+
+
+/* =========================================================
    ESCAPE HTML
-========================= */
+========================================================= */
 
 function esc(v){
 
@@ -1150,15 +1280,19 @@ function esc(v){
 }
 
 
-/* =========================
+/* =========================================================
    TOAST
-========================= */
+========================================================= */
 
 function toast(msg){
 
-  $("toast").textContent = msg;
+  $("toast")
+    .textContent =
+      msg;
 
-  $("toast").style.display = "block";
+  $("toast")
+    .style.display =
+      "block";
 
   clearTimeout(
     window.__toast
@@ -1167,28 +1301,31 @@ function toast(msg){
   window.__toast =
     setTimeout(
       () =>
-        $("toast").style.display = "none",
+        $("toast")
+          .style.display =
+            "none",
       4000
     );
 
 }
 
 
-/* =========================
+/* =========================================================
    STATUS
-========================= */
+========================================================= */
 
 function setStatus(x){
 
-  $("status").textContent =
-    x || "";
+  $("status")
+    .textContent =
+      x || "";
 
 }
 
 
-/* =========================
+/* =========================================================
    IMAGE
-========================= */
+========================================================= */
 
 function imageFor(item){
 
@@ -1198,9 +1335,9 @@ function imageFor(item){
 }
 
 
-/* =========================
-   AD SCRIPT
-========================= */
+/* =========================================================
+   ADS
+========================================================= */
 
 function injectScriptInto(
   container,
@@ -1210,40 +1347,47 @@ function injectScriptInto(
   container.innerHTML = "";
 
   const tempDiv =
-    document.createElement("div");
-
-  tempDiv.innerHTML = code;
-
-  const children =
-    Array.from(
-      tempDiv.children
+    document.createElement(
+      "div"
     );
 
-  children.forEach(child => {
+  tempDiv.innerHTML =
+    code;
+
+  Array.from(
+    tempDiv.children
+  ).forEach(child => {
 
     if(
-      child.tagName.toLowerCase()
+      child.tagName
+        .toLowerCase()
       !== "script"
     ){
 
-      container.appendChild(child);
+      container.appendChild(
+        child
+      );
 
     }
 
   });
 
+
   if(
     container.children.length === 0
   ){
 
-    container.innerHTML = code;
+    container.innerHTML =
+      code;
 
   }
+
 
   const scripts =
     tempDiv.getElementsByTagName(
       "script"
     );
+
 
   Array.from(scripts)
     .forEach(oldScript => {
@@ -1252,6 +1396,7 @@ function injectScriptInto(
         document.createElement(
           "script"
         );
+
 
       Array.from(
         oldScript.attributes
@@ -1264,12 +1409,14 @@ function injectScriptInto(
 
       });
 
+
       if(oldScript.innerHTML){
 
         newScript.innerHTML =
           oldScript.innerHTML;
 
       }
+
 
       container.appendChild(
         newScript
@@ -1280,10 +1427,6 @@ function injectScriptInto(
 }
 
 
-/* =========================
-   AD CARD
-========================= */
-
 function adCard(adCode){
 
   const wrapperId =
@@ -1292,12 +1435,14 @@ function adCard(adCode){
       .toString(36)
       .substring(2,9);
 
+
   setTimeout(() => {
 
     const el =
       document.getElementById(
         wrapperId
       );
+
 
     if(el){
 
@@ -1309,6 +1454,7 @@ function adCard(adCode){
     }
 
   },150);
+
 
   return `
 
@@ -1326,9 +1472,9 @@ function adCard(adCode){
 }
 
 
-/* =========================
+/* =========================================================
    LIVE USERS
-========================= */
+========================================================= */
 
 function initPresenceSystem(){
 
@@ -1339,8 +1485,10 @@ function initPresenceSystem(){
       "server_stats/connected_users"
     );
 
+
   const myConnectionRef =
     connectionsRef.push();
+
 
   db.ref(".info/connected")
     .on("value",snap => {
@@ -1353,11 +1501,15 @@ function initPresenceSystem(){
           .onDisconnect()
           .remove();
 
-        myConnectionRef.set(true);
+
+        myConnectionRef.set(
+          true
+        );
 
       }
 
     });
+
 
   connectionsRef.on(
     "value",
@@ -1366,8 +1518,10 @@ function initPresenceSystem(){
       const count =
         snap.numChildren();
 
+
       const counterEl =
         $("liveUsersCount");
+
 
       if(counterEl){
 
@@ -1382,13 +1536,14 @@ function initPresenceSystem(){
 }
 
 
-/* =========================
+/* =========================================================
    ADS REALTIME
-========================= */
+========================================================= */
 
 function initAdsRealtimeListener(){
 
   if(!db) return;
+
 
   db.ref("ads")
     .on("value",snap => {
@@ -1399,11 +1554,16 @@ function initAdsRealtimeListener(){
       const bannerArea =
         $("bannerAdsArea");
 
-      socialArea.innerHTML = "";
 
-      bannerArea.innerHTML = "";
+      socialArea.innerHTML =
+        "";
+
+      bannerArea.innerHTML =
+        "";
+
 
       const adsList = [];
+
 
       if(snap.exists()){
 
@@ -1412,13 +1572,17 @@ function initAdsRealtimeListener(){
           const ad =
             child.val();
 
+
           ad.key =
             child.key;
 
+
           adsList.push(ad);
 
+
           if(
-            ad.position === "social"
+            ad.position ===
+            "social"
           ){
 
             injectScriptInto(
@@ -1426,18 +1590,25 @@ function initAdsRealtimeListener(){
               ad.script
             );
 
-          }else if(
-            ad.position === "banner"
+          }
+
+
+          else if(
+            ad.position ===
+            "banner"
           ){
 
             bannerArea.innerHTML +=
-              adCard(ad.script);
+              adCard(
+                ad.script
+              );
 
           }
 
         });
 
       }
+
 
       if(admin){
 
@@ -1452,27 +1623,36 @@ function initAdsRealtimeListener(){
 }
 
 
-/* =========================
+/* =========================================================
    ADD AD
-========================= */
+========================================================= */
 
 async function addNewAd(){
 
-  if(!admin || !db)
+  if(
+    !admin ||
+    !db
+  )
     return;
+
 
   const name =
     $("aAdName")
       .value
-      .trim() || "Ad";
+      .trim() ||
+    "Ad";
+
 
   const position =
-    $("aAdPosition").value;
+    $("aAdPosition")
+      .value;
+
 
   const script =
     $("aAdScript")
       .value
       .trim();
+
 
   if(!script){
 
@@ -1484,6 +1664,7 @@ async function addNewAd(){
 
   }
 
+
   await db.ref("ads")
     .push({
 
@@ -1493,13 +1674,18 @@ async function addNewAd(){
 
       script:script,
 
-      createdAt:Date.now()
+      createdAt:
+        Date.now()
 
     });
 
-  $("aAdName").value = "";
 
-  $("aAdScript").value = "";
+  $("aAdName").value =
+    "";
+
+  $("aAdScript").value =
+    "";
+
 
   toast(
     "🎉 Ad imewekwa!"
@@ -1508,48 +1694,49 @@ async function addNewAd(){
 }
 
 
-/* =========================
-   ADS ADMIN LIST
-========================= */
+/* =========================================================
+   ADS ADMIN
+========================================================= */
 
-function renderAdminAdsList(ads){
+function renderAdminAdsList(
+  ads
+){
 
   if(!ads.length){
 
-    $("adminAdsList").innerHTML =
+    $("adminAdsList")
+      .innerHTML =
       '<div style="color:#69756d;font-size:10px">Hakuna Ads kwa sasa.</div>';
 
     return;
 
   }
 
-  $("adminAdsList").innerHTML =
-    ads.map(a => `
 
-      <div class="admin-item">
+  $("adminAdsList")
+    .innerHTML =
+      ads.map(a => `
 
-        <span>
-          📢 ${esc(a.name)}
-          (${esc(a.position)})
-        </span>
+        <div class="admin-item">
 
-        <button
-          class="btn-red"
-          onclick="deleteAd('${a.key}')"
-        >
-          FUTA
-        </button>
+          <span>
+            📢 ${esc(a.name)}
+            (${esc(a.position)})
+          </span>
 
-      </div>
+          <button
+            class="btn-red"
+            onclick="deleteAd('${a.key}')"
+          >
+            FUTA
+          </button>
 
-    `).join("");
+        </div>
+
+      `).join("");
 
 }
 
-
-/* =========================
-   DELETE AD
-========================= */
 
 async function deleteAd(key){
 
@@ -1560,9 +1747,11 @@ async function deleteAd(key){
   )
     return;
 
+
   await db
     .ref("ads/" + key)
     .remove();
+
 
   toast(
     "Ad imefutwa."
@@ -1571,17 +1760,23 @@ async function deleteAd(key){
 }
 
 
-/* =========================
-   VIEW COUNTER
-========================= */
+/* =========================================================
+   VIEWS
+========================================================= */
 
 function incrementView(key){
 
-  if(!db || !key)
+  if(
+    !db ||
+    !key
+  )
     return;
 
+
   db.ref(
-    "media/" + key + "/views"
+    "media/" +
+    key +
+    "/views"
   ).transaction(
     current =>
       (current || 0) + 1
@@ -1590,9 +1785,9 @@ function incrementView(key){
 }
 
 
-/* =========================
-   PLAY TRACK
-========================= */
+/* =========================================================
+   PLAY
+========================================================= */
 
 function playTrack(t){
 
@@ -1606,35 +1801,51 @@ function playTrack(t){
 
   }
 
+
   if(
     t.key &&
     !String(t.key)
-      .startsWith("local_")
+      .startsWith("device_")
   ){
 
-    incrementView(t.key);
+    incrementView(
+      t.key
+    );
 
   }
+
 
   $("pcover").src =
     imageFor(t);
 
-  $("ptitle").textContent =
-    t.title || "Unknown";
 
-  $("partist").textContent =
-    t.artist || "";
+  $("ptitle")
+    .textContent =
+      t.title ||
+      "Unknown";
 
-  $("player").style.display =
-    "flex";
+
+  $("partist")
+    .textContent =
+      t.artist ||
+      "";
+
+
+  $("player")
+    .style.display =
+      "flex";
+
 
   const audio =
     $("audio");
 
+
   audio.src =
     t.audio;
 
+
   audio.load();
+
 
   audio.play()
     .catch(() => {});
@@ -1642,57 +1853,65 @@ function playTrack(t){
 }
 
 
-/* =========================
-   CLOSE PLAYER
-========================= */
-
 function closePlayer(){
 
   const audio =
     $("audio");
 
+
   audio.pause();
+
 
   audio.removeAttribute(
     "src"
   );
 
+
   audio.load();
 
-  $("player").style.display =
-    "none";
+
+  $("player")
+    .style.display =
+      "none";
 
 }
 
 
-/* =========================
+/* =========================================================
    DOWNLOAD
-========================= */
+========================================================= */
 
 function downloadTrack(t){
 
   if(!t.download){
 
     toast(
-      "Haipakiliki moja kwa moja."
+      "Download haipo kwa audio hii."
     );
 
     return;
 
   }
 
+
   const title =
-    (t.title || "MMEDIA Music")
+    (t.title ||
+      "MMEDIA Music")
       .trim();
+
 
   const artist =
     (t.artist || "")
       .trim();
 
+
   let filename =
     artist
-      ? artist + " - " + title
+      ? artist +
+        " - " +
+        title
       : title;
+
 
   filename =
     filename
@@ -1706,24 +1925,23 @@ function downloadTrack(t){
       )
       .trim();
 
+
   if(
     !filename
       .toLowerCase()
       .endsWith(".mp3")
   ){
 
-    filename += ".mp3";
+    filename +=
+      ".mp3";
 
   }
 
-  /*
-    APK bridge ikiwa ipo
-  */
 
   if(
     window.MMEDIA &&
-    typeof window.MMEDIA.download
-    === "function"
+    typeof window.MMEDIA.download ===
+      "function"
   ){
 
     window.MMEDIA.download(
@@ -1735,49 +1953,58 @@ function downloadTrack(t){
 
   }
 
-  /*
-    Browser fallback
-  */
 
   const a =
-    document.createElement("a");
+    document.createElement(
+      "a"
+    );
+
 
   a.href =
     t.download;
 
+
   a.download =
     filename;
 
-  a.target =
-    "_self";
 
-  document.body.appendChild(a);
+  document.body.appendChild(
+    a
+  );
+
 
   a.click();
 
-  document.body.removeChild(a);
+
+  document.body.removeChild(
+    a
+  );
 
 }
 
 
-/* =========================
+/* =========================================================
    CARD
-========================= */
+========================================================= */
 
 function card(t){
 
   const canPlay =
     !!t.audio;
 
+
   const canDownload =
     !!t.download;
 
-  const isLocal =
+
+  const isDevice =
     String(t.key || "")
-      .startsWith("local_");
+      .startsWith("device_");
+
 
   const views =
     t.views || 0;
+
 
   return `
 
@@ -1794,16 +2021,21 @@ function card(t){
         "
       >
 
+
       <div class="info">
 
         <div class="badges">
 
           <span class="badge">
-            ${esc(t.type || "MUSIC")}
+            ${esc(
+              t.type ||
+              "MUSIC"
+            )}
           </span>
 
+
           ${
-            isLocal
+            isDevice
               ? `
                 <span class="badge local">
                   📱 DEVICE
@@ -1817,10 +2049,11 @@ function card(t){
           }
 
           ${
-            canDownload && !isLocal
+            canDownload &&
+            !isDevice
               ? `
                 <span class="badge orange">
-                  WITH COVER
+                  DOWNLOAD
                 </span>
               `
               : ""
@@ -1828,9 +2061,14 @@ function card(t){
 
         </div>
 
+
         <div class="title">
-          ${esc(t.title)}
+          ${esc(
+            t.title ||
+            "Unknown Song"
+          )}
         </div>
+
 
         <div class="artist">
           ${esc(
@@ -1838,6 +2076,7 @@ function card(t){
             "Unknown artist"
           )}
         </div>
+
 
         <div class="actions">
 
@@ -1853,6 +2092,7 @@ function card(t){
               `
               : ""
           }
+
 
           ${
             canDownload
@@ -1878,18 +2118,20 @@ function card(t){
 }
 
 
-/* =========================
+/* =========================================================
    FIREBASE MEDIA
-========================= */
+========================================================= */
 
 function initRealtimeListener(){
 
   if(!db) return;
 
+
   db.ref("media")
     .on("value",snap => {
 
       const out = [];
+
 
       if(snap.exists()){
 
@@ -1898,9 +2140,11 @@ function initRealtimeListener(){
           const x =
             c.val() || {};
 
+
           out.push({
 
-            key:c.key,
+            key:
+              c.key,
 
             title:
               x.jina ||
@@ -1935,6 +2179,7 @@ function initRealtimeListener(){
 
       }
 
+
       allTracksList =
         out.sort(
           (a,b) =>
@@ -1942,16 +2187,21 @@ function initRealtimeListener(){
             (a.views || 0)
         );
 
-      applyCurrentFilter();
+
+      if(!inDeviceMode){
+
+        applyCurrentFilter();
+
+      }
 
     });
 
 }
 
 
-/* =========================
+/* =========================================================
    RENDER
-========================= */
+========================================================= */
 
 function render(
   list,
@@ -1962,48 +2212,45 @@ function render(
     .textContent =
       title;
 
+
   if(!list.length){
 
-    $("results").innerHTML = `
+    $("results")
+      .innerHTML = `
 
-      <div class="empty">
+        <div class="empty">
 
-        <p
-          style="
-            font-size:14px;
-            font-weight:bold;
-            color:#fff
-          "
-        >
-          ⚠️ Wimbo huu haujapatikana
-          kwa sasa.
-        </p>
+          <p
+            style="
+              font-size:14px;
+              font-weight:bold;
+              color:#fff
+            "
+          >
+            ⚠️ Hakuna audio hapa kwa sasa.
+          </p>
 
-        <p
-          style="
-            margin-top:10px;
-            color:var(--green);
-            font-size:13px
-          "
-        >
-          <strong>
-            Tafadhali subiri wimbo wako
-            unatafutwa na kuandaliwa... 🚀
-          </strong>
-        </p>
+        </div>
 
-      </div>
+      `;
 
-    `;
 
-    setStatus("0 results");
+    setStatus(
+      "0 results"
+    );
+
 
     return;
 
   }
 
-  $("results").innerHTML =
-    list.map(card).join("");
+
+  $("results")
+    .innerHTML =
+      list
+        .map(card)
+        .join("");
+
 
   setStatus(
     list.length +
@@ -2013,9 +2260,9 @@ function render(
 }
 
 
-/* =========================
+/* =========================================================
    REQUEST
-========================= */
+========================================================= */
 
 async function sendTermuxRequest(
   query
@@ -2023,23 +2270,33 @@ async function sendTermuxRequest(
 
   if(!db) return;
 
-  await db.ref("requests")
+
+  await db
+    .ref("requests")
     .push({
 
       query:query,
 
-      timestamp:Date.now()
+      timestamp:
+        Date.now()
 
     });
 
 }
 
 
-/* =========================
+/* =========================================================
    FILTER
-========================= */
+========================================================= */
 
 function applyCurrentFilter(){
+
+  if(inDeviceMode){
+
+    return;
+
+  }
+
 
   const q =
     $("q")
@@ -2047,40 +2304,51 @@ function applyCurrentFilter(){
       .trim()
       .toLowerCase();
 
+
   if(q){
 
     const searchTerms =
       q.split(" ")
-       .filter(
-         term =>
-           term.length > 0
-       );
-
-    const filtered =
-      allTracksList.filter(x => {
-
-        const combined =
-          (
-            (x.title || "") +
-            " " +
-            (x.artist || "")
-          ).toLowerCase();
-
-        return searchTerms.every(
+        .filter(
           term =>
-            combined.includes(term)
+            term.length > 0
         );
 
-      });
+
+    const filtered =
+      allTracksList.filter(
+        x => {
+
+          const combined =
+            (
+              (x.title || "") +
+              " " +
+              (x.artist || "")
+            ).toLowerCase();
+
+
+          return searchTerms.every(
+            term =>
+              combined.includes(
+                term
+              )
+          );
+
+        }
+      );
+
 
     render(
       filtered,
-      "🔎 " + $("q").value
+      "🔎 " +
+      $("q").value
     );
+
 
     return;
 
   }
+
 
   if(
     currentFilter ===
@@ -2089,17 +2357,21 @@ function applyCurrentFilter(){
 
     const downloadsOnly =
       allTracksList.filter(
-        x => !!x.download
+        x =>
+          !!x.download
       );
+
 
     render(
       downloadsOnly,
       "⬇️ Downloadable Audio"
     );
 
+
     return;
 
   }
+
 
   render(
     allTracksList,
@@ -2109,67 +2381,91 @@ function applyCurrentFilter(){
 }
 
 
-/* =========================
-   SEARCH
-========================= */
+/* =========================================================
+   SEARCH ONLINE
+========================================================= */
 
 async function searchMusic(){
+
+  if(inDeviceMode){
+
+    searchDeviceMusic();
+
+    return;
+
+  }
+
 
   const q =
     $("q")
       .value
       .trim();
 
+
   if(!q) return;
 
-  $("results").innerHTML =
-    `
+
+  $("results")
+    .innerHTML = `
       <div class="loading">
         Searching database… ⏳
       </div>
     `;
 
+
   const searchTerms =
     q.toLowerCase()
-     .split(" ")
-     .filter(
-       term =>
-         term.length > 0
-     );
-
-  const filtered =
-    allTracksList.filter(x => {
-
-      const combined =
-        (
-          (x.title || "") +
-          " " +
-          (x.artist || "")
-        ).toLowerCase();
-
-      return searchTerms.every(
+      .split(" ")
+      .filter(
         term =>
-          combined.includes(term)
+          term.length > 0
       );
 
-    });
+
+  const filtered =
+    allTracksList.filter(
+      x => {
+
+        const combined =
+          (
+            (x.title || "") +
+            " " +
+            (x.artist || "")
+          ).toLowerCase();
+
+
+        return searchTerms.every(
+          term =>
+            combined.includes(
+              term
+            )
+        );
+
+      }
+    );
+
 
   if(
     filtered.length === 0
   ){
 
-    await sendTermuxRequest(q);
+    await sendTermuxRequest(
+      q
+    );
+
 
     render(
       [],
-      "🔎 " + q
+      "🔎 " +
+      q
     );
 
   }else{
 
     render(
       filtered,
-      "🔎 " + q
+      "🔎 " +
+      q
     );
 
   }
@@ -2177,11 +2473,15 @@ async function searchMusic(){
 }
 
 
-/* =========================
+/* =========================================================
    TRENDING
-========================= */
+========================================================= */
 
 function loadTrending(btn){
+
+  inDeviceMode =
+    false;
+
 
   document
     .querySelectorAll(".chip")
@@ -2192,6 +2492,7 @@ function loadTrending(btn){
         )
     );
 
+
   if(btn){
 
     btn.classList.add(
@@ -2200,25 +2501,38 @@ function loadTrending(btn){
 
   }
 
-  $("q").value = "";
+
+  $("q").value =
+    "";
+
 
   currentFilter =
     "trending";
+
+
+  $("localInfo")
+    .style.display =
+      "none";
+
 
   applyCurrentFilter();
 
 }
 
 
-/* =========================
+/* =========================================================
    QUICK FILTER
-========================= */
+========================================================= */
 
 function quickFilter(
   keyword,
   btn
 ){
 
+  inDeviceMode =
+    false;
+
+
   document
     .querySelectorAll(".chip")
     .forEach(
@@ -2228,6 +2542,7 @@ function quickFilter(
         )
     );
 
+
   if(btn){
 
     btn.classList.add(
@@ -2236,19 +2551,30 @@ function quickFilter(
 
   }
 
+
   $("q").value =
     keyword;
+
+
+  $("localInfo")
+    .style.display =
+      "none";
+
 
   searchMusic();
 
 }
 
 
-/* =========================
-   DOWNLOADS FILTER
-========================= */
+/* =========================================================
+   DOWNLOADS
+========================================================= */
 
 function showDownloads(btn){
+
+  inDeviceMode =
+    false;
+
 
   document
     .querySelectorAll(".chip")
@@ -2259,6 +2585,7 @@ function showDownloads(btn){
         )
     );
 
+
   if(btn){
 
     btn.classList.add(
@@ -2267,19 +2594,447 @@ function showDownloads(btn){
 
   }
 
-  $("q").value = "";
+
+  $("q").value =
+    "";
+
 
   currentFilter =
     "downloads";
+
+
+  $("localInfo")
+    .style.display =
+      "none";
+
 
   applyCurrentFilter();
 
 }
 
 
-/* =========================
+/* =========================================================
+   MY DEVICE
+========================================================= */
+
+function openLocalMusic(){
+
+  /*
+   * Hapa HATUFUNGUA file picker.
+   *
+   * Android MainActivity.java ndiyo
+   * itasoma MediaStore.
+   */
+
+  inDeviceMode =
+    true;
+
+
+  $("sectionTitle")
+    .textContent =
+      "📱 My Device";
+
+
+  $("status")
+    .textContent =
+      "Inasoma audio za simu…";
+
+
+  $("results")
+    .innerHTML = `
+      <div class="loading">
+        📱 Inatafuta audio zote kwenye simu… ⏳
+      </div>
+    `;
+
+
+  $("localInfo")
+    .style.display =
+      "block";
+
+
+  $("localInfoText")
+    .textContent =
+      " • Inapakia music kutoka kwenye storage";
+
+
+  /*
+   * Android Bridge
+   */
+
+  if(
+    window.MMEDIA &&
+    typeof window.MMEDIA.openDeviceMusic ===
+      "function"
+  ){
+
+    window.MMEDIA.openDeviceMusic();
+
+    return;
+
+  }
+
+
+  /*
+   * Kama website imefunguliwa
+   * kwenye browser badala ya APK.
+   */
+
+  $("results")
+    .innerHTML = `
+
+      <div class="empty">
+
+        <p
+          style="
+            color:#fff;
+            font-weight:bold;
+          "
+        >
+          📱 My Device inapatikana ndani ya APK.
+        </p>
+
+        <p style="margin-top:8px">
+
+          Fungua MMEDIA kupitia APK
+          ili isome audio zilizopo kwenye simu.
+
+        </p>
+
+      </div>
+
+    `;
+
+
+  $("status")
+    .textContent =
+      "APK required";
+
+}
+
+
+/* =========================================================
+   RECEIVE DEVICE MUSIC
+   Android MainActivity itaita function hii.
+========================================================= */
+
+window.receiveDeviceMusic =
+  function(json){
+
+    try{
+
+      const raw =
+        typeof json === "string"
+          ? JSON.parse(json)
+          : json;
+
+
+      if(!Array.isArray(raw)){
+
+        throw new Error(
+          "Invalid music list"
+        );
+
+      }
+
+
+      deviceTracks =
+        raw.map(
+          (x,index) => {
+
+            return {
+
+              key:
+                "device_" +
+                x.id +
+                "_" +
+                index,
+
+              title:
+                x.title ||
+                x.filename ||
+                "Unknown Song",
+
+              artist:
+                x.artist ||
+                "My Device",
+
+              album:
+                x.album ||
+                "",
+
+              cover:
+                "",
+
+              audio:
+                x.audio ||
+                "",
+
+              download:
+                "",
+
+              views:0,
+
+              type:
+                "DEVICE"
+
+            };
+
+          }
+        );
+
+
+      renderDeviceMusic(
+        deviceTracks
+      );
+
+
+    }catch(e){
+
+      console.error(
+        "Device music error:",
+        e
+      );
+
+
+      toast(
+        "Imeshindwa kuonyesha audio za simu."
+      );
+
+    }
+
+  };
+
+
+/* =========================================================
+   DEVICE ERROR
+========================================================= */
+
+window.receiveDeviceMusicError =
+  function(message){
+
+    $("results")
+      .innerHTML = `
+
+        <div class="empty">
+
+          <p
+            style="
+              color:#fff;
+              font-weight:bold
+            "
+          >
+            ⚠️ Imeshindwa kusoma audio
+          </p>
+
+          <p
+            style="
+              margin-top:8px
+            "
+          >
+            ${esc(
+              message ||
+              "Unknown error"
+            )}
+          </p>
+
+        </div>
+
+      `;
+
+
+    $("status")
+      .textContent =
+        "Error";
+
+
+    toast(
+      "Tatizo la kusoma audio za simu."
+    );
+
+  };
+
+
+/* =========================================================
+   RENDER DEVICE MUSIC
+========================================================= */
+
+function renderDeviceMusic(
+  tracks
+){
+
+  inDeviceMode =
+    true;
+
+
+  $("sectionTitle")
+    .textContent =
+      "📱 My Device";
+
+
+  $("localInfo")
+    .style.display =
+      "block";
+
+
+  $("localInfoText")
+    .textContent =
+      " • " +
+      tracks.length +
+      " audio zimepatikana kwenye simu";
+
+
+  if(!tracks.length){
+
+    $("results")
+      .innerHTML = `
+
+        <div class="empty">
+
+          <p
+            style="
+              font-size:14px;
+              color:#fff;
+              font-weight:bold
+            "
+          >
+            📱 Hakuna audio zilizopatikana.
+          </p>
+
+          <p style="margin-top:8px">
+            Hakikisha una MP3/M4A/WAV
+            au audio nyingine kwenye simu.
+          </p>
+
+        </div>
+
+      `;
+
+
+    $("status")
+      .textContent =
+        "0 songs";
+
+
+    return;
+
+  }
+
+
+  $("results")
+    .innerHTML =
+      tracks
+        .map(card)
+        .join("");
+
+
+  $("status")
+    .textContent =
+      tracks.length +
+      " songs";
+
+}
+
+
+/* =========================================================
+   SEARCH DEVICE MUSIC
+========================================================= */
+
+function searchDeviceMusic(){
+
+  const q =
+    $("q")
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  if(!q){
+
+    renderDeviceMusic(
+      deviceTracks
+    );
+
+    return;
+
+  }
+
+
+  const terms =
+    q.split(" ")
+      .filter(
+        x =>
+          x.length > 0
+      );
+
+
+  const filtered =
+    deviceTracks.filter(
+      x => {
+
+        const combined =
+          (
+            (x.title || "") +
+            " " +
+            (x.artist || "") +
+            " " +
+            (x.album || "")
+          ).toLowerCase();
+
+
+        return terms.every(
+          term =>
+            combined.includes(
+              term
+            )
+        );
+
+      }
+    );
+
+
+  $("sectionTitle")
+    .textContent =
+      "🔎 " +
+      $("q").value;
+
+
+  $("status")
+    .textContent =
+      filtered.length +
+      " songs";
+
+
+  if(!filtered.length){
+
+    $("results")
+      .innerHTML = `
+
+        <div class="empty">
+
+          🔎 Audio hiyo haipo kwenye My Device.
+
+        </div>
+
+      `;
+
+    return;
+
+  }
+
+
+  $("results")
+    .innerHTML =
+      filtered
+        .map(card)
+        .join("");
+
+}
+
+
+/* =========================================================
    ADMIN
-========================= */
+========================================================= */
 
 function openAdmin(){
 
@@ -2288,6 +3043,7 @@ function openAdmin(){
       "flex";
 
 }
+
 
 function closeAdmin(){
 
@@ -2305,23 +3061,31 @@ function loginAdmin(){
       .value
       .trim();
 
+
   const p =
-    $("pass").value;
+    $("pass")
+      .value;
+
 
   if(
     u === "MAKYAMA" &&
     p === "Makame005@"
   ){
 
-    admin = true;
+    admin =
+      true;
+
 
     closeAdmin();
+
 
     $("admin")
       .style.display =
         "block";
 
+
     loadAdminList();
+
 
     toast(
       "Admin mode imewashwa."
@@ -2340,11 +3104,14 @@ function loginAdmin(){
 
 function logoutAdmin(){
 
-  admin = false;
+  admin =
+    false;
+
 
   $("admin")
     .style.display =
       "none";
+
 
   toast(
     "Logged out."
@@ -2353,9 +3120,9 @@ function logoutAdmin(){
 }
 
 
-/* =========================
+/* =========================================================
    ADD TRACK
-========================= */
+========================================================= */
 
 async function saveAdminTrack(){
 
@@ -2364,6 +3131,7 @@ async function saveAdminTrack(){
     !db
   )
     return;
+
 
   const data = {
 
@@ -2394,6 +3162,7 @@ async function saveAdminTrack(){
 
   };
 
+
   if(
     !data.jina ||
     !data.linkAudio
@@ -2407,8 +3176,10 @@ async function saveAdminTrack(){
 
   }
 
+
   await db.ref("media")
     .push(data);
+
 
   [
     "aTitle",
@@ -2417,43 +3188,56 @@ async function saveAdminTrack(){
     "aAudio"
   ].forEach(
     id =>
-      $(id).value = ""
+      $(id).value =
+        ""
   );
+
 
   toast(
     "Track imeongezwa."
   );
+
 
   loadAdminList();
 
 }
 
 
-/* =========================
-   ADMIN TRACK LIST
-========================= */
+/* =========================================================
+   ADMIN LIST
+========================================================= */
 
 async function loadAdminList(){
 
   if(!db) return;
 
+
   const snap =
-    await db.ref("media")
+    await db
+      .ref("media")
       .once("value");
 
+
   const arr = [];
+
 
   if(snap.exists()){
 
     snap.forEach(
       c =>
         arr.push({
-          key:c.key,
-          data:c.val()
+
+          key:
+            c.key,
+
+          data:
+            c.val()
+
         })
     );
 
   }
+
 
   $("adminList")
     .innerHTML =
@@ -2464,12 +3248,16 @@ async function loadAdminList(){
             <div class="admin-item">
 
               <span>
+
                 ${esc(
                   x.data.jina ||
                   "Untitled"
                 )}
+
                 (${x.data.views || 0} views)
+
               </span>
+
 
               <button
                 class="btn-red"
@@ -2491,10 +3279,6 @@ async function loadAdminList(){
 }
 
 
-/* =========================
-   DELETE TRACK
-========================= */
-
 async function deleteAdminTrack(
   key
 ){
@@ -2506,11 +3290,17 @@ async function deleteAdminTrack(
   )
     return;
 
+
   await db
-    .ref("media/" + key)
+    .ref(
+      "media/" +
+      key
+    )
     .remove();
 
+
   loadAdminList();
+
 
   toast(
     "Deleted."
@@ -2520,300 +3310,8 @@ async function deleteAdminTrack(
 
 
 /* =========================================================
-   MY DEVICE / LOCAL MUSIC
-========================================================= */
-
-
-/*
-  Hii ndiyo sehemu mpya.
-
-  Mtumiaji akibonyeza MY DEVICE:
-  Android inafungua file picker.
-
-  Anaweza kuchagua MP3/M4A/WAV/AAC/OGG/FLAC
-  zilizopo kwenye simu.
-
-  Audio hazitumwi Firebase.
-  Zinasomwa moja kwa moja kutoka kwenye simu
-  na kuchezwa offline.
-*/
-
-
-function openLocalMusic(){
-
-  const input =
-    $("localMusicInput");
-
-  if(!input){
-
-    toast(
-      "File picker haipo."
-    );
-
-    return;
-
-  }
-
-  /*
-    Safisha selection ya zamani
-    ili aweze kuchagua tena file
-    hata kama ni ile ile.
-  */
-
-  input.value = "";
-
-  input.click();
-
-}
-
-
-/* =========================
-   FILE PICKER CHANGE
-========================= */
-
-$("localMusicInput")
-  .addEventListener(
-    "change",
-    function(){
-
-      const files =
-        Array.from(
-          this.files || []
-        );
-
-      if(!files.length){
-
-        toast(
-          "Hakuna audio iliyochaguliwa."
-        );
-
-        return;
-
-      }
-
-      loadLocalAudioFiles(
-        files
-      );
-
-    }
-  );
-
-
-/* =========================
-   LOAD LOCAL AUDIO
-========================= */
-
-function loadLocalAudioFiles(
-  files
-){
-
-  /*
-    Ondoa Object URLs za zamani
-    ili memory isijazwe.
-  */
-
-  currentLocalFiles
-    .forEach(
-      item => {
-
-        try{
-
-          URL.revokeObjectURL(
-            item.audio
-          );
-
-        }catch(e){}
-
-      }
-    );
-
-  currentLocalFiles = [];
-
-  localTracks = files.map(
-    (file,index) => {
-
-      const objectURL =
-        URL.createObjectURL(
-          file
-        );
-
-      const cleanName =
-        file.name
-          .replace(
-            /\.[^/.]+$/,
-            ""
-          );
-
-      const track = {
-
-        key:
-          "local_" +
-          Date.now() +
-          "_" +
-          index,
-
-        title:
-          cleanName,
-
-        artist:
-          "My Device",
-
-        cover:
-          "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png",
-
-        audio:
-          objectURL,
-
-        download:
-          "",
-
-        views:0,
-
-        type:
-          "LOCAL"
-
-      };
-
-      currentLocalFiles
-        .push(track);
-
-      return track;
-
-    }
-  );
-
-  renderLocalMusic(
-    localTracks
-  );
-
-}
-
-
-/* =========================
-   RENDER LOCAL MUSIC
-========================= */
-
-function renderLocalMusic(
-  tracks
-){
-
-  $("sectionTitle")
-    .textContent =
-      "📱 My Device";
-
-  $("status")
-    .textContent =
-      tracks.length +
-      " songs";
-
-  $("localInfo")
-    .style.display =
-      "block";
-
-  $("localInfoText")
-    .textContent =
-      " • " +
-      tracks.length +
-      " audio zimechaguliwa kutoka kwenye storage.";
-
-  if(!tracks.length){
-
-    $("results").innerHTML =
-      `
-        <div class="empty">
-
-          📱 Hakuna audio
-          zilizochaguliwa.
-
-        </div>
-      `;
-
-    return;
-
-  }
-
-  $("results").innerHTML =
-    tracks
-      .map(card)
-      .join("");
-
-}
-
-
-/* =========================
-   LOCAL SEARCH
-========================= */
-
-function searchLocalMusic(){
-
-  const q =
-    $("q")
-      .value
-      .trim()
-      .toLowerCase();
-
-  if(!q){
-
-    renderLocalMusic(
-      localTracks
-    );
-
-    return;
-
-  }
-
-  const filtered =
-    localTracks.filter(
-      x => {
-
-        const combined =
-          (
-            x.title +
-            " " +
-            x.artist
-          ).toLowerCase();
-
-        return combined.includes(
-          q
-        );
-
-      }
-    );
-
-  $("sectionTitle")
-    .textContent =
-      "🔎 " + q;
-
-  $("status")
-    .textContent =
-      filtered.length +
-      " songs";
-
-  if(!filtered.length){
-
-    $("results").innerHTML =
-      `
-        <div class="empty">
-          Audio hiyo haipo kwenye
-          My Device.
-        </div>
-      `;
-
-    return;
-
-  }
-
-  $("results").innerHTML =
-    filtered
-      .map(card)
-      .join("");
-
-}
-
-
-/* =========================
    SEARCH ENTER
-========================= */
+========================================================= */
 
 $("q")
   .addEventListener(
@@ -2821,23 +3319,15 @@ $("q")
     e => {
 
       if(
-        e.key === "Enter"
+        e.key ===
+        "Enter"
       ){
 
-        /*
-          Kama My Device ndiyo
-          imefunguliwa, tafuta
-          kwenye audio za device.
-        */
-
         if(
-          localTracks.length &&
-          $("sectionTitle")
-            .textContent
-            .includes("My Device")
+          inDeviceMode
         ){
 
-          searchLocalMusic();
+          searchDeviceMusic();
 
         }else{
 
@@ -2851,72 +3341,9 @@ $("q")
   );
 
 
-/* =========================
-   CLEAN LOCAL URLS
-========================= */
-
-window.addEventListener(
-  "beforeunload",
-  () => {
-
-    currentLocalFiles
-      .forEach(
-        item => {
-
-          try{
-
-            URL.revokeObjectURL(
-              item.audio
-            );
-
-          }catch(e){}
-
-        }
-      );
-
-  }
-);
-
-
-/* =========================
-   SERVICE WORKER
-========================= */
-
-if(
-  "serviceWorker" in navigator
-){
-
-  window.addEventListener(
-    "load",
-    () => {
-
-      navigator.serviceWorker
-        .register("/sw.js")
-
-        .then(
-          () =>
-            console.log(
-              "MMEDIA Service Worker registered"
-            )
-        )
-
-        .catch(
-          err =>
-            console.log(
-              "Service Worker error:",
-              err
-            )
-        );
-
-    }
-  );
-
-}
-
-
-/* =========================
+/* =========================================================
    INITIALIZE
-========================= */
+========================================================= */
 
 window.addEventListener(
   "load",
