@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Internet kwa website -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.INTERNET" />
 
-    <!-- Kusoma music kwenye Android 13+ -->
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <!-- Android 13+ -->
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_AUDIO" />
 
-    <!-- Kusoma music kwenye Android 12 na chini -->
+    <!-- Android 12 na chini -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -15,7 +17,6 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:label="MMEDIA"
         android:theme="@style/AppTheme">
 
@@ -25,9 +26,11 @@
 
             <intent-filter>
 
-                <action android:name="android.intent.action.MAIN" />
+                <action
+                    android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category
+                    android:name="android.intent.category.LAUNCHER" />
 
             </intent-filter>
 
