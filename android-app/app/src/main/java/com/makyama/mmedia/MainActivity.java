@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
         );
 
         /*
-         * Load MAKYAMA website
+         * Fungua website
          */
         webView.loadUrl(
                 "https://makyama.vercel.app/"
@@ -77,10 +77,15 @@ public class MainActivity extends Activity {
         }
 
         /*
-         * HTML inabonyeza MY DEVICE
+         * =================================================
+         * HTML INAITWA:
+         *
+         * window.MMEDIA.openMyDevice()
+         *
+         * =================================================
          */
         @JavascriptInterface
-        public void openDeviceMusic() {
+        public void openMyDevice() {
 
             runOnUiThread(() -> {
 
@@ -99,8 +104,19 @@ public class MainActivity extends Activity {
         }
 
         /*
+         * Hii pia tunaiacha kama backup
+         * kama HTML ya zamani ikiita openDeviceMusic()
+         */
+        @JavascriptInterface
+        public void openDeviceMusic() {
+
+            openMyDevice();
+
+        }
+
+        /*
          * =================================================
-         * CHECK AUDIO PERMISSION
+         * CHECK PERMISSION
          * =================================================
          */
 
@@ -119,11 +135,12 @@ public class MainActivity extends Activity {
                 ) == PackageManager.PERMISSION_GRANTED;
 
             }
+
         }
 
         /*
          * =================================================
-         * REQUEST AUDIO PERMISSION
+         * REQUEST PERMISSION
          * =================================================
          */
 
@@ -153,7 +170,7 @@ public class MainActivity extends Activity {
 
         /*
          * =================================================
-         * SCAN ALL MUSIC FROM PHONE
+         * READ MUSIC FROM DEVICE
          * =================================================
          */
 
@@ -166,9 +183,6 @@ public class MainActivity extends Activity {
 
                 Uri collection;
 
-                /*
-                 * Android 10+
-                 */
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
                     collection =
@@ -178,16 +192,11 @@ public class MainActivity extends Activity {
 
                 } else {
 
-                    /*
-                     * Android 9 na chini
-                     */
                     collection =
                             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
                 }
 
-                /*
-                 * Columns tunazohitaji
-                 */
                 String[] projection = {
 
                         MediaStore.Audio.Media._ID,
@@ -206,15 +215,9 @@ public class MainActivity extends Activity {
 
                 };
 
-                /*
-                 * Chukua music/audio files
-                 */
                 String selection =
                         MediaStore.Audio.Media.IS_MUSIC + " != 0";
 
-                /*
-                 * Panga A-Z
-                 */
                 String sortOrder =
                         MediaStore.Audio.Media.TITLE +
                         " COLLATE NOCASE ASC";
@@ -265,30 +268,19 @@ public class MainActivity extends Activity {
                                     MediaStore.Audio.Media.DURATION
                             );
 
-                    /*
-                     * Soma audio zote
-                     */
                     while (cursor.moveToNext()) {
 
                         long id =
-                                cursor.getLong(
-                                        idColumn
-                                );
+                                cursor.getLong(idColumn);
 
                         String title =
-                                cursor.getString(
-                                        titleColumn
-                                );
+                                cursor.getString(titleColumn);
 
                         String artist =
-                                cursor.getString(
-                                        artistColumn
-                                );
+                                cursor.getString(artistColumn);
 
                         String album =
-                                cursor.getString(
-                                        albumColumn
-                                );
+                                cursor.getString(albumColumn);
 
                         String filename =
                                 cursor.getString(
@@ -296,9 +288,7 @@ public class MainActivity extends Activity {
                                 );
 
                         String mime =
-                                cursor.getString(
-                                        mimeColumn
-                                );
+                                cursor.getString(mimeColumn);
 
                         long duration =
                                 cursor.getLong(
@@ -306,8 +296,7 @@ public class MainActivity extends Activity {
                                 );
 
                         /*
-                         * Kama title haipo,
-                         * tumia filename
+                         * Kama title haipo
                          */
                         if (
                                 title == null ||
@@ -332,20 +321,7 @@ public class MainActivity extends Activity {
                         }
 
                         /*
-                         * Kama album haipo
-                         */
-                        if (
-                                album == null ||
-                                album.trim().isEmpty()
-                        ) {
-
-                            album =
-                                    "Unknown Album";
-
-                        }
-
-                        /*
-                         * Tengeneza URI ya audio
+                         * Audio URI
                          */
                         Uri audioUri =
                                 ContentUris.withAppendedId(
@@ -353,15 +329,12 @@ public class MainActivity extends Activity {
                                         id
                                 );
 
-                        /*
-                         * Tengeneza JSON object
-                         */
                         JSONObject audio =
                                 new JSONObject();
 
                         audio.put(
                                 "id",
-                                "device_" + id
+                                "local_" + id
                         );
 
                         audio.put(
@@ -376,7 +349,9 @@ public class MainActivity extends Activity {
 
                         audio.put(
                                 "album",
-                                album
+                                album != null
+                                        ? album
+                                        : ""
                         );
 
                         audio.put(
@@ -399,10 +374,7 @@ public class MainActivity extends Activity {
                         );
 
                         /*
-                         * MUHIMU SANA
-                         *
-                         * HTML playAndroidSong()
-                         * inatumia song.uri
+                         * HII NDIYO URI YA AUDIO
                          */
                         audio.put(
                                 "uri",
@@ -425,14 +397,19 @@ public class MainActivity extends Activity {
                 }
 
                 /*
-                 * JSON yote
+                 * =================================================
+                 * MUHIMU:
+                 *
+                 * HTML yako inasubiri:
+                 *
+                 * window.showAndroidMusic(...)
+                 *
+                 * =================================================
                  */
+
                 final String json =
                         audioArray.toString();
 
-                /*
-                 * Tuma kwenda HTML
-                 */
                 runOnUiThread(() -> {
 
                     try {
@@ -481,9 +458,6 @@ public class MainActivity extends Activity {
          * =================================================
          * DOWNLOAD BRIDGE
          * =================================================
-         *
-         * Hii tuta-connect na Android DownloadManager
-         * kwenye hatua inayofuata.
          */
 
         @JavascriptInterface
@@ -537,12 +511,17 @@ public class MainActivity extends Activity {
             ) {
 
                 /*
-                 * Permission imeruhusiwa.
-                 * Soma music zote.
+                 * Permission imekubaliwa.
+                 * Soma music sasa.
                  */
-                new MMEDIAInterface(
-                        MainActivity.this
-                ).loadDeviceMusic();
+
+                if (webView != null) {
+
+                    new MMEDIAInterface(
+                            MainActivity.this
+                    ).loadDeviceMusic();
+
+                }
 
             } else {
 
@@ -581,9 +560,7 @@ public class MainActivity extends Activity {
                                 "null".equals(value)
                         ) {
 
-                            if (
-                                    webView.canGoBack()
-                            ) {
+                            if (webView.canGoBack()) {
 
                                 webView.goBack();
 
@@ -607,4 +584,4 @@ public class MainActivity extends Activity {
 
     }
 
-                    }
+                        }
