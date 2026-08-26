@@ -5,11 +5,9 @@
     <uses-permission
         android:name="android.permission.INTERNET" />
 
-    <!-- Android 13+ -->
     <uses-permission
         android:name="android.permission.READ_MEDIA_AUDIO" />
 
-    <!-- Android 12 na chini -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
