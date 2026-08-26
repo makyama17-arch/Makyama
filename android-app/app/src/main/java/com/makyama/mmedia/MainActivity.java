@@ -2,15 +2,16 @@ package com.makyama.mmedia;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.database.Cursor;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -19,11 +20,15 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class MainActivity extends Activity {
 
     private WebView webView;
 
     private static final int AUDIO_PERMISSION_CODE = 1001;
+
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,23 +49,24 @@ public class MainActivity extends Activity {
 
         settings.setMediaPlaybackRequiresUserGesture(false);
 
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(
+                new WebViewClient()
+        );
 
-        /*
-         * JavaScript bridge
-         */
+        webView.setWebChromeClient(
+                new WebChromeClient()
+        );
+
         webView.addJavascriptInterface(
                 new MMEDIAInterface(this),
                 "MMEDIA"
         );
 
-        /*
-         * Fungua website
-         */
         webView.loadUrl(
                 "https://makyama.vercel.app/"
         );
     }
+
 
     /*
      * =====================================================
@@ -76,14 +82,35 @@ public class MainActivity extends Activity {
             this.context = context;
         }
 
+
         /*
          * =================================================
-         * HTML INAITWA:
-         *
-         * window.MMEDIA.openMyDevice()
-         *
+         * ENABLE MY DEVICE
          * =================================================
          */
+
+        @JavascriptInterface
+        public void enableMyDevice() {
+
+            runOnUiThread(() -> {
+
+                webView.evaluateJavascript(
+                        "window.enableMyDeviceButton && " +
+                        "window.enableMyDeviceButton();",
+                        null
+                );
+
+            });
+
+        }
+
+
+        /*
+         * =================================================
+         * OPEN MY DEVICE
+         * =================================================
+         */
+
         @JavascriptInterface
         public void openMyDevice() {
 
@@ -103,16 +130,18 @@ public class MainActivity extends Activity {
 
         }
 
+
         /*
-         * Hii pia tunaiacha kama backup
-         * kama HTML ya zamani ikiita openDeviceMusic()
+         * BACKUP NAME
          */
+
         @JavascriptInterface
         public void openDeviceMusic() {
 
             openMyDevice();
 
         }
+
 
         /*
          * =================================================
@@ -122,7 +151,10 @@ public class MainActivity extends Activity {
 
         private boolean hasAudioPermission() {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (
+                    Build.VERSION.SDK_INT >=
+                    Build.VERSION_CODES.TIRAMISU
+            ) {
 
                 return checkSelfPermission(
                         Manifest.permission.READ_MEDIA_AUDIO
@@ -138,6 +170,7 @@ public class MainActivity extends Activity {
 
         }
 
+
         /*
          * =================================================
          * REQUEST PERMISSION
@@ -146,7 +179,10 @@ public class MainActivity extends Activity {
 
         private void requestAudioPermission() {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (
+                    Build.VERSION.SDK_INT >=
+                    Build.VERSION_CODES.TIRAMISU
+            ) {
 
                 requestPermissions(
                         new String[]{
@@ -168,9 +204,10 @@ public class MainActivity extends Activity {
 
         }
 
+
         /*
          * =================================================
-         * READ MUSIC FROM DEVICE
+         * LOAD DEVICE MUSIC
          * =================================================
          */
 
@@ -183,7 +220,10 @@ public class MainActivity extends Activity {
 
                 Uri collection;
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (
+                        Build.VERSION.SDK_INT >=
+                        Build.VERSION_CODES.Q
+                ) {
 
                     collection =
                             MediaStore.Audio.Media.getContentUri(
@@ -196,6 +236,7 @@ public class MainActivity extends Activity {
                             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
                 }
+
 
                 String[] projection = {
 
@@ -215,12 +256,16 @@ public class MainActivity extends Activity {
 
                 };
 
+
                 String selection =
-                        MediaStore.Audio.Media.IS_MUSIC + " != 0";
+                        MediaStore.Audio.Media.IS_MUSIC +
+                        " != 0";
+
 
                 String sortOrder =
                         MediaStore.Audio.Media.TITLE +
                         " COLLATE NOCASE ASC";
+
 
                 Cursor cursor =
                         getContentResolver().query(
@@ -230,6 +275,7 @@ public class MainActivity extends Activity {
                                 null,
                                 sortOrder
                         );
+
 
                 if (cursor != null) {
 
@@ -268,36 +314,51 @@ public class MainActivity extends Activity {
                                     MediaStore.Audio.Media.DURATION
                             );
 
+
                     while (cursor.moveToNext()) {
 
                         long id =
-                                cursor.getLong(idColumn);
+                                cursor.getLong(
+                                        idColumn
+                                );
+
 
                         String title =
-                                cursor.getString(titleColumn);
+                                cursor.getString(
+                                        titleColumn
+                                );
+
 
                         String artist =
-                                cursor.getString(artistColumn);
+                                cursor.getString(
+                                        artistColumn
+                                );
+
 
                         String album =
-                                cursor.getString(albumColumn);
+                                cursor.getString(
+                                        albumColumn
+                                );
+
 
                         String filename =
                                 cursor.getString(
                                         displayNameColumn
                                 );
 
+
                         String mime =
-                                cursor.getString(mimeColumn);
+                                cursor.getString(
+                                        mimeColumn
+                                );
+
 
                         long duration =
                                 cursor.getLong(
                                         durationColumn
                                 );
 
-                        /*
-                         * Kama title haipo
-                         */
+
                         if (
                                 title == null ||
                                 title.trim().isEmpty()
@@ -307,9 +368,7 @@ public class MainActivity extends Activity {
 
                         }
 
-                        /*
-                         * Kama artist haipo
-                         */
+
                         if (
                                 artist == null ||
                                 artist.trim().isEmpty()
@@ -320,32 +379,36 @@ public class MainActivity extends Activity {
 
                         }
 
-                        /*
-                         * Audio URI
-                         */
+
                         Uri audioUri =
-                                ContentUris.withAppendedId(
-                                        collection,
-                                        id
-                                );
+                                android.content.ContentUris
+                                        .withAppendedId(
+                                                collection,
+                                                id
+                                        );
+
 
                         JSONObject audio =
                                 new JSONObject();
+
 
                         audio.put(
                                 "id",
                                 "local_" + id
                         );
 
+
                         audio.put(
                                 "title",
                                 title
                         );
 
+
                         audio.put(
                                 "artist",
                                 artist
                         );
+
 
                         audio.put(
                                 "album",
@@ -354,12 +417,14 @@ public class MainActivity extends Activity {
                                         : ""
                         );
 
+
                         audio.put(
                                 "filename",
                                 filename != null
                                         ? filename
                                         : ""
                         );
+
 
                         audio.put(
                                 "mime",
@@ -368,23 +433,24 @@ public class MainActivity extends Activity {
                                         : "audio/*"
                         );
 
+
                         audio.put(
                                 "duration",
                                 duration
                         );
 
-                        /*
-                         * HII NDIYO URI YA AUDIO
-                         */
+
                         audio.put(
                                 "uri",
                                 audioUri.toString()
                         );
 
+
                         audio.put(
                                 "type",
                                 "DEVICE"
                         );
+
 
                         audioArray.put(
                                 audio
@@ -396,19 +462,10 @@ public class MainActivity extends Activity {
 
                 }
 
-                /*
-                 * =================================================
-                 * MUHIMU:
-                 *
-                 * HTML yako inasubiri:
-                 *
-                 * window.showAndroidMusic(...)
-                 *
-                 * =================================================
-                 */
 
                 final String json =
                         audioArray.toString();
+
 
                 runOnUiThread(() -> {
 
@@ -419,10 +476,12 @@ public class MainActivity extends Activity {
                                 JSONObject.quote(json) +
                                 ");";
 
+
                         webView.evaluateJavascript(
                                 js,
                                 null
                         );
+
 
                     } catch (Exception e) {
 
@@ -435,6 +494,7 @@ public class MainActivity extends Activity {
                     }
 
                 });
+
 
             } catch (Exception e) {
 
@@ -454,9 +514,174 @@ public class MainActivity extends Activity {
 
         }
 
+
         /*
          * =================================================
-         * DOWNLOAD BRIDGE
+         * PLAY DEVICE AUDIO
+         * =================================================
+         */
+
+        @JavascriptInterface
+        public void playDeviceAudio(
+                String uriString,
+                String title,
+                String artist
+        ) {
+
+            runOnUiThread(() -> {
+
+                try {
+
+                    if (mediaPlayer != null) {
+
+                        try {
+
+                            mediaPlayer.stop();
+
+                        } catch (Exception ignored) {}
+
+                        mediaPlayer.release();
+
+                        mediaPlayer = null;
+
+                    }
+
+
+                    Uri uri =
+                            Uri.parse(
+                                    uriString
+                            );
+
+
+                    mediaPlayer =
+                            new MediaPlayer();
+
+
+                    mediaPlayer.setDataSource(
+                            MainActivity.this,
+                            uri
+                    );
+
+
+                    mediaPlayer.setOnPreparedListener(
+                            mp -> {
+
+                                mp.start();
+
+                                Toast.makeText(
+                                        MainActivity.this,
+                                        "▶ " + title,
+                                        Toast.LENGTH_SHORT
+                                ).show();
+
+                            }
+                    );
+
+
+                    mediaPlayer.setOnCompletionListener(
+                            mp -> {
+
+                                mp.release();
+
+                                mediaPlayer =
+                                        null;
+
+                            }
+                    );
+
+
+                    mediaPlayer.setOnErrorListener(
+                            (mp, what, extra) -> {
+
+                                Toast.makeText(
+                                        MainActivity.this,
+                                        "Audio haikuweza kucheza.",
+                                        Toast.LENGTH_SHORT
+                                ).show();
+
+                                try {
+
+                                    mp.release();
+
+                                } catch (Exception ignored) {}
+
+                                mediaPlayer =
+                                        null;
+
+                                return true;
+
+                            }
+                    );
+
+
+                    mediaPlayer.prepareAsync();
+
+
+                } catch (IOException e) {
+
+                    e.printStackTrace();
+
+                    Toast.makeText(
+                            MainActivity.this,
+                            "Imeshindikana kufungua audio.",
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                    Toast.makeText(
+                            MainActivity.this,
+                            "Tatizo la playback.",
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                }
+
+            });
+
+        }
+
+
+        /*
+         * =================================================
+         * STOP DEVICE AUDIO
+         * =================================================
+         */
+
+        @JavascriptInterface
+        public void stopDeviceAudio() {
+
+            runOnUiThread(() -> {
+
+                if (mediaPlayer != null) {
+
+                    try {
+
+                        if (mediaPlayer.isPlaying()) {
+
+                            mediaPlayer.stop();
+
+                        }
+
+                    } catch (Exception ignored) {}
+
+                    mediaPlayer.release();
+
+                    mediaPlayer =
+                            null;
+
+                }
+
+            });
+
+        }
+
+
+        /*
+         * =================================================
+         * DOWNLOAD
          * =================================================
          */
 
@@ -480,6 +705,7 @@ public class MainActivity extends Activity {
 
     }
 
+
     /*
      * =====================================================
      * PERMISSION RESULT
@@ -499,6 +725,7 @@ public class MainActivity extends Activity {
                 grantResults
         );
 
+
         if (
                 requestCode ==
                 AUDIO_PERMISSION_CODE
@@ -510,18 +737,9 @@ public class MainActivity extends Activity {
                             PackageManager.PERMISSION_GRANTED
             ) {
 
-                /*
-                 * Permission imekubaliwa.
-                 * Soma music sasa.
-                 */
-
-                if (webView != null) {
-
-                    new MMEDIAInterface(
-                            MainActivity.this
-                    ).loadDeviceMusic();
-
-                }
+                new MMEDIAInterface(
+                        MainActivity.this
+                ).loadDeviceMusic();
 
             } else {
 
@@ -537,9 +755,10 @@ public class MainActivity extends Activity {
 
     }
 
+
     /*
      * =====================================================
-     * ANDROID BACK BUTTON
+     * BACK BUTTON
      * =====================================================
      */
 
@@ -550,8 +769,9 @@ public class MainActivity extends Activity {
 
             webView.evaluateJavascript(
 
-                    "typeof window.exitDevicePage === 'function' " +
-                    "? window.exitDevicePage() : false;",
+                    "typeof window.exitDevicePage === " +
+                    "'function' ? " +
+                    "window.exitDevicePage() : false;",
 
                     value -> {
 
@@ -560,7 +780,9 @@ public class MainActivity extends Activity {
                                 "null".equals(value)
                         ) {
 
-                            if (webView.canGoBack()) {
+                            if (
+                                    webView.canGoBack()
+                            ) {
 
                                 webView.goBack();
 
@@ -584,4 +806,46 @@ public class MainActivity extends Activity {
 
     }
 
-                        }
+
+    /*
+     * =====================================================
+     * CLEANUP
+     * =====================================================
+     */
+
+    @Override
+    protected void onDestroy() {
+
+        if (mediaPlayer != null) {
+
+            try {
+
+                if (
+                        mediaPlayer.isPlaying()
+                ) {
+
+                    mediaPlayer.stop();
+
+                }
+
+            } catch (Exception ignored) {}
+
+            mediaPlayer.release();
+
+            mediaPlayer =
+                    null;
+
+        }
+
+
+        if (webView != null) {
+
+            webView.destroy();
+
+        }
+
+        super.onDestroy();
+
+    }
+
+                                }
