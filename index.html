@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#07110c">
+
 <link rel="manifest" href="/manifest.json">
+
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -33,14 +35,14 @@
   box-sizing:border-box;
   margin:0;
   padding:0;
-  font-family:Arial,Segoe UI,sans-serif
+  font-family:Arial,Segoe UI,sans-serif;
 }
 
 html,body{
   background:var(--bg);
   color:var(--text);
   min-height:100%;
-  overflow-x:hidden
+  overflow-x:hidden;
 }
 
 body{
@@ -51,580 +53,621 @@ body{
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
-  background-attachment:fixed
+  background-attachment:fixed;
 }
 
 button,input,textarea,select{
-  font:inherit
+  font:inherit;
 }
 
 button{
-  cursor:pointer
+  cursor:pointer;
 }
 
 header{
- position:sticky;
- top:0;
- z-index:1000;
- background:rgba(7,10,9,.96);
- backdrop-filter:blur(14px);
- border-bottom:1px solid #1d2921;
- padding:13px 14px;
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:10px
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(7,10,9,.96);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid #1d2921;
+  padding:13px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
 }
 
 .brand{
- min-width:0;
- display:flex;
- align-items:center;
- gap:10px
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
 .brand img{
- width:38px;
- height:38px;
- border-radius:50%;
- object-fit:cover;
- border:1px solid var(--green)
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  object-fit:cover;
+  border:1px solid var(--green);
+}
+
+.brand-text{
+  min-width:0;
 }
 
 .brand-text h1{
- font-size:17px;
- color:var(--green);
- white-space:nowrap
+  font-size:17px;
+  color:var(--green);
+  white-space:nowrap;
 }
 
 .brand-text p{
- font-size:10px;
- color:var(--muted);
- margin-top:3px
+  font-size:10px;
+  color:var(--muted);
+  margin-top:3px;
 }
 
 .header-actions{
- display:flex;
- gap:7px
+  display:flex;
+  gap:7px;
 }
 
 .btn{
- border:0;
- border-radius:9px;
- padding:9px 11px;
- font-weight:800;
- font-size:11px
+  border:0;
+  border-radius:9px;
+  padding:9px 11px;
+  font-weight:800;
+  font-size:11px;
 }
 
 .btn-green{
- background:var(--green);
- color:#001b0d
+  background:var(--green);
+  color:#001b0d;
 }
 
 .btn-dark{
- background:#18201b;
- color:#fff;
- border:1px solid var(--line)
+  background:#18201b;
+  color:#fff;
+  border:1px solid var(--line);
 }
 
 .btn-red{
- background:var(--red);
- color:#fff
+  background:var(--red);
+  color:#fff;
 }
 
 .btn-orange{
- background:var(--orange);
- color:#111
+  background:var(--orange);
+  color:#111;
 }
 
 .wrap{
- width:min(960px,100%);
- margin:auto;
- padding:0 11px
+  width:min(960px,100%);
+  margin:auto;
+  padding:0 11px;
 }
 
 .hero{
- padding:22px 0 10px
+  padding:22px 0 10px;
 }
 
 .hero h2{
- font-size:25px;
- line-height:1.15
+  font-size:25px;
+  line-height:1.15;
 }
 
 .hero h2 span{
- color:var(--green)
+  color:var(--green);
 }
 
 .hero p{
- color:var(--muted);
- font-size:12px;
- margin-top:8px;
- line-height:1.5
+  color:var(--muted);
+  font-size:12px;
+  margin-top:8px;
+  line-height:1.5;
 }
 
 /* SEARCH + MY DEVICE */
+.search-row{
+  display:flex;
+  gap:7px;
+  margin:14px 0;
+  align-items:stretch;
+}
+
 .search{
- display:flex;
- gap:8px;
- margin:14px 0;
- align-items:center
+  display:flex;
+  gap:8px;
+  flex:1;
+  min-width:0;
 }
 
 .search input{
- flex:1;
- min-width:0;
- background:var(--panel);
- color:#fff;
- border:1px solid #334238;
- border-radius:13px;
- padding:13px 14px;
- outline:none
+  flex:1;
+  min-width:0;
+  background:var(--panel);
+  color:#fff;
+  border:1px solid #334238;
+  border-radius:13px;
+  padding:13px 14px;
+  outline:none;
 }
 
 .search input:focus{
- border-color:var(--green)
+  border-color:var(--green);
 }
 
 .search button{
- flex:0 0 auto
+  width:86px;
+  flex:0 0 86px;
 }
 
-.search .btn-green{
- width:86px
+.device-btn{
+  flex:0 0 auto;
+  min-width:92px;
+  border:1px solid var(--green);
+  background:#102219;
+  color:var(--green);
+  border-radius:13px;
+  padding:0 10px;
+  font-size:10px;
+  font-weight:900;
+  line-height:1.15;
 }
 
-.my-device-btn{
- background:#18201b;
- color:var(--green);
- border:1px solid var(--green);
- white-space:nowrap;
- min-width:108px
+.device-btn:active{
+  transform:scale(.97);
+  background:#183522;
 }
 
 .chips{
- display:flex;
- gap:8px;
- overflow-x:auto;
- padding:3px 0 13px;
- scrollbar-width:none
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:3px 0 13px;
+  scrollbar-width:none;
 }
 
 .chips::-webkit-scrollbar{
- display:none
+  display:none;
 }
 
 .chip{
- flex:0 0 auto;
- background:var(--panel);
- color:#b8c1bb;
- border:1px solid var(--line);
- border-radius:999px;
- padding:8px 13px;
- font-size:11px;
- font-weight:800
+  flex:0 0 auto;
+  background:var(--panel);
+  color:#b8c1bb;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:8px 13px;
+  font-size:11px;
+  font-weight:800;
 }
 
 .chip.active{
- background:var(--green);
- color:#001b0d;
- border-color:var(--green)
+  background:var(--green);
+  color:#001b0d;
+  border-color:var(--green);
 }
 
 .banner-ads-container{
- margin:12px 0;
- display:flex;
- flex-direction:column;
- gap:10px
+  margin:12px 0;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 
 .ad-card{
- background:linear-gradient(135deg,#151f18,#0f1712);
- border:1px dashed var(--orange);
- border-radius:13px;
- padding:12px;
- text-align:center;
- overflow:hidden;
- display:flex;
- flex-direction:column;
- justify-content:center;
- align-items:center;
- min-height:90px
+  background:linear-gradient(135deg,#151f18,#0f1712);
+  border:1px dashed var(--orange);
+  border-radius:13px;
+  padding:12px;
+  text-align:center;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  min-height:90px;
 }
 
 .section{
- display:flex;
- align-items:center;
- justify-content:space-between;
- margin:10px 0
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:10px 0;
 }
 
 .section h3{
- font-size:17px;
- border-left:4px solid var(--green);
- padding-left:8px
+  font-size:17px;
+  border-left:4px solid var(--green);
+  padding-left:8px;
 }
 
 #status{
- font-size:11px;
- color:var(--muted)
+  font-size:11px;
+  color:var(--muted);
 }
 
 .grid{
- display:grid;
- grid-template-columns:1fr;
- gap:10px
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
 }
 
 .card{
- display:flex;
- gap:10px;
- background:linear-gradient(135deg,#111713,#0d120f);
- border:1px solid var(--line);
- border-radius:13px;
- padding:9px;
- overflow:hidden
+  display:flex;
+  gap:10px;
+  background:linear-gradient(135deg,#111713,#0d120f);
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:9px;
+  overflow:hidden;
 }
 
 .cover{
- width:86px;
- height:86px;
- border-radius:9px;
- object-fit:cover;
- background:#080b09;
- flex:0 0 86px
+  width:86px;
+  height:86px;
+  border-radius:9px;
+  object-fit:cover;
+  background:#080b09;
+  flex:0 0 86px;
 }
 
 .info{
- min-width:0;
- flex:1;
- display:flex;
- flex-direction:column
+  min-width:0;
+  flex:1;
+  display:flex;
+  flex-direction:column;
 }
 
 .badges{
- display:flex;
- gap:5px;
- flex-wrap:wrap;
- margin-bottom:4px
+  display:flex;
+  gap:5px;
+  flex-wrap:wrap;
+  margin-bottom:4px;
 }
 
 .badge{
- font-size:8px;
- padding:3px 5px;
- border-radius:5px;
- background:#123d27;
- color:var(--green);
- font-weight:900
+  font-size:8px;
+  padding:3px 5px;
+  border-radius:5px;
+  background:#123d27;
+  color:var(--green);
+  font-weight:900;
 }
 
 .badge.orange{
- background:#3d2b0d;
- color:#ffb52e
+  background:#3d2b0d;
+  color:#ffb52e;
 }
 
 .badge.views{
- background:#1a2733;
- color:#64b5f6
+  background:#1a2733;
+  color:#64b5f6;
+}
+
+.badge.local{
+  background:#26320b;
+  color:#b6ff00;
 }
 
 .title{
- font-size:13px;
- font-weight:900;
- line-height:1.25
+  font-size:13px;
+  font-weight:900;
+  line-height:1.25;
 }
 
 .artist{
- font-size:11px;
- color:#a8b3ab;
- margin-top:3px;
- white-space:nowrap;
- overflow:hidden;
- text-overflow:ellipsis
+  font-size:11px;
+  color:#a8b3ab;
+  margin-top:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .actions{
- display:flex;
- gap:6px;
- margin-top:auto;
- padding-top:8px
+  display:flex;
+  gap:6px;
+  margin-top:auto;
+  padding-top:8px;
 }
 
 .actions button{
- flex:1;
- padding:7px 5px;
- border-radius:7px;
- border:0;
- font-size:10px;
- font-weight:900
+  flex:1;
+  padding:7px 5px;
+  border-radius:7px;
+  border:0;
+  font-size:10px;
+  font-weight:900;
 }
 
 .play{
- background:transparent;
- color:var(--green);
- border:1px solid var(--green)!important
+  background:transparent;
+  color:var(--green);
+  border:1px solid var(--green)!important;
 }
 
 .download{
- background:var(--green);
- color:#001b0d
+  background:var(--green);
+  color:#001b0d;
 }
 
 .empty,.loading{
- background:var(--panel);
- border:1px dashed #334238;
- border-radius:12px;
- padding:25px 14px;
- text-align:center;
- color:var(--muted);
- font-size:12px
+  background:var(--panel);
+  border:1px dashed #334238;
+  border-radius:12px;
+  padding:25px 14px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
 }
 
 .admin{
- display:none;
- background:#0d1510;
- border:1px solid var(--green);
- border-radius:14px;
- padding:13px;
- margin:12px 0
+  display:none;
+  background:#0d1510;
+  border:1px solid var(--green);
+  border-radius:14px;
+  padding:13px;
+  margin:12px 0;
 }
 
 .admin h3{
- color:var(--green);
- font-size:15px;
- margin-bottom:10px
+  color:var(--green);
+  font-size:15px;
+  margin-bottom:10px;
 }
 
 .admin input,
 .admin textarea,
 .admin select{
- width:100%;
- background:#151d18;
- color:#fff;
- border:1px solid var(--line);
- padding:10px;
- border-radius:8px;
- margin-bottom:8px;
- outline:0
+  width:100%;
+  background:#151d18;
+  color:#fff;
+  border:1px solid var(--line);
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:8px;
+  outline:0;
 }
 
 .admin textarea{
- height:80px;
- resize:none;
- font-size:11px;
- font-family:monospace
+  height:80px;
+  resize:none;
+  font-size:11px;
+  font-family:monospace;
 }
 
 .admin-row{
- display:flex;
- gap:7px
+  display:flex;
+  gap:7px;
 }
 
 .admin-row>*{
- flex:1
+  flex:1;
 }
 
 .admin-list{
- margin-top:12px;
- display:grid;
- gap:7px
+  margin-top:12px;
+  display:grid;
+  gap:7px;
 }
 
 .admin-item{
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:8px;
- background:#151d18;
- padding:8px;
- border-radius:8px
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  background:#151d18;
+  padding:8px;
+  border-radius:8px;
 }
 
 .admin-item span{
- font-size:11px;
- overflow:hidden;
- text-overflow:ellipsis;
- white-space:nowrap
+  font-size:11px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 .admin-item button{
- padding:6px 8px;
- border:0;
- border-radius:6px;
- font-size:9px;
- font-weight:800
+  padding:6px 8px;
+  border:0;
+  border-radius:6px;
+  font-size:9px;
+  font-weight:800;
 }
 
 .social-wrap{
- margin:8px 0;
- text-align:center;
- min-height:20px
+  margin:8px 0;
+  text-align:center;
+  min-height:20px;
 }
 
 footer{
- text-align:center;
- color:#69756d;
- font-size:10px;
- padding:25px 10px
+  text-align:center;
+  color:#69756d;
+  font-size:10px;
+  padding:25px 10px;
 }
 
+/* PLAYER */
 .player{
- position:fixed;
- left:0;
- right:0;
- bottom:0;
- z-index:2000;
- background:#0c120e;
- border-top:2px solid var(--green);
- padding:8px 10px;
- display:none;
- gap:8px;
- align-items:center
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:2000;
+  background:#0c120e;
+  border-top:2px solid var(--green);
+  padding:8px 10px;
+  display:none;
+  gap:8px;
+  align-items:center;
 }
 
 .player img{
- width:43px;
- height:43px;
- border-radius:7px;
- object-fit:cover
+  width:43px;
+  height:43px;
+  border-radius:7px;
+  object-fit:cover;
 }
 
 .pinfo{
- min-width:0;
- flex:1
+  min-width:0;
+  flex:1;
 }
 
 .pinfo b{
- display:block;
- font-size:11px;
- white-space:nowrap;
- overflow:hidden;
- text-overflow:ellipsis
+  display:block;
+  font-size:11px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .pinfo span{
- display:block;
- color:var(--green);
- font-size:9px;
- margin-top:2px
+  display:block;
+  color:var(--green);
+  font-size:9px;
+  margin-top:2px;
 }
 
 audio{
- width:min(330px,42vw);
- height:34px
+  width:min(330px,42vw);
+  height:34px;
 }
 
 .close{
- background:none;
- color:#aaa;
- border:0;
- font-size:17px
+  background:none;
+  color:#aaa;
+  border:0;
+  font-size:17px;
 }
 
 .modal{
- display:none;
- position:fixed;
- inset:0;
- background:rgba(0,0,0,.82);
- z-index:3000;
- align-items:center;
- justify-content:center;
- padding:15px
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.82);
+  z-index:3000;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
 }
 
 .modal-box{
- width:min(390px,100%);
- background:#111713;
- border:1px solid var(--green);
- border-radius:14px;
- padding:18px
+  width:min(390px,100%);
+  background:#111713;
+  border:1px solid var(--green);
+  border-radius:14px;
+  padding:18px;
 }
 
 .modal-box h3{
- color:var(--green);
- margin-bottom:12px
+  color:var(--green);
+  margin-bottom:12px;
 }
 
 .modal-box input{
- width:100%;
- background:#192019;
- color:#fff;
- border:1px solid var(--line);
- padding:11px;
- border-radius:8px;
- margin-bottom:9px
+  width:100%;
+  background:#192019;
+  color:#fff;
+  border:1px solid var(--line);
+  padding:11px;
+  border-radius:8px;
+  margin-bottom:9px;
 }
 
 .modal-box .btn{
- width:100%;
- margin-top:4px
+  width:100%;
+  margin-top:4px;
 }
 
 .x{
- float:right;
- border:0;
- background:none;
- color:#aaa;
- font-size:23px
+  float:right;
+  border:0;
+  background:none;
+  color:#aaa;
+  font-size:23px;
 }
 
 .toast{
- position:fixed;
- top:75px;
- left:50%;
- transform:translateX(-50%);
- z-index:5000;
- background:var(--green);
- color:#001b0d;
- font-size:11px;
- font-weight:900;
- padding:10px 15px;
- border-radius:99px;
- display:none;
- max-width:90%;
- text-align:center;
- box-shadow:0 4px 15px rgba(0,230,118,.3)
+  position:fixed;
+  top:75px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:5000;
+  background:var(--green);
+  color:#001b0d;
+  font-size:11px;
+  font-weight:900;
+  padding:10px 15px;
+  border-radius:99px;
+  display:none;
+  max-width:90%;
+  text-align:center;
+  box-shadow:0 4px 15px rgba(0,230,118,.3);
 }
 
-@media(min-width:650px){
+.local-info{
+  display:none;
+  background:#102219;
+  border:1px solid #245b39;
+  border-radius:11px;
+  padding:10px;
+  margin:0 0 10px;
+  font-size:10px;
+  color:#aebdb3;
+}
 
- .grid{
-  grid-template-columns:1fr 1fr
- }
-
- .cover{
-  width:105px;
-  height:105px;
-  flex-basis:105px
- }
-
- .title{
-  font-size:14px
- }
+.local-info strong{
+  color:var(--green);
 }
 
 @media(max-width:520px){
+  .search-row{
+    gap:6px;
+  }
 
- .search{
-  gap:5px
- }
+  .search{
+    gap:5px;
+  }
 
- .search .btn-green{
-  width:auto;
-  padding-left:9px;
-  padding-right:9px
- }
+  .search button{
+    width:68px;
+    flex-basis:68px;
+    padding-left:5px;
+    padding-right:5px;
+  }
 
- .my-device-btn{
-  min-width:auto;
-  padding-left:9px;
-  padding-right:9px
- }
+  .device-btn{
+    min-width:74px;
+    padding:0 6px;
+    font-size:9px;
+  }
 
- .search input{
-  padding-left:11px;
-  padding-right:11px
- }
+  .brand-text p{
+    display:none;
+  }
+}
+
+@media(min-width:650px){
+  .grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .cover{
+    width:105px;
+    height:105px;
+    flex-basis:105px;
+  }
+
+  .title{
+    font-size:14px;
+  }
 }
 </style>
 </head>
@@ -632,165 +675,165 @@ audio{
 <body>
 
 <header>
-
   <div class="brand">
-
     <img
       src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png"
-      alt="Makyama Logo">
+      alt="Makyama Logo"
+    >
 
     <div class="brand-text">
-
       <h1>MAKYAMA MEDIA</h1>
-
-      <p>
-        Global Music • Stream • Discover • Download Licensed Audio
-      </p>
-
+      <p>Global Music • Stream • Discover • Download Licensed Audio</p>
     </div>
-
   </div>
 
   <div class="header-actions">
-
-    <button
-      class="btn btn-dark"
-      onclick="openAdmin()">
-      🔑 Admin
-    </button>
-
+    <button class="btn btn-dark" onclick="openAdmin()">🔑 Admin</button>
   </div>
-
 </header>
-
 
 <div id="toast" class="toast"></div>
 
-
 <div id="socialAdsArea" class="social-wrap"></div>
-
 
 <main class="wrap">
 
   <section class="hero">
-
-    <h2>
-      Discover music <span>worldwide.</span>
-    </h2>
-
-    <p>
-      Tafuta msanii au wimbo kutoka kwenye music catalog.
-    </p>
-
+    <h2>Discover music <span>worldwide.</span></h2>
+    <p>Tafuta msanii au wimbo kutoka kwenye music catalog.</p>
   </section>
 
-
-  <div
-    id="bannerAdsArea"
-    class="banner-ads-container">
-  </div>
-
+  <div id="bannerAdsArea" class="banner-ads-container"></div>
 
   <!-- SEARCH + MY DEVICE -->
+  <div class="search-row">
 
-  <div class="search">
+    <div class="search">
+      <input
+        id="q"
+        placeholder="🔎 Search artist or song"
+        autocomplete="off"
+      >
 
-    <input
-      id="q"
-      placeholder="🔎 Search artist or song — mfano Alan Walker"
-      autocomplete="off">
+      <button
+        class="btn btn-green"
+        onclick="searchMusic()"
+      >
+        SEARCH
+      </button>
+    </div>
 
+    <!-- MY DEVICE -->
     <button
-      class="btn btn-green"
-      onclick="searchMusic()">
-      SEARCH
-    </button>
-
-    <button
-      class="btn my-device-btn"
-      onclick="openLocalMusic()">
-      📱 MY DEVICE
+      class="device-btn"
+      onclick="openLocalMusic()"
+      type="button"
+    >
+      📱<br>MY DEVICE
     </button>
 
   </div>
 
+  <!-- Hidden file picker -->
+  <input
+    id="localMusicInput"
+    type="file"
+    accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg,.flac"
+    multiple
+    style="display:none"
+  >
+
+  <div id="localInfo" class="local-info">
+    <strong>📱 My Device</strong>
+    <span id="localInfoText"></span>
+  </div>
 
   <div class="chips">
 
     <button
       class="chip active"
-      onclick="loadTrending(this)">
+      onclick="loadTrending(this)"
+    >
       🔥 Trending
     </button>
 
     <button
       class="chip"
-      onclick="quickFilter('Bongo',this)">
+      onclick="quickFilter('Bongo',this)"
+    >
       🇹🇿 Bongo
     </button>
 
     <button
       class="chip"
-      onclick="quickFilter('Afrobeats',this)">
+      onclick="quickFilter('Afrobeats',this)"
+    >
       🌍 Afrobeats
     </button>
 
     <button
       class="chip"
-      onclick="quickFilter('Amapiano',this)">
+      onclick="quickFilter('Amapiano',this)"
+    >
       🎹 Amapiano
     </button>
 
     <button
       class="chip"
-      onclick="quickFilter('Hip Hop',this)">
+      onclick="quickFilter('Hip Hop',this)"
+    >
       🎤 Hip Hop
     </button>
 
     <button
       class="chip"
-      onclick="quickFilter('Gospel',this)">
+      onclick="quickFilter('Gospel',this)"
+    >
       🙌 Gospel
     </button>
 
     <button
       class="chip"
-      onclick="showDownloads(this)">
+      onclick="showDownloads(this)"
+    >
       ⬇️ Free Downloads
+    </button>
+
+    <button
+      class="chip"
+      onclick="openLocalMusic()"
+    >
+      📱 My Music
     </button>
 
   </div>
 
-
+  <!-- ADMIN -->
   <section id="admin" class="admin">
 
     <h3>👑 ADMIN DASHBOARD</h3>
 
-    <div style="
-      background:#151d18;
-      padding:12px;
-      border-radius:10px;
-      margin-bottom:12px;
-      border:1px solid var(--green);
-      display:flex;
-      align-items:center;
-      justify-content:space-between">
+    <div
+      style="
+        background:#151d18;
+        padding:12px;
+        border-radius:10px;
+        margin-bottom:12px;
+        border:1px solid var(--green);
+        display:flex;
+        align-items:center;
+        justify-content:space-between
+      "
+    >
 
       <div>
-
-        <h4 style="
-          color:var(--green);
-          font-size:13px">
+        <h4 style="color:var(--green);font-size:13px">
           🟢 WATU WAPO LIVE KWENYE WEBSITE
         </h4>
 
-        <p style="
-          font-size:10px;
-          color:var(--muted);
-          margin-top:2px">
+        <p style="font-size:10px;color:var(--muted);margin-top:2px">
           Idadi ya watumiaji waliounganishwa sasa hivi
         </p>
-
       </div>
 
       <div
@@ -801,33 +844,34 @@ audio{
           font-weight:900;
           font-size:16px;
           padding:6px 14px;
-          border-radius:99px">
+          border-radius:99px
+        "
+      >
         0
       </div>
 
     </div>
 
+    <div
+      style="
+        background:#151d18;
+        padding:10px;
+        border-radius:10px;
+        margin-bottom:12px;
+        border:1px solid var(--line)
+      "
+    >
 
-    <div style="
-      background:#151d18;
-      padding:10px;
-      border-radius:10px;
-      margin-bottom:12px;
-      border:1px solid var(--line)">
-
-      <h4 style="
-        color:var(--orange);
-        font-size:12px;
-        margin-bottom:6px">
+      <h4 style="color:var(--orange);font-size:12px;margin-bottom:6px">
         📢 ONGEZA AD MPYA
       </h4>
 
       <input
         id="aAdName"
-        placeholder="Jina la Ad">
+        placeholder="Jina la Ad"
+      >
 
       <select id="aAdPosition">
-
         <option value="social">
           📌 Social Bar
         </option>
@@ -835,92 +879,86 @@ audio{
         <option value="banner">
           📄 Native Banner
         </option>
-
       </select>
 
       <textarea
         id="aAdScript"
-        placeholder="Paste script ya Adsterra hapa...">
-      </textarea>
+        placeholder="Paste script ya Adsterra hapa..."
+      ></textarea>
 
       <button
         class="btn btn-orange"
         style="width:100%"
-        onclick="addNewAd()">
+        onclick="addNewAd()"
+      >
         ➕ ONGEZA AD HII
       </button>
 
     </div>
 
+    <div
+      style="
+        background:#151d18;
+        padding:10px;
+        border-radius:10px;
+        margin-bottom:12px;
+        border:1px solid var(--line)
+      "
+    >
 
-    <div style="
-      background:#151d18;
-      padding:10px;
-      border-radius:10px;
-      margin-bottom:12px;
-      border:1px solid var(--line)">
-
-      <h4 style="
-        color:var(--green);
-        font-size:12px;
-        margin-bottom:6px">
-        📋 ORODHA YA ADS ZINAZOFANYA KAZI
+      <h4 style="color:var(--green);font-size:12px;margin-bottom:6px">
+        📋 ORODHA YA ADS
       </h4>
 
-      <div
-        id="adminAdsList"
-        class="admin-list">
-      </div>
+      <div id="adminAdsList" class="admin-list"></div>
 
     </div>
-
 
     <div class="admin-row">
 
       <input
         id="aTitle"
-        placeholder="Song title">
+        placeholder="Song title"
+      >
 
       <input
         id="aArtist"
-        placeholder="Artist">
+        placeholder="Artist"
+      >
 
     </div>
 
-
     <input
       id="aCover"
-      placeholder="Cover image URL">
+      placeholder="Cover image URL"
+    >
 
     <input
       id="aAudio"
-      placeholder="Direct audio URL (MP3/M4A)">
-
+      placeholder="Direct audio URL (MP3/M4A)"
+    >
 
     <div class="admin-row">
 
       <button
         class="btn btn-green"
-        onclick="saveAdminTrack()">
+        onclick="saveAdminTrack()"
+      >
         ➕ ADD TRACK
       </button>
 
       <button
         class="btn btn-red"
-        onclick="logoutAdmin()">
+        onclick="logoutAdmin()"
+      >
         LOGOUT
       </button>
 
     </div>
 
-
-    <div
-      id="adminList"
-      class="admin-list">
-    </div>
+    <div id="adminList" class="admin-list"></div>
 
   </section>
-
 
   <div class="section">
 
@@ -932,10 +970,7 @@ audio{
 
   </div>
 
-
-  <div
-    id="results"
-    class="grid">
+  <div id="results" class="grid">
 
     <div class="loading">
       Loading music… ⏳
@@ -943,20 +978,20 @@ audio{
 
   </div>
 
-
   <footer>
     © 2026 MAKYAMA MEDIA • Music is provided by licensed/official sources.
   </footer>
 
 </main>
 
-
+<!-- PLAYER -->
 <div id="player" class="player">
 
   <img
     id="pcover"
     src=""
-    alt="">
+    alt=""
+  >
 
   <div class="pinfo">
 
@@ -971,44 +1006,47 @@ audio{
   <audio
     id="audio"
     controls
-    controlsList="nodownload">
-  </audio>
+    controlsList="nodownload"
+  ></audio>
 
   <button
     class="close"
-    onclick="closePlayer()">
+    onclick="closePlayer()"
+  >
     ✕
   </button>
 
 </div>
 
-
+<!-- ADMIN LOGIN -->
 <div id="login" class="modal">
 
   <div class="modal-box">
 
     <button
       class="x"
-      onclick="closeAdmin()">
+      onclick="closeAdmin()"
+    >
       ×
     </button>
 
-    <h3>
-      🔒 ADMIN LOGIN
-    </h3>
+    <h3>🔒 ADMIN LOGIN</h3>
 
     <input
       id="user"
-      placeholder="Username">
+      placeholder="Username"
+    >
 
     <input
       id="pass"
       type="password"
-      placeholder="Password">
+      placeholder="Password"
+    >
 
     <button
       class="btn btn-green"
-      onclick="loginAdmin()">
+      onclick="loginAdmin()"
+    >
       LOGIN
     </button>
 
@@ -1016,8 +1054,11 @@ audio{
 
 </div>
 
-
 <script>
+
+/* =========================
+   FIREBASE
+========================= */
 
 const firebaseConfig = {
 
@@ -1044,15 +1085,12 @@ const firebaseConfig = {
 
 };
 
-
 let db = null;
 
-try{
+try {
 
   if(!firebase.apps.length){
-
     firebase.initializeApp(firebaseConfig);
-
   }
 
   db = firebase.database();
@@ -1067,33 +1105,54 @@ try{
 }
 
 
+/* =========================
+   GLOBAL VARIABLES
+========================= */
+
 let admin = false;
 
 let allTracksList = [];
 
 let currentFilter = "trending";
 
+let localTracks = [];
+
+let currentLocalFiles = [];
+
+
+/* =========================
+   SHORT SELECTOR
+========================= */
 
 const $ = id =>
   document.getElementById(id);
 
+
+/* =========================
+   ESCAPE HTML
+========================= */
 
 function esc(v){
 
   return String(v ?? "")
     .replace(
       /[&<>"']/g,
-      m => ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
-      }[m])
+      m =>
+        ({
+          "&":"&amp;",
+          "<":"&lt;",
+          ">":"&gt;",
+          '"':"&quot;",
+          "'":"&#039;"
+        }[m])
     );
 
 }
 
+
+/* =========================
+   TOAST
+========================= */
 
 function toast(msg){
 
@@ -1101,7 +1160,9 @@ function toast(msg){
 
   $("toast").style.display = "block";
 
-  clearTimeout(window.__toast);
+  clearTimeout(
+    window.__toast
+  );
 
   window.__toast =
     setTimeout(
@@ -1113,6 +1174,10 @@ function toast(msg){
 }
 
 
+/* =========================
+   STATUS
+========================= */
+
 function setStatus(x){
 
   $("status").textContent =
@@ -1121,6 +1186,10 @@ function setStatus(x){
 }
 
 
+/* =========================
+   IMAGE
+========================= */
+
 function imageFor(item){
 
   return item.cover ||
@@ -1128,6 +1197,10 @@ function imageFor(item){
 
 }
 
+
+/* =========================
+   AD SCRIPT
+========================= */
 
 function injectScriptInto(
   container,
@@ -1141,10 +1214,10 @@ function injectScriptInto(
 
   tempDiv.innerHTML = code;
 
-
   const children =
-    Array.from(tempDiv.children);
-
+    Array.from(
+      tempDiv.children
+    );
 
   children.forEach(child => {
 
@@ -1159,7 +1232,6 @@ function injectScriptInto(
 
   });
 
-
   if(
     container.children.length === 0
   ){
@@ -1168,15 +1240,13 @@ function injectScriptInto(
 
   }
 
-
   const scripts =
     tempDiv.getElementsByTagName(
       "script"
     );
 
-
-  Array.from(scripts).forEach(
-    oldScript => {
+  Array.from(scripts)
+    .forEach(oldScript => {
 
       const newScript =
         document.createElement(
@@ -1194,7 +1264,6 @@ function injectScriptInto(
 
       });
 
-
       if(oldScript.innerHTML){
 
         newScript.innerHTML =
@@ -1202,16 +1271,18 @@ function injectScriptInto(
 
       }
 
-
       container.appendChild(
         newScript
       );
 
-    }
-  );
+    });
 
 }
 
+
+/* =========================
+   AD CARD
+========================= */
 
 function adCard(adCode){
 
@@ -1220,7 +1291,6 @@ function adCard(adCode){
     Math.random()
       .toString(36)
       .substring(2,9);
-
 
   setTimeout(() => {
 
@@ -1240,38 +1310,44 @@ function adCard(adCode){
 
   },150);
 
-
   return `
+
     <div class="ad-card">
+
       <div
         id="${wrapperId}"
-        style="width:100%;overflow:hidden">
-      </div>
+        style="width:100%;overflow:hidden"
+      ></div>
+
     </div>
+
   `;
 
 }
 
 
+/* =========================
+   LIVE USERS
+========================= */
+
 function initPresenceSystem(){
 
   if(!db) return;
-
 
   const connectionsRef =
     db.ref(
       "server_stats/connected_users"
     );
 
-
   const myConnectionRef =
     connectionsRef.push();
-
 
   db.ref(".info/connected")
     .on("value",snap => {
 
-      if(snap.val() === true){
+      if(
+        snap.val() === true
+      ){
 
         myConnectionRef
           .onDisconnect()
@@ -1283,7 +1359,6 @@ function initPresenceSystem(){
 
     });
 
-
   connectionsRef.on(
     "value",
     snap => {
@@ -1293,7 +1368,6 @@ function initPresenceSystem(){
 
       const counterEl =
         $("liveUsersCount");
-
 
       if(counterEl){
 
@@ -1308,14 +1382,16 @@ function initPresenceSystem(){
 }
 
 
+/* =========================
+   ADS REALTIME
+========================= */
+
 function initAdsRealtimeListener(){
 
   if(!db) return;
 
-
-  db.ref("ads").on(
-    "value",
-    snap => {
+  db.ref("ads")
+    .on("value",snap => {
 
       const socialArea =
         $("socialAdsArea");
@@ -1323,54 +1399,45 @@ function initAdsRealtimeListener(){
       const bannerArea =
         $("bannerAdsArea");
 
-
       socialArea.innerHTML = "";
 
       bannerArea.innerHTML = "";
 
-
       const adsList = [];
-
 
       if(snap.exists()){
 
-        snap.forEach(
-          child => {
+        snap.forEach(child => {
 
-            const ad =
-              child.val();
+          const ad =
+            child.val();
 
-            ad.key =
-              child.key;
+          ad.key =
+            child.key;
 
-            adsList.push(ad);
+          adsList.push(ad);
 
+          if(
+            ad.position === "social"
+          ){
 
-            if(
-              ad.position === "social"
-            ){
+            injectScriptInto(
+              socialArea,
+              ad.script
+            );
 
-              injectScriptInto(
-                socialArea,
-                ad.script
-              );
+          }else if(
+            ad.position === "banner"
+          ){
 
-            }
-
-            else if(
-              ad.position === "banner"
-            ){
-
-              bannerArea.innerHTML +=
-                adCard(ad.script);
-
-            }
+            bannerArea.innerHTML +=
+              adCard(ad.script);
 
           }
-        );
+
+        });
 
       }
-
 
       if(admin){
 
@@ -1380,32 +1447,32 @@ function initAdsRealtimeListener(){
 
       }
 
-    }
-  );
+    });
 
 }
 
 
+/* =========================
+   ADD AD
+========================= */
+
 async function addNewAd(){
 
-  if(!admin || !db) return;
-
+  if(!admin || !db)
+    return;
 
   const name =
     $("aAdName")
       .value
       .trim() || "Ad";
 
-
   const position =
     $("aAdPosition").value;
-
 
   const script =
     $("aAdScript")
       .value
       .trim();
-
 
   if(!script){
 
@@ -1417,24 +1484,22 @@ async function addNewAd(){
 
   }
 
+  await db.ref("ads")
+    .push({
 
-  await db.ref("ads").push({
+      name:name,
 
-    name:name,
+      position:position,
 
-    position:position,
+      script:script,
 
-    script:script,
+      createdAt:Date.now()
 
-    createdAt:Date.now()
-
-  });
-
+    });
 
   $("aAdName").value = "";
 
   $("aAdScript").value = "";
-
 
   toast(
     "🎉 Ad imewekwa!"
@@ -1443,9 +1508,11 @@ async function addNewAd(){
 }
 
 
-function renderAdminAdsList(
-  ads
-){
+/* =========================
+   ADS ADMIN LIST
+========================= */
+
+function renderAdminAdsList(ads){
 
   if(!ads.length){
 
@@ -1455,7 +1522,6 @@ function renderAdminAdsList(
     return;
 
   }
-
 
   $("adminAdsList").innerHTML =
     ads.map(a => `
@@ -1469,7 +1535,8 @@ function renderAdminAdsList(
 
         <button
           class="btn-red"
-          onclick="deleteAd('${a.key}')">
+          onclick="deleteAd('${a.key}')"
+        >
           FUTA
         </button>
 
@@ -1480,29 +1547,38 @@ function renderAdminAdsList(
 }
 
 
+/* =========================
+   DELETE AD
+========================= */
+
 async function deleteAd(key){
 
   if(
     !confirm(
       "Unahakikisha unataka kufuta Ad hii?"
     )
-  ) return;
-
+  )
+    return;
 
   await db
     .ref("ads/" + key)
     .remove();
 
-
-  toast("Ad imefutwa.");
+  toast(
+    "Ad imefutwa."
+  );
 
 }
 
 
+/* =========================
+   VIEW COUNTER
+========================= */
+
 function incrementView(key){
 
-  if(!db || !key) return;
-
+  if(!db || !key)
+    return;
 
   db.ref(
     "media/" + key + "/views"
@@ -1513,6 +1589,10 @@ function incrementView(key){
 
 }
 
+
+/* =========================
+   PLAY TRACK
+========================= */
 
 function playTrack(t){
 
@@ -1526,43 +1606,58 @@ function playTrack(t){
 
   }
 
+  if(
+    t.key &&
+    !String(t.key)
+      .startsWith("local_")
+  ){
 
-  incrementView(t.key);
+    incrementView(t.key);
 
+  }
 
   $("pcover").src =
     imageFor(t);
 
   $("ptitle").textContent =
-    t.title;
+    t.title || "Unknown";
 
   $("partist").textContent =
     t.artist || "";
 
-
   $("player").style.display =
     "flex";
 
+  const audio =
+    $("audio");
 
-  $("audio").src =
+  audio.src =
     t.audio;
 
+  audio.load();
 
-  $("audio")
-    .play()
+  audio.play()
     .catch(() => {});
 
 }
 
 
+/* =========================
+   CLOSE PLAYER
+========================= */
+
 function closePlayer(){
 
-  $("audio").pause();
+  const audio =
+    $("audio");
 
-  $("audio")
-    .removeAttribute("src");
+  audio.pause();
 
-  $("audio").load();
+  audio.removeAttribute(
+    "src"
+  );
+
+  audio.load();
 
   $("player").style.display =
     "none";
@@ -1570,7 +1665,9 @@ function closePlayer(){
 }
 
 
-/* DOWNLOAD */
+/* =========================
+   DOWNLOAD
+========================= */
 
 function downloadTrack(t){
 
@@ -1584,22 +1681,18 @@ function downloadTrack(t){
 
   }
 
-
   const title =
     (t.title || "MMEDIA Music")
       .trim();
-
 
   const artist =
     (t.artist || "")
       .trim();
 
-
   let filename =
     artist
       ? artist + " - " + title
       : title;
-
 
   filename =
     filename
@@ -1613,7 +1706,6 @@ function downloadTrack(t){
       )
       .trim();
 
-
   if(
     !filename
       .toLowerCase()
@@ -1624,11 +1716,14 @@ function downloadTrack(t){
 
   }
 
+  /*
+    APK bridge ikiwa ipo
+  */
 
   if(
     window.MMEDIA &&
     typeof window.MMEDIA.download
-      === "function"
+    === "function"
   ){
 
     window.MMEDIA.download(
@@ -1640,10 +1735,12 @@ function downloadTrack(t){
 
   }
 
+  /*
+    Browser fallback
+  */
 
   const a =
     document.createElement("a");
-
 
   a.href =
     t.download;
@@ -1654,7 +1751,6 @@ function downloadTrack(t){
   a.target =
     "_self";
 
-
   document.body.appendChild(a);
 
   a.click();
@@ -1664,6 +1760,10 @@ function downloadTrack(t){
 }
 
 
+/* =========================
+   CARD
+========================= */
+
 function card(t){
 
   const canPlay =
@@ -1672,158 +1772,168 @@ function card(t){
   const canDownload =
     !!t.download;
 
+  const isLocal =
+    String(t.key || "")
+      .startsWith("local_");
 
   const views =
     t.views || 0;
 
-
   return `
 
-  <article class="card">
+    <article class="card">
 
-    <img
-      class="cover"
-      loading="lazy"
-      src="${esc(imageFor(t))}"
-      alt="${esc(t.title)}"
-      onerror="
-        this.src='https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png'
-      ">
+      <img
+        class="cover"
+        loading="lazy"
+        src="${esc(imageFor(t))}"
+        alt="${esc(t.title)}"
 
+        onerror="
+          this.src='https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png'
+        "
+      >
 
-    <div class="info">
+      <div class="info">
 
-      <div class="badges">
+        <div class="badges">
 
-        <span class="badge">
-          ${esc(t.type || "MUSIC")}
-        </span>
+          <span class="badge">
+            ${esc(t.type || "MUSIC")}
+          </span>
 
-        <span class="badge views">
-          🎧 ${views} views
-        </span>
+          ${
+            isLocal
+              ? `
+                <span class="badge local">
+                  📱 DEVICE
+                </span>
+              `
+              : `
+                <span class="badge views">
+                  🎧 ${views} views
+                </span>
+              `
+          }
 
-        ${
-          canDownload
-          ?
-          '<span class="badge orange">WITH COVER</span>'
-          :
-          ""
-        }
+          ${
+            canDownload && !isLocal
+              ? `
+                <span class="badge orange">
+                  WITH COVER
+                </span>
+              `
+              : ""
+          }
+
+        </div>
+
+        <div class="title">
+          ${esc(t.title)}
+        </div>
+
+        <div class="artist">
+          ${esc(
+            t.artist ||
+            "Unknown artist"
+          )}
+        </div>
+
+        <div class="actions">
+
+          ${
+            canPlay
+              ? `
+                <button
+                  class="play"
+                  onclick='playTrack(${JSON.stringify(t).replace(/'/g,"&#39;")})'
+                >
+                  ▶ PLAY
+                </button>
+              `
+              : ""
+          }
+
+          ${
+            canDownload
+              ? `
+                <button
+                  class="download"
+                  onclick='downloadTrack(${JSON.stringify(t).replace(/'/g,"&#39;")})'
+                >
+                  ⬇ DOWNLOAD
+                </button>
+              `
+              : ""
+          }
+
+        </div>
 
       </div>
 
-
-      <div class="title">
-        ${esc(t.title)}
-      </div>
-
-
-      <div class="artist">
-        ${esc(
-          t.artist ||
-          "Unknown artist"
-        )}
-      </div>
-
-
-      <div class="actions">
-
-        ${
-          canPlay
-          ?
-          `<button
-            class="play"
-            onclick='playTrack(${JSON.stringify(t)})'>
-            ▶ PLAY
-          </button>`
-          :
-          ""
-        }
-
-
-        ${
-          canDownload
-          ?
-          `<button
-            class="download"
-            onclick='downloadTrack(${JSON.stringify(t)})'>
-            ⬇ DOWNLOAD
-          </button>`
-          :
-          ""
-        }
-
-      </div>
-
-    </div>
-
-  </article>
+    </article>
 
   `;
 
 }
 
 
+/* =========================
+   FIREBASE MEDIA
+========================= */
+
 function initRealtimeListener(){
 
   if(!db) return;
 
-
-  db.ref("media").on(
-    "value",
-    snap => {
+  db.ref("media")
+    .on("value",snap => {
 
       const out = [];
 
-
       if(snap.exists()){
 
-        snap.forEach(
-          c => {
+        snap.forEach(c => {
 
-            const x =
-              c.val() || {};
+          const x =
+            c.val() || {};
 
+          out.push({
 
-            out.push({
+            key:c.key,
 
-              key:c.key,
+            title:
+              x.jina ||
+              "Untitled",
 
-              title:
-                x.jina ||
-                "Untitled",
+            artist:
+              x.artist ||
+              "MAKYAMA",
 
-              artist:
-                x.artist ||
-                "MAKYAMA",
+            cover:
+              x.picha ||
+              "",
 
-              cover:
-                x.picha ||
-                "",
+            audio:
+              x.linkAudio ||
+              "",
 
-              audio:
-                x.linkAudio ||
-                "",
+            download:
+              x.linkAudio ||
+              "",
 
-              download:
-                x.linkAudio ||
-                "",
+            views:
+              x.views ||
+              0,
 
-              views:
-                x.views ||
-                0,
+            type:
+              "MAKYAMA"
 
-              type:
-                "MAKYAMA"
+          });
 
-            });
-
-          }
-        );
+        });
 
       }
-
 
       allTracksList =
         out.sort(
@@ -1832,14 +1942,16 @@ function initRealtimeListener(){
             (a.views || 0)
         );
 
-
       applyCurrentFilter();
 
-    }
-  );
+    });
 
 }
 
+
+/* =========================
+   RENDER
+========================= */
 
 function render(
   list,
@@ -1848,8 +1960,7 @@ function render(
 
   $("sectionTitle")
     .textContent =
-    title;
-
+      title;
 
   if(!list.length){
 
@@ -1857,54 +1968,42 @@ function render(
 
       <div class="empty">
 
-        <p style="
-          font-size:14px;
-          font-weight:bold;
-          color:#fff">
-          ⚠️ Wimbo huu haujapatikana kwa sasa.
+        <p
+          style="
+            font-size:14px;
+            font-weight:bold;
+            color:#fff
+          "
+        >
+          ⚠️ Wimbo huu haujapatikana
+          kwa sasa.
         </p>
 
-        <p style="
-          margin-top:10px;
-          color:var(--green);
-          font-size:13px">
-
+        <p
+          style="
+            margin-top:10px;
+            color:var(--green);
+            font-size:13px
+          "
+        >
           <strong>
             Tafadhali subiri wimbo wako
             unatafutwa na kuandaliwa... 🚀
           </strong>
-
-        </p>
-
-        <p style="
-          margin-top:6px;
-          color:var(--muted);
-          font-size:11px">
-
-          Usitoke hapa, ukipatikana
-          utatokea hapa kiotomatiki!
-
         </p>
 
       </div>
 
     `;
 
-
-    setStatus(
-      "0 results"
-    );
+    setStatus("0 results");
 
     return;
 
   }
 
-
   $("results").innerHTML =
-    list
-      .map(card)
-      .join("");
-
+    list.map(card).join("");
 
   setStatus(
     list.length +
@@ -1914,26 +2013,31 @@ function render(
 }
 
 
+/* =========================
+   REQUEST
+========================= */
+
 async function sendTermuxRequest(
   query
 ){
 
   if(!db) return;
 
-
-  await db
-    .ref("requests")
+  await db.ref("requests")
     .push({
 
       query:query,
 
-      timestamp:
-        Date.now()
+      timestamp:Date.now()
 
     });
 
 }
 
+
+/* =========================
+   FILTER
+========================= */
 
 function applyCurrentFilter(){
 
@@ -1943,17 +2047,14 @@ function applyCurrentFilter(){
       .trim()
       .toLowerCase();
 
-
   if(q){
 
     const searchTerms =
-      q
-        .split(" ")
-        .filter(
-          term =>
-            term.length > 0
-        );
-
+      q.split(" ")
+       .filter(
+         term =>
+           term.length > 0
+       );
 
     const filtered =
       allTracksList.filter(x => {
@@ -1963,9 +2064,7 @@ function applyCurrentFilter(){
             (x.title || "") +
             " " +
             (x.artist || "")
-          )
-          .toLowerCase();
-
+          ).toLowerCase();
 
         return searchTerms.every(
           term =>
@@ -1974,29 +2073,18 @@ function applyCurrentFilter(){
 
       });
 
+    render(
+      filtered,
+      "🔎 " + $("q").value
+    );
 
-    if(!filtered.length){
-
-      render(
-        [],
-        "🔎 " + $("q").value
-      );
-
-    }
-
-    else{
-
-      render(
-        filtered,
-        "🔎 " + $("q").value
-      );
-
-    }
+    return;
 
   }
 
-  else if(
-    currentFilter === "downloads"
+  if(
+    currentFilter ===
+    "downloads"
   ){
 
     const downloadsOnly =
@@ -2004,25 +2092,26 @@ function applyCurrentFilter(){
         x => !!x.download
       );
 
-
     render(
       downloadsOnly,
       "⬇️ Downloadable Audio"
     );
 
-  }
-
-  else{
-
-    render(
-      allTracksList,
-      "🔥 Trending Worldwide"
-    );
+    return;
 
   }
+
+  render(
+    allTracksList,
+    "🔥 Trending Worldwide"
+  );
 
 }
 
+
+/* =========================
+   SEARCH
+========================= */
 
 async function searchMusic(){
 
@@ -2031,23 +2120,22 @@ async function searchMusic(){
       .value
       .trim();
 
-
   if(!q) return;
 
-
   $("results").innerHTML =
-    '<div class="loading">Searching database… ⏳</div>';
-
+    `
+      <div class="loading">
+        Searching database… ⏳
+      </div>
+    `;
 
   const searchTerms =
-    q
-      .toLowerCase()
-      .split(" ")
-      .filter(
-        term =>
-          term.length > 0
-      );
-
+    q.toLowerCase()
+     .split(" ")
+     .filter(
+       term =>
+         term.length > 0
+     );
 
   const filtered =
     allTracksList.filter(x => {
@@ -2057,9 +2145,7 @@ async function searchMusic(){
           (x.title || "") +
           " " +
           (x.artist || "")
-        )
-        .toLowerCase();
-
+        ).toLowerCase();
 
       return searchTerms.every(
         term =>
@@ -2068,8 +2154,9 @@ async function searchMusic(){
 
     });
 
-
-  if(!filtered.length){
+  if(
+    filtered.length === 0
+  ){
 
     await sendTermuxRequest(q);
 
@@ -2078,9 +2165,7 @@ async function searchMusic(){
       "🔎 " + q
     );
 
-  }
-
-  else{
+  }else{
 
     render(
       filtered,
@@ -2091,6 +2176,10 @@ async function searchMusic(){
 
 }
 
+
+/* =========================
+   TRENDING
+========================= */
 
 function loadTrending(btn){
 
@@ -2103,7 +2192,6 @@ function loadTrending(btn){
         )
     );
 
-
   if(btn){
 
     btn.classList.add(
@@ -2112,17 +2200,19 @@ function loadTrending(btn){
 
   }
 
-
   $("q").value = "";
 
   currentFilter =
     "trending";
 
-
   applyCurrentFilter();
 
 }
 
+
+/* =========================
+   QUICK FILTER
+========================= */
 
 function quickFilter(
   keyword,
@@ -2138,7 +2228,6 @@ function quickFilter(
         )
     );
 
-
   if(btn){
 
     btn.classList.add(
@@ -2147,15 +2236,17 @@ function quickFilter(
 
   }
 
-
   $("q").value =
     keyword;
-
 
   searchMusic();
 
 }
 
+
+/* =========================
+   DOWNLOADS FILTER
+========================= */
 
 function showDownloads(btn){
 
@@ -2168,7 +2259,6 @@ function showDownloads(btn){
         )
     );
 
-
   if(btn){
 
     btn.classList.add(
@@ -2177,30 +2267,33 @@ function showDownloads(btn){
 
   }
 
-
   $("q").value = "";
 
   currentFilter =
     "downloads";
-
 
   applyCurrentFilter();
 
 }
 
 
+/* =========================
+   ADMIN
+========================= */
+
 function openAdmin(){
 
-  $("login").style.display =
-    "flex";
+  $("login")
+    .style.display =
+      "flex";
 
 }
 
-
 function closeAdmin(){
 
-  $("login").style.display =
-    "none";
+  $("login")
+    .style.display =
+      "none";
 
 }
 
@@ -2215,7 +2308,6 @@ function loginAdmin(){
   const p =
     $("pass").value;
 
-
   if(
     u === "MAKYAMA" &&
     p === "Makame005@"
@@ -2225,8 +2317,9 @@ function loginAdmin(){
 
     closeAdmin();
 
-    $("admin").style.display =
-      "block";
+    $("admin")
+      .style.display =
+        "block";
 
     loadAdminList();
 
@@ -2234,9 +2327,7 @@ function loginAdmin(){
       "Admin mode imewashwa."
     );
 
-  }
-
-  else{
+  }else{
 
     toast(
       "Username/password si sahihi."
@@ -2251,8 +2342,9 @@ function logoutAdmin(){
 
   admin = false;
 
-  $("admin").style.display =
-    "none";
+  $("admin")
+    .style.display =
+      "none";
 
   toast(
     "Logged out."
@@ -2261,10 +2353,17 @@ function logoutAdmin(){
 }
 
 
+/* =========================
+   ADD TRACK
+========================= */
+
 async function saveAdminTrack(){
 
-  if(!admin || !db) return;
-
+  if(
+    !admin ||
+    !db
+  )
+    return;
 
   const data = {
 
@@ -2295,7 +2394,6 @@ async function saveAdminTrack(){
 
   };
 
-
   if(
     !data.jina ||
     !data.linkAudio
@@ -2309,47 +2407,41 @@ async function saveAdminTrack(){
 
   }
 
-
-  await db
-    .ref("media")
+  await db.ref("media")
     .push(data);
-
 
   [
     "aTitle",
     "aArtist",
     "aCover",
     "aAudio"
-  ]
-  .forEach(
+  ].forEach(
     id =>
       $(id).value = ""
   );
 
-
   toast(
     "Track imeongezwa."
   );
-
 
   loadAdminList();
 
 }
 
 
+/* =========================
+   ADMIN TRACK LIST
+========================= */
+
 async function loadAdminList(){
 
   if(!db) return;
 
-
   const snap =
-    await db
-      .ref("media")
+    await db.ref("media")
       .once("value");
 
-
   const arr = [];
-
 
   if(snap.exists()){
 
@@ -2363,46 +2455,45 @@ async function loadAdminList(){
 
   }
 
+  $("adminList")
+    .innerHTML =
+      arr.reverse()
+        .map(
+          x => `
 
-  $("adminList").innerHTML =
+            <div class="admin-item">
 
-    arr
-      .reverse()
-      .map(
-        x => `
+              <span>
+                ${esc(
+                  x.data.jina ||
+                  "Untitled"
+                )}
+                (${x.data.views || 0} views)
+              </span>
 
-        <div class="admin-item">
+              <button
+                class="btn-red"
+                onclick="
+                  deleteAdminTrack('${x.key}')
+                "
+              >
+                DELETE
+              </button>
 
-          <span>
-            ${esc(
-              x.data.jina ||
-              "Untitled"
-            )}
+            </div>
 
-            (${x.data.views || 0} views)
-
-          </span>
-
-          <button
-            class="btn-red"
-            onclick="
-              deleteAdminTrack('${x.key}')
-            ">
-            DELETE
-          </button>
-
-        </div>
-
-      `
-      )
-      .join("")
-
-    ||
-
-    '<div style="color:#69756d;font-size:10px">No tracks.</div>';
+          `
+        )
+        .join("")
+        ||
+        '<div style="color:#69756d;font-size:10px">No tracks.</div>';
 
 }
 
+
+/* =========================
+   DELETE TRACK
+========================= */
 
 async function deleteAdminTrack(
   key
@@ -2412,13 +2503,12 @@ async function deleteAdminTrack(
     !confirm(
       "Delete this track?"
     )
-  ) return;
-
+  )
+    return;
 
   await db
     .ref("media/" + key)
     .remove();
-
 
   loadAdminList();
 
@@ -2429,106 +2519,179 @@ async function deleteAdminTrack(
 }
 
 
-$("q").addEventListener(
-  "keydown",
-  e => {
-
-    if(
-      e.key === "Enter"
-    ){
-
-      searchMusic();
-
-    }
-
-  }
-);
+/* =========================================================
+   MY DEVICE / LOCAL MUSIC
+========================================================= */
 
 
-/* MY DEVICE */
+/*
+  Hii ndiyo sehemu mpya.
+
+  Mtumiaji akibonyeza MY DEVICE:
+  Android inafungua file picker.
+
+  Anaweza kuchagua MP3/M4A/WAV/AAC/OGG/FLAC
+  zilizopo kwenye simu.
+
+  Audio hazitumwi Firebase.
+  Zinasomwa moja kwa moja kutoka kwenye simu
+  na kuchezwa offline.
+*/
+
 
 function openLocalMusic(){
 
   const input =
-    document.createElement(
-      "input"
+    $("localMusicInput");
+
+  if(!input){
+
+    toast(
+      "File picker haipo."
     );
 
+    return;
 
-  input.type =
-    "file";
+  }
 
+  /*
+    Safisha selection ya zamani
+    ili aweze kuchagua tena file
+    hata kama ni ile ile.
+  */
 
-  input.accept =
-    "audio/*";
-
-
-  input.multiple =
-    true;
-
-
-  input.onchange =
-    function(){
-
-      const files =
-        Array.from(
-          input.files || []
-        );
-
-
-      if(!files.length){
-
-        return;
-
-      }
-
-
-      const localTracks =
-        files.map(
-          (file,index) => ({
-
-            key:
-              "local_" +
-              index,
-
-            title:
-              file.name.replace(
-                /\.[^/.]+$/,
-                ""
-              ),
-
-            artist:
-              "My Device",
-
-            cover:
-              "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png",
-
-            audio:
-              URL.createObjectURL(
-                file
-              ),
-
-            download:"",
-
-            views:0,
-
-            type:"LOCAL"
-
-          })
-        );
-
-
-      renderLocalMusic(
-        localTracks
-      );
-
-    };
-
+  input.value = "";
 
   input.click();
 
 }
 
+
+/* =========================
+   FILE PICKER CHANGE
+========================= */
+
+$("localMusicInput")
+  .addEventListener(
+    "change",
+    function(){
+
+      const files =
+        Array.from(
+          this.files || []
+        );
+
+      if(!files.length){
+
+        toast(
+          "Hakuna audio iliyochaguliwa."
+        );
+
+        return;
+
+      }
+
+      loadLocalAudioFiles(
+        files
+      );
+
+    }
+  );
+
+
+/* =========================
+   LOAD LOCAL AUDIO
+========================= */
+
+function loadLocalAudioFiles(
+  files
+){
+
+  /*
+    Ondoa Object URLs za zamani
+    ili memory isijazwe.
+  */
+
+  currentLocalFiles
+    .forEach(
+      item => {
+
+        try{
+
+          URL.revokeObjectURL(
+            item.audio
+          );
+
+        }catch(e){}
+
+      }
+    );
+
+  currentLocalFiles = [];
+
+  localTracks = files.map(
+    (file,index) => {
+
+      const objectURL =
+        URL.createObjectURL(
+          file
+        );
+
+      const cleanName =
+        file.name
+          .replace(
+            /\.[^/.]+$/,
+            ""
+          );
+
+      const track = {
+
+        key:
+          "local_" +
+          Date.now() +
+          "_" +
+          index,
+
+        title:
+          cleanName,
+
+        artist:
+          "My Device",
+
+        cover:
+          "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png",
+
+        audio:
+          objectURL,
+
+        download:
+          "",
+
+        views:0,
+
+        type:
+          "LOCAL"
+
+      };
+
+      currentLocalFiles
+        .push(track);
+
+      return track;
+
+    }
+  );
+
+  renderLocalMusic(
+    localTracks
+  );
+
+}
+
+
+/* =========================
+   RENDER LOCAL MUSIC
+========================= */
 
 function renderLocalMusic(
   tracks
@@ -2536,14 +2699,38 @@ function renderLocalMusic(
 
   $("sectionTitle")
     .textContent =
-    "📱 My Device";
-
+      "📱 My Device";
 
   $("status")
     .textContent =
-    tracks.length +
-    " songs";
+      tracks.length +
+      " songs";
 
+  $("localInfo")
+    .style.display =
+      "block";
+
+  $("localInfoText")
+    .textContent =
+      " • " +
+      tracks.length +
+      " audio zimechaguliwa kutoka kwenye storage.";
+
+  if(!tracks.length){
+
+    $("results").innerHTML =
+      `
+        <div class="empty">
+
+          📱 Hakuna audio
+          zilizochaguliwa.
+
+        </div>
+      `;
+
+    return;
+
+  }
 
   $("results").innerHTML =
     tracks
@@ -2553,7 +2740,147 @@ function renderLocalMusic(
 }
 
 
-/* SERVICE WORKER */
+/* =========================
+   LOCAL SEARCH
+========================= */
+
+function searchLocalMusic(){
+
+  const q =
+    $("q")
+      .value
+      .trim()
+      .toLowerCase();
+
+  if(!q){
+
+    renderLocalMusic(
+      localTracks
+    );
+
+    return;
+
+  }
+
+  const filtered =
+    localTracks.filter(
+      x => {
+
+        const combined =
+          (
+            x.title +
+            " " +
+            x.artist
+          ).toLowerCase();
+
+        return combined.includes(
+          q
+        );
+
+      }
+    );
+
+  $("sectionTitle")
+    .textContent =
+      "🔎 " + q;
+
+  $("status")
+    .textContent =
+      filtered.length +
+      " songs";
+
+  if(!filtered.length){
+
+    $("results").innerHTML =
+      `
+        <div class="empty">
+          Audio hiyo haipo kwenye
+          My Device.
+        </div>
+      `;
+
+    return;
+
+  }
+
+  $("results").innerHTML =
+    filtered
+      .map(card)
+      .join("");
+
+}
+
+
+/* =========================
+   SEARCH ENTER
+========================= */
+
+$("q")
+  .addEventListener(
+    "keydown",
+    e => {
+
+      if(
+        e.key === "Enter"
+      ){
+
+        /*
+          Kama My Device ndiyo
+          imefunguliwa, tafuta
+          kwenye audio za device.
+        */
+
+        if(
+          localTracks.length &&
+          $("sectionTitle")
+            .textContent
+            .includes("My Device")
+        ){
+
+          searchLocalMusic();
+
+        }else{
+
+          searchMusic();
+
+        }
+
+      }
+
+    }
+  );
+
+
+/* =========================
+   CLEAN LOCAL URLS
+========================= */
+
+window.addEventListener(
+  "beforeunload",
+  () => {
+
+    currentLocalFiles
+      .forEach(
+        item => {
+
+          try{
+
+            URL.revokeObjectURL(
+              item.audio
+            );
+
+          }catch(e){}
+
+        }
+      );
+
+  }
+);
+
+
+/* =========================
+   SERVICE WORKER
+========================= */
 
 if(
   "serviceWorker" in navigator
@@ -2565,12 +2892,14 @@ if(
 
       navigator.serviceWorker
         .register("/sw.js")
+
         .then(
           () =>
             console.log(
               "MMEDIA Service Worker registered"
             )
         )
+
         .catch(
           err =>
             console.log(
@@ -2585,7 +2914,9 @@ if(
 }
 
 
-/* START */
+/* =========================
+   INITIALIZE
+========================= */
 
 window.addEventListener(
   "load",
