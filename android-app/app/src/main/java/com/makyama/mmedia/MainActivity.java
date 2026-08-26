@@ -2,15 +2,18 @@ package com.makyama.mmedia;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
-import android.database.Cursor;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -22,6 +25,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -30,6 +35,15 @@ public class MainActivity extends Activity {
     private static final int AUDIO_PERMISSION_CODE = 1001;
 
     private MediaPlayer mediaPlayer;
+
+    private DownloadManager downloadManager;
+
+    private Handler downloadHandler;
+
+    private Runnable downloadRunnable;
+
+    private final List<Long> downloadIds =
+            new ArrayList<>();
 
 
     // =====================================================
@@ -46,6 +60,27 @@ public class MainActivity extends Activity {
         setContentView(webView);
 
 
+        // =================================================
+        // DOWNLOAD MANAGER
+        // =================================================
+
+        downloadManager =
+                (DownloadManager)
+                        getSystemService(
+                                DOWNLOAD_SERVICE
+                        );
+
+
+        downloadHandler =
+                new Handler(
+                        Looper.getMainLooper()
+                );
+
+
+        // =================================================
+        // WEBVIEW
+        // =================================================
+
         WebSettings settings =
                 webView.getSettings();
 
@@ -60,6 +95,10 @@ public class MainActivity extends Activity {
         settings.setAllowContentAccess(true);
 
         settings.setMediaPlaybackRequiresUserGesture(false);
+
+        settings.setBuiltInZoomControls(false);
+
+        settings.setDisplayZoomControls(false);
 
 
         webView.setWebViewClient(
@@ -90,6 +129,13 @@ public class MainActivity extends Activity {
                 "https://makyama.vercel.app/"
         );
 
+
+        // =================================================
+        // START DOWNLOAD MONITOR
+        // =================================================
+
+        startDownloadMonitor();
+
     }
 
 
@@ -111,7 +157,6 @@ public class MainActivity extends Activity {
 
         // =================================================
         // ENABLE MY DEVICE
-        // APK PEKEE
         // =================================================
 
         @JavascriptInterface
@@ -152,6 +197,8 @@ public class MainActivity extends Activity {
 
                     loadDeviceMusic();
 
+                    sendDownloadsToWebsite();
+
                 } else {
 
                     requestAudioPermission();
@@ -176,7 +223,7 @@ public class MainActivity extends Activity {
 
 
         // =================================================
-        // CHECK AUDIO PERMISSION
+        // AUDIO PERMISSION
         // =================================================
 
         private boolean hasAudioPermission() {
@@ -330,10 +377,6 @@ public class MainActivity extends Activity {
 
                 if (cursor != null) {
 
-                    // =================================================
-                    // COLUMN INDEXES
-                    // =================================================
-
                     int idColumn =
                             cursor.getColumnIndex(
                                     MediaStore.Audio.Media._ID
@@ -375,10 +418,6 @@ public class MainActivity extends Activity {
                                     MediaStore.Audio.Media.DURATION
                             );
 
-
-                    // =================================================
-                    // LOOP MUSIC
-                    // =================================================
 
                     while (cursor.moveToNext()) {
 
@@ -426,10 +465,6 @@ public class MainActivity extends Activity {
                                     );
 
 
-                            // =================================================
-                            // FALLBACK TITLE
-                            // =================================================
-
                             if (
                                     title == null ||
                                     title.trim().isEmpty()
@@ -452,10 +487,6 @@ public class MainActivity extends Activity {
                             }
 
 
-                            // =================================================
-                            // FALLBACK ARTIST
-                            // =================================================
-
                             if (
                                     artist == null ||
                                     artist.trim().isEmpty() ||
@@ -470,10 +501,6 @@ public class MainActivity extends Activity {
                             }
 
 
-                            // =================================================
-                            // CONTENT URI
-                            // =================================================
-
                             Uri audioUri =
                                     android.content.ContentUris
                                             .withAppendedId(
@@ -484,10 +511,6 @@ public class MainActivity extends Activity {
 
                                             );
 
-
-                            // =================================================
-                            // JSON OBJECT
-                            // =================================================
 
                             JSONObject audio =
                                     new JSONObject();
@@ -572,10 +595,6 @@ public class MainActivity extends Activity {
                 }
 
 
-                // =================================================
-                // SEND TO WEBSITE
-                // =================================================
-
                 final String json =
                         audioArray.toString();
 
@@ -604,17 +623,6 @@ public class MainActivity extends Activity {
                     } catch (Exception e) {
 
                         e.printStackTrace();
-
-
-                        Toast.makeText(
-
-                                MainActivity.this,
-
-                                "Imeshindikana kuonyesha audio",
-
-                                Toast.LENGTH_LONG
-
-                        ).show();
 
                     }
 
@@ -664,10 +672,6 @@ public class MainActivity extends Activity {
 
                 try {
 
-                    // =================================================
-                    // CHECK URI
-                    // =================================================
-
                     if (
                             uriString == null ||
                             uriString.trim().isEmpty()
@@ -688,10 +692,6 @@ public class MainActivity extends Activity {
                     }
 
 
-                    // =================================================
-                    // STOP OLD PLAYER
-                    // =================================================
-
                     releasePlayer();
 
 
@@ -701,17 +701,9 @@ public class MainActivity extends Activity {
                             );
 
 
-                    // =================================================
-                    // CREATE MEDIA PLAYER
-                    // =================================================
-
                     mediaPlayer =
                             new MediaPlayer();
 
-
-                    // =================================================
-                    // AUDIO ATTRIBUTES
-                    // =================================================
 
                     if (
                             Build.VERSION.SDK_INT >=
@@ -739,10 +731,6 @@ public class MainActivity extends Activity {
                     }
 
 
-                    // =================================================
-                    // DATA SOURCE
-                    // =================================================
-
                     mediaPlayer.setDataSource(
 
                             MainActivity.this,
@@ -751,10 +739,6 @@ public class MainActivity extends Activity {
 
                     );
 
-
-                    // =================================================
-                    // PREPARED
-                    // =================================================
 
                     mediaPlayer.setOnPreparedListener(
                             mp -> {
@@ -790,26 +774,11 @@ public class MainActivity extends Activity {
 
                                     e.printStackTrace();
 
-
-                                    Toast.makeText(
-
-                                            MainActivity.this,
-
-                                            "Imeshindikana kuanza audio.",
-
-                                            Toast.LENGTH_SHORT
-
-                                    ).show();
-
                                 }
 
                             }
                     );
 
-
-                    // =================================================
-                    // COMPLETION
-                    // =================================================
 
                     mediaPlayer.setOnCompletionListener(
                             mp -> {
@@ -827,10 +796,6 @@ public class MainActivity extends Activity {
                             }
                     );
 
-
-                    // =================================================
-                    // ERROR
-                    // =================================================
 
                     mediaPlayer.setOnErrorListener(
 
@@ -872,55 +837,12 @@ public class MainActivity extends Activity {
                     );
 
 
-                    // =================================================
-                    // PREPARE ASYNC
-                    // =================================================
-
                     mediaPlayer.prepareAsync();
-
-
-                } catch (SecurityException e) {
-
-                    e.printStackTrace();
-
-
-                    releasePlayer();
-
-
-                    Toast.makeText(
-
-                            MainActivity.this,
-
-                            "Ruhusa ya kusoma audio haipo.",
-
-                            Toast.LENGTH_LONG
-
-                    ).show();
-
-
-                } catch (IOException e) {
-
-                    e.printStackTrace();
-
-
-                    releasePlayer();
-
-
-                    Toast.makeText(
-
-                            MainActivity.this,
-
-                            "Imeshindikana kufungua audio.",
-
-                            Toast.LENGTH_LONG
-
-                    ).show();
 
 
                 } catch (Exception e) {
 
                     e.printStackTrace();
-
 
                     releasePlayer();
 
@@ -931,54 +853,13 @@ public class MainActivity extends Activity {
 
                             "Tatizo la playback.",
 
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
 
                     ).show();
 
                 }
 
             });
-
-        }
-
-
-        // =====================================================
-        // RELEASE PLAYER
-        // =====================================================
-
-        private void releasePlayer() {
-
-            if (mediaPlayer != null) {
-
-                try {
-
-                    if (mediaPlayer.isPlaying()) {
-
-                        mediaPlayer.stop();
-
-                    }
-
-                } catch (Exception ignored) {}
-
-
-                try {
-
-                    mediaPlayer.reset();
-
-                } catch (Exception ignored) {}
-
-
-                try {
-
-                    mediaPlayer.release();
-
-                } catch (Exception ignored) {}
-
-
-                mediaPlayer =
-                        null;
-
-            }
 
         }
 
@@ -1012,170 +893,566 @@ public class MainActivity extends Activity {
 
         ) {
 
-            runOnUiThread(() -> {
-
-                Toast.makeText(
-
-                        MainActivity.this,
-
-                        "Download inaanza...",
-
-                        Toast.LENGTH_SHORT
-
-                ).show();
-
-            });
-
-        }
-
-    }
-
-
-    // =====================================================
-    // PERMISSION RESULT
-    // =====================================================
-
-    @Override
-    public void onRequestPermissionsResult(
-
-            int requestCode,
-
-            String[] permissions,
-
-            int[] grantResults
-
-    ) {
-
-        super.onRequestPermissionsResult(
-
-                requestCode,
-
-                permissions,
-
-                grantResults
-
-        );
-
-
-        if (
-                requestCode ==
-                AUDIO_PERMISSION_CODE
-        ) {
-
             if (
-                    grantResults.length > 0 &&
-                    grantResults[0] ==
-                            PackageManager.PERMISSION_GRANTED
+                    url == null ||
+                    url.trim().isEmpty()
             ) {
 
-                new MMEDIAInterface(
-                        MainActivity.this
-                ).loadDeviceMusic();
+                runOnUiThread(() -> {
 
-            } else {
+                    Toast.makeText(
 
-                Toast.makeText(
+                            MainActivity.this,
 
-                        this,
+                            "Download URL haipo.",
 
-                        "Ruhusa ya kusoma audio haijatolewa.",
+                            Toast.LENGTH_SHORT
 
-                        Toast.LENGTH_LONG
+                    ).show();
 
-                ).show();
+                });
+
+                return;
+
+            }
+
+
+            try {
+
+                String cleanFilename =
+                        filename;
+
+
+                if (
+                        cleanFilename == null ||
+                        cleanFilename.trim().isEmpty()
+                ) {
+
+                    cleanFilename =
+                            "MMEDIA_Music.mp3";
+
+                }
+
+
+                cleanFilename =
+                        cleanFilename
+                                .replace(
+                                        "/",
+                                        "_"
+                                )
+                                .replace(
+                                        "\\",
+                                        "_"
+                                )
+                                .replace(
+                                        ":",
+                                        "_"
+                                )
+                                .replace(
+                                        "*",
+                                        "_"
+                                )
+                                .replace(
+                                        "?",
+                                        "_"
+                                )
+                                .replace(
+                                        "\"",
+                                        "_"
+                                )
+                                .replace(
+                                        "<",
+                                        "_"
+                                )
+                                .replace(
+                                        ">",
+                                        "_"
+                                )
+                                .replace(
+                                        "|",
+                                        "_"
+                                );
+
+
+                // =================================================
+                // DOWNLOAD REQUEST
+                // =================================================
+
+                DownloadManager.Request request =
+                        new DownloadManager.Request(
+                                Uri.parse(url)
+                        );
+
+
+                request.setTitle(
+                        cleanFilename
+                );
+
+
+                request.setDescription(
+                        "Downloading from MAKYAMA MEDIA"
+                );
+
+
+                request.setNotificationVisibility(
+                        DownloadManager
+                                .Request
+                                .VISIBILITY_VISIBLE
+                );
+
+
+                request.setAllowedOverMetered(
+                        true
+                );
+
+
+                request.setAllowedOverRoaming(
+                        true
+                );
+
+
+                // =================================================
+                // SAVE TO DOWNLOADS
+                // =================================================
+
+                request.setDestinationInExternalPublicDir(
+
+                        android.os.Environment
+                                .DIRECTORY_DOWNLOADS,
+
+                        cleanFilename
+
+                );
+
+
+                // =================================================
+                // START DOWNLOAD
+                // =================================================
+
+                long downloadId =
+                        downloadManager.enqueue(
+                                request
+                        );
+
+
+                synchronized (downloadIds) {
+
+                    downloadIds.add(
+                            downloadId
+                    );
+
+                }
+
+
+                runOnUiThread(() -> {
+
+                    Toast.makeText(
+
+                            MainActivity.this,
+
+                            "⬇ Download inaanza...",
+
+                            Toast.LENGTH_SHORT
+
+                    ).show();
+
+
+                    sendDownloadsToWebsite();
+
+                });
+
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+
+                runOnUiThread(() -> {
+
+                    Toast.makeText(
+
+                            MainActivity.this,
+
+                            "Download imeshindikana kuanza.",
+
+                            Toast.LENGTH_LONG
+
+                    ).show();
+
+                });
 
             }
 
         }
 
+
+        // =====================================================
+        // GET DOWNLOADS
+        // =====================================================
+
+        @JavascriptInterface
+        public String getDownloads() {
+
+            return getDownloadsJson();
+
+        }
+
     }
 
 
     // =====================================================
-    // BACK BUTTON
+    // DOWNLOAD MONITOR
     // =====================================================
 
-    @Override
-    public void onBackPressed() {
+    private void startDownloadMonitor() {
 
-        if (webView != null) {
+        downloadRunnable =
+                new Runnable() {
 
-            webView.evaluateJavascript(
+                    @Override
+                    public void run() {
 
-                    "typeof window.exitDevicePage===" +
-                    "'function' ? " +
-                    "window.exitDevicePage() : false;",
+                        sendDownloadsToWebsite();
 
-                    value -> {
 
-                        if (
-                                "false".equals(value) ||
-                                "null".equals(value)
-                        ) {
+                        if (downloadHandler != null) {
 
-                            if (
-                                    webView.canGoBack()
-                            ) {
-
-                                webView.goBack();
-
-                            } else {
-
-                                MainActivity.super
-                                        .onBackPressed();
-
-                            }
+                            downloadHandler.postDelayed(
+                                    this,
+                                    500
+                            );
 
                         }
 
                     }
 
+                };
+
+
+        downloadHandler.post(
+                downloadRunnable
+        );
+
+    }
+
+
+    // =====================================================
+    // SEND DOWNLOADS TO HTML
+    // =====================================================
+
+    private void sendDownloadsToWebsite() {
+
+        if (webView == null) {
+            return;
+        }
+
+
+        final String json =
+                getDownloadsJson();
+
+
+        runOnUiThread(() -> {
+
+            if (webView == null) {
+                return;
+            }
+
+
+            String js =
+                    "if(typeof window.showAndroidDownloads===" +
+                    "'function')" +
+                    "{window.showAndroidDownloads(" +
+                    JSONObject.quote(json) +
+                    ");}";
+
+
+            webView.evaluateJavascript(
+                    js,
+                    null
             );
 
-        } else {
-
-            super.onBackPressed();
-
-        }
+        });
 
     }
 
 
     // =====================================================
-    // ACTIVITY DESTROY
+    // DOWNLOAD JSON
     // =====================================================
 
-    @Override
-    protected void onDestroy() {
+    private String getDownloadsJson() {
 
-        releaseMediaPlayer();
+        JSONArray array =
+                new JSONArray();
 
 
-        if (webView != null) {
+        synchronized (downloadIds) {
 
-            webView.destroy();
+            for (
+                    int i = 0;
+                    i < downloadIds.size();
+                    i++
+            ) {
 
-            webView = null;
+                long id =
+                        downloadIds.get(i);
+
+
+                try {
+
+                    DownloadManager.Query query =
+                            new DownloadManager.Query();
+
+
+                    query.setFilterById(
+                            id
+                    );
+
+
+                    Cursor cursor =
+                            downloadManager.query(
+                                    query
+                            );
+
+
+                    if (
+                            cursor == null
+                    ) {
+
+                        continue;
+
+                    }
+
+
+                    if (
+                            cursor.moveToFirst()
+                    ) {
+
+                        int statusColumn =
+                                cursor.getColumnIndex(
+                                        DownloadManager.COLUMN_STATUS
+                                );
+
+
+                        int titleColumn =
+                                cursor.getColumnIndex(
+                                        DownloadManager.COLUMN_TITLE
+                                );
+
+
+                        int totalColumn =
+                                cursor.getColumnIndex(
+                                        DownloadManager.COLUMN_TOTAL_SIZE_BYTES
+                                );
+
+
+                        int downloadedColumn =
+                                cursor.getColumnIndex(
+                                        DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
+                                );
+
+
+                        int reasonColumn =
+                                cursor.getColumnIndex(
+                                        DownloadManager.COLUMN_REASON
+                                );
+
+
+                        int status =
+                                cursor.getInt(
+                                        statusColumn
+                                );
+
+
+                        String title =
+                                cursor.getString(
+                                        titleColumn
+                                );
+
+
+                        long total =
+                                cursor.getLong(
+                                        totalColumn
+                                );
+
+
+                        long downloaded =
+                                cursor.getLong(
+                                        downloadedColumn
+                                );
+
+
+                        int reason =
+                                cursor.getInt(
+                                        reasonColumn
+                                );
+
+
+                        int progress =
+                                0;
+
+
+                        if (
+                                total > 0
+                        ) {
+
+                            progress =
+                                    (int)
+                                    (
+                                            (
+                                                    downloaded
+                                                    * 100
+                                            )
+                                            /
+                                            total
+                                    );
+
+                        }
+
+
+                        String state =
+                                "downloading";
+
+
+                        if (
+                                status ==
+                                DownloadManager
+                                        .STATUS_SUCCESSFUL
+                        ) {
+
+                            state =
+                                    "completed";
+
+                            progress =
+                                    100;
+
+                        }
+
+
+                        else if (
+                                status ==
+                                DownloadManager
+                                        .STATUS_FAILED
+                        ) {
+
+                            state =
+                                    "failed";
+
+                        }
+
+
+                        else if (
+                                status ==
+                                DownloadManager
+                                        .STATUS_PAUSED
+                        ) {
+
+                            state =
+                                    "paused";
+
+                        }
+
+
+                        else if (
+                                status ==
+                                DownloadManager
+                                        .STATUS_PENDING
+                        ) {
+
+                            state =
+                                    "pending";
+
+                        }
+
+
+                        JSONObject item =
+                                new JSONObject();
+
+
+                        item.put(
+                                "id",
+                                id
+                        );
+
+
+                        item.put(
+                                "title",
+                                title != null
+                                        ? title
+                                        : "Download"
+                        );
+
+
+                        item.put(
+                                "progress",
+                                progress
+                        );
+
+
+                        item.put(
+                                "downloaded",
+                                downloaded
+                        );
+
+
+                        item.put(
+                                "total",
+                                total
+                        );
+
+
+                        item.put(
+                                "status",
+                                state
+                        );
+
+
+                        item.put(
+                                "reason",
+                                reason
+                        );
+
+
+                        array.put(
+                                item
+                        );
+
+
+                    }
+
+
+                    cursor.close();
+
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                }
+
+            }
 
         }
 
 
-        super.onDestroy();
+        return array.toString();
 
     }
 
 
     // =====================================================
-    // RELEASE MEDIA PLAYER
+    // RELEASE PLAYER
     // =====================================================
 
-    private void releaseMediaPlayer() {
+    private void releasePlayer() {
 
         if (mediaPlayer != null) {
 
             try {
 
-                if (mediaPlayer.isPlaying()) {
+                if (
+                        mediaPlayer.isPlaying()
+                ) {
 
                     mediaPlayer.stop();
 
@@ -1205,4 +1482,20 @@ public class MainActivity extends Activity {
 
     }
 
-        }
+
+    // =====================================================
+    // PERMISSION RESULT
+    // =====================================================
+
+    @Override
+    public void onRequestPermissionsResult(
+
+            int requestCode,
+
+            String[] permissions,
+
+            int[] grantResults
+
+    ) {
+
+        super.onRequestPermissions
