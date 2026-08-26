@@ -1,23 +1,56 @@
 <!DOCTYPE html>
 <html lang="sw">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#07110c">
 
-<link rel="manifest" href="/manifest.json">
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+>
 
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MMEDIA">
+<meta
+  name="theme-color"
+  content="#07110c"
+>
 
-<title>MAKYAMA MEDIA — Global Music</title>
+<link
+  rel="manifest"
+  href="/manifest.json"
+>
+
+<meta
+  name="mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="black-translucent"
+>
+
+<meta
+  name="apple-mobile-web-app-title"
+  content="MMEDIA"
+>
+
+<title>
+  MAKYAMA MEDIA — Global Music
+</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+
 <style>
+
 :root{
   --green:#00e676;
   --green2:#00c853;
@@ -38,7 +71,8 @@
   font-family:Arial,Segoe UI,sans-serif;
 }
 
-html,body{
+html,
+body{
   background:var(--bg);
   color:var(--text);
   min-height:100%;
@@ -47,16 +81,26 @@ html,body{
 
 body{
   padding-bottom:100px;
+
   background-image:
-    linear-gradient(rgba(7,10,9,.90),rgba(7,10,9,.90)),
-    url('https://i.postimg.cc/J0CCmJnw/file-000000001b508210abb525894acdb99e.png');
+    linear-gradient(
+      rgba(7,10,9,.90),
+      rgba(7,10,9,.90)
+    ),
+    url(
+      'https://i.postimg.cc/J0CCmJnw/file-000000001b508210abb525894acdb99e.png'
+    );
+
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
   background-attachment:fixed;
 }
 
-button,input,textarea,select{
+button,
+input,
+textarea,
+select{
   font:inherit;
 }
 
@@ -68,28 +112,39 @@ header{
   position:sticky;
   top:0;
   z-index:1000;
+
   background:rgba(7,10,9,.96);
+
   backdrop-filter:blur(14px);
+
   border-bottom:1px solid #1d2921;
+
   padding:13px 14px;
+
   display:flex;
   align-items:center;
   justify-content:space-between;
+
   gap:10px;
 }
 
 .brand{
   min-width:0;
+
   display:flex;
   align-items:center;
+
   gap:10px;
 }
 
 .brand img{
   width:38px;
   height:38px;
+
   border-radius:50%;
+
   object-fit:cover;
+
   border:1px solid var(--green);
 }
 
@@ -100,12 +155,14 @@ header{
 .brand-text h1{
   font-size:17px;
   color:var(--green);
+
   white-space:nowrap;
 }
 
 .brand-text p{
   font-size:10px;
   color:var(--muted);
+
   margin-top:3px;
 }
 
@@ -116,8 +173,11 @@ header{
 
 .btn{
   border:0;
+
   border-radius:9px;
+
   padding:9px 11px;
+
   font-weight:800;
   font-size:11px;
 }
@@ -130,6 +190,7 @@ header{
 .btn-dark{
   background:#18201b;
   color:#fff;
+
   border:1px solid var(--line);
 }
 
@@ -145,7 +206,9 @@ header{
 
 .wrap{
   width:min(960px,100%);
+
   margin:auto;
+
   padding:0 11px;
 }
 
@@ -164,33 +227,49 @@ header{
 
 .hero p{
   color:var(--muted);
+
   font-size:12px;
+
   margin-top:8px;
+
   line-height:1.5;
 }
 
 .search-row{
   display:flex;
+
   gap:7px;
+
   margin:14px 0;
+
   align-items:stretch;
 }
 
 .search{
   display:flex;
+
   gap:8px;
+
   flex:1;
+
   min-width:0;
 }
 
 .search input{
   flex:1;
+
   min-width:0;
+
   background:var(--panel);
+
   color:#fff;
+
   border:1px solid #334238;
+
   border-radius:13px;
+
   padding:13px 14px;
+
   outline:none;
 }
 
@@ -200,32 +279,47 @@ header{
 
 .search button{
   width:86px;
+
   flex:0 0 86px;
 }
 
 .device-btn{
   flex:0 0 auto;
+
   min-width:92px;
+
   border:1px solid var(--green);
+
   background:#102219;
+
   color:var(--green);
+
   border-radius:13px;
+
   padding:0 10px;
+
   font-size:10px;
+
   font-weight:900;
+
   line-height:1.15;
 }
 
 .device-btn:active{
   transform:scale(.97);
+
   background:#183522;
 }
 
 .chips{
   display:flex;
+
   gap:8px;
+
   overflow-x:auto;
+
   padding:3px 0 13px;
+
   scrollbar-width:none;
 }
 
@@ -235,187 +329,283 @@ header{
 
 .chip{
   flex:0 0 auto;
+
   background:var(--panel);
+
   color:#b8c1bb;
+
   border:1px solid var(--line);
+
   border-radius:999px;
+
   padding:8px 13px;
+
   font-size:11px;
+
   font-weight:800;
 }
 
 .chip.active{
   background:var(--green);
+
   color:#001b0d;
+
   border-color:var(--green);
 }
 
 .banner-ads-container{
   margin:12px 0;
+
   display:flex;
+
   flex-direction:column;
+
   gap:10px;
 }
 
 .ad-card{
-  background:linear-gradient(135deg,#151f18,#0f1712);
+  background:
+    linear-gradient(
+      135deg,
+      #151f18,
+      #0f1712
+    );
+
   border:1px dashed var(--orange);
+
   border-radius:13px;
+
   padding:12px;
+
   text-align:center;
+
   overflow:hidden;
+
   display:flex;
+
   flex-direction:column;
+
   justify-content:center;
+
   align-items:center;
+
   min-height:90px;
 }
 
 .section{
   display:flex;
+
   align-items:center;
+
   justify-content:space-between;
+
   margin:10px 0;
 }
 
 .section h3{
   font-size:17px;
+
   border-left:4px solid var(--green);
+
   padding-left:8px;
 }
 
 #status{
   font-size:11px;
+
   color:var(--muted);
 }
 
 .grid{
   display:grid;
+
   grid-template-columns:1fr;
+
   gap:10px;
 }
 
 .card{
   display:flex;
+
   gap:10px;
-  background:linear-gradient(135deg,#111713,#0d120f);
+
+  background:
+    linear-gradient(
+      135deg,
+      #111713,
+      #0d120f
+    );
+
   border:1px solid var(--line);
+
   border-radius:13px;
+
   padding:9px;
+
   overflow:hidden;
 }
 
 .cover{
   width:86px;
   height:86px;
+
   border-radius:9px;
+
   object-fit:cover;
+
   background:#080b09;
+
   flex:0 0 86px;
 }
 
 .info{
   min-width:0;
+
   flex:1;
+
   display:flex;
+
   flex-direction:column;
 }
 
 .badges{
   display:flex;
+
   gap:5px;
+
   flex-wrap:wrap;
+
   margin-bottom:4px;
 }
 
 .badge{
   font-size:8px;
+
   padding:3px 5px;
+
   border-radius:5px;
+
   background:#123d27;
+
   color:var(--green);
+
   font-weight:900;
 }
 
 .badge.orange{
   background:#3d2b0d;
+
   color:#ffb52e;
 }
 
 .badge.views{
   background:#1a2733;
+
   color:#64b5f6;
 }
 
 .badge.local{
   background:#26320b;
+
   color:#b6ff00;
 }
 
 .title{
   font-size:13px;
+
   font-weight:900;
+
   line-height:1.25;
 }
 
 .artist{
   font-size:11px;
+
   color:#a8b3ab;
+
   margin-top:3px;
+
   white-space:nowrap;
+
   overflow:hidden;
+
   text-overflow:ellipsis;
 }
 
 .actions{
   display:flex;
+
   gap:6px;
+
   margin-top:auto;
+
   padding-top:8px;
 }
 
 .actions button{
   flex:1;
+
   padding:7px 5px;
+
   border-radius:7px;
+
   border:0;
+
   font-size:10px;
+
   font-weight:900;
 }
 
 .play{
   background:transparent;
+
   color:var(--green);
+
   border:1px solid var(--green)!important;
 }
 
 .download{
   background:var(--green);
+
   color:#001b0d;
 }
 
-.empty,.loading{
+.empty,
+.loading{
   background:var(--panel);
+
   border:1px dashed #334238;
+
   border-radius:12px;
+
   padding:25px 14px;
+
   text-align:center;
+
   color:var(--muted);
+
   font-size:12px;
 }
 
 .admin{
   display:none;
+
   background:#0d1510;
+
   border:1px solid var(--green);
+
   border-radius:14px;
+
   padding:13px;
+
   margin:12px 0;
 }
 
 .admin h3{
   color:var(--green);
+
   font-size:15px;
+
   margin-bottom:10px;
 }
 
@@ -423,24 +613,35 @@ header{
 .admin textarea,
 .admin select{
   width:100%;
+
   background:#151d18;
+
   color:#fff;
+
   border:1px solid var(--line);
+
   padding:10px;
+
   border-radius:8px;
+
   margin-bottom:8px;
+
   outline:0;
 }
 
 .admin textarea{
   height:80px;
+
   resize:none;
+
   font-size:11px;
+
   font-family:monospace;
 }
 
 .admin-row{
   display:flex;
+
   gap:7px;
 }
 
@@ -450,179 +651,245 @@ header{
 
 .admin-list{
   margin-top:12px;
+
   display:grid;
+
   gap:7px;
 }
 
 .admin-item{
   display:flex;
+
   align-items:center;
+
   justify-content:space-between;
+
   gap:8px;
+
   background:#151d18;
+
   padding:8px;
+
   border-radius:8px;
 }
 
 .admin-item span{
   font-size:11px;
+
   overflow:hidden;
+
   text-overflow:ellipsis;
+
   white-space:nowrap;
 }
 
 .admin-item button{
   padding:6px 8px;
+
   border:0;
+
   border-radius:6px;
+
   font-size:9px;
+
   font-weight:800;
 }
 
 .social-wrap{
   margin:8px 0;
+
   text-align:center;
+
   min-height:20px;
 }
 
 footer{
   text-align:center;
+
   color:#69756d;
+
   font-size:10px;
+
   padding:25px 10px;
 }
 
 .player{
   position:fixed;
+
   left:0;
   right:0;
   bottom:0;
+
   z-index:2000;
+
   background:#0c120e;
+
   border-top:2px solid var(--green);
+
   padding:8px 10px;
+
   display:none;
+
   gap:8px;
+
   align-items:center;
 }
 
 .player img{
   width:43px;
   height:43px;
+
   border-radius:7px;
+
   object-fit:cover;
 }
 
 .pinfo{
   min-width:0;
+
   flex:1;
 }
 
 .pinfo b{
   display:block;
+
   font-size:11px;
+
   white-space:nowrap;
+
   overflow:hidden;
+
   text-overflow:ellipsis;
 }
 
 .pinfo span{
   display:block;
+
   color:var(--green);
+
   font-size:9px;
+
   margin-top:2px;
 }
 
 audio{
   width:min(330px,42vw);
+
   height:34px;
 }
 
 .close{
   background:none;
+
   color:#aaa;
+
   border:0;
+
   font-size:17px;
 }
 
 .modal{
   display:none;
+
   position:fixed;
+
   inset:0;
+
   background:rgba(0,0,0,.82);
+
   z-index:3000;
+
   align-items:center;
+
   justify-content:center;
+
   padding:15px;
 }
 
 .modal-box{
   width:min(390px,100%);
+
   background:#111713;
+
   border:1px solid var(--green);
+
   border-radius:14px;
+
   padding:18px;
 }
 
 .modal-box h3{
   color:var(--green);
+
   margin-bottom:12px;
 }
 
 .modal-box input{
   width:100%;
+
   background:#192019;
+
   color:#fff;
+
   border:1px solid var(--line);
+
   padding:11px;
+
   border-radius:8px;
+
   margin-bottom:9px;
 }
 
 .modal-box .btn{
   width:100%;
+
   margin-top:4px;
 }
 
 .x{
   float:right;
+
   border:0;
+
   background:none;
+
   color:#aaa;
+
   font-size:23px;
 }
 
 .toast{
   position:fixed;
+
   top:75px;
+
   left:50%;
+
   transform:translateX(-50%);
+
   z-index:5000;
+
   background:var(--green);
+
   color:#001b0d;
+
   font-size:11px;
+
   font-weight:900;
+
   padding:10px 15px;
+
   border-radius:99px;
+
   display:none;
+
   max-width:90%;
+
   text-align:center;
-  box-shadow:0 4px 15px rgba(0,230,118,.3);
-}
 
-.local-info{
-  display:none;
-  background:#102219;
-  border:1px solid #245b39;
-  border-radius:11px;
-  padding:10px;
-  margin:0 0 10px;
-  font-size:10px;
-  color:#aebdb3;
-}
-
-.local-info strong{
-  color:var(--green);
+  box-shadow:
+    0 4px 15px
+    rgba(0,230,118,.3);
 }
 
 .my-device-page{
@@ -631,53 +898,77 @@ audio{
 
 .device-header{
   display:flex;
+
   align-items:center;
+
   gap:9px;
+
   margin:18px 0 12px;
 }
 
 .device-back{
   border:1px solid var(--green);
+
   background:#102219;
+
   color:var(--green);
+
   border-radius:10px;
+
   padding:9px 12px;
+
   font-weight:900;
+
   font-size:11px;
 }
 
 .device-title{
   font-size:20px;
+
   font-weight:900;
 }
 
 .device-search{
   display:flex;
+
   gap:7px;
+
   margin-bottom:12px;
 }
 
 .device-search input{
   flex:1;
+
   min-width:0;
+
   background:var(--panel);
+
   color:#fff;
+
   border:1px solid #334238;
+
   border-radius:12px;
+
   padding:12px;
+
   outline:none;
 }
 
 .device-count{
   color:var(--muted);
+
   font-size:11px;
+
   margin:5px 0 12px;
 }
 
 .alpha-label{
   color:var(--green);
+
   font-size:12px;
+
   font-weight:900;
+
   margin:7px 0 3px;
 }
 
@@ -693,20 +984,26 @@ audio{
 
   .search button{
     width:68px;
+
     flex-basis:68px;
+
     padding-left:5px;
+
     padding-right:5px;
   }
 
   .device-btn{
     min-width:74px;
+
     padding:0 6px;
+
     font-size:9px;
   }
 
   .brand-text p{
     display:none;
   }
+
 }
 
 @media(min-width:650px){
@@ -718,17 +1015,23 @@ audio{
   .cover{
     width:105px;
     height:105px;
+
     flex-basis:105px;
   }
 
   .title{
     font-size:14px;
   }
+
 }
+
 </style>
+
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -741,7 +1044,9 @@ audio{
 
     <div class="brand-text">
 
-      <h1>MAKYAMA MEDIA</h1>
+      <h1>
+        MAKYAMA MEDIA
+      </h1>
 
       <p>
         Global Music • Stream • Discover • Download Licensed Audio
@@ -764,13 +1069,20 @@ audio{
 
 </header>
 
-<div id="toast" class="toast"></div>
 
-<div id="socialAdsArea" class="social-wrap"></div>
+<div
+  id="toast"
+  class="toast"
+></div>
 
-<!-- =========================
-     HOME PAGE
-========================= -->
+
+<div
+  id="socialAdsArea"
+  class="social-wrap"
+></div>
+
+
+<!-- HOME -->
 
 <main
   id="homePage"
@@ -780,7 +1092,10 @@ audio{
   <section class="hero">
 
     <h2>
-      Discover music <span>worldwide.</span>
+      Discover music
+      <span>
+        worldwide.
+      </span>
     </h2>
 
     <p>
@@ -789,12 +1104,14 @@ audio{
 
   </section>
 
+
   <div
     id="bannerAdsArea"
     class="banner-ads-container"
   ></div>
 
-  <!-- SEARCH + MY DEVICE -->
+
+  <!-- SEARCH + DEVICE -->
 
   <div class="search-row">
 
@@ -815,6 +1132,7 @@ audio{
 
     </div>
 
+
     <button
       class="device-btn"
       onclick="openLocalMusic()"
@@ -825,6 +1143,7 @@ audio{
     </button>
 
   </div>
+
 
   <div class="chips">
 
@@ -886,6 +1205,7 @@ audio{
 
   </div>
 
+
   <!-- ADMIN -->
 
   <section
@@ -893,7 +1213,10 @@ audio{
     class="admin"
   >
 
-    <h3>👑 ADMIN DASHBOARD</h3>
+    <h3>
+      👑 ADMIN DASHBOARD
+    </h3>
+
 
     <div
       style="
@@ -947,6 +1270,9 @@ audio{
 
     </div>
 
+
+    <!-- ADD ADS -->
+
     <div
       style="
         background:#151d18;
@@ -972,7 +1298,9 @@ audio{
         placeholder="Jina la Ad"
       >
 
-      <select id="aAdPosition">
+      <select
+        id="aAdPosition"
+      >
 
         <option value="social">
           📌 Social Bar
@@ -998,6 +1326,9 @@ audio{
       </button>
 
     </div>
+
+
+    <!-- ADS LIST -->
 
     <div
       style="
@@ -1026,6 +1357,7 @@ audio{
 
     </div>
 
+
     <div class="admin-row">
 
       <input
@@ -1040,6 +1372,7 @@ audio{
 
     </div>
 
+
     <input
       id="aCover"
       placeholder="Cover image URL"
@@ -1049,6 +1382,7 @@ audio{
       id="aAudio"
       placeholder="Direct audio URL (MP3/M4A)"
     >
+
 
     <div class="admin-row">
 
@@ -1068,12 +1402,14 @@ audio{
 
     </div>
 
+
     <div
       id="adminList"
       class="admin-list"
     ></div>
 
   </section>
+
 
   <div class="section">
 
@@ -1084,6 +1420,7 @@ audio{
     <span id="status"></span>
 
   </div>
+
 
   <div
     id="results"
@@ -1096,6 +1433,7 @@ audio{
 
   </div>
 
+
   <footer>
     © 2026 MAKYAMA MEDIA • Music is provided by licensed/official sources.
   </footer>
@@ -1103,9 +1441,7 @@ audio{
 </main>
 
 
-<!-- =========================
-     MY DEVICE PAGE
-========================= -->
+<!-- MY DEVICE -->
 
 <main
   id="myDevicePage"
@@ -1127,6 +1463,7 @@ audio{
 
   </div>
 
+
   <div class="device-search">
 
     <input
@@ -1137,12 +1474,14 @@ audio{
 
   </div>
 
+
   <div
     id="deviceCount"
     class="device-count"
   >
     Loading audio…
   </div>
+
 
   <div
     id="deviceResults"
@@ -1181,11 +1520,13 @@ audio{
 
   </div>
 
+
   <audio
     id="audio"
     controls
     controlsList="nodownload"
   ></audio>
+
 
   <button
     class="close"
@@ -1271,7 +1612,9 @@ const firebaseConfig = {
 
 };
 
+
 let db = null;
+
 
 try{
 
@@ -1309,15 +1652,17 @@ let currentFilter =
 
 let androidMusicList = [];
 
-let androidPageOpen = false;
+let androidPageOpen =
+  false;
 
 
 /* =========================================================
    SELECTOR
 ========================================================= */
 
-const $ = id =>
-  document.getElementById(id);
+const $ =
+  id =>
+    document.getElementById(id);
 
 
 /* =========================================================
@@ -1329,15 +1674,14 @@ function esc(v){
   return String(v ?? "")
     .replace(
       /[&<>"']/g,
-      m => ({
-
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
-
-      }[m])
+      m =>
+        ({
+          "&":"&amp;",
+          "<":"&lt;",
+          ">":"&gt;",
+          '"':"&quot;",
+          "'":"&#039;"
+        }[m])
     );
 
 }
@@ -1436,6 +1780,7 @@ function injectScriptInto(
     }
   );
 
+
   if(
     container.children.length === 0
   ){
@@ -1445,10 +1790,12 @@ function injectScriptInto(
 
   }
 
+
   const scripts =
     tempDiv.getElementsByTagName(
       "script"
     );
+
 
   Array.from(scripts)
     .forEach(
@@ -1458,6 +1805,7 @@ function injectScriptInto(
           document.createElement(
             "script"
           );
+
 
         Array.from(
           oldScript.attributes
@@ -1472,12 +1820,14 @@ function injectScriptInto(
           }
         );
 
+
         if(oldScript.innerHTML){
 
           newScript.innerHTML =
             oldScript.innerHTML;
 
         }
+
 
         container.appendChild(
           newScript
@@ -1497,6 +1847,7 @@ function adCard(adCode){
       .toString(36)
       .substring(2,9);
 
+
   setTimeout(
     () => {
 
@@ -1504,6 +1855,7 @@ function adCard(adCode){
         document.getElementById(
           wrapperId
         );
+
 
       if(el){
 
@@ -1517,6 +1869,7 @@ function adCard(adCode){
     },
     150
   );
+
 
   return `
 
@@ -1543,13 +1896,16 @@ function initPresenceSystem(){
   if(!db)
     return;
 
+
   const connectionsRef =
     db.ref(
       "server_stats/connected_users"
     );
 
+
   const myConnectionRef =
     connectionsRef.push();
+
 
   db.ref(".info/connected")
     .on(
@@ -1564,6 +1920,7 @@ function initPresenceSystem(){
             .onDisconnect()
             .remove();
 
+
           myConnectionRef.set(
             true
           );
@@ -1573,12 +1930,14 @@ function initPresenceSystem(){
       }
     );
 
+
   connectionsRef.on(
     "value",
     snap => {
 
       const el =
         $("liveUsersCount");
+
 
       if(el){
 
@@ -1602,6 +1961,7 @@ function initAdsRealtimeListener(){
   if(!db)
     return;
 
+
   db.ref("ads")
     .on(
       "value",
@@ -1610,8 +1970,10 @@ function initAdsRealtimeListener(){
         const social =
           $("socialAdsArea");
 
+
         const banner =
           $("bannerAdsArea");
+
 
         social.innerHTML =
           "";
@@ -1619,7 +1981,9 @@ function initAdsRealtimeListener(){
         banner.innerHTML =
           "";
 
+
         const ads = [];
+
 
         if(snap.exists()){
 
@@ -1629,10 +1993,13 @@ function initAdsRealtimeListener(){
               const ad =
                 child.val();
 
+
               ad.key =
                 child.key;
 
+
               ads.push(ad);
+
 
               if(
                 ad.position ===
@@ -1645,6 +2012,7 @@ function initAdsRealtimeListener(){
                 );
 
               }
+
 
               else if(
                 ad.position ===
@@ -1660,6 +2028,7 @@ function initAdsRealtimeListener(){
           );
 
         }
+
 
         if(admin){
 
@@ -1677,8 +2046,12 @@ function initAdsRealtimeListener(){
 
 async function addNewAd(){
 
-  if(!admin || !db)
+  if(
+    !admin ||
+    !db
+  )
     return;
+
 
   const name =
     $("aAdName")
@@ -1686,14 +2059,17 @@ async function addNewAd(){
       .trim() ||
     "Ad";
 
+
   const position =
     $("aAdPosition")
       .value;
+
 
   const script =
     $("aAdScript")
       .value
       .trim();
+
 
   if(!script){
 
@@ -1705,22 +2081,28 @@ async function addNewAd(){
 
   }
 
+
   await db
     .ref("ads")
     .push({
 
       name:name,
+
       position:position,
+
       script:script,
+
       createdAt:Date.now()
 
     });
+
 
   $("aAdName").value =
     "";
 
   $("aAdScript").value =
     "";
+
 
   toast(
     "🎉 Ad imewekwa!"
@@ -1742,6 +2124,7 @@ function renderAdminAdsList(
     return;
 
   }
+
 
   $("adminAdsList")
     .innerHTML =
@@ -1779,9 +2162,11 @@ async function deleteAd(key){
   )
     return;
 
+
   await db
     .ref("ads/" + key)
     .remove();
+
 
   toast(
     "Ad imefutwa."
@@ -1791,13 +2176,17 @@ async function deleteAd(key){
 
 
 /* =========================================================
-   VIEW
+   VIEWS
 ========================================================= */
 
 function incrementView(key){
 
-  if(!db || !key)
+  if(
+    !db ||
+    !key
+  )
     return;
+
 
   db.ref(
     "media/" +
@@ -1827,6 +2216,7 @@ function playTrack(t){
 
   }
 
+
   if(
     t.key &&
     !String(t.key)
@@ -1839,27 +2229,35 @@ function playTrack(t){
 
   }
 
+
   $("pcover").src =
     imageFor(t);
+
 
   $("ptitle").textContent =
     t.title ||
     "Unknown";
 
+
   $("partist").textContent =
     t.artist ||
     "";
 
+
   $("player").style.display =
     "flex";
+
 
   const audio =
     $("audio");
 
+
   audio.src =
     t.audio;
 
+
   audio.load();
+
 
   audio.play()
     .catch(() => {});
@@ -1867,11 +2265,18 @@ function playTrack(t){
 }
 
 
+/* =========================================================
+   PLAY ANDROID SONG
+========================================================= */
+
 function playAndroidSong(
   song
 ){
 
-  if(!song || !song.uri){
+  if(
+    !song ||
+    !song.uri
+  ){
 
     toast(
       "Audio haipatikani."
@@ -1881,27 +2286,35 @@ function playAndroidSong(
 
   }
 
+
   $("pcover").src =
     "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png";
+
 
   $("ptitle").textContent =
     song.title ||
     "Unknown Song";
 
+
   $("partist").textContent =
     song.artist ||
     "Unknown Artist";
 
+
   $("player").style.display =
     "flex";
+
 
   const audio =
     $("audio");
 
+
   audio.src =
     song.uri;
 
+
   audio.load();
+
 
   audio.play()
     .catch(() => {
@@ -1920,13 +2333,17 @@ function closePlayer(){
   const audio =
     $("audio");
 
+
   audio.pause();
+
 
   audio.removeAttribute(
     "src"
   );
 
+
   audio.load();
+
 
   $("player").style.display =
     "none";
@@ -1950,14 +2367,20 @@ function downloadTrack(t){
 
   }
 
+
   const title =
-    (t.title ||
-      "MMEDIA Music")
-      .trim();
+    (
+      t.title ||
+      "MMEDIA Music"
+    ).trim();
+
 
   const artist =
-    (t.artist || "")
-      .trim();
+    (
+      t.artist ||
+      ""
+    ).trim();
+
 
   let filename =
     artist
@@ -1965,6 +2388,7 @@ function downloadTrack(t){
         " - " +
         title
       : title;
+
 
   filename =
     filename
@@ -1978,6 +2402,7 @@ function downloadTrack(t){
       )
       .trim();
 
+
   if(
     !filename
       .toLowerCase()
@@ -1988,6 +2413,7 @@ function downloadTrack(t){
       ".mp3";
 
   }
+
 
   if(
     window.MMEDIA &&
@@ -2004,25 +2430,32 @@ function downloadTrack(t){
 
   }
 
+
   const a =
     document.createElement(
       "a"
     );
 
+
   a.href =
     t.download;
+
 
   a.download =
     filename;
 
+
   a.target =
     "_self";
+
 
   document.body.appendChild(
     a
   );
 
+
   a.click();
+
 
   document.body.removeChild(
     a
@@ -2040,15 +2473,19 @@ function card(t){
   const canPlay =
     !!t.audio;
 
+
   const canDownload =
     !!t.download;
+
 
   const isLocal =
     String(t.key || "")
       .startsWith("local_");
 
+
   const views =
     t.views || 0;
+
 
   return `
 
@@ -2065,6 +2502,7 @@ function card(t){
         "
       >
 
+
       <div class="info">
 
         <div class="badges">
@@ -2072,6 +2510,7 @@ function card(t){
           <span class="badge">
             ${esc(t.type || "MUSIC")}
           </span>
+
 
           ${
             isLocal
@@ -2087,6 +2526,7 @@ function card(t){
             `
           }
 
+
           ${
             canDownload && !isLocal
             ? `
@@ -2099,9 +2539,11 @@ function card(t){
 
         </div>
 
+
         <div class="title">
           ${esc(t.title)}
         </div>
+
 
         <div class="artist">
           ${esc(
@@ -2109,6 +2551,7 @@ function card(t){
             "Unknown artist"
           )}
         </div>
+
 
         <div class="actions">
 
@@ -2124,6 +2567,7 @@ function card(t){
             `
             : ""
           }
+
 
           ${
             canDownload
@@ -2158,12 +2602,14 @@ function initRealtimeListener(){
   if(!db)
     return;
 
+
   db.ref("media")
     .on(
       "value",
       snap => {
 
         const out = [];
+
 
         if(snap.exists()){
 
@@ -2172,6 +2618,7 @@ function initRealtimeListener(){
 
               const x =
                 c.val() || {};
+
 
               out.push({
 
@@ -2211,12 +2658,14 @@ function initRealtimeListener(){
 
         }
 
+
         allTracksList =
           out.sort(
             (a,b) =>
               (b.views || 0) -
               (a.views || 0)
           );
+
 
         applyCurrentFilter();
 
@@ -2227,7 +2676,7 @@ function initRealtimeListener(){
 
 
 /* =========================================================
-   RENDER HOME
+   RENDER
 ========================================================= */
 
 function render(
@@ -2238,6 +2687,7 @@ function render(
   $("sectionTitle")
     .textContent =
     title;
+
 
   if(!list.length){
 
@@ -2271,16 +2721,20 @@ function render(
 
     `;
 
+
     setStatus(
       "0 results"
     );
+
 
     return;
 
   }
 
+
   $("results").innerHTML =
     list.map(card).join("");
+
 
   setStatus(
     list.length +
@@ -2301,11 +2755,13 @@ async function sendTermuxRequest(
   if(!db)
     return;
 
+
   await db
     .ref("requests")
     .push({
 
       query:query,
+
       timestamp:Date.now()
 
     });
@@ -2322,11 +2778,13 @@ function applyCurrentFilter(){
   if(androidPageOpen)
     return;
 
+
   const q =
     $("q")
       .value
       .trim()
       .toLowerCase();
+
 
   if(q){
 
@@ -2336,6 +2794,7 @@ function applyCurrentFilter(){
          term =>
            term.length > 0
        );
+
 
     const filtered =
       allTracksList.filter(
@@ -2348,6 +2807,7 @@ function applyCurrentFilter(){
               (x.artist || "")
             ).toLowerCase();
 
+
           return terms.every(
             term =>
               combined.includes(term)
@@ -2356,15 +2816,18 @@ function applyCurrentFilter(){
         }
       );
 
+
     render(
       filtered,
       "🔎 " +
       $("q").value
     );
 
+
     return;
 
   }
+
 
   if(
     currentFilter ===
@@ -2377,14 +2840,17 @@ function applyCurrentFilter(){
           !!x.download
       );
 
+
     render(
       downloadsOnly,
       "⬇️ Downloadable Audio"
     );
 
+
     return;
 
   }
+
 
   render(
     allTracksList,
@@ -2408,13 +2874,16 @@ async function searchMusic(){
 
   }
 
+
   const q =
     $("q")
       .value
       .trim();
 
+
   if(!q)
     return;
+
 
   $("results").innerHTML = `
 
@@ -2424,6 +2893,7 @@ async function searchMusic(){
 
   `;
 
+
   const terms =
     q.toLowerCase()
      .split(" ")
@@ -2431,6 +2901,7 @@ async function searchMusic(){
        term =>
          term.length > 0
      );
+
 
   const filtered =
     allTracksList.filter(
@@ -2443,6 +2914,7 @@ async function searchMusic(){
             (x.artist || "")
           ).toLowerCase();
 
+
         return terms.every(
           term =>
             combined.includes(term)
@@ -2451,6 +2923,7 @@ async function searchMusic(){
       }
     );
 
+
   if(
     filtered.length === 0
   ){
@@ -2458,6 +2931,7 @@ async function searchMusic(){
     await sendTermuxRequest(
       q
     );
+
 
     render(
       [],
@@ -2485,6 +2959,7 @@ function loadTrending(btn){
   if(androidPageOpen)
     return;
 
+
   document
     .querySelectorAll(".chip")
     .forEach(
@@ -2494,6 +2969,7 @@ function loadTrending(btn){
         )
     );
 
+
   if(btn){
 
     btn.classList.add(
@@ -2502,11 +2978,14 @@ function loadTrending(btn){
 
   }
 
+
   $("q").value =
     "";
 
+
   currentFilter =
     "trending";
+
 
   applyCurrentFilter();
 
@@ -2525,6 +3004,7 @@ function quickFilter(
   if(androidPageOpen)
     return;
 
+
   document
     .querySelectorAll(".chip")
     .forEach(
@@ -2534,6 +3014,7 @@ function quickFilter(
         )
     );
 
+
   if(btn){
 
     btn.classList.add(
@@ -2542,8 +3023,10 @@ function quickFilter(
 
   }
 
+
   $("q").value =
     keyword;
+
 
   searchMusic();
 
@@ -2559,6 +3042,7 @@ function showDownloads(btn){
   if(androidPageOpen)
     return;
 
+
   document
     .querySelectorAll(".chip")
     .forEach(
@@ -2568,6 +3052,7 @@ function showDownloads(btn){
         )
     );
 
+
   if(btn){
 
     btn.classList.add(
@@ -2576,11 +3061,14 @@ function showDownloads(btn){
 
   }
 
+
   $("q").value =
     "";
 
+
   currentFilter =
     "downloads";
+
 
   applyCurrentFilter();
 
@@ -2599,6 +3087,7 @@ function openAdmin(){
 
 }
 
+
 function closeAdmin(){
 
   $("login")
@@ -2615,8 +3104,10 @@ function loginAdmin(){
       .value
       .trim();
 
+
   const p =
     $("pass").value;
+
 
   if(
     u === "MAKYAMA" &&
@@ -2625,13 +3116,17 @@ function loginAdmin(){
 
     admin = true;
 
+
     closeAdmin();
+
 
     $("admin")
       .style.display =
       "block";
 
+
     loadAdminList();
+
 
     toast(
       "Admin mode imewashwa."
@@ -2652,9 +3147,11 @@ function logoutAdmin(){
 
   admin = false;
 
+
   $("admin")
     .style.display =
     "none";
+
 
   toast(
     "Logged out."
@@ -2674,6 +3171,7 @@ async function saveAdminTrack(){
     !db
   )
     return;
+
 
   const data = {
 
@@ -2704,6 +3202,7 @@ async function saveAdminTrack(){
 
   };
 
+
   if(
     !data.jina ||
     !data.linkAudio
@@ -2717,9 +3216,11 @@ async function saveAdminTrack(){
 
   }
 
+
   await db
     .ref("media")
     .push(data);
+
 
   [
     "aTitle",
@@ -2732,9 +3233,11 @@ async function saveAdminTrack(){
         ""
   );
 
+
   toast(
     "Track imeongezwa."
   );
+
 
   loadAdminList();
 
@@ -2750,12 +3253,15 @@ async function loadAdminList(){
   if(!db)
     return;
 
+
   const snap =
     await db
       .ref("media")
       .once("value");
 
+
   const arr = [];
+
 
   if(snap.exists()){
 
@@ -2764,12 +3270,14 @@ async function loadAdminList(){
         arr.push({
 
           key:c.key,
+
           data:c.val()
 
         })
     );
 
   }
+
 
   $("adminList")
     .innerHTML =
@@ -2817,6 +3325,7 @@ async function deleteAdminTrack(
   )
     return;
 
+
   await db
     .ref(
       "media/" +
@@ -2824,7 +3333,9 @@ async function deleteAdminTrack(
     )
     .remove();
 
+
   loadAdminList();
+
 
   toast(
     "Deleted."
@@ -2842,16 +3353,20 @@ function openLocalMusic(){
   androidPageOpen =
     true;
 
+
   $("homePage")
     .style.display =
     "none";
+
 
   $("myDevicePage")
     .style.display =
     "block";
 
+
   $("deviceSearch").value =
     "";
+
 
   $("deviceResults").innerHTML = `
 
@@ -2861,21 +3376,30 @@ function openLocalMusic(){
 
   `;
 
+
   $("deviceCount").textContent =
     "Reading your music…";
+
 
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
 
+
+  /*
+   * MUHIMU:
+   * Java MainActivity inatumia
+   * openDeviceMusic()
+   */
+
   if(
     window.MMEDIA &&
-    typeof window.MMEDIA.openMyDevice ===
+    typeof window.MMEDIA.openDeviceMusic ===
     "function"
   ){
 
-    window.MMEDIA.openMyDevice();
+    window.MMEDIA.openDeviceMusic();
 
   }else{
 
@@ -2888,10 +3412,15 @@ function openLocalMusic(){
 }
 
 
+/* =========================================================
+   ANDROID MUSIC CALLBACK
+========================================================= */
+
 /*
- * Android MainActivity.java
- * itaita function hii baada ya
- * kusoma MediaStore.
+ * MainActivity.java itaita:
+ *
+ * window.showAndroidMusic(json)
+ *
  */
 
 window.showAndroidMusic =
@@ -2904,10 +3433,12 @@ window.showAndroidMusic =
           ? JSON.parse(json)
           : json;
 
+
       androidMusicList =
         Array.isArray(songs)
           ? songs
           : [];
+
 
       androidMusicList.sort(
         (a,b) =>
@@ -2922,9 +3453,11 @@ window.showAndroidMusic =
             )
       );
 
+
       renderAndroidMusic(
         androidMusicList
       );
+
 
     }catch(e){
 
@@ -2932,14 +3465,18 @@ window.showAndroidMusic =
         e
       );
 
+
       $("deviceResults")
         .innerHTML = `
 
           <div class="empty">
+
             ⚠️ Imeshindikana kusoma audio za simu.
+
           </div>
 
         `;
+
 
       $("deviceCount")
         .textContent =
@@ -2950,6 +3487,10 @@ window.showAndroidMusic =
   };
 
 
+/* =========================================================
+   RENDER DEVICE MUSIC
+========================================================= */
+
 function renderAndroidMusic(
   songs
 ){
@@ -2958,6 +3499,7 @@ function renderAndroidMusic(
     .textContent =
     songs.length +
     " songs • Sorted A–Z";
+
 
   if(!songs.length){
 
@@ -2977,20 +3519,26 @@ function renderAndroidMusic(
 
       `;
 
+
     return;
 
   }
 
+
   $("deviceResults")
     .innerHTML =
-      songs
-        .map(
-          androidSongCard
-        )
-        .join("");
+    songs
+      .map(
+        androidSongCard
+      )
+      .join("");
 
 }
 
+
+/* =========================================================
+   DEVICE SONG CARD
+========================================================= */
 
 function androidSongCard(
   song
@@ -3000,9 +3548,11 @@ function androidSongCard(
     song.title ||
     "Unknown Song";
 
+
   const artist =
     song.artist ||
     "Unknown Artist";
+
 
   return `
 
@@ -3024,6 +3574,7 @@ function androidSongCard(
         🎵
       </div>
 
+
       <div class="info">
 
         <div class="badges">
@@ -3034,13 +3585,16 @@ function androidSongCard(
 
         </div>
 
+
         <div class="title">
           ${esc(title)}
         </div>
 
+
         <div class="artist">
           ${esc(artist)}
         </div>
+
 
         ${
           song.album
@@ -3058,11 +3612,12 @@ function androidSongCard(
           : ""
         }
 
+
         <div class="actions">
 
           <button
             class="play"
-            onclick='playAndroidSong(${JSON.stringify(song)})'
+            onclick='playAndroidSong(${JSON.stringify(song).replace(/'/g,"&#39;")})'
           >
             ▶ PLAY
           </button>
@@ -3079,7 +3634,7 @@ function androidSongCard(
 
 
 /* =========================================================
-   SEARCH MY DEVICE
+   SEARCH DEVICE
 ========================================================= */
 
 function searchAndroidMusic(){
@@ -3089,6 +3644,7 @@ function searchAndroidMusic(){
       .value
       .trim()
       .toLowerCase();
+
 
   if(!q){
 
@@ -3100,9 +3656,11 @@ function searchAndroidMusic(){
 
   }
 
+
   const terms =
     q.split(/\s+/)
      .filter(Boolean);
+
 
   const filtered =
     androidMusicList.filter(
@@ -3117,6 +3675,7 @@ function searchAndroidMusic(){
             (song.album || "")
           ).toLowerCase();
 
+
         return terms.every(
           term =>
             combined.includes(term)
@@ -3125,10 +3684,12 @@ function searchAndroidMusic(){
       }
     );
 
+
   $("deviceCount")
     .textContent =
     filtered.length +
     " songs found";
+
 
   if(!filtered.length){
 
@@ -3144,23 +3705,25 @@ function searchAndroidMusic(){
 
       `;
 
+
     return;
 
   }
 
+
   $("deviceResults")
     .innerHTML =
-      filtered
-        .map(
-          androidSongCard
-        )
-        .join("");
+    filtered
+      .map(
+        androidSongCard
+      )
+      .join("");
 
 }
 
 
 /* =========================================================
-   DEVICE SEARCH ENTER
+   DEVICE SEARCH INPUT
 ========================================================= */
 
 $("deviceSearch")
@@ -3179,21 +3742,26 @@ function closeAndroidMusic(){
   androidPageOpen =
     false;
 
+
   $("myDevicePage")
     .style.display =
     "none";
+
 
   $("homePage")
     .style.display =
     "block";
 
+
   $("deviceSearch").value =
     "";
+
 
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
+
 
   applyCurrentFilter();
 
@@ -3201,7 +3769,41 @@ function closeAndroidMusic(){
 
 
 /* =========================================================
-   KEYBOARD
+   ANDROID BACK SUPPORT
+========================================================= */
+
+window.exitDevicePage =
+  function(){
+
+    if(androidPageOpen){
+
+      closeAndroidMusic();
+
+      return true;
+
+    }
+
+    return false;
+
+  };
+
+
+window.addEventListener(
+  "popstate",
+  () => {
+
+    if(androidPageOpen){
+
+      closeAndroidMusic();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   KEYBOARD SEARCH
 ========================================================= */
 
 $("q")
@@ -3219,24 +3821,6 @@ $("q")
 
     }
   );
-
-
-/* =========================================================
-   ANDROID BACK SUPPORT
-========================================================= */
-
-window.addEventListener(
-  "popstate",
-  () => {
-
-    if(androidPageOpen){
-
-      closeAndroidMusic();
-
-    }
-
-  }
-);
 
 
 /* =========================================================
@@ -3293,4 +3877,5 @@ window.addEventListener(
 </script>
 
 </body>
+
   </html>
