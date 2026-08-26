@@ -1,56 +1,23 @@
 <!DOCTYPE html>
 <html lang="sw">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#07110c">
 
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
->
+<link rel="manifest" href="/manifest.json">
 
-<meta
-  name="theme-color"
-  content="#07110c"
->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MMEDIA">
 
-<link
-  rel="manifest"
-  href="/manifest.json"
->
-
-<meta
-  name="mobile-web-app-capable"
-  content="yes"
->
-
-<meta
-  name="apple-mobile-web-app-capable"
-  content="yes"
->
-
-<meta
-  name="apple-mobile-web-app-status-bar-style"
-  content="black-translucent"
->
-
-<meta
-  name="apple-mobile-web-app-title"
-  content="MMEDIA"
->
-
-<title>
-  MAKYAMA MEDIA — Global Music
-</title>
+<title>MAKYAMA MEDIA — Global Music</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-
 <style>
-
 :root{
   --green:#00e676;
   --green2:#00c853;
@@ -71,8 +38,7 @@
   font-family:Arial,Segoe UI,sans-serif;
 }
 
-html,
-body{
+html,body{
   background:var(--bg);
   color:var(--text);
   min-height:100%;
@@ -81,26 +47,16 @@ body{
 
 body{
   padding-bottom:100px;
-
   background-image:
-    linear-gradient(
-      rgba(7,10,9,.90),
-      rgba(7,10,9,.90)
-    ),
-    url(
-      'https://i.postimg.cc/J0CCmJnw/file-000000001b508210abb525894acdb99e.png'
-    );
-
+    linear-gradient(rgba(7,10,9,.90),rgba(7,10,9,.90)),
+    url('https://i.postimg.cc/J0CCmJnw/file-000000001b508210abb525894acdb99e.png');
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
   background-attachment:fixed;
 }
 
-button,
-input,
-textarea,
-select{
+button,input,textarea,select{
   font:inherit;
 }
 
@@ -112,39 +68,28 @@ header{
   position:sticky;
   top:0;
   z-index:1000;
-
   background:rgba(7,10,9,.96);
-
   backdrop-filter:blur(14px);
-
   border-bottom:1px solid #1d2921;
-
   padding:13px 14px;
-
   display:flex;
   align-items:center;
   justify-content:space-between;
-
   gap:10px;
 }
 
 .brand{
   min-width:0;
-
   display:flex;
   align-items:center;
-
   gap:10px;
 }
 
 .brand img{
   width:38px;
   height:38px;
-
   border-radius:50%;
-
   object-fit:cover;
-
   border:1px solid var(--green);
 }
 
@@ -155,14 +100,12 @@ header{
 .brand-text h1{
   font-size:17px;
   color:var(--green);
-
   white-space:nowrap;
 }
 
 .brand-text p{
   font-size:10px;
   color:var(--muted);
-
   margin-top:3px;
 }
 
@@ -173,11 +116,8 @@ header{
 
 .btn{
   border:0;
-
   border-radius:9px;
-
   padding:9px 11px;
-
   font-weight:800;
   font-size:11px;
 }
@@ -190,7 +130,6 @@ header{
 .btn-dark{
   background:#18201b;
   color:#fff;
-
   border:1px solid var(--line);
 }
 
@@ -206,9 +145,7 @@ header{
 
 .wrap{
   width:min(960px,100%);
-
   margin:auto;
-
   padding:0 11px;
 }
 
@@ -227,49 +164,33 @@ header{
 
 .hero p{
   color:var(--muted);
-
   font-size:12px;
-
   margin-top:8px;
-
   line-height:1.5;
 }
 
 .search-row{
   display:flex;
-
   gap:7px;
-
   margin:14px 0;
-
   align-items:stretch;
 }
 
 .search{
   display:flex;
-
   gap:8px;
-
   flex:1;
-
   min-width:0;
 }
 
 .search input{
   flex:1;
-
   min-width:0;
-
   background:var(--panel);
-
   color:#fff;
-
   border:1px solid #334238;
-
   border-radius:13px;
-
   padding:13px 14px;
-
   outline:none;
 }
 
@@ -279,47 +200,32 @@ header{
 
 .search button{
   width:86px;
-
   flex:0 0 86px;
 }
 
 .device-btn{
   flex:0 0 auto;
-
   min-width:92px;
-
   border:1px solid var(--green);
-
   background:#102219;
-
   color:var(--green);
-
   border-radius:13px;
-
   padding:0 10px;
-
   font-size:10px;
-
   font-weight:900;
-
   line-height:1.15;
 }
 
 .device-btn:active{
   transform:scale(.97);
-
   background:#183522;
 }
 
 .chips{
   display:flex;
-
   gap:8px;
-
   overflow-x:auto;
-
   padding:3px 0 13px;
-
   scrollbar-width:none;
 }
 
@@ -329,283 +235,187 @@ header{
 
 .chip{
   flex:0 0 auto;
-
   background:var(--panel);
-
   color:#b8c1bb;
-
   border:1px solid var(--line);
-
   border-radius:999px;
-
   padding:8px 13px;
-
   font-size:11px;
-
   font-weight:800;
 }
 
 .chip.active{
   background:var(--green);
-
   color:#001b0d;
-
   border-color:var(--green);
 }
 
 .banner-ads-container{
   margin:12px 0;
-
   display:flex;
-
   flex-direction:column;
-
   gap:10px;
 }
 
 .ad-card{
-  background:
-    linear-gradient(
-      135deg,
-      #151f18,
-      #0f1712
-    );
-
+  background:linear-gradient(135deg,#151f18,#0f1712);
   border:1px dashed var(--orange);
-
   border-radius:13px;
-
   padding:12px;
-
   text-align:center;
-
   overflow:hidden;
-
   display:flex;
-
   flex-direction:column;
-
   justify-content:center;
-
   align-items:center;
-
   min-height:90px;
 }
 
 .section{
   display:flex;
-
   align-items:center;
-
   justify-content:space-between;
-
   margin:10px 0;
 }
 
 .section h3{
   font-size:17px;
-
   border-left:4px solid var(--green);
-
   padding-left:8px;
 }
 
 #status{
   font-size:11px;
-
   color:var(--muted);
 }
 
 .grid{
   display:grid;
-
   grid-template-columns:1fr;
-
   gap:10px;
 }
 
 .card{
   display:flex;
-
   gap:10px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #111713,
-      #0d120f
-    );
-
+  background:linear-gradient(135deg,#111713,#0d120f);
   border:1px solid var(--line);
-
   border-radius:13px;
-
   padding:9px;
-
   overflow:hidden;
 }
 
 .cover{
   width:86px;
   height:86px;
-
   border-radius:9px;
-
   object-fit:cover;
-
   background:#080b09;
-
   flex:0 0 86px;
 }
 
 .info{
   min-width:0;
-
   flex:1;
-
   display:flex;
-
   flex-direction:column;
 }
 
 .badges{
   display:flex;
-
   gap:5px;
-
   flex-wrap:wrap;
-
   margin-bottom:4px;
 }
 
 .badge{
   font-size:8px;
-
   padding:3px 5px;
-
   border-radius:5px;
-
   background:#123d27;
-
   color:var(--green);
-
   font-weight:900;
 }
 
 .badge.orange{
   background:#3d2b0d;
-
   color:#ffb52e;
 }
 
 .badge.views{
   background:#1a2733;
-
   color:#64b5f6;
 }
 
 .badge.local{
   background:#26320b;
-
   color:#b6ff00;
 }
 
 .title{
   font-size:13px;
-
   font-weight:900;
-
   line-height:1.25;
 }
 
 .artist{
   font-size:11px;
-
   color:#a8b3ab;
-
   margin-top:3px;
-
   white-space:nowrap;
-
   overflow:hidden;
-
   text-overflow:ellipsis;
 }
 
 .actions{
   display:flex;
-
   gap:6px;
-
   margin-top:auto;
-
   padding-top:8px;
 }
 
 .actions button{
   flex:1;
-
   padding:7px 5px;
-
   border-radius:7px;
-
   border:0;
-
   font-size:10px;
-
   font-weight:900;
 }
 
 .play{
   background:transparent;
-
   color:var(--green);
-
   border:1px solid var(--green)!important;
 }
 
 .download{
   background:var(--green);
-
   color:#001b0d;
 }
 
-.empty,
-.loading{
+.empty,.loading{
   background:var(--panel);
-
   border:1px dashed #334238;
-
   border-radius:12px;
-
   padding:25px 14px;
-
   text-align:center;
-
   color:var(--muted);
-
   font-size:12px;
 }
 
 .admin{
   display:none;
-
   background:#0d1510;
-
   border:1px solid var(--green);
-
   border-radius:14px;
-
   padding:13px;
-
   margin:12px 0;
 }
 
 .admin h3{
   color:var(--green);
-
   font-size:15px;
-
   margin-bottom:10px;
 }
 
@@ -613,35 +423,24 @@ header{
 .admin textarea,
 .admin select{
   width:100%;
-
   background:#151d18;
-
   color:#fff;
-
   border:1px solid var(--line);
-
   padding:10px;
-
   border-radius:8px;
-
   margin-bottom:8px;
-
   outline:0;
 }
 
 .admin textarea{
   height:80px;
-
   resize:none;
-
   font-size:11px;
-
   font-family:monospace;
 }
 
 .admin-row{
   display:flex;
-
   gap:7px;
 }
 
@@ -651,245 +450,164 @@ header{
 
 .admin-list{
   margin-top:12px;
-
   display:grid;
-
   gap:7px;
 }
 
 .admin-item{
   display:flex;
-
   align-items:center;
-
   justify-content:space-between;
-
   gap:8px;
-
   background:#151d18;
-
   padding:8px;
-
   border-radius:8px;
 }
 
 .admin-item span{
   font-size:11px;
-
   overflow:hidden;
-
   text-overflow:ellipsis;
-
   white-space:nowrap;
 }
 
 .admin-item button{
   padding:6px 8px;
-
   border:0;
-
   border-radius:6px;
-
   font-size:9px;
-
   font-weight:800;
 }
 
 .social-wrap{
   margin:8px 0;
-
   text-align:center;
-
   min-height:20px;
 }
 
 footer{
   text-align:center;
-
   color:#69756d;
-
   font-size:10px;
-
   padding:25px 10px;
 }
 
 .player{
   position:fixed;
-
   left:0;
   right:0;
   bottom:0;
-
   z-index:2000;
-
   background:#0c120e;
-
   border-top:2px solid var(--green);
-
   padding:8px 10px;
-
   display:none;
-
   gap:8px;
-
   align-items:center;
 }
 
 .player img{
   width:43px;
   height:43px;
-
   border-radius:7px;
-
   object-fit:cover;
 }
 
 .pinfo{
   min-width:0;
-
   flex:1;
 }
 
 .pinfo b{
   display:block;
-
   font-size:11px;
-
   white-space:nowrap;
-
   overflow:hidden;
-
   text-overflow:ellipsis;
 }
 
 .pinfo span{
   display:block;
-
   color:var(--green);
-
   font-size:9px;
-
   margin-top:2px;
 }
 
 audio{
   width:min(330px,42vw);
-
   height:34px;
 }
 
 .close{
   background:none;
-
   color:#aaa;
-
   border:0;
-
   font-size:17px;
 }
 
 .modal{
   display:none;
-
   position:fixed;
-
   inset:0;
-
   background:rgba(0,0,0,.82);
-
   z-index:3000;
-
   align-items:center;
-
   justify-content:center;
-
   padding:15px;
 }
 
 .modal-box{
   width:min(390px,100%);
-
   background:#111713;
-
   border:1px solid var(--green);
-
   border-radius:14px;
-
   padding:18px;
 }
 
 .modal-box h3{
   color:var(--green);
-
   margin-bottom:12px;
 }
 
 .modal-box input{
   width:100%;
-
   background:#192019;
-
   color:#fff;
-
   border:1px solid var(--line);
-
   padding:11px;
-
   border-radius:8px;
-
   margin-bottom:9px;
 }
 
 .modal-box .btn{
   width:100%;
-
   margin-top:4px;
 }
 
 .x{
   float:right;
-
   border:0;
-
   background:none;
-
   color:#aaa;
-
   font-size:23px;
 }
 
 .toast{
   position:fixed;
-
   top:75px;
-
   left:50%;
-
   transform:translateX(-50%);
-
   z-index:5000;
-
   background:var(--green);
-
   color:#001b0d;
-
   font-size:11px;
-
   font-weight:900;
-
   padding:10px 15px;
-
   border-radius:99px;
-
   display:none;
-
   max-width:90%;
-
   text-align:center;
-
-  box-shadow:
-    0 4px 15px
-    rgba(0,230,118,.3);
+  box-shadow:0 4px 15px rgba(0,230,118,.3);
 }
 
 .my-device-page{
@@ -898,78 +616,47 @@ audio{
 
 .device-header{
   display:flex;
-
   align-items:center;
-
   gap:9px;
-
   margin:18px 0 12px;
 }
 
 .device-back{
   border:1px solid var(--green);
-
   background:#102219;
-
   color:var(--green);
-
   border-radius:10px;
-
   padding:9px 12px;
-
   font-weight:900;
-
   font-size:11px;
 }
 
 .device-title{
   font-size:20px;
-
   font-weight:900;
 }
 
 .device-search{
   display:flex;
-
   gap:7px;
-
   margin-bottom:12px;
 }
 
 .device-search input{
   flex:1;
-
   min-width:0;
-
   background:var(--panel);
-
   color:#fff;
-
   border:1px solid #334238;
-
   border-radius:12px;
-
   padding:12px;
-
   outline:none;
 }
 
 .device-count{
   color:var(--muted);
-
   font-size:11px;
-
   margin:5px 0 12px;
-}
-
-.alpha-label{
-  color:var(--green);
-
-  font-size:12px;
-
-  font-weight:900;
-
-  margin:7px 0 3px;
 }
 
 @media(max-width:520px){
@@ -984,19 +671,14 @@ audio{
 
   .search button{
     width:68px;
-
     flex-basis:68px;
-
     padding-left:5px;
-
     padding-right:5px;
   }
 
   .device-btn{
     min-width:74px;
-
     padding:0 6px;
-
     font-size:9px;
   }
 
@@ -1004,6 +686,9 @@ audio{
     display:none;
   }
 
+  audio{
+    width:120px;
+  }
 }
 
 @media(min-width:650px){
@@ -1015,484 +700,431 @@ audio{
   .cover{
     width:105px;
     height:105px;
-
     flex-basis:105px;
   }
 
   .title{
     font-size:14px;
   }
-
 }
-
 </style>
-
 </head>
-
 
 <body>
 
-
 <header>
 
-  <div class="brand">
+<div class="brand">
 
-    <img
-      src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png"
-      alt="Makyama Logo"
-    >
+<img
+src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png"
+alt="Makyama Logo">
 
-    <div class="brand-text">
+<div class="brand-text">
 
-      <h1>
-        MAKYAMA MEDIA
-      </h1>
+<h1>MAKYAMA MEDIA</h1>
 
-      <p>
-        Global Music • Stream • Discover • Download Licensed Audio
-      </p>
+<p>
+Global Music • Stream • Discover • Download Licensed Audio
+</p>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
-  <div class="header-actions">
+<div class="header-actions">
 
-    <button
-      class="btn btn-dark"
-      onclick="openAdmin()"
-    >
-      🔑 Admin
-    </button>
+<button
+class="btn btn-dark"
+onclick="openAdmin()">
+🔑 Admin
+</button>
 
-  </div>
+</div>
 
 </header>
 
+<div id="toast" class="toast"></div>
 
-<div
-  id="toast"
-  class="toast"
-></div>
-
-
-<div
-  id="socialAdsArea"
-  class="social-wrap"
-></div>
-
+<div id="socialAdsArea" class="social-wrap"></div>
 
 <!-- HOME -->
 
 <main
-  id="homePage"
-  class="wrap"
->
-
-  <section class="hero">
-
-    <h2>
-      Discover music
-      <span>
-        worldwide.
-      </span>
-    </h2>
-
-    <p>
-      Tafuta msanii au wimbo kutoka kwenye music catalog.
-    </p>
-
-  </section>
-
-
-  <div
-    id="bannerAdsArea"
-    class="banner-ads-container"
-  ></div>
-
-
-  <!-- SEARCH + DEVICE -->
-
-  <div class="search-row">
-
-    <div class="search">
-
-      <input
-        id="q"
-        placeholder="🔎 Search artist or song"
-        autocomplete="off"
-      >
-
-      <button
-        class="btn btn-green"
-        onclick="searchMusic()"
-      >
-        SEARCH
-      </button>
-
-    </div>
-
-
-    <button
-      class="device-btn"
-      onclick="openLocalMusic()"
-      type="button"
-    >
-      📱<br>
-      MY DEVICE
-    </button>
-
-  </div>
-
-
-  <div class="chips">
-
-    <button
-      class="chip active"
-      onclick="loadTrending(this)"
-    >
-      🔥 Trending
-    </button>
-
-    <button
-      class="chip"
-      onclick="quickFilter('Bongo',this)"
-    >
-      🇹🇿 Bongo
-    </button>
-
-    <button
-      class="chip"
-      onclick="quickFilter('Afrobeats',this)"
-    >
-      🌍 Afrobeats
-    </button>
-
-    <button
-      class="chip"
-      onclick="quickFilter('Amapiano',this)"
-    >
-      🎹 Amapiano
-    </button>
-
-    <button
-      class="chip"
-      onclick="quickFilter('Hip Hop',this)"
-    >
-      🎤 Hip Hop
-    </button>
-
-    <button
-      class="chip"
-      onclick="quickFilter('Gospel',this)"
-    >
-      🙌 Gospel
-    </button>
-
-    <button
-      class="chip"
-      onclick="showDownloads(this)"
-    >
-      ⬇️ Free Downloads
-    </button>
-
-    <button
-      class="chip"
-      onclick="openLocalMusic()"
-    >
-      📱 My Music
-    </button>
-
-  </div>
-
-
-  <!-- ADMIN -->
-
-  <section
-    id="admin"
-    class="admin"
-  >
-
-    <h3>
-      👑 ADMIN DASHBOARD
-    </h3>
-
-
-    <div
-      style="
-        background:#151d18;
-        padding:12px;
-        border-radius:10px;
-        margin-bottom:12px;
-        border:1px solid var(--green);
-        display:flex;
-        align-items:center;
-        justify-content:space-between
-      "
-    >
-
-      <div>
-
-        <h4
-          style="
-            color:var(--green);
-            font-size:13px
-          "
-        >
-          🟢 WATU WAPO LIVE KWENYE WEBSITE
-        </h4>
-
-        <p
-          style="
-            font-size:10px;
-            color:var(--muted);
-            margin-top:2px
-          "
-        >
-          Idadi ya watumiaji waliounganishwa sasa hivi
-        </p>
-
-      </div>
-
-      <div
-        id="liveUsersCount"
-        style="
-          background:var(--green);
-          color:#001b0d;
-          font-weight:900;
-          font-size:16px;
-          padding:6px 14px;
-          border-radius:99px
-        "
-      >
-        0
-      </div>
-
-    </div>
-
-
-    <!-- ADD ADS -->
-
-    <div
-      style="
-        background:#151d18;
-        padding:10px;
-        border-radius:10px;
-        margin-bottom:12px;
-        border:1px solid var(--line)
-      "
-    >
-
-      <h4
-        style="
-          color:var(--orange);
-          font-size:12px;
-          margin-bottom:6px
-        "
-      >
-        📢 ONGEZA AD MPYA
-      </h4>
-
-      <input
-        id="aAdName"
-        placeholder="Jina la Ad"
-      >
-
-      <select
-        id="aAdPosition"
-      >
-
-        <option value="social">
-          📌 Social Bar
-        </option>
-
-        <option value="banner">
-          📄 Native Banner
-        </option>
-
-      </select>
-
-      <textarea
-        id="aAdScript"
-        placeholder="Paste script ya Adsterra hapa..."
-      ></textarea>
-
-      <button
-        class="btn btn-orange"
-        style="width:100%"
-        onclick="addNewAd()"
-      >
-        ➕ ONGEZA AD HII
-      </button>
-
-    </div>
-
-
-    <!-- ADS LIST -->
-
-    <div
-      style="
-        background:#151d18;
-        padding:10px;
-        border-radius:10px;
-        margin-bottom:12px;
-        border:1px solid var(--line)
-      "
-    >
-
-      <h4
-        style="
-          color:var(--green);
-          font-size:12px;
-          margin-bottom:6px
-        "
-      >
-        📋 ORODHA YA ADS
-      </h4>
-
-      <div
-        id="adminAdsList"
-        class="admin-list"
-      ></div>
-
-    </div>
-
-
-    <div class="admin-row">
-
-      <input
-        id="aTitle"
-        placeholder="Song title"
-      >
-
-      <input
-        id="aArtist"
-        placeholder="Artist"
-      >
-
-    </div>
-
-
-    <input
-      id="aCover"
-      placeholder="Cover image URL"
-    >
-
-    <input
-      id="aAudio"
-      placeholder="Direct audio URL (MP3/M4A)"
-    >
-
-
-    <div class="admin-row">
-
-      <button
-        class="btn btn-green"
-        onclick="saveAdminTrack()"
-      >
-        ➕ ADD TRACK
-      </button>
-
-      <button
-        class="btn btn-red"
-        onclick="logoutAdmin()"
-      >
-        LOGOUT
-      </button>
-
-    </div>
-
-
-    <div
-      id="adminList"
-      class="admin-list"
-    ></div>
-
-  </section>
-
-
-  <div class="section">
-
-    <h3 id="sectionTitle">
-      🔥 Trending Worldwide
-    </h3>
-
-    <span id="status"></span>
-
-  </div>
-
-
-  <div
-    id="results"
-    class="grid"
-  >
-
-    <div class="loading">
-      Loading music… ⏳
-    </div>
-
-  </div>
-
-
-  <footer>
-    © 2026 MAKYAMA MEDIA • Music is provided by licensed/official sources.
-  </footer>
+id="homePage"
+class="wrap">
+
+<section class="hero">
+
+<h2>
+Discover music <span>worldwide.</span>
+</h2>
+
+<p>
+Tafuta msanii au wimbo kutoka kwenye music catalog.
+</p>
+
+</section>
+
+<div
+id="bannerAdsArea"
+class="banner-ads-container">
+</div>
+
+<!-- SEARCH -->
+
+<div class="search-row">
+
+<div class="search">
+
+<input
+id="q"
+placeholder="🔎 Search artist or song"
+autocomplete="off">
+
+<button
+class="btn btn-green"
+onclick="searchMusic()">
+SEARCH
+</button>
+
+</div>
+
+<button
+class="device-btn"
+onclick="openLocalMusic()"
+type="button">
+
+📱<br>
+MY DEVICE
+
+</button>
+
+</div>
+
+<!-- CHIPS -->
+
+<div class="chips">
+
+<button
+class="chip active"
+onclick="loadTrending(this)">
+🔥 Trending
+</button>
+
+<button
+class="chip"
+onclick="quickFilter('Bongo',this)">
+🇹🇿 Bongo
+</button>
+
+<button
+class="chip"
+onclick="quickFilter('Afrobeats',this)">
+🌍 Afrobeats
+</button>
+
+<button
+class="chip"
+onclick="quickFilter('Amapiano',this)">
+🎹 Amapiano
+</button>
+
+<button
+class="chip"
+onclick="quickFilter('Hip Hop',this)">
+🎤 Hip Hop
+</button>
+
+<button
+class="chip"
+onclick="quickFilter('Gospel',this)">
+🙌 Gospel
+</button>
+
+<button
+class="chip"
+onclick="showDownloads(this)">
+⬇️ Free Downloads
+</button>
+
+<button
+class="chip"
+onclick="openLocalMusic()">
+📱 My Music
+</button>
+
+</div>
+
+<!-- ADMIN -->
+
+<section
+id="admin"
+class="admin">
+
+<h3>
+👑 ADMIN DASHBOARD
+</h3>
+
+<div
+style="
+background:#151d18;
+padding:12px;
+border-radius:10px;
+margin-bottom:12px;
+border:1px solid var(--green);
+display:flex;
+align-items:center;
+justify-content:space-between">
+
+<div>
+
+<h4
+style="
+color:var(--green);
+font-size:13px">
+
+🟢 WATU WAPO LIVE KWENYE WEBSITE
+
+</h4>
+
+<p
+style="
+font-size:10px;
+color:var(--muted);
+margin-top:2px">
+
+Idadi ya watumiaji waliounganishwa sasa hivi
+
+</p>
+
+</div>
+
+<div
+id="liveUsersCount"
+style="
+background:var(--green);
+color:#001b0d;
+font-weight:900;
+font-size:16px;
+padding:6px 14px;
+border-radius:99px">
+
+0
+
+</div>
+
+</div>
+
+<!-- ADS ADMIN -->
+
+<div
+style="
+background:#151d18;
+padding:10px;
+border-radius:10px;
+margin-bottom:12px;
+border:1px solid var(--line)">
+
+<h4
+style="
+color:var(--orange);
+font-size:12px;
+margin-bottom:6px">
+
+📢 ONGEZA AD MPYA
+
+</h4>
+
+<input
+id="aAdName"
+placeholder="Jina la Ad">
+
+<select id="aAdPosition">
+
+<option value="social">
+📌 Social Bar
+</option>
+
+<option value="banner">
+📄 Native Banner
+</option>
+
+</select>
+
+<textarea
+id="aAdScript"
+placeholder="Paste script ya Adsterra hapa...">
+</textarea>
+
+<button
+class="btn btn-orange"
+style="width:100%"
+onclick="addNewAd()">
+
+➕ ONGEZA AD HII
+
+</button>
+
+</div>
+
+<div
+style="
+background:#151d18;
+padding:10px;
+border-radius:10px;
+margin-bottom:12px;
+border:1px solid var(--line)">
+
+<h4
+style="
+color:var(--green);
+font-size:12px;
+margin-bottom:6px">
+
+📋 ORODHA YA ADS
+
+</h4>
+
+<div
+id="adminAdsList"
+class="admin-list">
+</div>
+
+</div>
+
+<!-- ADD TRACK -->
+
+<div class="admin-row">
+
+<input
+id="aTitle"
+placeholder="Song title">
+
+<input
+id="aArtist"
+placeholder="Artist">
+
+</div>
+
+<input
+id="aCover"
+placeholder="Cover image URL">
+
+<input
+id="aAudio"
+placeholder="Direct audio URL (MP3/M4A)">
+
+<div class="admin-row">
+
+<button
+class="btn btn-green"
+onclick="saveAdminTrack()">
+
+➕ ADD TRACK
+
+</button>
+
+<button
+class="btn btn-red"
+onclick="logoutAdmin()">
+
+LOGOUT
+
+</button>
+
+</div>
+
+<div
+id="adminList"
+class="admin-list">
+</div>
+
+</section>
+
+<!-- RESULTS -->
+
+<div class="section">
+
+<h3 id="sectionTitle">
+🔥 Trending Worldwide
+</h3>
+
+<span id="status"></span>
+
+</div>
+
+<div
+id="results"
+class="grid">
+
+<div class="loading">
+Loading music… ⏳
+</div>
+
+</div>
+
+<footer>
+
+© 2026 MAKYAMA MEDIA • Music is provided by licensed/official sources.
+
+</footer>
 
 </main>
 
 
-<!-- MY DEVICE -->
+<!-- MY DEVICE PAGE -->
 
 <main
-  id="myDevicePage"
-  class="wrap my-device-page"
->
+id="myDevicePage"
+class="wrap my-device-page">
 
-  <div class="device-header">
+<div class="device-header">
 
-    <button
-      class="device-back"
-      onclick="closeAndroidMusic()"
-    >
-      ← BACK
-    </button>
+<button
+class="device-back"
+onclick="closeAndroidMusic()">
 
-    <div class="device-title">
-      📱 My Device
-    </div>
+← BACK
 
-  </div>
+</button>
 
+<div class="device-title">
 
-  <div class="device-search">
+📱 My Device
 
-    <input
-      id="deviceSearch"
-      placeholder="🔎 Search your music..."
-      autocomplete="off"
-    >
+</div>
 
-  </div>
+</div>
 
+<div class="device-search">
 
-  <div
-    id="deviceCount"
-    class="device-count"
-  >
-    Loading audio…
-  </div>
+<input
+id="deviceSearch"
+placeholder="🔎 Search your music..."
+autocomplete="off">
 
+</div>
 
-  <div
-    id="deviceResults"
-    class="grid"
-  >
+<div
+id="deviceCount"
+class="device-count">
 
-    <div class="loading">
-      Reading your music… ⏳
-    </div>
+Loading audio…
 
-  </div>
+</div>
+
+<div
+id="deviceResults"
+class="grid">
+
+<div class="loading">
+
+Reading your music… ⏳
+
+</div>
+
+</div>
 
 </main>
 
@@ -1500,40 +1132,37 @@ audio{
 <!-- PLAYER -->
 
 <div
-  id="player"
-  class="player"
->
+id="player"
+class="player">
 
-  <img
-    id="pcover"
-    src=""
-    alt=""
-  >
+<img
+id="pcover"
+src=""
+alt="">
 
-  <div class="pinfo">
+<div class="pinfo">
 
-    <b id="ptitle">
-      Playing
-    </b>
+<b id="ptitle">
+Playing
+</b>
 
-    <span id="partist"></span>
+<span id="partist"></span>
 
-  </div>
+</div>
 
+<audio
+id="audio"
+controls
+controlsList="nodownload">
+</audio>
 
-  <audio
-    id="audio"
-    controls
-    controlsList="nodownload"
-  ></audio>
+<button
+class="close"
+onclick="closePlayer()">
 
+✕
 
-  <button
-    class="close"
-    onclick="closePlayer()"
-  >
-    ✕
-  </button>
+</button>
 
 </div>
 
@@ -1541,2341 +1170,2089 @@ audio{
 <!-- ADMIN LOGIN -->
 
 <div
-  id="login"
-  class="modal"
->
+id="login"
+class="modal">
 
-  <div class="modal-box">
+<div class="modal-box">
 
-    <button
-      class="x"
-      onclick="closeAdmin()"
-    >
-      ×
-    </button>
+<button
+class="x"
+onclick="closeAdmin()">
 
-    <h3>
-      🔒 ADMIN LOGIN
-    </h3>
+×
 
-    <input
-      id="user"
-      placeholder="Username"
-    >
+</button>
 
-    <input
-      id="pass"
-      type="password"
-      placeholder="Password"
-    >
+<h3>
+🔒 ADMIN LOGIN
+</h3>
 
-    <button
-      class="btn btn-green"
-      onclick="loginAdmin()"
-    >
-      LOGIN
-    </button>
+<input
+id="user"
+placeholder="Username">
 
-  </div>
+<input
+id="pass"
+type="password"
+placeholder="Password">
+
+<button
+class="btn btn-green"
+onclick="loginAdmin()">
+
+LOGIN
+
+</button>
+
+</div>
 
 </div>
 
 
 <script>
 
-/* =========================================================
+/* =====================================================
    FIREBASE
-========================================================= */
+===================================================== */
 
 const firebaseConfig = {
 
-  apiKey:
-    "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
+apiKey:
+"AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
 
-  authDomain:
-    "makyama-e5e89.firebaseapp.com",
+authDomain:
+"makyama-e5e89.firebaseapp.com",
 
-  databaseURL:
-    "https://makyama-e5e89-default-rtdb.firebaseio.com/",
+databaseURL:
+"https://makyama-e5e89-default-rtdb.firebaseio.com/",
 
-  projectId:
-    "makyama-e5e89",
+projectId:
+"makyama-e5e89",
 
-  storageBucket:
-    "makyama-e5e89.appspot.com",
+storageBucket:
+"makyama-e5e89.appspot.com",
 
-  messagingSenderId:
-    "229527204095",
+messagingSenderId:
+"229527204095",
 
-  appId:
-    "1:229527204095:web:2bdfe0589cf42794b3dcca"
+appId:
+"1:229527204095:web:2bdfe0589cf42794b3dcca"
 
 };
 
-
 let db = null;
-
 
 try{
 
-  if(!firebase.apps.length){
+if(!firebase.apps.length){
 
-    firebase.initializeApp(
-      firebaseConfig
-    );
+firebase.initializeApp(
+firebaseConfig
+);
 
-  }
+}
 
-  db =
-    firebase.database();
+db = firebase.database();
 
 }catch(e){
 
-  console.warn(
-    "Firebase unavailable",
-    e
-  );
+console.warn(
+"Firebase unavailable",
+e
+);
 
 }
 
 
-/* =========================================================
+/* =====================================================
    GLOBAL
-========================================================= */
+===================================================== */
 
 let admin = false;
 
 let allTracksList = [];
 
 let currentFilter =
-  "trending";
+"trending";
 
 let androidMusicList = [];
 
-let androidPageOpen =
-  false;
+let androidPageOpen = false;
 
 
-/* =========================================================
+/* =====================================================
    SELECTOR
-========================================================= */
+===================================================== */
 
-const $ =
-  id =>
-    document.getElementById(id);
+const $ = id =>
+document.getElementById(id);
 
 
-/* =========================================================
+/* =====================================================
    ESCAPE
-========================================================= */
+===================================================== */
 
 function esc(v){
 
-  return String(v ?? "")
-    .replace(
-      /[&<>"']/g,
-      m =>
-        ({
-          "&":"&amp;",
-          "<":"&lt;",
-          ">":"&gt;",
-          '"':"&quot;",
-          "'":"&#039;"
-        }[m])
-    );
+return String(v ?? "")
+.replace(
+/[&<>"']/g,
+m => ({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+
+}[m])
+);
 
 }
 
 
-/* =========================================================
+/* =====================================================
    TOAST
-========================================================= */
+===================================================== */
 
 function toast(msg){
 
-  $("toast").textContent =
-    msg;
+$("toast").textContent =
+msg;
 
-  $("toast").style.display =
-    "block";
+$("toast").style.display =
+"block";
 
-  clearTimeout(
-    window.__toast
-  );
+clearTimeout(
+window.__toast
+);
 
-  window.__toast =
-    setTimeout(
-      () =>
-        $("toast").style.display =
-          "none",
-      3500
-    );
-
-}
-
-
-/* =========================================================
-   STATUS
-========================================================= */
-
-function setStatus(x){
-
-  $("status").textContent =
-    x || "";
+window.__toast =
+setTimeout(
+() =>
+$("toast").style.display =
+"none",
+3500
+);
 
 }
 
 
-/* =========================================================
+/* =====================================================
    IMAGE
-========================================================= */
+===================================================== */
 
 function imageFor(item){
 
-  return item.cover ||
-    "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png";
+return item.cover ||
+"https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png";
 
 }
 
 
-/* =========================================================
+/* =====================================================
    ADS
-========================================================= */
+===================================================== */
 
 function injectScriptInto(
-  container,
-  code
+container,
+code
 ){
 
-  container.innerHTML =
-    "";
+container.innerHTML = "";
 
-  const tempDiv =
-    document.createElement(
-      "div"
-    );
+if(!code)
+return;
 
-  tempDiv.innerHTML =
-    code;
+const tempDiv =
+document.createElement(
+"div"
+);
 
-  const children =
-    Array.from(
-      tempDiv.children
-    );
+tempDiv.innerHTML =
+code;
 
-  children.forEach(
-    child => {
+Array.from(
+tempDiv.children
+).forEach(
+child => {
 
-      if(
-        child.tagName.toLowerCase()
-        !== "script"
-      ){
+if(
+child.tagName.toLowerCase()
+!=="script"
+){
 
-        container.appendChild(
-          child
-        );
+container.appendChild(
+child
+);
 
-      }
+}
 
-    }
-  );
+});
 
+Array.from(
+tempDiv.getElementsByTagName(
+"script"
+)
+).forEach(
+oldScript => {
 
-  if(
-    container.children.length === 0
-  ){
+const newScript =
+document.createElement(
+"script"
+);
 
-    container.innerHTML =
-      code;
+Array.from(
+oldScript.attributes
+).forEach(
+attr => {
 
-  }
+newScript.setAttribute(
+attr.name,
+attr.value
+);
 
+});
 
-  const scripts =
-    tempDiv.getElementsByTagName(
-      "script"
-    );
+newScript.textContent =
+oldScript.textContent;
 
+container.appendChild(
+newScript
+);
 
-  Array.from(scripts)
-    .forEach(
-      oldScript => {
-
-        const newScript =
-          document.createElement(
-            "script"
-          );
-
-
-        Array.from(
-          oldScript.attributes
-        ).forEach(
-          attr => {
-
-            newScript.setAttribute(
-              attr.name,
-              attr.value
-            );
-
-          }
-        );
-
-
-        if(oldScript.innerHTML){
-
-          newScript.innerHTML =
-            oldScript.innerHTML;
-
-        }
-
-
-        container.appendChild(
-          newScript
-        );
-
-      }
-    );
+});
 
 }
 
 
-function adCard(adCode){
-
-  const wrapperId =
-    "ad_box_" +
-    Math.random()
-      .toString(36)
-      .substring(2,9);
-
-
-  setTimeout(
-    () => {
-
-      const el =
-        document.getElementById(
-          wrapperId
-        );
-
-
-      if(el){
-
-        injectScriptInto(
-          el,
-          adCode
-        );
-
-      }
-
-    },
-    150
-  );
-
-
-  return `
-
-    <div class="ad-card">
-
-      <div
-        id="${wrapperId}"
-        style="width:100%;overflow:hidden"
-      ></div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
+/* =====================================================
    LIVE USERS
-========================================================= */
+===================================================== */
 
 function initPresenceSystem(){
 
-  if(!db)
-    return;
+if(!db)
+return;
 
+const connectionsRef =
+db.ref(
+"server_stats/connected_users"
+);
 
-  const connectionsRef =
-    db.ref(
-      "server_stats/connected_users"
-    );
+const myConnectionRef =
+connectionsRef.push();
 
+db.ref(".info/connected")
+.on(
+"value",
+snap => {
 
-  const myConnectionRef =
-    connectionsRef.push();
+if(
+snap.val() === true
+){
 
+myConnectionRef
+.onDisconnect()
+.remove();
 
-  db.ref(".info/connected")
-    .on(
-      "value",
-      snap => {
+myConnectionRef.set(
+true
+);
 
-        if(
-          snap.val() === true
-        ){
+}
 
-          myConnectionRef
-            .onDisconnect()
-            .remove();
+});
 
+connectionsRef.on(
+"value",
+snap => {
 
-          myConnectionRef.set(
-            true
-          );
+const el =
+$("liveUsersCount");
 
-        }
+if(el){
 
-      }
-    );
+el.textContent =
+snap.numChildren();
 
+}
 
-  connectionsRef.on(
-    "value",
-    snap => {
-
-      const el =
-        $("liveUsersCount");
-
-
-      if(el){
-
-        el.textContent =
-          snap.numChildren();
-
-      }
-
-    }
-  );
+});
 
 }
 
 
-/* =========================================================
+/* =====================================================
    ADS REALTIME
-========================================================= */
+===================================================== */
 
 function initAdsRealtimeListener(){
 
-  if(!db)
-    return;
+if(!db)
+return;
 
+db.ref("ads")
+.on(
+"value",
+snap => {
 
-  db.ref("ads")
-    .on(
-      "value",
-      snap => {
+const social =
+$("socialAdsArea");
 
-        const social =
-          $("socialAdsArea");
+const banner =
+$("bannerAdsArea");
 
+social.innerHTML =
+"";
 
-        const banner =
-          $("bannerAdsArea");
+banner.innerHTML =
+"";
 
+const ads = [];
 
-        social.innerHTML =
-          "";
+snap.forEach(
+child => {
 
-        banner.innerHTML =
-          "";
+const ad =
+child.val() || {};
 
+ad.key =
+child.key;
 
-        const ads = [];
+ads.push(ad);
 
+if(
+ad.position ===
+"social"
+){
 
-        if(snap.exists()){
+injectScriptInto(
+social,
+ad.script
+);
 
-          snap.forEach(
-            child => {
+}
 
-              const ad =
-                child.val();
+if(
+ad.position ===
+"banner"
+){
 
+const box =
+document.createElement(
+"div"
+);
 
-              ad.key =
-                child.key;
+box.className =
+"ad-card";
 
+banner.appendChild(
+box
+);
 
-              ads.push(ad);
+injectScriptInto(
+box,
+ad.script
+);
 
+}
 
-              if(
-                ad.position ===
-                "social"
-              ){
+});
 
-                injectScriptInto(
-                  social,
-                  ad.script
-                );
+if(admin){
 
-              }
+renderAdminAdsList(
+ads
+);
 
+}
 
-              else if(
-                ad.position ===
-                "banner"
-              ){
-
-                banner.innerHTML +=
-                  adCard(ad.script);
-
-              }
-
-            }
-          );
-
-        }
-
-
-        if(admin){
-
-          renderAdminAdsList(
-            ads
-          );
-
-        }
-
-      }
-    );
+});
 
 }
 
 
 async function addNewAd(){
 
-  if(
-    !admin ||
-    !db
-  )
-    return;
+if(
+!admin ||
+!db
+)
+return;
 
+const name =
+$("aAdName")
+.value
+.trim() ||
+"Ad";
 
-  const name =
-    $("aAdName")
-      .value
-      .trim() ||
-    "Ad";
+const position =
+$("aAdPosition")
+.value;
 
+const script =
+$("aAdScript")
+.value
+.trim();
 
-  const position =
-    $("aAdPosition")
-      .value;
+if(!script){
 
+toast(
+"Tafadhali weka script tag ya Ad!"
+);
 
-  const script =
-    $("aAdScript")
-      .value
-      .trim();
+return;
 
+}
 
-  if(!script){
+await db
+.ref("ads")
+.push({
 
-    toast(
-      "Tafadhali weka script tag ya Ad!"
-    );
+name:name,
+position:position,
+script:script,
+createdAt:Date.now()
 
-    return;
+});
 
-  }
+$("aAdName").value =
+"";
 
+$("aAdScript").value =
+"";
 
-  await db
-    .ref("ads")
-    .push({
-
-      name:name,
-
-      position:position,
-
-      script:script,
-
-      createdAt:Date.now()
-
-    });
-
-
-  $("aAdName").value =
-    "";
-
-  $("aAdScript").value =
-    "";
-
-
-  toast(
-    "🎉 Ad imewekwa!"
-  );
+toast(
+"🎉 Ad imewekwa!"
+);
 
 }
 
 
 function renderAdminAdsList(
-  ads
+ads
 ){
 
-  if(!ads.length){
+if(!ads.length){
 
-    $("adminAdsList")
-      .innerHTML =
-      '<div style="color:#69756d;font-size:10px">Hakuna Ads kwa sasa.</div>';
+$("adminAdsList")
+.innerHTML =
+'<div style="color:#69756d;font-size:10px">Hakuna Ads kwa sasa.</div>';
 
-    return;
+return;
 
-  }
+}
 
+$("adminAdsList")
+.innerHTML =
+ads.map(
+a => `
 
-  $("adminAdsList")
-    .innerHTML =
-      ads.map(
-        a => `
+<div class="admin-item">
 
-          <div class="admin-item">
+<span>
+📢 ${esc(a.name)}
+(${esc(a.position)})
+</span>
 
-            <span>
-              📢 ${esc(a.name)}
-              (${esc(a.position)})
-            </span>
+<button
+class="btn-red"
+onclick="deleteAd('${a.key}')">
 
-            <button
-              class="btn-red"
-              onclick="deleteAd('${a.key}')"
-            >
-              FUTA
-            </button>
+FUTA
 
-          </div>
+</button>
 
-        `
-      ).join("");
+</div>
+
+`
+).join("");
 
 }
 
 
 async function deleteAd(key){
 
-  if(
-    !confirm(
-      "Unahakikisha unataka kufuta Ad hii?"
-    )
-  )
-    return;
+if(
+!confirm(
+"Unahakikisha unataka kufuta Ad hii?"
+)
+)
+return;
 
+await db
+.ref("ads/" + key)
+.remove();
 
-  await db
-    .ref("ads/" + key)
-    .remove();
-
-
-  toast(
-    "Ad imefutwa."
-  );
+toast(
+"Ad imefutwa."
+);
 
 }
 
 
-/* =========================================================
+/* =====================================================
    VIEWS
-========================================================= */
+===================================================== */
 
 function incrementView(key){
 
-  if(
-    !db ||
-    !key
-  )
-    return;
+if(
+!db ||
+!key ||
+String(key).startsWith("local_")
+)
+return;
 
-
-  db.ref(
-    "media/" +
-    key +
-    "/views"
-  ).transaction(
-    current =>
-      (current || 0) + 1
-  );
+db.ref(
+"media/" +
+key +
+"/views"
+).transaction(
+current =>
+(current || 0) + 1
+);
 
 }
 
 
-/* =========================================================
-   PLAYER
-========================================================= */
+/* =====================================================
+   ONLINE PLAYER
+===================================================== */
 
 function playTrack(t){
 
-  if(!t.audio){
+if(!t.audio){
 
-    toast(
-      "Audio haipo kwa sasa."
-    );
+toast(
+"Audio haipo kwa sasa."
+);
 
-    return;
+return;
 
-  }
+}
 
+incrementView(
+t.key
+);
 
-  if(
-    t.key &&
-    !String(t.key)
-      .startsWith("local_")
-  ){
+$("pcover").src =
+imageFor(t);
 
-    incrementView(
-      t.key
-    );
+$("ptitle").textContent =
+t.title ||
+"Unknown";
 
-  }
+$("partist").textContent =
+t.artist ||
+"";
 
+$("player").style.display =
+"flex";
 
-  $("pcover").src =
-    imageFor(t);
+const audio =
+$("audio");
 
+audio.src =
+t.audio;
 
-  $("ptitle").textContent =
-    t.title ||
-    "Unknown";
+audio.load();
 
-
-  $("partist").textContent =
-    t.artist ||
-    "";
-
-
-  $("player").style.display =
-    "flex";
-
-
-  const audio =
-    $("audio");
-
-
-  audio.src =
-    t.audio;
-
-
-  audio.load();
-
-
-  audio.play()
-    .catch(() => {});
+audio.play()
+.catch(
+() => {}
+);
 
 }
 
 
-/* =========================================================
-   PLAY ANDROID SONG
-========================================================= */
+/* =====================================================
+   ANDROID PLAYER
+===================================================== */
 
-function playAndroidSong(
-  song
+function playAndroidSong(song){
+
+if(
+!song ||
+!song.audio
 ){
 
-  if(
-    !song ||
-    !song.uri
-  ){
+toast(
+"Audio haipatikani."
+);
 
-    toast(
-      "Audio haipatikani."
-    );
+return;
 
-    return;
+}
 
-  }
+$("pcover").src =
+imageFor(song);
 
+$("ptitle").textContent =
+song.title ||
+"Unknown Song";
 
-  $("pcover").src =
-    "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png";
+$("partist").textContent =
+song.artist ||
+"Unknown Artist";
 
+$("player").style.display =
+"flex";
 
-  $("ptitle").textContent =
-    song.title ||
-    "Unknown Song";
+const audio =
+$("audio");
 
+audio.src =
+song.audio;
 
-  $("partist").textContent =
-    song.artist ||
-    "Unknown Artist";
+audio.load();
 
+audio.play()
+.catch(
+() => {
 
-  $("player").style.display =
-    "flex";
+toast(
+"Bonyeza PLAY kwenye player."
+);
 
-
-  const audio =
-    $("audio");
-
-
-  audio.src =
-    song.uri;
-
-
-  audio.load();
-
-
-  audio.play()
-    .catch(() => {
-
-      toast(
-        "Bonyeza PLAY kwenye player."
-      );
-
-    });
+});
 
 }
 
 
 function closePlayer(){
 
-  const audio =
-    $("audio");
+const audio =
+$("audio");
 
+audio.pause();
 
-  audio.pause();
+audio.removeAttribute(
+"src"
+);
 
+audio.load();
 
-  audio.removeAttribute(
-    "src"
-  );
-
-
-  audio.load();
-
-
-  $("player").style.display =
-    "none";
+$("player").style.display =
+"none";
 
 }
 
 
-/* =========================================================
+/* =====================================================
    DOWNLOAD
-========================================================= */
+===================================================== */
 
 function downloadTrack(t){
 
-  if(!t.download){
+if(!t.download){
 
-    toast(
-      "Haipakiliki moja kwa moja."
-    );
+toast(
+"Haipakiliki moja kwa moja."
+);
 
-    return;
+return;
 
-  }
+}
 
+let filename =
+(t.artist
+?
+t.artist + " - "
+:
+"") +
+(t.title ||
+"MMEDIA Music");
 
-  const title =
-    (
-      t.title ||
-      "MMEDIA Music"
-    ).trim();
+filename =
+filename
+.replace(
+/[\\/:*?"<>|]/g,
+"_"
+)
+.replace(
+/\s+/g,
+" "
+)
+.trim();
 
+if(
+!filename
+.toLowerCase()
+.endsWith(".mp3")
+){
 
-  const artist =
-    (
-      t.artist ||
-      ""
-    ).trim();
+filename +=
+".mp3";
 
+}
 
-  let filename =
-    artist
-      ? artist +
-        " - " +
-        title
-      : title;
+if(
+window.MMEDIA &&
+typeof window.MMEDIA.download ===
+"function"
+){
 
+window.MMEDIA.download(
+t.download,
+filename
+);
 
-  filename =
-    filename
-      .replace(
-        /[\\/:*?"<>|]/g,
-        "_"
-      )
-      .replace(
-        /\s+/g,
-        " "
-      )
-      .trim();
+return;
 
+}
 
-  if(
-    !filename
-      .toLowerCase()
-      .endsWith(".mp3")
-  ){
+const a =
+document.createElement(
+"a"
+);
 
-    filename +=
-      ".mp3";
+a.href =
+t.download;
 
-  }
+a.download =
+filename;
 
+a.target =
+"_self";
 
-  if(
-    window.MMEDIA &&
-    typeof window.MMEDIA.download ===
-    "function"
-  ){
+document.body.appendChild(
+a
+);
 
-    window.MMEDIA.download(
-      t.download,
-      filename
-    );
+a.click();
 
-    return;
-
-  }
-
-
-  const a =
-    document.createElement(
-      "a"
-    );
-
-
-  a.href =
-    t.download;
-
-
-  a.download =
-    filename;
-
-
-  a.target =
-    "_self";
-
-
-  document.body.appendChild(
-    a
-  );
-
-
-  a.click();
-
-
-  document.body.removeChild(
-    a
-  );
+a.remove();
 
 }
 
 
-/* =========================================================
+/* =====================================================
    CARD
-========================================================= */
+===================================================== */
 
 function card(t){
 
-  const canPlay =
-    !!t.audio;
+const canPlay =
+!!t.audio;
 
+const canDownload =
+!!t.download;
 
-  const canDownload =
-    !!t.download;
+const isLocal =
+String(t.key || "")
+.startsWith(
+"local_"
+);
 
+const views =
+t.views || 0;
 
-  const isLocal =
-    String(t.key || "")
-      .startsWith("local_");
+return `
 
+<article class="card">
 
-  const views =
-    t.views || 0;
+<img
+class="cover"
+loading="lazy"
+src="${esc(imageFor(t))}"
+alt="${esc(t.title)}"
 
+onerror="
+this.src='https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png'
+">
 
-  return `
+<div class="info">
 
-    <article class="card">
+<div class="badges">
 
-      <img
-        class="cover"
-        loading="lazy"
-        src="${esc(imageFor(t))}"
-        alt="${esc(t.title)}"
+<span class="badge">
 
-        onerror="
-          this.src='https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png'
-        "
-      >
+${esc(t.type || "MUSIC")}
 
+</span>
 
-      <div class="info">
+${
+isLocal
+?
+`
+<span class="badge local">
+📱 DEVICE
+</span>
+`
+:
+`
+<span class="badge views">
+🎧 ${views} views
+</span>
+`
+}
 
-        <div class="badges">
+${
+canDownload && !isLocal
+?
+`
+<span class="badge orange">
+WITH COVER
+</span>
+`
+:
+""
+}
 
-          <span class="badge">
-            ${esc(t.type || "MUSIC")}
-          </span>
+</div>
 
+<div class="title">
+${esc(t.title)}
+</div>
 
-          ${
-            isLocal
-            ? `
-              <span class="badge local">
-                📱 DEVICE
-              </span>
-            `
-            : `
-              <span class="badge views">
-                🎧 ${views} views
-              </span>
-            `
-          }
+<div class="artist">
+${esc(
+t.artist ||
+"Unknown artist"
+)}
+</div>
 
+<div class="actions">
 
-          ${
-            canDownload && !isLocal
-            ? `
-              <span class="badge orange">
-                WITH COVER
-              </span>
-            `
-            : ""
-          }
+${
+canPlay
+?
+`
+<button
+class="play"
+onclick='playTrack(${JSON.stringify(t).replace(/'/g,"&#39;")})'>
 
-        </div>
+▶ PLAY
 
+</button>
+`
+:
+""
+}
 
-        <div class="title">
-          ${esc(t.title)}
-        </div>
+${
+canDownload
+?
+`
+<button
+class="download"
+onclick='downloadTrack(${JSON.stringify(t).replace(/'/g,"&#39;")})'>
 
+⬇ DOWNLOAD
 
-        <div class="artist">
-          ${esc(
-            t.artist ||
-            "Unknown artist"
-          )}
-        </div>
+</button>
+`
+:
+""
+}
 
+</div>
 
-        <div class="actions">
+</div>
 
-          ${
-            canPlay
-            ? `
-              <button
-                class="play"
-                onclick='playTrack(${JSON.stringify(t).replace(/'/g,"&#39;")})'
-              >
-                ▶ PLAY
-              </button>
-            `
-            : ""
-          }
+</article>
 
-
-          ${
-            canDownload
-            ? `
-              <button
-                class="download"
-                onclick='downloadTrack(${JSON.stringify(t).replace(/'/g,"&#39;")})'
-              >
-                ⬇ DOWNLOAD
-              </button>
-            `
-            : ""
-          }
-
-        </div>
-
-      </div>
-
-    </article>
-
-  `;
+`;
 
 }
 
 
-/* =========================================================
+/* =====================================================
    FIREBASE MEDIA
-========================================================= */
+===================================================== */
 
 function initRealtimeListener(){
 
-  if(!db)
-    return;
+if(!db)
+return;
 
+db.ref("media")
+.on(
+"value",
+snap => {
 
-  db.ref("media")
-    .on(
-      "value",
-      snap => {
+const out = [];
 
-        const out = [];
+if(snap.exists()){
 
+snap.forEach(
+c => {
 
-        if(snap.exists()){
+const x =
+c.val() || {};
 
-          snap.forEach(
-            c => {
+out.push({
 
-              const x =
-                c.val() || {};
+key:c.key,
 
+title:
+x.jina ||
+"Untitled",
 
-              out.push({
+artist:
+x.artist ||
+"MAKYAMA",
 
-                key:c.key,
+cover:
+x.picha ||
+"",
 
-                title:
-                  x.jina ||
-                  "Untitled",
+audio:
+x.linkAudio ||
+"",
 
-                artist:
-                  x.artist ||
-                  "MAKYAMA",
+download:
+x.linkAudio ||
+"",
 
-                cover:
-                  x.picha ||
-                  "",
+views:
+x.views ||
+0,
 
-                audio:
-                  x.linkAudio ||
-                  "",
+type:
+"MAKYAMA"
 
-                download:
-                  x.linkAudio ||
-                  "",
+});
 
-                views:
-                  x.views ||
-                  0,
+});
 
-                type:
-                  "MAKYAMA"
+}
 
-              });
+allTracksList =
+out.sort(
+(a,b) =>
+(b.views || 0) -
+(a.views || 0)
+);
 
-            }
-          );
+applyCurrentFilter();
 
-        }
-
-
-        allTracksList =
-          out.sort(
-            (a,b) =>
-              (b.views || 0) -
-              (a.views || 0)
-          );
-
-
-        applyCurrentFilter();
-
-      }
-    );
+});
 
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER
-========================================================= */
+===================================================== */
 
 function render(
-  list,
-  title
+list,
+title
 ){
 
-  $("sectionTitle")
-    .textContent =
-    title;
+$("sectionTitle")
+.textContent =
+title;
 
+if(!list.length){
 
-  if(!list.length){
+$("results").innerHTML = `
 
-    $("results").innerHTML = `
+<div class="empty">
 
-      <div class="empty">
+<p
+style="
+font-size:14px;
+font-weight:bold;
+color:#fff">
 
-        <p
-          style="
-            font-size:14px;
-            font-weight:bold;
-            color:#fff
-          "
-        >
-          ⚠️ Wimbo huu haujapatikana kwa sasa.
-        </p>
+⚠️ Wimbo huu haujapatikana kwa sasa.
 
-        <p
-          style="
-            margin-top:10px;
-            color:var(--green);
-            font-size:13px
-          "
-        >
-          <strong>
-            Tafadhali subiri wimbo wako unatafutwa na kuandaliwa... 🚀
-          </strong>
-        </p>
+</p>
 
-      </div>
+<p
+style="
+margin-top:10px;
+color:var(--green);
+font-size:13px">
 
-    `;
+<strong>
 
+Tafadhali subiri wimbo wako unatafutwa na kuandaliwa... 🚀
 
-    setStatus(
-      "0 results"
-    );
+</strong>
 
+</p>
 
-    return;
+</div>
 
-  }
+`;
 
+$("status")
+.textContent =
+"0 results";
 
-  $("results").innerHTML =
-    list.map(card).join("");
+return;
 
+}
 
-  setStatus(
-    list.length +
-    " results"
-  );
+$("results").innerHTML =
+list
+.map(card)
+.join("");
+
+$("status")
+.textContent =
+list.length +
+" results";
 
 }
 
 
-/* =========================================================
+/* =====================================================
    REQUEST
-========================================================= */
+===================================================== */
 
 async function sendTermuxRequest(
-  query
+query
 ){
 
-  if(!db)
-    return;
+if(!db)
+return;
 
+await db
+.ref("requests")
+.push({
 
-  await db
-    .ref("requests")
-    .push({
+query:query,
 
-      query:query,
+timestamp:
+Date.now()
 
-      timestamp:Date.now()
-
-    });
+});
 
 }
 
 
-/* =========================================================
+/* =====================================================
    FILTER
-========================================================= */
+===================================================== */
 
 function applyCurrentFilter(){
 
-  if(androidPageOpen)
-    return;
+if(androidPageOpen)
+return;
 
+const q =
+$("q")
+.value
+.trim()
+.toLowerCase();
 
-  const q =
-    $("q")
-      .value
-      .trim()
-      .toLowerCase();
+if(q){
 
+const terms =
+q.split(/\s+/)
+.filter(Boolean);
 
-  if(q){
+const filtered =
+allTracksList.filter(
+x => {
 
-    const terms =
-      q.split(" ")
-       .filter(
-         term =>
-           term.length > 0
-       );
+const combined =
+(
+(x.title || "") +
+" " +
+(x.artist || "")
+)
+.toLowerCase();
 
+return terms.every(
+term =>
+combined.includes(
+term
+)
+);
 
-    const filtered =
-      allTracksList.filter(
-        x => {
+});
 
-          const combined =
-            (
-              (x.title || "") +
-              " " +
-              (x.artist || "")
-            ).toLowerCase();
+render(
+filtered,
+"🔎 " +
+$("q").value
+);
 
+return;
 
-          return terms.every(
-            term =>
-              combined.includes(term)
-          );
+}
 
-        }
-      );
+if(
+currentFilter ===
+"downloads"
+){
 
+render(
+allTracksList.filter(
+x =>
+!!x.download
+),
+"⬇️ Downloadable Audio"
+);
 
-    render(
-      filtered,
-      "🔎 " +
-      $("q").value
-    );
+return;
 
+}
 
-    return;
-
-  }
-
-
-  if(
-    currentFilter ===
-    "downloads"
-  ){
-
-    const downloadsOnly =
-      allTracksList.filter(
-        x =>
-          !!x.download
-      );
-
-
-    render(
-      downloadsOnly,
-      "⬇️ Downloadable Audio"
-    );
-
-
-    return;
-
-  }
-
-
-  render(
-    allTracksList,
-    "🔥 Trending Worldwide"
-  );
+render(
+allTracksList,
+"🔥 Trending Worldwide"
+);
 
 }
 
 
-/* =========================================================
-   SEARCH HOME
-========================================================= */
+/* =====================================================
+   HOME SEARCH
+===================================================== */
 
 async function searchMusic(){
 
-  if(androidPageOpen){
+if(androidPageOpen){
 
-    searchAndroidMusic();
+searchAndroidMusic();
 
-    return;
+return;
 
-  }
+}
 
+const q =
+$("q")
+.value
+.trim();
 
-  const q =
-    $("q")
-      .value
-      .trim();
+if(!q)
+return;
 
+$("results").innerHTML = `
 
-  if(!q)
-    return;
+<div class="loading">
 
+Searching database… ⏳
 
-  $("results").innerHTML = `
+</div>
 
-    <div class="loading">
-      Searching database… ⏳
-    </div>
+`;
 
-  `;
+const terms =
+q.toLowerCase()
+.split(/\s+/)
+.filter(Boolean);
 
+const filtered =
+allTracksList.filter(
+x => {
 
-  const terms =
-    q.toLowerCase()
-     .split(" ")
-     .filter(
-       term =>
-         term.length > 0
-     );
+const combined =
+(
+(x.title || "") +
+" " +
+(x.artist || "")
+)
+.toLowerCase();
 
+return terms.every(
+term =>
+combined.includes(
+term
+)
+);
 
-  const filtered =
-    allTracksList.filter(
-      x => {
+});
 
-        const combined =
-          (
-            (x.title || "") +
-            " " +
-            (x.artist || "")
-          ).toLowerCase();
+if(
+filtered.length === 0
+){
 
+await sendTermuxRequest(
+q
+);
 
-        return terms.every(
-          term =>
-            combined.includes(term)
-        );
+}
 
-      }
-    );
-
-
-  if(
-    filtered.length === 0
-  ){
-
-    await sendTermuxRequest(
-      q
-    );
-
-
-    render(
-      [],
-      "🔎 " + q
-    );
-
-  }else{
-
-    render(
-      filtered,
-      "🔎 " + q
-    );
-
-  }
+render(
+filtered,
+"🔎 " +
+q
+);
 
 }
 
 
-/* =========================================================
+/* =====================================================
    TRENDING
-========================================================= */
+===================================================== */
 
 function loadTrending(btn){
 
-  if(androidPageOpen)
-    return;
+if(androidPageOpen)
+return;
 
+document
+.querySelectorAll(".chip")
+.forEach(
+x =>
+x.classList.remove(
+"active"
+)
+);
 
-  document
-    .querySelectorAll(".chip")
-    .forEach(
-      x =>
-        x.classList.remove(
-          "active"
-        )
-    );
+if(btn){
 
+btn.classList.add(
+"active"
+);
 
-  if(btn){
+}
 
-    btn.classList.add(
-      "active"
-    );
+$("q").value =
+"";
 
-  }
+currentFilter =
+"trending";
 
-
-  $("q").value =
-    "";
-
-
-  currentFilter =
-    "trending";
-
-
-  applyCurrentFilter();
+applyCurrentFilter();
 
 }
 
 
-/* =========================================================
+/* =====================================================
    QUICK FILTER
-========================================================= */
+===================================================== */
 
 function quickFilter(
-  keyword,
-  btn
+keyword,
+btn
 ){
 
-  if(androidPageOpen)
-    return;
+if(androidPageOpen)
+return;
 
+document
+.querySelectorAll(".chip")
+.forEach(
+x =>
+x.classList.remove(
+"active"
+)
+);
 
-  document
-    .querySelectorAll(".chip")
-    .forEach(
-      x =>
-        x.classList.remove(
-          "active"
-        )
-    );
+if(btn){
 
+btn.classList.add(
+"active"
+);
 
-  if(btn){
+}
 
-    btn.classList.add(
-      "active"
-    );
+$("q").value =
+keyword;
 
-  }
-
-
-  $("q").value =
-    keyword;
-
-
-  searchMusic();
+searchMusic();
 
 }
 
 
-/* =========================================================
+/* =====================================================
    DOWNLOAD FILTER
-========================================================= */
+===================================================== */
 
 function showDownloads(btn){
 
-  if(androidPageOpen)
-    return;
+if(androidPageOpen)
+return;
 
+document
+.querySelectorAll(".chip")
+.forEach(
+x =>
+x.classList.remove(
+"active"
+)
+);
 
-  document
-    .querySelectorAll(".chip")
-    .forEach(
-      x =>
-        x.classList.remove(
-          "active"
-        )
-    );
+if(btn){
 
+btn.classList.add(
+"active"
+);
 
-  if(btn){
+}
 
-    btn.classList.add(
-      "active"
-    );
+$("q").value =
+"";
 
-  }
+currentFilter =
+"downloads";
 
-
-  $("q").value =
-    "";
-
-
-  currentFilter =
-    "downloads";
-
-
-  applyCurrentFilter();
+applyCurrentFilter();
 
 }
 
 
-/* =========================================================
+/* =====================================================
    ADMIN
-========================================================= */
+===================================================== */
 
 function openAdmin(){
 
-  $("login")
-    .style.display =
-    "flex";
+$("login")
+.style.display =
+"flex";
 
 }
 
 
 function closeAdmin(){
 
-  $("login")
-    .style.display =
-    "none";
+$("login")
+.style.display =
+"none";
 
 }
 
 
 function loginAdmin(){
 
-  const u =
-    $("user")
-      .value
-      .trim();
+const u =
+$("user")
+.value
+.trim();
 
+const p =
+$("pass")
+.value;
 
-  const p =
-    $("pass").value;
+if(
+u === "MAKYAMA" &&
+p === "Makame005@"
+){
 
+admin = true;
 
-  if(
-    u === "MAKYAMA" &&
-    p === "Makame005@"
-  ){
+closeAdmin();
 
-    admin = true;
+$("admin")
+.style.display =
+"block";
 
+loadAdminList();
 
-    closeAdmin();
+toast(
+"Admin mode imewashwa."
+);
 
+}else{
 
-    $("admin")
-      .style.display =
-      "block";
+toast(
+"Username/password si sahihi."
+);
 
-
-    loadAdminList();
-
-
-    toast(
-      "Admin mode imewashwa."
-    );
-
-  }else{
-
-    toast(
-      "Username/password si sahihi."
-    );
-
-  }
+}
 
 }
 
 
 function logoutAdmin(){
 
-  admin = false;
+admin = false;
 
+$("admin")
+.style.display =
+"none";
 
-  $("admin")
-    .style.display =
-    "none";
-
-
-  toast(
-    "Logged out."
-  );
+toast(
+"Logged out."
+);
 
 }
 
 
-/* =========================================================
+/* =====================================================
    ADD TRACK
-========================================================= */
+===================================================== */
 
 async function saveAdminTrack(){
 
-  if(
-    !admin ||
-    !db
-  )
-    return;
+if(
+!admin ||
+!db
+)
+return;
 
+const data = {
 
-  const data = {
+jina:
+$("aTitle")
+.value
+.trim(),
 
-    jina:
-      $("aTitle")
-        .value
-        .trim(),
+artist:
+$("aArtist")
+.value
+.trim(),
 
-    artist:
-      $("aArtist")
-        .value
-        .trim(),
+picha:
+$("aCover")
+.value
+.trim(),
 
-    picha:
-      $("aCover")
-        .value
-        .trim(),
+linkAudio:
+$("aAudio")
+.value
+.trim(),
 
-    linkAudio:
-      $("aAudio")
-        .value
-        .trim(),
+views:0,
 
-    views:0,
+createdAt:
+Date.now()
 
-    createdAt:
-      Date.now()
+};
 
-  };
+if(
+!data.jina ||
+!data.linkAudio
+){
 
+toast(
+"Weka title na audio URL."
+);
 
-  if(
-    !data.jina ||
-    !data.linkAudio
-  ){
+return;
 
-    toast(
-      "Weka title na audio URL."
-    );
+}
 
-    return;
+await db
+.ref("media")
+.push(data);
 
-  }
+[
+"aTitle",
+"aArtist",
+"aCover",
+"aAudio"
+]
+.forEach(
+id =>
+$(id).value =
+""
+);
 
+loadAdminList();
 
-  await db
-    .ref("media")
-    .push(data);
-
-
-  [
-    "aTitle",
-    "aArtist",
-    "aCover",
-    "aAudio"
-  ].forEach(
-    id =>
-      $(id).value =
-        ""
-  );
-
-
-  toast(
-    "Track imeongezwa."
-  );
-
-
-  loadAdminList();
+toast(
+"Track imeongezwa."
+);
 
 }
 
 
-/* =========================================================
+/* =====================================================
    ADMIN LIST
-========================================================= */
+===================================================== */
 
 async function loadAdminList(){
 
-  if(!db)
-    return;
+if(!db)
+return;
 
+const snap =
+await db
+.ref("media")
+.once(
+"value"
+);
 
-  const snap =
-    await db
-      .ref("media")
-      .once("value");
+const arr = [];
 
+if(snap.exists()){
 
-  const arr = [];
+snap.forEach(
+c =>
+arr.push({
 
+key:c.key,
 
-  if(snap.exists()){
+data:c.val()
 
-    snap.forEach(
-      c =>
-        arr.push({
+})
+);
 
-          key:c.key,
+}
 
-          data:c.val()
+$("adminList")
+.innerHTML =
+arr
+.reverse()
+.map(
+x => `
 
-        })
-    );
+<div class="admin-item">
 
-  }
+<span>
 
+${esc(
+x.data.jina ||
+"Untitled"
+)}
 
-  $("adminList")
-    .innerHTML =
-      arr.reverse()
-        .map(
-          x => `
+(${x.data.views || 0} views)
 
-            <div class="admin-item">
+</span>
 
-              <span>
-                ${esc(
-                  x.data.jina ||
-                  "Untitled"
-                )}
+<button
+class="btn-red"
+onclick="deleteAdminTrack('${x.key}')">
 
-                (${x.data.views || 0} views)
-              </span>
+DELETE
 
-              <button
-                class="btn-red"
-                onclick="deleteAdminTrack('${x.key}')"
-              >
-                DELETE
-              </button>
+</button>
 
-            </div>
+</div>
 
-          `
-        )
-        .join("")
-        ||
-        '<div style="color:#69756d;font-size:10px">No tracks.</div>';
+`
+)
+.join("")
+||
+'<div style="color:#69756d;font-size:10px">No tracks.</div>';
 
 }
 
 
 async function deleteAdminTrack(
-  key
+key
 ){
 
-  if(
-    !confirm(
-      "Delete this track?"
-    )
-  )
-    return;
+if(
+!confirm(
+"Delete this track?"
+)
+)
+return;
 
+await db
+.ref(
+"media/" +
+key
+)
+.remove();
 
-  await db
-    .ref(
-      "media/" +
-      key
-    )
-    .remove();
+loadAdminList();
 
-
-  loadAdminList();
-
-
-  toast(
-    "Deleted."
-  );
+toast(
+"Deleted."
+);
 
 }
 
 
-/* =========================================================
+/* =====================================================
    MY DEVICE
-========================================================= */
+   IMPORTANT:
+   Java method = openDeviceMusic()
+===================================================== */
 
 function openLocalMusic(){
 
-  androidPageOpen =
-    true;
+androidPageOpen =
+true;
 
+$("homePage")
+.style.display =
+"none";
 
-  $("homePage")
-    .style.display =
-    "none";
+$("myDevicePage")
+.style.display =
+"block";
 
+$("deviceSearch")
+.value =
+"";
 
-  $("myDevicePage")
-    .style.display =
-    "block";
+$("deviceResults")
+.innerHTML = `
 
+<div class="loading">
 
-  $("deviceSearch").value =
-    "";
+Reading audio from your device… ⏳
 
+</div>
 
-  $("deviceResults").innerHTML = `
+`;
 
-    <div class="loading">
-      Reading audio from your device… ⏳
-    </div>
+$("deviceCount")
+.textContent =
+"Reading your music…";
 
-  `;
+window.scrollTo(
+0,
+0
+);
 
-
-  $("deviceCount").textContent =
-    "Reading your music…";
-
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-
-  /*
-   * MUHIMU:
-   * Java MainActivity inatumia
-   * openDeviceMusic()
-   */
-
-  if(
-    window.MMEDIA &&
-    typeof window.MMEDIA.openDeviceMusic ===
-    "function"
-  ){
-
-    window.MMEDIA.openDeviceMusic();
-
-  }else{
-
-    toast(
-      "My Device inahitaji APK ya MMEDIA."
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   ANDROID MUSIC CALLBACK
-========================================================= */
 
 /*
- * MainActivity.java itaita:
+ * HAPA NDIPO KULIKUWA NA KOSA:
  *
- * window.showAndroidMusic(json)
+ * zamani:
+ * MMEDIA.openMyDevice()
  *
+ * sasa:
+ * MMEDIA.openDeviceMusic()
  */
 
-window.showAndroidMusic =
-  function(json){
+if(
+window.MMEDIA &&
+typeof window.MMEDIA.openDeviceMusic ===
+"function"
+){
 
-    try{
+window.MMEDIA.openDeviceMusic();
 
-      const songs =
-        typeof json === "string"
-          ? JSON.parse(json)
-          : json;
+}else{
 
+toast(
+"My Device inahitaji APK ya MMEDIA."
+);
 
-      androidMusicList =
-        Array.isArray(songs)
-          ? songs
-          : [];
+}
 
-
-      androidMusicList.sort(
-        (a,b) =>
-          String(a.title || "")
-            .localeCompare(
-              String(b.title || ""),
-              undefined,
-              {
-                numeric:true,
-                sensitivity:"base"
-              }
-            )
-      );
+}
 
 
-      renderAndroidMusic(
-        androidMusicList
-      );
+/* =====================================================
+   RECEIVE DEVICE MUSIC
+   IMPORTANT:
+   Java MainActivity inaita:
+   window.receiveDeviceMusic(json)
+===================================================== */
+
+window.receiveDeviceMusic =
+function(json){
+
+try{
+
+const songs =
+typeof json === "string"
+?
+JSON.parse(json)
+:
+json;
+
+androidMusicList =
+Array.isArray(songs)
+?
+songs
+:
+[];
+
+androidMusicList.sort(
+(a,b) =>
+String(
+a.title || ""
+)
+.localeCompare(
+String(
+b.title || ""
+),
+undefined,
+{
+numeric:true,
+sensitivity:"base"
+}
+)
+);
+
+renderAndroidMusic(
+androidMusicList
+);
+
+}catch(e){
+
+console.error(
+"Device music error:",
+e
+);
+
+$("deviceResults")
+.innerHTML = `
+
+<div class="empty">
+
+⚠️ Imeshindikana kusoma audio za simu.
+
+</div>
+
+`;
+
+$("deviceCount")
+.textContent =
+"0 songs";
+
+}
+
+};
 
 
-    }catch(e){
-
-      console.error(
-        e
-      );
-
-
-      $("deviceResults")
-        .innerHTML = `
-
-          <div class="empty">
-
-            ⚠️ Imeshindikana kusoma audio za simu.
-
-          </div>
-
-        `;
-
-
-      $("deviceCount")
-        .textContent =
-        "0 songs";
-
-    }
-
-  };
-
-
-/* =========================================================
+/* =====================================================
    RENDER DEVICE MUSIC
-========================================================= */
+===================================================== */
 
 function renderAndroidMusic(
-  songs
+songs
 ){
 
-  $("deviceCount")
-    .textContent =
-    songs.length +
-    " songs • Sorted A–Z";
+$("deviceCount")
+.textContent =
+songs.length +
+" songs • Sorted A–Z";
 
+if(!songs.length){
 
-  if(!songs.length){
+$("deviceResults")
+.innerHTML = `
 
-    $("deviceResults")
-      .innerHTML = `
+<div class="empty">
 
-        <div class="empty">
+📱 Hakuna audio zilizopatikana kwenye simu.
 
-          📱 Hakuna audio zilizopatikana kwenye simu.
+<br><br>
 
-          <br><br>
+Hakikisha umeweka audio kwenye Music
+au folder nyingine ya simu.
 
-          Hakikisha umeweka audio kwenye Music
-          au folder nyingine ya simu.
+</div>
 
-        </div>
+`;
 
-      `;
+return;
 
+}
 
-    return;
-
-  }
-
-
-  $("deviceResults")
-    .innerHTML =
-    songs
-      .map(
-        androidSongCard
-      )
-      .join("");
+$("deviceResults")
+.innerHTML =
+songs
+.map(
+androidSongCard
+)
+.join("");
 
 }
 
 
-/* =========================================================
-   DEVICE SONG CARD
-========================================================= */
+/* =====================================================
+   DEVICE CARD
+===================================================== */
 
 function androidSongCard(
-  song
+song
 ){
 
-  const title =
-    song.title ||
-    "Unknown Song";
+const title =
+song.title ||
+"Unknown Song";
 
+const artist =
+song.artist ||
+"Unknown Artist";
 
-  const artist =
-    song.artist ||
-    "Unknown Artist";
+return `
 
+<article
+class="card">
 
-  return `
+<div
+class="cover"
+style="
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+">
 
-    <article
-      class="card"
-      data-title="${esc(title)}"
-      data-artist="${esc(artist)}"
-    >
+🎵
 
-      <div
-        class="cover"
-        style="
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:30px;
-        "
-      >
-        🎵
-      </div>
+</div>
 
+<div class="info">
 
-      <div class="info">
+<div class="badges">
 
-        <div class="badges">
+<span class="badge local">
 
-          <span class="badge local">
-            📱 DEVICE
-          </span>
+📱 DEVICE
 
-        </div>
+</span>
 
+</div>
 
-        <div class="title">
-          ${esc(title)}
-        </div>
+<div class="title">
 
+${esc(title)}
 
-        <div class="artist">
-          ${esc(artist)}
-        </div>
+</div>
 
+<div class="artist">
 
-        ${
-          song.album
-          ? `
-            <div
-              style="
-                font-size:9px;
-                color:#69756d;
-                margin-top:3px;
-              "
-            >
-              💿 ${esc(song.album)}
-            </div>
-          `
-          : ""
-        }
+${esc(artist)}
 
+</div>
 
-        <div class="actions">
+${
+song.album
+?
+`
+<div
+style="
+font-size:9px;
+color:#69756d;
+margin-top:3px;">
 
-          <button
-            class="play"
-            onclick='playAndroidSong(${JSON.stringify(song).replace(/'/g,"&#39;")})'
-          >
-            ▶ PLAY
-          </button>
+💿 ${esc(song.album)}
 
-        </div>
+</div>
+`
+:
+""
+}
 
-      </div>
+<div class="actions">
 
-    </article>
+<button
+class="play"
+onclick='playAndroidSong(${JSON.stringify(song).replace(/'/g,"&#39;")})'>
 
-  `;
+▶ PLAY
+
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+`;
 
 }
 
 
-/* =========================================================
-   SEARCH DEVICE
-========================================================= */
+/* =====================================================
+   DEVICE SEARCH
+===================================================== */
 
 function searchAndroidMusic(){
 
-  const q =
-    $("deviceSearch")
-      .value
-      .trim()
-      .toLowerCase();
+const q =
+$("deviceSearch")
+.value
+.trim()
+.toLowerCase();
 
+if(!q){
 
-  if(!q){
+renderAndroidMusic(
+androidMusicList
+);
 
-    renderAndroidMusic(
-      androidMusicList
-    );
+return;
 
-    return;
+}
 
-  }
+const terms =
+q.split(/\s+/)
+.filter(Boolean);
 
+const filtered =
+androidMusicList.filter(
+song => {
 
-  const terms =
-    q.split(/\s+/)
-     .filter(Boolean);
+const combined =
+(
+(song.title || "") +
+" " +
+(song.artist || "") +
+" " +
+(song.album || "")
+)
+.toLowerCase();
 
+return terms.every(
+term =>
+combined.includes(
+term
+)
+);
 
-  const filtered =
-    androidMusicList.filter(
-      song => {
+});
 
-        const combined =
-          (
-            (song.title || "") +
-            " " +
-            (song.artist || "") +
-            " " +
-            (song.album || "")
-          ).toLowerCase();
+$("deviceCount")
+.textContent =
+filtered.length +
+" songs found";
 
+if(!filtered.length){
 
-        return terms.every(
-          term =>
-            combined.includes(term)
-        );
+$("deviceResults")
+.innerHTML = `
 
-      }
-    );
+<div class="empty">
 
+🔎 Hakuna audio inayolingana na
+"<strong>${esc(q)}</strong>".
 
-  $("deviceCount")
-    .textContent =
-    filtered.length +
-    " songs found";
+</div>
 
+`;
 
-  if(!filtered.length){
+return;
 
-    $("deviceResults")
-      .innerHTML = `
+}
 
-        <div class="empty">
-
-          🔎 Hakuna audio inayolingana na
-          "<strong>${esc(q)}</strong>".
-
-        </div>
-
-      `;
-
-
-    return;
-
-  }
-
-
-  $("deviceResults")
-    .innerHTML =
-    filtered
-      .map(
-        androidSongCard
-      )
-      .join("");
+$("deviceResults")
+.innerHTML =
+filtered
+.map(
+androidSongCard
+)
+.join("");
 
 }
 
 
-/* =========================================================
+/* =====================================================
    DEVICE SEARCH INPUT
-========================================================= */
+===================================================== */
 
 $("deviceSearch")
-  .addEventListener(
-    "input",
-    searchAndroidMusic
-  );
+.addEventListener(
+"input",
+searchAndroidMusic
+);
 
 
-/* =========================================================
-   BACK TO HOME
-========================================================= */
+/* =====================================================
+   CLOSE DEVICE
+===================================================== */
 
 function closeAndroidMusic(){
 
-  androidPageOpen =
-    false;
+androidPageOpen =
+false;
 
+$("myDevicePage")
+.style.display =
+"none";
 
-  $("myDevicePage")
-    .style.display =
-    "none";
+$("homePage")
+.style.display =
+"block";
 
+$("deviceSearch")
+.value =
+"";
 
-  $("homePage")
-    .style.display =
-    "block";
+window.scrollTo(
+0,
+0
+);
 
-
-  $("deviceSearch").value =
-    "";
-
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-
-  applyCurrentFilter();
+applyCurrentFilter();
 
 }
 
 
-/* =========================================================
-   ANDROID BACK SUPPORT
-========================================================= */
+/* =====================================================
+   ANDROID BACK BRIDGE
+===================================================== */
 
 window.exitDevicePage =
-  function(){
+function(){
 
-    if(androidPageOpen){
+if(androidPageOpen){
 
-      closeAndroidMusic();
+closeAndroidMusic();
 
-      return true;
+return true;
 
-    }
+}
 
-    return false;
+return false;
 
-  };
-
-
-window.addEventListener(
-  "popstate",
-  () => {
-
-    if(androidPageOpen){
-
-      closeAndroidMusic();
-
-    }
-
-  }
-);
+};
 
 
-/* =========================================================
-   KEYBOARD SEARCH
-========================================================= */
+/* =====================================================
+   HOME SEARCH ENTER
+===================================================== */
 
 $("q")
-  .addEventListener(
-    "keydown",
-    e => {
-
-      if(
-        e.key === "Enter"
-      ){
-
-        searchMusic();
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   SERVICE WORKER
-========================================================= */
+.addEventListener(
+"keydown",
+e => {
 
 if(
-  "serviceWorker" in navigator
+e.key === "Enter"
 ){
 
-  window.addEventListener(
-    "load",
-    () => {
+searchMusic();
 
-      navigator.serviceWorker
-        .register("/sw.js")
-        .then(
-          () =>
-            console.log(
-              "MMEDIA Service Worker registered"
-            )
-        )
-        .catch(
-          err =>
-            console.log(
-              "Service Worker error:",
-              err
-            )
-        );
+}
 
-    }
-  );
+});
+
+
+/* =====================================================
+   SERVICE WORKER
+===================================================== */
+
+if(
+"serviceWorker" in navigator
+){
+
+window.addEventListener(
+"load",
+() => {
+
+navigator.serviceWorker
+.register("/sw.js")
+.then(
+() =>
+console.log(
+"MMEDIA Service Worker registered"
+)
+)
+.catch(
+err =>
+console.log(
+"Service Worker error:",
+err
+)
+);
+
+});
 
 }
 
 
-/* =========================================================
+/* =====================================================
    INITIALIZE
-========================================================= */
+===================================================== */
 
 window.addEventListener(
-  "load",
-  () => {
+"load",
+() => {
 
-    initRealtimeListener();
+initRealtimeListener();
 
-    initAdsRealtimeListener();
+initAdsRealtimeListener();
 
-    initPresenceSystem();
+initPresenceSystem();
 
-  }
-);
+});
 
 </script>
 
 </body>
-
-  </html>
+                                              </html>
