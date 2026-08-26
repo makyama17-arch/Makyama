@@ -665,6 +665,40 @@ window.addEventListener("load",()=>{
       .catch(err => console.log("Service Worker error:", err));
   });
   }
+  function openLocalMusic(){
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "audio/*";
+  input.multiple = true;
+
+  input.onchange = function(){
+    const files = Array.from(input.files || []);
+
+    if(!files.length) return;
+
+    const localTracks = files.map((file,index)=>({
+      key: "local_" + index,
+      title: file.name.replace(/\.[^/.]+$/, ""),
+      artist: "My Music",
+      cover: "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png",
+      audio: URL.createObjectURL(file),
+      download: "",
+      views: 0,
+      type: "LOCAL"
+    }));
+
+    renderLocalMusic(localTracks);
+  };
+
+  input.click();
+}
+
+function renderLocalMusic(tracks){
+  $("sectionTitle").textContent = "📱 My Music";
+  $("status").textContent = tracks.length + " songs";
+
+  $("results").innerHTML = tracks.map(card).join("");
+}
   
 </script>
 </body>
