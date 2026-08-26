@@ -2,13 +2,14 @@ package com.makyama.mmedia;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.os.Environment;
+import android.webkit.DownloadListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -19,7 +20,6 @@ public class MainActivity extends Activity {
     private WebView webView;
 
     private static final int AUDIO_PERMISSION = 100;
-    private static final int PICK_AUDIO = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,23 @@ public class MainActivity extends Activity {
 
         webView.setWebViewClient(new WebViewClient());
 
+        webView.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(
+                    String url,
+                    String userAgent,
+                    String contentDisposition,
+                    String mimeType,
+                    long contentLength) {
+
+                downloadFile(
+                        url,
+                        contentDisposition,
+                        mimeType
+                );
+            }
+        });
+
         requestAudioPermission();
 
         webView.loadUrl("https://makyama.vercel.app/");
@@ -48,134 +65,144 @@ public class MainActivity extends Activity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 
-            if (checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO)
-                    != PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(
+                    Manifest.permission.READ_MEDIA_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED) {
 
                 requestPermissions(
-                        new String[]{Manifest.permission.READ_MEDIA_AUDIO},
+                        new String[]{
+                                Manifest.permission.READ_MEDIA_AUDIO
+                        },
                         AUDIO_PERMISSION
                 );
             }
 
         } else {
 
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                    checkSelfPermission(
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) != PackageManager.PERMISSION_GRANTED) {
 
                 requestPermissions(
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        new String[]{
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                        },
                         AUDIO_PERMISSION
                 );
             }
         }
     }
 
-    public void openPhoneMusic() {
-
-        Intent intent = new Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        );
-
-        intent.setType("audio/*");
-        startActivityForResult(intent, PICK_AUDIO);
-    }
-
-    @Override
-    protected void onActivityResult(
-            int requestCode,
-            int resultCode,
-            Intent data) {
-
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_AUDIO &&
-                resultCode == RESULT_OK &&
-                data != null) {
-
-            Uri audioUri = data.getData();
-
-            if (audioUri != null) {
-
-                String title = getAudioTitle(audioUri);
-
-                Toast.makeText(
-                        this,
-                        "🎵 " + title,
-                        Toast.LENGTH_SHORT
-                ).show();
-
-                playLocalAudio(audioUri);
-            }
-        }
-    }
-
-    private String getAudioTitle(Uri uri) {
-
-        String title = "Local Music";
-
-        Cursor cursor = getContentResolver().query(
-                uri,
-                new String[]{
-                        MediaStore.Audio.Media.DISPLAY_NAME
-                },
-                null,
-                null,
-                null
-        );
-
-        if (cursor != null) {
-
-            if (cursor.moveToFirst()) {
-
-                int index = cursor.getColumnIndex(
-                        MediaStore.Audio.Media.DISPLAY_NAME
-                );
-
-                if (index >= 0) {
-                    title = cursor.getString(index);
-                }
-            }
-
-            cursor.close();
-        }
-
-        return title;
-    }
-
-    private void playLocalAudio(Uri uri) {
+    private void downloadFile(
+            String url,
+            String contentDisposition,
+            String mimeType) {
 
         try {
 
-            Intent intent = new Intent(
-                    Intent.ACTION_VIEW
+            DownloadManager.Request request =
+                    new DownloadManager.Request(
+                            Uri.parse(url)
+                    );
+
+            request.setTitle("MMEDIA Download");
+
+            request.setDescription(
+                    "Downloading music..."
             );
 
-            intent.setDataAndType(
-                    uri,
-                    "audio/*"
+            request.setNotificationVisibility(
+                    DownloadManager.Request
+                            .VISIBILITY_VISIBLE_NOTIFY_COMPLETED
             );
 
-            intent.addFlags(
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+            request.setMimeType(
+                    mimeType != null
+                            ? mimeType
+                            : "audio/mpeg"
             );
 
-            startActivity(intent);
+            request.setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_MUSIC,
+                    getFileName(
+                            url,
+                            contentDisposition
+                    )
+            );
+
+            DownloadManager manager =
+                    (DownloadManager)
+                            getSystemService(
+                                    DOWNLOAD_SERVICE
+                            );
+
+            if (manager != null) {
+
+                manager.enqueue(request);
+
+                Toast.makeText(
+                        this,
+                        "⬇️ Download imeanza",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
 
         } catch (Exception e) {
 
             Toast.makeText(
                     this,
-                    "Haiwezi kufungua audio hii.",
+                    "Download imeshindikana",
                     Toast.LENGTH_SHORT
             ).show();
         }
     }
 
+    private String getFileName(
+            String url,
+            String contentDisposition) {
+
+        String fileName = "MMEDIA_Music.mp3";
+
+        if (contentDisposition != null &&
+                contentDisposition.contains("filename=")) {
+
+            fileName =
+                    contentDisposition
+                            .substring(
+                                    contentDisposition
+                                            .indexOf("filename=")
+                                            + 9
+                            )
+                            .replace("\"", "")
+                            .trim();
+        } else {
+
+            try {
+
+                Uri uri = Uri.parse(url);
+
+                String last =
+                        uri.getLastPathSegment();
+
+                if (last != null &&
+                        last.contains(".")) {
+
+                    fileName = last;
+                }
+
+            } catch (Exception ignored) {
+            }
+        }
+
+        return fileName;
+    }
+
     @Override
     public void onBackPressed() {
 
-        if (webView != null && webView.canGoBack()) {
+        if (webView != null &&
+                webView.canGoBack()) {
 
             webView.goBack();
 
