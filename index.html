@@ -61,23 +61,14 @@
 :root{
 
     --green:#00e676;
-
     --green2:#00c853;
-
     --bg:#070a09;
-
     --panel:#101512;
-
     --panel2:#151b17;
-
     --text:#fff;
-
     --muted:#8c9990;
-
     --line:#253029;
-
     --orange:#ff9800;
-
     --red:#ff5252;
 
 }
@@ -454,8 +445,6 @@ header{
 
 /* =====================================================
    MY DEVICE
-   HIDDEN BY DEFAULT
-   ONLY APK ENABLES IT
 ===================================================== */
 
 .device-btn{
@@ -1376,6 +1365,210 @@ audio{
 }
 
 
+/* =====================================================
+   DOWNLOADS SECTION
+===================================================== */
+
+.device-downloads{
+
+    background:
+        linear-gradient(
+            135deg,
+            #111713,
+            #0d120f
+        );
+
+    border:
+        1px solid var(--line);
+
+    border-radius:13px;
+
+    padding:11px;
+
+    margin-bottom:16px;
+
+}
+
+
+.device-section-title{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    font-size:14px;
+
+    font-weight:900;
+
+    margin:
+        8px 0 10px;
+
+}
+
+
+.download-count{
+
+    background:var(--green);
+
+    color:#001b0d;
+
+    min-width:26px;
+
+    text-align:center;
+
+    padding:
+        4px 8px;
+
+    border-radius:99px;
+
+    font-size:10px;
+
+}
+
+
+.download-list{
+
+    display:grid;
+
+    gap:8px;
+
+}
+
+
+.download-item{
+
+    background:#151d18;
+
+    border:
+        1px solid #253029;
+
+    border-radius:10px;
+
+    padding:10px;
+
+}
+
+
+.download-top{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:8px;
+
+}
+
+
+.download-name{
+
+    font-size:11px;
+
+    font-weight:900;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    text-overflow:ellipsis;
+
+    flex:1;
+
+}
+
+
+.download-percent{
+
+    color:var(--green);
+
+    font-size:11px;
+
+    font-weight:900;
+
+    flex:0 0 auto;
+
+}
+
+
+.download-progress{
+
+    width:100%;
+
+    height:7px;
+
+    background:#273129;
+
+    border-radius:99px;
+
+    overflow:hidden;
+
+    margin-top:8px;
+
+}
+
+
+.download-progress-bar{
+
+    width:0%;
+
+    height:100%;
+
+    background:var(--green);
+
+    border-radius:99px;
+
+    transition:
+        width .25s ease;
+
+}
+
+
+.download-status{
+
+    color:var(--muted);
+
+    font-size:9px;
+
+    margin-top:6px;
+
+}
+
+
+.download-empty{
+
+    color:var(--muted);
+
+    font-size:10px;
+
+    text-align:center;
+
+    padding:
+        12px 5px;
+
+}
+
+
+/* =====================================================
+   STORAGE
+===================================================== */
+
+.storage-title{
+
+    margin:
+        14px 0 10px;
+
+    border-left:
+        4px solid var(--green);
+
+    padding-left:8px;
+
+}
+
+
 .device-search{
 
     display:flex;
@@ -1609,9 +1802,7 @@ audio{
     ></div>
 
 
-    <!-- =================================================
-         SEARCH
-    ================================================= -->
+    <!-- SEARCH -->
 
     <div class="search-row">
 
@@ -1635,11 +1826,6 @@ audio{
         </div>
 
 
-        <!--
-            HIDDEN ON WEBSITE.
-            ANDROID APK ENABLES THIS BUTTON.
-        -->
-
         <button
             id="myDeviceButton"
             class="device-btn"
@@ -1658,9 +1844,7 @@ audio{
     </div>
 
 
-    <!-- =================================================
-         CHIPS
-    ================================================= -->
+    <!-- CHIPS -->
 
     <div class="chips">
 
@@ -1737,8 +1921,6 @@ audio{
             👑 ADMIN DASHBOARD
         </h3>
 
-
-        <!-- LIVE USERS -->
 
         <div
             style="
@@ -2014,6 +2196,62 @@ audio{
     </div>
 
 
+    <!-- =================================================
+         DOWNLOADS
+    ================================================= -->
+
+    <section class="device-downloads">
+
+        <div class="device-section-title">
+
+            <span>
+                ⬇️ Downloads
+            </span>
+
+
+            <span
+                id="downloadCount"
+                class="download-count"
+            >
+                0
+            </span>
+
+        </div>
+
+
+        <div
+            id="downloadList"
+            class="download-list"
+        >
+
+            <div class="download-empty">
+
+                Hakuna download inayoendelea.
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         STORAGE TITLE
+    ================================================= -->
+
+    <div class="device-section-title storage-title">
+
+        <span>
+            📂 Storage
+        </span>
+
+    </div>
+
+
+    <!-- =================================================
+         STORAGE SEARCH
+    ================================================= -->
+
     <div class="device-search">
 
         <input
@@ -2039,7 +2277,9 @@ audio{
     >
 
         <div class="loading">
-            Reading your music… ⏳
+
+            Reading audio… ⏳
+
         </div>
 
     </div>
@@ -2225,6 +2465,14 @@ let androidPageOpen =
 
 
 /* =========================================================
+   DOWNLOAD STATE
+========================================================= */
+
+let androidDownloads =
+    [];
+
+
+/* =========================================================
    SELECTOR
 ========================================================= */
 
@@ -2318,7 +2566,6 @@ function imageFor(item){
 
 /* =========================================================
    ENABLE MY DEVICE
-   APK ONLY
 ========================================================= */
 
 window.enableMyDeviceButton =
@@ -2909,7 +3156,6 @@ function playTrack(t){
 
 /* =========================================================
    DEVICE PLAYER
-   ANDROID NATIVE
 ========================================================= */
 
 function playAndroidSong(
@@ -2949,11 +3195,6 @@ function playAndroidSong(
         "flex";
 
 
-    /*
-     * APK:
-     * tumia Android MediaPlayer
-     */
-
     if(
         window.MMEDIA &&
         typeof window.MMEDIA.playDeviceAudio ===
@@ -2976,10 +3217,6 @@ function playAndroidSong(
 
     }
 
-
-    /*
-     * Browser fallback.
-     */
 
     const audio =
         $("audio");
@@ -3037,10 +3274,6 @@ function closePlayer(){
 
     audio.load();
 
-
-    /*
-     * Stop Android native player
-     */
 
     if(
         window.MMEDIA &&
@@ -3123,6 +3356,12 @@ function downloadTrack(t){
     }
 
 
+    /*
+     * Android APK downloader.
+     *
+     * Java itapokea URL na filename.
+     */
+
     if(
         window.MMEDIA &&
         typeof window.MMEDIA.download ===
@@ -3138,6 +3377,10 @@ function downloadTrack(t){
 
     }
 
+
+    /*
+     * Browser fallback.
+     */
 
     const a =
         document.createElement(
@@ -3170,6 +3413,298 @@ function downloadTrack(t){
     );
 
 }
+
+
+/* =========================================================
+   DOWNLOAD UI
+========================================================= */
+
+function renderDownloads(){
+
+    const list =
+        $("downloadList");
+
+
+    const count =
+        $("downloadCount");
+
+
+    if(
+        !list ||
+        !count
+    )
+        return;
+
+
+    count.textContent =
+        androidDownloads.length;
+
+
+    if(
+        !androidDownloads.length
+    ){
+
+        list.innerHTML = `
+
+            <div class="download-empty">
+
+                Hakuna download inayoendelea.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+
+        androidDownloads
+            .map(
+                download => {
+
+                    const percent =
+                        Math.max(
+                            0,
+                            Math.min(
+                                100,
+                                Number(
+                                    download.percent || 0
+                                )
+                            )
+                        );
+
+
+                    return `
+
+                        <div
+                            class="download-item"
+                            id="
+                                download_${esc(
+                                    download.id
+                                )}
+                            "
+                        >
+
+                            <div
+                                class="download-top"
+                            >
+
+                                <div
+                                    class="download-name"
+                                >
+
+                                    ⬇️
+                                    ${esc(
+                                        download.name ||
+                                        "Downloading..."
+                                    )}
+
+                                </div>
+
+
+                                <div
+                                    class="download-percent"
+                                >
+
+                                    ${percent}%
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="download-progress"
+                            >
+
+                                <div
+                                    class="download-progress-bar"
+                                    style="
+                                        width:${percent}%
+                                    "
+                                ></div>
+
+                            </div>
+
+
+                            <div
+                                class="download-status"
+                            >
+
+                                ${esc(
+                                    download.status ||
+                                    "Downloading..."
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+}
+
+
+/* =========================================================
+   ANDROID → HTML DOWNLOAD PROGRESS
+========================================================= */
+
+/*
+ * Java itaita function hii:
+ *
+ * updateAndroidDownload(
+ *     id,
+ *     name,
+ *     percent,
+ *     status
+ * )
+ */
+
+window.updateAndroidDownload =
+    function(
+        id,
+        name,
+        percent,
+        status
+    ){
+
+        const cleanId =
+            String(
+                id
+            );
+
+
+        const value =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    Number(
+                        percent
+                    ) || 0
+                )
+            );
+
+
+        const existing =
+            androidDownloads.find(
+                x =>
+                    String(x.id) ===
+                    cleanId
+            );
+
+
+        if(existing){
+
+            existing.name =
+                name ||
+                existing.name;
+
+            existing.percent =
+                value;
+
+            existing.status =
+                status ||
+                "Downloading...";
+
+        }
+        else{
+
+            androidDownloads.push({
+
+                id:
+                    cleanId,
+
+                name:
+                    name ||
+                    "Downloading...",
+
+                percent:
+                    value,
+
+                status:
+                    status ||
+                    "Downloading..."
+
+            });
+
+        }
+
+
+        renderDownloads();
+
+    };
+
+
+/* =========================================================
+   DOWNLOAD FINISHED
+========================================================= */
+
+window.finishAndroidDownload =
+    function(
+        id,
+        name
+    ){
+
+        androidDownloads =
+            androidDownloads.filter(
+                x =>
+                    String(x.id) !==
+                    String(id)
+            );
+
+
+        renderDownloads();
+
+
+        toast(
+            "✅ Download imekamilika: " +
+            (
+                name ||
+                ""
+            )
+        );
+
+    };
+
+
+/* =========================================================
+   DOWNLOAD FAILED
+========================================================= */
+
+window.failAndroidDownload =
+    function(
+        id,
+        name
+    ){
+
+        androidDownloads =
+            androidDownloads.filter(
+                x =>
+                    String(x.id) !==
+                    String(id)
+            );
+
+
+        renderDownloads();
+
+
+        toast(
+            "❌ Download imeshindikana: " +
+            (
+                name ||
+                ""
+            )
+        );
+
+    };
 
 
 /* =========================================================
@@ -3476,7 +4011,9 @@ function render(
                         color:#fff
                     "
                 >
+
                     ⚠️ Wimbo huu haujapatikana kwa sasa.
+
                 </p>
 
 
@@ -4177,12 +4714,6 @@ async function deleteAdminTrack(
 
 function openLocalMusic(){
 
-    /*
-     * Usalama:
-     * browser haiwezi kufikia hapa kwa sababu
-     * button yenyewe imefichwa.
-     */
-
     if(
         !window.MMEDIA ||
         typeof window.MMEDIA.openMyDevice !==
@@ -4229,6 +4760,13 @@ function openLocalMusic(){
 
     $("deviceCount").textContent =
         "Reading your music…";
+
+
+    /*
+     * Downloads UI ibaki juu.
+     */
+
+    renderDownloads();
 
 
     window.scrollTo({
@@ -4328,7 +4866,7 @@ window.showAndroidMusic =
 
 
 /* =========================================================
-   RENDER DEVICE MUSIC
+   RENDER DEVICE MUSIC / STORAGE
 ========================================================= */
 
 function renderAndroidMusic(
@@ -4350,8 +4888,8 @@ function renderAndroidMusic(
 
                 <div class="empty">
 
-                    📱 Hakuna audio
-                    zilizopatikana kwenye simu.
+                    📂 Hakuna audio
+                    zilizopatikana kwenye storage.
 
                     <br><br>
 
@@ -4430,7 +4968,7 @@ function androidSongCard(
 
                     <span class="badge local">
 
-                        📱 DEVICE
+                        📂 STORAGE
 
                     </span>
 
@@ -4551,9 +5089,11 @@ function searchAndroidMusic(){
                         combined.includes(
                             term
                         )
+
                 );
 
             }
+
         );
 
 
@@ -4744,6 +5284,7 @@ if(
                 );
 
         }
+
     );
 
 }
@@ -4757,7 +5298,6 @@ window.addEventListener(
     "load",
     () => {
 
-
         /*
          * Website functions
          */
@@ -4770,15 +5310,15 @@ window.addEventListener(
 
 
         /*
-         * IMPORTANT:
-         *
-         * Do NOT display MY DEVICE here.
-         *
-         * Android APK will call:
-         *
-         * MMEDIA.enableMyDevice()
-         *
-         * and then the button appears.
+         * Download UI
+         */
+
+        renderDownloads();
+
+
+        /*
+         * Android APK enables
+         * MY DEVICE button.
          */
 
         if(
@@ -4792,10 +5332,11 @@ window.addEventListener(
         }
 
     }
+
 );
 
 </script>
 
 </body>
 
-  </html>
+    </html>
