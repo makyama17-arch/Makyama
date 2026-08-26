@@ -165,6 +165,9 @@ audio{width:min(330px,42vw);height:34px}
     <p>Tafuta msanii au wimbo kutoka kwenye music catalog.</p>
   </section>
 
+  <!-- ENEO LA NATIVE BANNER LIMEWEKWA HAPA KABLA YA SEARCH BAR -->
+  <div id="bannerAdsArea" class="banner-ads-container"></div>
+
   <div class="search">
     <input id="q" placeholder="🔎 Search artist or song — mfano Alan Walker" autocomplete="off">
     <button class="btn btn-green" onclick="searchMusic()">SEARCH</button>
@@ -179,9 +182,6 @@ audio{width:min(330px,42vw);height:34px}
     <button class="chip" onclick="quickFilter('Gospel', this)">🙌 Gospel</button>
     <button class="chip" onclick="showDownloads(this)">⬇️ Free Downloads</button>
   </div>
-
-  <!-- ENEO LA NATIVE BANNER -->
-  <div id="bannerAdsArea" class="banner-ads-container"></div>
 
   <section id="admin" class="admin">
     <h3>👑 ADMIN DASHBOARD</h3>
@@ -292,13 +292,11 @@ function imageFor(item){
   return item.cover || "https://i.postimg.cc/QNm1XPTs/high-resolution-logo-grayscale.png";
 }
 
-// INJECT SCRIPT NA HTML NZIMA KUTOKA ADSTERRA BILA KUCHAGUA KITU
 function injectScriptInto(container, code) {
   container.innerHTML = "";
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = code;
   
-  // Hamisha HTML tags zote za kawaida (kama vile div za Native Banner)
   const children = Array.from(tempDiv.children);
   children.forEach(child => {
     if(child.tagName.toLowerCase() !== 'script') {
@@ -306,12 +304,10 @@ function injectScriptInto(container, code) {
     }
   });
 
-  // Ikiwa hakuna HTML tag maalum, weka code yote kama ilivyo kwenye container
   if(container.children.length === 0) {
     container.innerHTML = code;
   }
 
-  // Chomoa script zote zilizomo na uzirudishe upya ili kivinjari kiweze kuzi-run
   const scripts = tempDiv.getElementsByTagName('script');
   Array.from(scripts).forEach(oldScript => {
     const newScript = document.createElement('script');
