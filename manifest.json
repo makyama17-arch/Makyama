@@ -1,0 +1,18 @@
+{
+  "name": "MAKYAMA MEDIA",
+  "short_name": "MMEDIA",
+  "description": "Global Music • Stream • Discover • Download Licensed Audio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070a09",
+  "theme_color": "#00e676",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
