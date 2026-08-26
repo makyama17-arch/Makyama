@@ -449,15 +449,38 @@ function closePlayer(){
   $("player").style.display="none";
 }
 
-async function downloadTrack(t){
-  if(!t.download){ toast("Haipakiliki moja kwa moja."); return; }
-  
-  toast("Inapakua faili...");
-  const a = document.createElement('a');
+function downloadTrack(t){
+  if(!t.download){
+    toast("Haipakiliki moja kwa moja.");
+    return;
+  }
+
+  const title = (t.title || "MMEDIA Music").trim();
+  const artist = (t.artist || "").trim();
+
+  let filename = artist
+    ? artist + " - " + title
+    : title;
+
+  filename = filename
+    .replace(/[\\/:*?"<>|]/g, "_")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if(!filename.toLowerCase().endsWith(".mp3")){
+    filename += ".mp3";
+  }
+
+  if(window.MMEDIA && typeof window.MMEDIA.download === "function"){
+    window.MMEDIA.download(t.download, filename);
+    return;
+  }
+
+  const a = document.createElement("a");
   a.href = t.download;
-  const fileName = (t.title ? t.title.replace(/[^a-zA-Z0-9]/g, '_') : 'Makyama_Music') + '.mp3';
-  a.setAttribute('download', fileName);
-  a.setAttribute('target', '_self');
+  a.download = filename;
+  a.target = "_self";
+
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
