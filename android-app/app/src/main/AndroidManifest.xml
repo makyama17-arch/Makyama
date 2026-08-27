@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Internet kwa WebView na downloads -->
     <uses-permission
         android:name="android.permission.INTERNET" />
 
-    <!-- Kusoma music/audio kwenye Android 13+ -->
     <uses-permission
         android:name="android.permission.READ_MEDIA_AUDIO" />
 
-    <!-- Kusoma audio kwenye Android 12 na chini -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-
-    <!-- Download notification kwenye Android 13+ -->
-    <uses-permission
-        android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -25,6 +19,7 @@
         android:label="MMEDIA"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
 
         <activity
