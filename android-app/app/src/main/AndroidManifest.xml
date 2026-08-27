@@ -2,15 +2,22 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Internet kwa streaming -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Notification kwenye Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Background media playback -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_AUDIO" />
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
 
     <application
         android:allowBackup="true"
@@ -18,27 +25,33 @@
         android:label="MAKYAMA MEDIA"
         android:theme="@style/Theme.Makyama">
 
-        <!-- Main app -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action
+                    android:name="android.intent.action.MAIN" />
+
+                <category
+                    android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
 
         </activity>
 
-        <!-- Music playback service -->
+
         <service
             android:name=".PlaybackService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback">
 
             <intent-filter>
-                <action android:name="androidx.media3.session.MediaSessionService" />
-                <action android.media.browse.MediaBrowserService" />
+
+                <action
+                    android:name="androidx.media3.session.MediaSessionService" />
+
             </intent-filter>
 
         </service>
