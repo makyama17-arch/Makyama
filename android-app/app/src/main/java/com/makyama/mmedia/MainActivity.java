@@ -47,7 +47,8 @@ public class MainActivity extends Activity {
 
     private ListenableFuture<MediaController> controllerFuture;
 
-    private final List<MediaItem> deviceQueue = new ArrayList<>();
+    private final List<MediaItem> deviceQueue =
+            new ArrayList<>();
 
     private final Executor backgroundExecutor =
             Executors.newSingleThreadExecutor();
@@ -74,6 +75,22 @@ public class MainActivity extends Activity {
 
         webView.loadUrl(
                 "https://makyama.vercel.app/"
+        );
+    }
+
+
+    // =====================================================
+    // MAIN ACTIVITY TOAST
+    // =====================================================
+
+    private void showToast(String message) {
+
+        runOnUiThread(
+                () -> Toast.makeText(
+                        MainActivity.this,
+                        message,
+                        Toast.LENGTH_LONG
+                ).show()
         );
     }
 
@@ -125,12 +142,8 @@ public class MainActivity extends Activity {
 
                             e.printStackTrace();
 
-                            runOnUiThread(
-                                    () -> Toast.makeText(
-                                            MainActivity.this,
-                                            "Media player haikuunganishwa.",
-                                            Toast.LENGTH_LONG
-                                    ).show()
+                            showToast(
+                                    "Media player haikuunganishwa."
                             );
                         }
 
@@ -141,16 +154,18 @@ public class MainActivity extends Activity {
         }
         catch (Exception e) {
 
-    e.printStackTrace();
+            e.printStackTrace();
 
-    final String error =
-            e.getClass().getSimpleName() +
-            ": " +
-            (e.getMessage() == null
-                    ? "Unknown error"
-                    : e.getMessage());
+            final String error =
+                    e.getClass().getSimpleName()
+                            + ": "
+                            + (
+                            e.getMessage() == null
+                                    ? "Unknown error"
+                                    : e.getMessage()
+                    );
 
-    showToast(error);
+            showToast(error);
         }
     }
 
@@ -188,9 +203,12 @@ public class MainActivity extends Activity {
 
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
-        settings.setMixedContentMode(
-                WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
-        );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            settings.setMixedContentMode(
+                    WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+            );
+        }
 
 
         webView.setWebViewClient(
@@ -204,6 +222,7 @@ public class MainActivity extends Activity {
 
                         return false;
                     }
+
 
                     @Override
                     public boolean shouldOverrideUrlLoading(
@@ -242,7 +261,7 @@ public class MainActivity extends Activity {
                             this,
                             Manifest.permission.READ_MEDIA_AUDIO
                     )
-                    != PackageManager.PERMISSION_GRANTED
+                            != PackageManager.PERMISSION_GRANTED
             ) {
 
                 requestPermissions(
@@ -261,7 +280,7 @@ public class MainActivity extends Activity {
                             this,
                             Manifest.permission.READ_EXTERNAL_STORAGE
                     )
-                    != PackageManager.PERMISSION_GRANTED
+                            != PackageManager.PERMISSION_GRANTED
             ) {
 
                 requestPermissions(
@@ -298,9 +317,10 @@ public class MainActivity extends Activity {
         ) {
 
             if (
-                    grantResults.length > 0 &&
-                    grantResults[0] ==
-                            PackageManager.PERMISSION_GRANTED
+                    grantResults.length > 0
+                            &&
+                            grantResults[0] ==
+                                    PackageManager.PERMISSION_GRANTED
             ) {
 
                 Toast.makeText(
@@ -342,10 +362,13 @@ public class MainActivity extends Activity {
                 value -> {
 
                     if (
-                            value == null ||
-                            value.equals("false") ||
-                            value.equals("null") ||
-                            value.equals("\"false\"")
+                            value == null
+                                    ||
+                                    value.equals("false")
+                                    ||
+                                    value.equals("null")
+                                    ||
+                                    value.equals("\"false\"")
                     ) {
 
                         if (webView.canGoBack()) {
@@ -435,16 +458,17 @@ public class MainActivity extends Activity {
                 return ContextCompat.checkSelfPermission(
                         MainActivity.this,
                         Manifest.permission.READ_MEDIA_AUDIO
-                ) == PackageManager.PERMISSION_GRANTED;
-
+                )
+                        ==
+                        PackageManager.PERMISSION_GRANTED;
             }
-            else {
 
-                return ContextCompat.checkSelfPermission(
-                        MainActivity.this,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED;
-            }
+            return ContextCompat.checkSelfPermission(
+                    MainActivity.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+                    ==
+                    PackageManager.PERMISSION_GRANTED;
         }
 
 
@@ -549,6 +573,20 @@ public class MainActivity extends Activity {
                                         );
 
 
+                                if (
+                                        idColumn < 0 ||
+                                                titleColumn < 0 ||
+                                                artistColumn < 0 ||
+                                                albumColumn < 0 ||
+                                                mimeColumn < 0 ||
+                                                durationColumn < 0 ||
+                                                displayColumn < 0
+                                ) {
+
+                                    return;
+                                }
+
+
                                 while (cursor.moveToNext()) {
 
                                     long id =
@@ -605,15 +643,16 @@ public class MainActivity extends Activity {
                                             title == null ||
                                                     title.trim().isEmpty()
                                                     ? (
-                                                            displayName == null
-                                                                    ? "Unknown"
-                                                                    : displayName
-                                                    )
+                                                    displayName == null
+                                                            ? "Unknown"
+                                                            : displayName
+                                            )
                                                     : title;
 
 
                                     String finalArtist =
-                                            artist == null
+                                            artist == null ||
+                                                    artist.trim().isEmpty()
                                                     ? "Unknown Artist"
                                                     : artist;
 
@@ -771,9 +810,12 @@ public class MainActivity extends Activity {
                 String artist
         ) {
 
-            if (uri == null || uri.trim().isEmpty()) {
+            if (
+                    uri == null ||
+                            uri.trim().isEmpty()
+            ) {
 
-                showToast(
+                showBridgeToast(
                         "Audio URI haipo."
                 );
 
@@ -783,7 +825,7 @@ public class MainActivity extends Activity {
 
             if (mediaController == null) {
 
-                showToast(
+                showBridgeToast(
                         "Player bado inaunganishwa..."
                 );
 
@@ -813,11 +855,13 @@ public class MainActivity extends Activity {
 
 
                         if (
-                                item.localConfiguration != null &&
-                                item.localConfiguration.uri != null &&
-                                item.localConfiguration.uri
-                                        .toString()
-                                        .equals(uri)
+                                item.localConfiguration != null
+                                        &&
+                                        item.localConfiguration.uri != null
+                                        &&
+                                        item.localConfiguration.uri
+                                                .toString()
+                                                .equals(uri)
                         ) {
 
                             selectedItem = item;
@@ -836,7 +880,7 @@ public class MainActivity extends Activity {
 
                 if (
                         selectedItem != null &&
-                        selectedIndex >= 0
+                                selectedIndex >= 0
                 ) {
 
                     List<MediaItem> queueCopy;
@@ -856,6 +900,7 @@ public class MainActivity extends Activity {
                             selectedIndex,
                             0L
                     );
+
 
                     mediaController.prepare();
 
@@ -912,6 +957,7 @@ public class MainActivity extends Activity {
                         item
                 );
 
+
                 mediaController.prepare();
 
                 mediaController.play();
@@ -921,7 +967,7 @@ public class MainActivity extends Activity {
 
                 e.printStackTrace();
 
-                showToast(
+                showBridgeToast(
                         "Imeshindikana kucheza audio."
                 );
             }
@@ -1101,8 +1147,9 @@ public class MainActivity extends Activity {
         public String getCurrentTitle() {
 
             if (
-                    mediaController != null &&
-                    mediaController.getCurrentMediaItem() != null
+                    mediaController != null
+                            &&
+                            mediaController.getCurrentMediaItem() != null
             ) {
 
                 MediaMetadata metadata =
@@ -1112,8 +1159,9 @@ public class MainActivity extends Activity {
 
 
                 if (
-                        metadata != null &&
-                        metadata.title != null
+                        metadata != null
+                                &&
+                                metadata.title != null
                 ) {
 
                     return metadata.title.toString();
@@ -1137,10 +1185,10 @@ public class MainActivity extends Activity {
 
             if (
                     url == null ||
-                    url.trim().isEmpty()
+                            url.trim().isEmpty()
             ) {
 
-                showToast(
+                showBridgeToast(
                         "Download URL haipo."
                 );
 
@@ -1204,7 +1252,7 @@ public class MainActivity extends Activity {
 
                 if (manager == null) {
 
-                    showToast(
+                    showBridgeToast(
                             "DownloadManager haipo."
                     );
 
@@ -1261,7 +1309,7 @@ public class MainActivity extends Activity {
 
                 e.printStackTrace();
 
-                showToast(
+                showBridgeToast(
                         "Download imeshindikana kuanza."
                 );
             }
@@ -1390,9 +1438,7 @@ public class MainActivity extends Activity {
                                         runOnUiThread(
                                                 () -> {
 
-                                                    if (
-                                                            webView == null
-                                                    ) {
+                                                    if (webView == null) {
                                                         return;
                                                     }
 
@@ -1496,10 +1542,10 @@ public class MainActivity extends Activity {
 
 
         // =================================================
-        // TOAST
+        // BRIDGE TOAST
         // =================================================
 
-        private void showToast(
+        private void showBridgeToast(
                 String message
         ) {
 
@@ -1508,7 +1554,7 @@ public class MainActivity extends Activity {
                             Toast.makeText(
                                     MainActivity.this,
                                     message,
-                                    Toast.LENGTH_SHORT
+                                    Toast.LENGTH_LONG
                             ).show()
             );
         }
@@ -1556,13 +1602,6 @@ public class MainActivity extends Activity {
         }
 
 
-        backgroundExecutor.execute(
-                () -> {
-                    // Executor cleanup is handled by process lifecycle.
-                }
-        );
-
-
         super.onDestroy();
     }
-                            }
+                                        }
