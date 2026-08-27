@@ -141,15 +141,17 @@ public class MainActivity extends Activity {
         }
         catch (Exception e) {
 
-            e.printStackTrace();
+    e.printStackTrace();
 
-            Toast.makeText(
-                    this,
-                    "Imeshindwa kuanzisha media player.",
-                    Toast.LENGTH_LONG
-            ).show();
+    final String error =
+            e.getClass().getSimpleName() +
+            ": " +
+            (e.getMessage() == null
+                    ? "Unknown error"
+                    : e.getMessage());
+
+    showToast(error);
         }
-    }
 
 
     // =====================================================
