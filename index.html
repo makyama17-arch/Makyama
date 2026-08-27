@@ -483,13 +483,24 @@ function render(list, title){
   setStatus(list.length + " results");  
 }  
   
-async function sendTermuxRequest(query) {  
-  if(!db) return;  
-  await db.ref("requests").push({
-  query: query,
-  timestamp: Date.now(),
-  status: "pending"
-});  
+async function sendTermuxRequest(query) {
+  if(!db) {
+    toast("Firebase haijaunganishwa.");
+    return;
+  }
+
+  try {
+    await db.ref("requests").push({
+      query: query,
+      timestamp: Date.now(),
+      status: "pending"
+    });
+
+    toast("🔎 Request imetumwa, inatafutwa...");
+  } catch(e) {
+    console.error("Request Firebase error:", e);
+    toast("❌ Imeshindikana kutuma request.");
+  }
 }  
   
 function applyCurrentFilter(){  
