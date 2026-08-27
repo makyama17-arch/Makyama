@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Internet: Firebase + website + online audio -->
+    <uses-permission
+        android:name="android.permission.INTERNET" />
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Android 13+ notifications -->
+    <uses-permission
+        android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Background playback -->
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-permission
         android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
+    <!-- Read music from device -->
     <uses-permission
         android:name="android.permission.READ_MEDIA_AUDIO" />
 
+    <!-- Android 12 and below -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -25,9 +34,14 @@
         android:label="MAKYAMA MEDIA"
         android:theme="@style/Theme.Makyama">
 
+        <!-- =================================================
+             MAIN ACTIVITY
+        ================================================== -->
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
 
             <intent-filter>
 
@@ -41,6 +55,11 @@
 
         </activity>
 
+
+        <!-- =================================================
+             MEDIA PLAYBACK SERVICE
+             Notification + Lock Screen + Background Audio
+        ================================================== -->
 
         <service
             android:name=".PlaybackService"
