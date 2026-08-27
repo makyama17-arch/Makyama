@@ -3,55 +3,47 @@ package com.makyama.mmedia;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.media3.common.MediaItem;
-import androidx.media3.common.MediaMetadata;
-import androidx.media3.session.MediaController;
-import androidx.media3.session.SessionToken;
-
-import com.google.common.util.concurrent.ListenableFuture;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class MainActivity extends Activity {
 
     private WebView webView;
 
-    private static final int REQUEST_AUDIO_PERMISSION = 1001;
+    private static final int AUDIO_PERMISSION_CODE = 1001;
+    private static final int NOTIFICATION_PERMISSION_CODE = 1002;
 
-    private MediaController mediaController;
+    private MediaPlayer mediaPlayer;
 
-    private ListenableFuture<MediaController> controllerFuture;
+    private DownloadManager downloadManager;
 
-    private final List<MediaItem> deviceQueue =
-            new ArrayList<>();
+    private Handler downloadHandler;
 
-    private final Executor backgroundExecutor =
-            Executors.newSingleThreadExecutor();
+    private Runnable downloadRunnable;
+
+    private final List<Long> downloadIds = new ArrayList<>();
 
 
     // =====================================================
@@ -67,114 +59,35 @@ public class MainActivity extends Activity {
 
         setContentView(webView);
 
-        setupWebView();
 
-        requestAudioPermission();
+        // =================================================
+        // DOWNLOAD MANAGER
+        // =================================================
 
-        connectToPlaybackService();
-
-        webView.loadUrl(
-                "https://makyama.vercel.app/"
-        );
-    }
-
-
-    // =====================================================
-    // MAIN ACTIVITY TOAST
-    // =====================================================
-
-    private void showToast(String message) {
-
-        runOnUiThread(
-                () -> Toast.makeText(
-                        MainActivity.this,
-                        message,
-                        Toast.LENGTH_LONG
-                ).show()
-        );
-    }
+        downloadManager =
+                (DownloadManager)
+                        getSystemService(
+                                DOWNLOAD_SERVICE
+                        );
 
 
-    // =====================================================
-    // CONNECT TO PLAYBACK SERVICE
-    // =====================================================
-
-    private void connectToPlaybackService() {
-
-        try {
-
-            ComponentName componentName =
-                    new ComponentName(
-                            this,
-                            PlaybackService.class
-                    );
-
-            SessionToken sessionToken =
-                    new SessionToken(
-                            this,
-                            componentName
-                    );
-
-            controllerFuture =
-                    new MediaController.Builder(
-                            this,
-                            sessionToken
-                    ).buildAsync();
-
-            controllerFuture.addListener(
-                    () -> {
-
-                        try {
-
-                            mediaController =
-                                    controllerFuture.get();
-
-                            runOnUiThread(
-                                    () -> Toast.makeText(
-                                            MainActivity.this,
-                                            "Media player iko tayari.",
-                                            Toast.LENGTH_SHORT
-                                    ).show()
-                            );
-
-                        }
-                        catch (Exception e) {
-
-                            e.printStackTrace();
-
-                            showToast(
-                                    "Media player haikuunganishwa."
-                            );
-                        }
-
-                    },
-                    ContextCompat.getMainExecutor(this)
-            );
-
-        }
-        catch (Exception e) {
-
-            e.printStackTrace();
-
-            final String error =
-                    e.getClass().getSimpleName()
-                            + ": "
-                            + (
-                            e.getMessage() == null
-                                    ? "Unknown error"
-                                    : e.getMessage()
-                    );
-
-            showToast(error);
-        }
-    }
+        downloadHandler =
+                new Handler(
+                        Looper.getMainLooper()
+                );
 
 
-    // =====================================================
-    // WEBVIEW
-    // =====================================================
+        // =================================================
+        // REQUEST NOTIFICATION PERMISSION
+        // Android 13+
+        // =================================================
 
-    private void setupWebView() {
+        requestNotificationPermission();
+
+
+        // =================================================
+        // WEBVIEW
+        // =================================================
 
         WebSettings settings =
                 webView.getSettings();
@@ -195,44 +108,13 @@ public class MainActivity extends Activity {
 
         settings.setDisplayZoomControls(false);
 
-        settings.setSupportZoom(false);
 
-        settings.setLoadWithOverviewMode(false);
-
-        settings.setUseWideViewPort(false);
-
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            settings.setMixedContentMode(
-                    WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
-            );
-        }
-
+        // =================================================
+        // WEBVIEW CLIENT
+        // =================================================
 
         webView.setWebViewClient(
-                new WebViewClient() {
-
-                    @Override
-                    public boolean shouldOverrideUrlLoading(
-                            WebView view,
-                            WebResourceRequest request
-                    ) {
-
-                        return false;
-                    }
-
-
-                    @Override
-                    public boolean shouldOverrideUrlLoading(
-                            WebView view,
-                            String url
-                    ) {
-
-                        return false;
-                    }
-                }
+                new WebViewClient()
         );
 
 
@@ -241,163 +123,81 @@ public class MainActivity extends Activity {
         );
 
 
+        // =================================================
+        // JAVASCRIPT INTERFACE
+        // =================================================
+
         webView.addJavascriptInterface(
-                new MMEDIABridge(this),
+                new MMEDIAInterface(this),
                 "MMEDIA"
         );
-    }
 
 
-    // =====================================================
-    // AUDIO PERMISSION
-    // =====================================================
+        // =================================================
+        // LOAD MAKYAMA
+        // =================================================
 
-    private void requestAudioPermission() {
-
-        if (Build.VERSION.SDK_INT >= 33) {
-
-            if (
-                    ContextCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.READ_MEDIA_AUDIO
-                    )
-                            != PackageManager.PERMISSION_GRANTED
-            ) {
-
-                requestPermissions(
-                        new String[]{
-                                Manifest.permission.READ_MEDIA_AUDIO
-                        },
-                        REQUEST_AUDIO_PERMISSION
-                );
-            }
-
-        }
-        else {
-
-            if (
-                    ContextCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    )
-                            != PackageManager.PERMISSION_GRANTED
-            ) {
-
-                requestPermissions(
-                        new String[]{
-                                Manifest.permission.READ_EXTERNAL_STORAGE
-                        },
-                        REQUEST_AUDIO_PERMISSION
-                );
-            }
-        }
-    }
-
-
-    // =====================================================
-    // PERMISSION RESULT
-    // =====================================================
-
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode,
-            @NonNull String[] permissions,
-            @NonNull int[] grantResults
-    ) {
-
-        super.onRequestPermissionsResult(
-                requestCode,
-                permissions,
-                grantResults
+        webView.loadUrl(
+                "https://makyama.vercel.app/"
         );
 
+
+        // =================================================
+        // START DOWNLOAD MONITOR
+        // =================================================
+
+        startDownloadMonitor();
+
+    }
+
+
+    // =====================================================
+    // NOTIFICATION PERMISSION
+    // =====================================================
+
+    private void requestNotificationPermission() {
+
         if (
-                requestCode ==
-                        REQUEST_AUDIO_PERMISSION
+                Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.TIRAMISU
         ) {
 
             if (
-                    grantResults.length > 0
-                            &&
-                            grantResults[0] ==
-                                    PackageManager.PERMISSION_GRANTED
+                    checkSelfPermission(
+                            Manifest.permission.POST_NOTIFICATIONS
+                    ) != PackageManager.PERMISSION_GRANTED
             ) {
 
-                Toast.makeText(
-                        this,
-                        "Audio permission imeruhusiwa.",
-                        Toast.LENGTH_SHORT
-                ).show();
+                requestPermissions(
+
+                        new String[]{
+                                Manifest.permission.POST_NOTIFICATIONS
+                        },
+
+                        NOTIFICATION_PERMISSION_CODE
+
+                );
 
             }
-            else {
 
-                Toast.makeText(
-                        this,
-                        "Ruhusu Music/Audio ili My Device ifanye kazi.",
-                        Toast.LENGTH_LONG
-                ).show();
-            }
         }
+
     }
 
 
     // =====================================================
-    // BACK BUTTON
+    // JAVASCRIPT INTERFACE
     // =====================================================
 
-    @Override
-    public void onBackPressed() {
-
-        if (webView == null) {
-
-            super.onBackPressed();
-
-            return;
-        }
-
-
-        webView.evaluateJavascript(
-                "(function(){return window.exitDevicePage ? window.exitDevicePage() : false;})()",
-                value -> {
-
-                    if (
-                            value == null
-                                    ||
-                                    value.equals("false")
-                                    ||
-                                    value.equals("null")
-                                    ||
-                                    value.equals("\"false\"")
-                    ) {
-
-                        if (webView.canGoBack()) {
-
-                            webView.goBack();
-
-                        }
-                        else {
-
-                            finish();
-                        }
-                    }
-                }
-        );
-    }
-
-
-    // =====================================================
-    // JAVASCRIPT BRIDGE
-    // =====================================================
-
-    public class MMEDIABridge {
+    public class MMEDIAInterface {
 
         private final Context context;
 
 
-        MMEDIABridge(Context context) {
+        MMEDIAInterface(Context context) {
 
             this.context = context;
+
         }
 
 
@@ -408,19 +208,25 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void enableMyDevice() {
 
-            runOnUiThread(
-                    () -> {
+            runOnUiThread(() -> {
 
-                        if (webView == null) {
-                            return;
-                        }
+                if (webView == null) {
+                    return;
+                }
 
-                        webView.evaluateJavascript(
-                                "window.enableMyDeviceButton && window.enableMyDeviceButton();",
-                                null
-                        );
-                    }
-            );
+
+                webView.evaluateJavascript(
+
+                        "if(typeof window.enableMyDeviceButton===" +
+                        "'function')" +
+                        "{window.enableMyDeviceButton();}",
+
+                        null
+
+                );
+
+            });
+
         }
 
 
@@ -431,371 +237,431 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void openMyDevice() {
 
-            runOnUiThread(
-                    () -> {
+            runOnUiThread(() -> {
 
-                        if (!hasAudioPermission()) {
+                if (hasAudioPermission()) {
 
-                            requestAudioPermission();
+                    loadDeviceMusic();
 
-                            return;
-                        }
+                    sendDownloadsToWebsite();
 
-                        readDeviceMusic();
-                    }
-            );
+                } else {
+
+                    requestAudioPermission();
+
+                }
+
+            });
+
         }
 
 
         // =================================================
-        // CHECK AUDIO PERMISSION
+        // BACKUP NAME
+        // =================================================
+
+        @JavascriptInterface
+        public void openDeviceMusic() {
+
+            openMyDevice();
+
+        }
+
+
+        // =================================================
+        // AUDIO PERMISSION
         // =================================================
 
         private boolean hasAudioPermission() {
 
-            if (Build.VERSION.SDK_INT >= 33) {
+            if (
+                    Build.VERSION.SDK_INT >=
+                    Build.VERSION_CODES.TIRAMISU
+            ) {
 
-                return ContextCompat.checkSelfPermission(
-                        MainActivity.this,
+                return checkSelfPermission(
                         Manifest.permission.READ_MEDIA_AUDIO
-                )
-                        ==
-                        PackageManager.PERMISSION_GRANTED;
+                ) == PackageManager.PERMISSION_GRANTED;
+
             }
 
-            return ContextCompat.checkSelfPermission(
-                    MainActivity.this,
+
+            return checkSelfPermission(
                     Manifest.permission.READ_EXTERNAL_STORAGE
-            )
-                    ==
-                    PackageManager.PERMISSION_GRANTED;
+            ) == PackageManager.PERMISSION_GRANTED;
+
         }
 
 
         // =================================================
-        // READ MUSIC FROM DEVICE
+        // REQUEST AUDIO PERMISSION
         // =================================================
 
-        private void readDeviceMusic() {
+        private void requestAudioPermission() {
 
-            backgroundExecutor.execute(
-                    () -> {
+            if (
+                    Build.VERSION.SDK_INT >=
+                    Build.VERSION_CODES.TIRAMISU
+            ) {
 
-                        JSONArray songs =
-                                new JSONArray();
+                requestPermissions(
 
+                        new String[]{
+                                Manifest.permission.READ_MEDIA_AUDIO
+                        },
 
-                        synchronized (deviceQueue) {
+                        AUDIO_PERMISSION_CODE
 
-                            deviceQueue.clear();
-                        }
+                );
 
+            } else {
 
-                        Uri collection =
-                                MediaStore.Audio.Media
-                                        .EXTERNAL_CONTENT_URI;
+                requestPermissions(
 
+                        new String[]{
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                        },
 
-                        String[] projection = {
+                        AUDIO_PERMISSION_CODE
 
-                                MediaStore.Audio.Media._ID,
+                );
 
-                                MediaStore.Audio.Media.TITLE,
+            }
 
-                                MediaStore.Audio.Media.ARTIST,
-
-                                MediaStore.Audio.Media.ALBUM,
-
-                                MediaStore.Audio.Media.MIME_TYPE,
-
-                                MediaStore.Audio.Media.DURATION,
-
-                                MediaStore.Audio.Media.DISPLAY_NAME
-                        };
+        }
 
 
-                        String selection =
-                                MediaStore.Audio.Media.IS_MUSIC
-                                        + " != 0";
+        // =================================================
+        // LOAD DEVICE MUSIC
+        // =================================================
+
+        private void loadDeviceMusic() {
+
+            try {
+
+                JSONArray audioArray =
+                        new JSONArray();
 
 
-                        Cursor cursor = null;
+                Uri collection;
 
+
+                if (
+                        Build.VERSION.SDK_INT >=
+                        Build.VERSION_CODES.Q
+                ) {
+
+                    collection =
+                            MediaStore.Audio.Media.getContentUri(
+                                    MediaStore.VOLUME_EXTERNAL
+                            );
+
+                } else {
+
+                    collection =
+                            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
+                }
+
+
+                String[] projection = {
+
+                        MediaStore.Audio.Media._ID,
+
+                        MediaStore.Audio.Media.TITLE,
+
+                        MediaStore.Audio.Media.ARTIST,
+
+                        MediaStore.Audio.Media.ALBUM,
+
+                        MediaStore.Audio.Media.DISPLAY_NAME,
+
+                        MediaStore.Audio.Media.MIME_TYPE,
+
+                        MediaStore.Audio.Media.DURATION
+
+                };
+
+
+                String selection =
+                        MediaStore.Audio.Media.IS_MUSIC +
+                        " != 0";
+
+
+                String sortOrder =
+                        MediaStore.Audio.Media.TITLE +
+                        " COLLATE NOCASE ASC";
+
+
+                Cursor cursor =
+                        getContentResolver().query(
+
+                                collection,
+
+                                projection,
+
+                                selection,
+
+                                null,
+
+                                sortOrder
+
+                        );
+
+
+                if (cursor != null) {
+
+                    int idColumn =
+                            cursor.getColumnIndex(
+                                    MediaStore.Audio.Media._ID
+                            );
+
+                    int titleColumn =
+                            cursor.getColumnIndex(
+                                    MediaStore.Audio.Media.TITLE
+                            );
+
+                    int artistColumn =
+                            cursor.getColumnIndex(
+                                    MediaStore.Audio.Media.ARTIST
+                            );
+
+                    int albumColumn =
+                            cursor.getColumnIndex(
+                                    MediaStore.Audio.Media.ALBUM
+                            );
+
+                    int displayNameColumn =
+                            cursor.getColumnIndex(
+                                    MediaStore.Audio.Media.DISPLAY_NAME
+                            );
+
+                    int mimeColumn =
+                            cursor.getColumnIndex(
+                                    MediaStore.Audio.Media.MIME_TYPE
+                            );
+
+                    int durationColumn =
+                            cursor.getColumnIndex(
+                                    MediaStore.Audio.Media.DURATION
+                            );
+
+
+                    while (cursor.moveToNext()) {
 
                         try {
 
-                            cursor =
-                                    getContentResolver().query(
-                                            collection,
-                                            projection,
-                                            selection,
-                                            null,
-                                            MediaStore.Audio.Media.TITLE
-                                                    + " COLLATE NOCASE ASC"
+                            long id =
+                                    cursor.getLong(
+                                            idColumn
                                     );
 
 
-                            if (cursor != null) {
-
-                                int idColumn =
-                                        cursor.getColumnIndex(
-                                                MediaStore.Audio.Media._ID
-                                        );
-
-                                int titleColumn =
-                                        cursor.getColumnIndex(
-                                                MediaStore.Audio.Media.TITLE
-                                        );
-
-                                int artistColumn =
-                                        cursor.getColumnIndex(
-                                                MediaStore.Audio.Media.ARTIST
-                                        );
-
-                                int albumColumn =
-                                        cursor.getColumnIndex(
-                                                MediaStore.Audio.Media.ALBUM
-                                        );
-
-                                int mimeColumn =
-                                        cursor.getColumnIndex(
-                                                MediaStore.Audio.Media.MIME_TYPE
-                                        );
-
-                                int durationColumn =
-                                        cursor.getColumnIndex(
-                                                MediaStore.Audio.Media.DURATION
-                                        );
-
-                                int displayColumn =
-                                        cursor.getColumnIndex(
-                                                MediaStore.Audio.Media.DISPLAY_NAME
-                                        );
-
-
-                                if (
-                                        idColumn < 0 ||
-                                                titleColumn < 0 ||
-                                                artistColumn < 0 ||
-                                                albumColumn < 0 ||
-                                                mimeColumn < 0 ||
-                                                durationColumn < 0 ||
-                                                displayColumn < 0
-                                ) {
-
-                                    return;
-                                }
-
-
-                                while (cursor.moveToNext()) {
-
-                                    long id =
-                                            cursor.getLong(
-                                                    idColumn
-                                            );
-
-
-                                    String title =
-                                            cursor.getString(
-                                                    titleColumn
-                                            );
-
-
-                                    String artist =
-                                            cursor.getString(
-                                                    artistColumn
-                                            );
-
-
-                                    String album =
-                                            cursor.getString(
-                                                    albumColumn
-                                            );
-
-
-                                    String mime =
-                                            cursor.getString(
-                                                    mimeColumn
-                                            );
-
-
-                                    long duration =
-                                            cursor.getLong(
-                                                    durationColumn
-                                            );
-
-
-                                    String displayName =
-                                            cursor.getString(
-                                                    displayColumn
-                                            );
-
-
-                                    Uri contentUri =
-                                            Uri.withAppendedPath(
-                                                    MediaStore.Audio.Media
-                                                            .EXTERNAL_CONTENT_URI,
-                                                    String.valueOf(id)
-                                            );
-
-
-                                    String finalTitle =
-                                            title == null ||
-                                                    title.trim().isEmpty()
-                                                    ? (
-                                                    displayName == null
-                                                            ? "Unknown"
-                                                            : displayName
-                                            )
-                                                    : title;
-
-
-                                    String finalArtist =
-                                            artist == null ||
-                                                    artist.trim().isEmpty()
-                                                    ? "Unknown Artist"
-                                                    : artist;
-
-
-                                    String finalAlbum =
-                                            album == null
-                                                    ? ""
-                                                    : album;
-
-
-                                    String finalMime =
-                                            mime == null ||
-                                                    mime.trim().isEmpty()
-                                                    ? "audio/*"
-                                                    : mime;
-
-
-                                    MediaMetadata metadata =
-                                            new MediaMetadata.Builder()
-                                                    .setTitle(
-                                                            finalTitle
-                                                    )
-                                                    .setArtist(
-                                                            finalArtist
-                                                    )
-                                                    .setAlbumTitle(
-                                                            finalAlbum
-                                                    )
-                                                    .build();
-
-
-                                    MediaItem item =
-                                            new MediaItem.Builder()
-                                                    .setMediaId(
-                                                            String.valueOf(id)
-                                                    )
-                                                    .setUri(
-                                                            contentUri
-                                                    )
-                                                    .setMediaMetadata(
-                                                            metadata
-                                                    )
-                                                    .build();
-
-
-                                    synchronized (deviceQueue) {
-
-                                        deviceQueue.add(item);
-                                    }
-
-
-                                    JSONObject song =
-                                            new JSONObject();
-
-
-                                    song.put(
-                                            "id",
-                                            id
-                                    );
-
-                                    song.put(
-                                            "title",
-                                            finalTitle
-                                    );
-
-                                    song.put(
-                                            "artist",
-                                            finalArtist
-                                    );
-
-                                    song.put(
-                                            "album",
-                                            finalAlbum
-                                    );
-
-                                    song.put(
-                                            "mime",
-                                            finalMime
-                                    );
-
-                                    song.put(
-                                            "duration",
-                                            duration
-                                    );
-
-                                    song.put(
-                                            "uri",
-                                            contentUri.toString()
+                            String title =
+                                    cursor.getString(
+                                            titleColumn
                                     );
 
 
-                                    songs.put(song);
-                                }
+                            String artist =
+                                    cursor.getString(
+                                            artistColumn
+                                    );
+
+
+                            String album =
+                                    cursor.getString(
+                                            albumColumn
+                                    );
+
+
+                            String filename =
+                                    cursor.getString(
+                                            displayNameColumn
+                                    );
+
+
+                            String mime =
+                                    cursor.getString(
+                                            mimeColumn
+                                    );
+
+
+                            long duration =
+                                    cursor.getLong(
+                                            durationColumn
+                                    );
+
+
+                            if (
+                                    title == null ||
+                                    title.trim().isEmpty()
+                            ) {
+
+                                title = filename;
+
                             }
 
-                        }
-                        catch (Exception e) {
 
-                            e.printStackTrace();
+                            if (
+                                    title == null ||
+                                    title.trim().isEmpty()
+                            ) {
 
-                        }
-                        finally {
+                                title = "Unknown Song";
 
-                            if (cursor != null) {
-
-                                cursor.close();
                             }
+
+
+                            if (
+                                    artist == null ||
+                                    artist.trim().isEmpty() ||
+                                    artist.equals("<unknown>")
+                            ) {
+
+                                artist = "Unknown Artist";
+
+                            }
+
+
+                            Uri audioUri =
+                                    android.content.ContentUris
+                                            .withAppendedId(
+
+                                                    collection,
+
+                                                    id
+
+                                            );
+
+
+                            JSONObject audio =
+                                    new JSONObject();
+
+
+                            audio.put(
+                                    "id",
+                                    "local_" + id
+                            );
+
+
+                            audio.put(
+                                    "title",
+                                    title
+                            );
+
+
+                            audio.put(
+                                    "artist",
+                                    artist
+                            );
+
+
+                            audio.put(
+                                    "album",
+                                    album != null
+                                            ? album
+                                            : ""
+                            );
+
+
+                            audio.put(
+                                    "filename",
+                                    filename != null
+                                            ? filename
+                                            : ""
+                            );
+
+
+                            audio.put(
+                                    "mime",
+                                    mime != null
+                                            ? mime
+                                            : "audio/*"
+                            );
+
+
+                            audio.put(
+                                    "duration",
+                                    duration
+                            );
+
+
+                            audio.put(
+                                    "uri",
+                                    audioUri.toString()
+                            );
+
+
+                            audio.put(
+                                    "type",
+                                    "DEVICE"
+                            );
+
+
+                            audioArray.put(audio);
+
+
+                        } catch (Exception itemError) {
+
+                            itemError.printStackTrace();
+
                         }
 
-
-                        runOnUiThread(
-                                () -> {
-
-                                    if (webView == null) {
-                                        return;
-                                    }
-
-
-                                    try {
-
-                                        String json =
-                                                JSONObject.quote(
-                                                        songs.toString()
-                                                );
-
-
-                                        webView.evaluateJavascript(
-                                                "window.showAndroidMusic && " +
-                                                        "window.showAndroidMusic(" +
-                                                        json +
-                                                        ");",
-                                                null
-                                        );
-
-                                    }
-                                    catch (Exception e) {
-
-                                        e.printStackTrace();
-                                    }
-                                }
-                        );
                     }
-            );
+
+
+                    cursor.close();
+
+                }
+
+
+                final String json =
+                        audioArray.toString();
+
+
+                runOnUiThread(() -> {
+
+                    if (webView == null) {
+                        return;
+                    }
+
+
+                    String js =
+                            "window.showAndroidMusic(" +
+                            JSONObject.quote(json) +
+                            ");";
+
+
+                    webView.evaluateJavascript(
+                            js,
+                            null
+                    );
+
+                });
+
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+
+                runOnUiThread(() -> {
+
+                    Toast.makeText(
+
+                            MainActivity.this,
+
+                            "Imeshindikana kusoma audio za simu",
+
+                            Toast.LENGTH_LONG
+
+                    ).show();
+
+                });
+
+            }
+
         }
 
 
@@ -805,371 +671,216 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public void playDeviceAudio(
-                String uri,
+
+                String uriString,
+
                 String title,
+
                 String artist
+
         ) {
 
-            if (
-                    uri == null ||
-                            uri.trim().isEmpty()
-            ) {
+            runOnUiThread(() -> {
 
-                showBridgeToast(
-                        "Audio URI haipo."
-                );
+                try {
 
-                return;
-            }
-
-
-            if (mediaController == null) {
-
-                showBridgeToast(
-                        "Player bado inaunganishwa..."
-                );
-
-                connectToPlaybackService();
-
-                return;
-            }
-
-
-            try {
-
-                MediaItem selectedItem = null;
-
-                int selectedIndex = -1;
-
-
-                synchronized (deviceQueue) {
-
-                    for (
-                            int i = 0;
-                            i < deviceQueue.size();
-                            i++
+                    if (
+                            uriString == null ||
+                            uriString.trim().isEmpty()
                     ) {
 
-                        MediaItem item =
-                                deviceQueue.get(i);
+                        Toast.makeText(
 
+                                MainActivity.this,
 
-                        if (
-                                item.localConfiguration != null
-                                        &&
-                                        item.localConfiguration.uri != null
-                                        &&
-                                        item.localConfiguration.uri
-                                                .toString()
-                                                .equals(uri)
-                        ) {
+                                "Audio haipatikani.",
 
-                            selectedItem = item;
+                                Toast.LENGTH_SHORT
 
-                            selectedIndex = i;
+                        ).show();
 
-                            break;
-                        }
-                    }
-                }
+                        return;
 
-
-                // =========================================
-                // PLAY FROM DEVICE QUEUE
-                // =========================================
-
-                if (
-                        selectedItem != null &&
-                                selectedIndex >= 0
-                ) {
-
-                    List<MediaItem> queueCopy;
-
-
-                    synchronized (deviceQueue) {
-
-                        queueCopy =
-                                new ArrayList<>(
-                                        deviceQueue
-                                );
                     }
 
 
-                    mediaController.setMediaItems(
-                            queueCopy,
-                            selectedIndex,
-                            0L
+                    releasePlayer();
+
+
+                    Uri audioUri =
+                            Uri.parse(uriString);
+
+
+                    mediaPlayer =
+                            new MediaPlayer();
+
+
+                    if (
+                            Build.VERSION.SDK_INT >=
+                            Build.VERSION_CODES.LOLLIPOP
+                    ) {
+
+                        AudioAttributes attributes =
+                                new AudioAttributes.Builder()
+
+                                        .setUsage(
+                                                AudioAttributes.USAGE_MEDIA
+                                        )
+
+                                        .setContentType(
+                                                AudioAttributes.CONTENT_TYPE_MUSIC
+                                        )
+
+                                        .build();
+
+
+                        mediaPlayer.setAudioAttributes(
+                                attributes
+                        );
+
+                    }
+
+
+                    mediaPlayer.setDataSource(
+
+                            MainActivity.this,
+
+                            audioUri
+
                     );
 
 
-                    mediaController.prepare();
+                    mediaPlayer.setOnPreparedListener(
+                            mp -> {
 
-                    mediaController.play();
+                                try {
 
-                    return;
+                                    mp.setVolume(
+                                            1.0f,
+                                            1.0f
+                                    );
+
+
+                                    mp.start();
+
+
+                                    Toast.makeText(
+
+                                            MainActivity.this,
+
+                                            "▶ " +
+                                            (
+                                                    title != null
+                                                    ? title
+                                                    : "Playing"
+                                            ),
+
+                                            Toast.LENGTH_SHORT
+
+                                    ).show();
+
+
+                                } catch (Exception e) {
+
+                                    e.printStackTrace();
+
+                                }
+
+                            }
+                    );
+
+
+                    mediaPlayer.setOnCompletionListener(
+                            mp -> {
+
+                                try {
+
+                                    mp.release();
+
+                                } catch (Exception ignored) {}
+
+
+                                mediaPlayer = null;
+
+                            }
+                    );
+
+
+                    mediaPlayer.setOnErrorListener(
+
+                            (mp, what, extra) -> {
+
+                                Toast.makeText(
+
+                                        MainActivity.this,
+
+                                        "Audio haikuweza kucheza.",
+
+                                        Toast.LENGTH_SHORT
+
+                                ).show();
+
+
+                                try {
+                                    mp.reset();
+                                } catch (Exception ignored) {}
+
+
+                                try {
+                                    mp.release();
+                                } catch (Exception ignored) {}
+
+
+                                mediaPlayer = null;
+
+
+                                return true;
+
+                            }
+
+                    );
+
+
+                    mediaPlayer.prepareAsync();
+
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                    releasePlayer();
+
+
+                    Toast.makeText(
+
+                            MainActivity.this,
+
+                            "Tatizo la playback.",
+
+                            Toast.LENGTH_SHORT
+
+                    ).show();
+
                 }
 
+            });
 
-                // =========================================
-                // FALLBACK: PLAY SINGLE URI
-                // =========================================
-
-                String safeTitle =
-                        title == null ||
-                                title.trim().isEmpty()
-                                ? "Unknown"
-                                : title;
-
-
-                String safeArtist =
-                        artist == null ||
-                                artist.trim().isEmpty()
-                                ? "MAKYAMA MEDIA"
-                                : artist;
-
-
-                MediaMetadata metadata =
-                        new MediaMetadata.Builder()
-                                .setTitle(
-                                        safeTitle
-                                )
-                                .setArtist(
-                                        safeArtist
-                                )
-                                .build();
-
-
-                MediaItem item =
-                        new MediaItem.Builder()
-                                .setMediaId(
-                                        uri
-                                )
-                                .setUri(
-                                        Uri.parse(uri)
-                                )
-                                .setMediaMetadata(
-                                        metadata
-                                )
-                                .build();
-
-
-                mediaController.setMediaItem(
-                        item
-                );
-
-
-                mediaController.prepare();
-
-                mediaController.play();
-
-            }
-            catch (Exception e) {
-
-                e.printStackTrace();
-
-                showBridgeToast(
-                        "Imeshindikana kucheza audio."
-                );
-            }
         }
 
 
         // =================================================
-        // PLAY / PAUSE
-        // =================================================
-
-        @JavascriptInterface
-        public void toggleDeviceAudio() {
-
-            if (mediaController == null) {
-                return;
-            }
-
-
-            if (mediaController.isPlaying()) {
-
-                mediaController.pause();
-
-            }
-            else {
-
-                mediaController.play();
-            }
-        }
-
-
-        // =================================================
-        // PAUSE
-        // =================================================
-
-        @JavascriptInterface
-        public void pauseDeviceAudio() {
-
-            if (mediaController != null) {
-
-                mediaController.pause();
-            }
-        }
-
-
-        // =================================================
-        // RESUME
-        // =================================================
-
-        @JavascriptInterface
-        public void resumeDeviceAudio() {
-
-            if (mediaController != null) {
-
-                mediaController.play();
-            }
-        }
-
-
-        // =================================================
-        // STOP
+        // STOP DEVICE AUDIO
         // =================================================
 
         @JavascriptInterface
         public void stopDeviceAudio() {
 
-            if (mediaController != null) {
+            runOnUiThread(() -> {
 
-                mediaController.stop();
-            }
-        }
+                releasePlayer();
 
+            });
 
-        // =================================================
-        // NEXT
-        // =================================================
-
-        @JavascriptInterface
-        public void nextDeviceAudio() {
-
-            if (mediaController == null) {
-                return;
-            }
-
-
-            if (mediaController.hasNextMediaItem()) {
-
-                mediaController.seekToNext();
-
-            }
-            else {
-
-                mediaController.pause();
-            }
-        }
-
-
-        // =================================================
-        // PREVIOUS
-        // =================================================
-
-        @JavascriptInterface
-        public void previousDeviceAudio() {
-
-            if (mediaController == null) {
-                return;
-            }
-
-
-            if (mediaController.hasPreviousMediaItem()) {
-
-                mediaController.seekToPrevious();
-
-            }
-            else {
-
-                mediaController.seekTo(0);
-            }
-        }
-
-
-        // =================================================
-        // SHUFFLE
-        // =================================================
-
-        @JavascriptInterface
-        public void shuffleDeviceAudio(
-                boolean enabled
-        ) {
-
-            if (mediaController != null) {
-
-                mediaController.setShuffleModeEnabled(
-                        enabled
-                );
-            }
-        }
-
-
-        // =================================================
-        // CHECK SHUFFLE
-        // =================================================
-
-        @JavascriptInterface
-        public boolean isShuffleEnabled() {
-
-            if (mediaController != null) {
-
-                return mediaController
-                        .getShuffleModeEnabled();
-            }
-
-            return false;
-        }
-
-
-        // =================================================
-        // IS PLAYING
-        // =================================================
-
-        @JavascriptInterface
-        public boolean isDeviceAudioPlaying() {
-
-            if (mediaController != null) {
-
-                return mediaController.isPlaying();
-            }
-
-            return false;
-        }
-
-
-        // =================================================
-        // CURRENT TITLE
-        // =================================================
-
-        @JavascriptInterface
-        public String getCurrentTitle() {
-
-            if (
-                    mediaController != null
-                            &&
-                            mediaController.getCurrentMediaItem() != null
-            ) {
-
-                MediaMetadata metadata =
-                        mediaController
-                                .getCurrentMediaItem()
-                                .mediaMetadata;
-
-
-                if (
-                        metadata != null
-                                &&
-                                metadata.title != null
-                ) {
-
-                    return metadata.title.toString();
-                }
-            }
-
-
-            return "";
         }
 
 
@@ -1179,31 +890,74 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public void download(
+
                 String url,
+
                 String filename
+
         ) {
 
             if (
                     url == null ||
-                            url.trim().isEmpty()
+                    url.trim().isEmpty()
             ) {
 
-                showBridgeToast(
-                        "Download URL haipo."
-                );
+                runOnUiThread(() -> {
+
+                    Toast.makeText(
+
+                            MainActivity.this,
+
+                            "Download URL haipo.",
+
+                            Toast.LENGTH_SHORT
+
+                    ).show();
+
+                });
 
                 return;
+
             }
 
 
             try {
 
-                String safeFilename =
-                        filename == null ||
-                                filename.trim().isEmpty()
-                                ? "makyama_download"
-                                : filename;
+                // =================================================
+                // CLEAN FILE NAME
+                // =================================================
 
+                String cleanFilename =
+                        filename;
+
+
+                if (
+                        cleanFilename == null ||
+                        cleanFilename.trim().isEmpty()
+                ) {
+
+                    cleanFilename =
+                            "MAKYAMA_Music.mp3";
+
+                }
+
+
+                cleanFilename =
+                        cleanFilename
+                                .replace("/", "_")
+                                .replace("\\", "_")
+                                .replace(":", "_")
+                                .replace("*", "_")
+                                .replace("?", "_")
+                                .replace("\"", "_")
+                                .replace("<", "_")
+                                .replace(">", "_")
+                                .replace("|", "_");
+
+
+                // =================================================
+                // DOWNLOAD REQUEST
+                // =================================================
 
                 DownloadManager.Request request =
                         new DownloadManager.Request(
@@ -1211,397 +965,725 @@ public class MainActivity extends Activity {
                         );
 
 
+                // =================================================
+                // TITLE
+                // =================================================
+
                 request.setTitle(
-                        safeFilename
+                        cleanFilename
                 );
 
+
+                // =================================================
+                // DESCRIPTION
+                // =================================================
 
                 request.setDescription(
-                        "Downloading from MMEDIA"
+                        "MAKYAMA MEDIA • Downloading..."
                 );
 
+
+                // =================================================
+                // SHOW ANDROID DOWNLOAD NOTIFICATION
+                // =================================================
 
                 request.setNotificationVisibility(
+
                         DownloadManager.Request
                                 .VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+
                 );
 
 
-                request.setAllowedOverMetered(
-                        true
+                // =================================================
+                // NETWORK
+                // =================================================
+
+                request.setAllowedOverMetered(true);
+
+                request.setAllowedOverRoaming(true);
+
+
+                // =================================================
+                // MIME TYPE
+                // =================================================
+
+                request.setMimeType(
+                        "audio/*"
                 );
 
 
-                request.setAllowedOverRoaming(
-                        true
-                );
-
+                // =================================================
+                // SAVE TO DOWNLOADS
+                // =================================================
 
                 request.setDestinationInExternalPublicDir(
-                        Environment.DIRECTORY_MUSIC,
-                        safeFilename
+
+                        Environment.DIRECTORY_DOWNLOADS,
+
+                        cleanFilename
+
                 );
 
 
-                DownloadManager manager =
-                        (DownloadManager)
-                                getSystemService(
-                                        DOWNLOAD_SERVICE
-                                );
-
-
-                if (manager == null) {
-
-                    showBridgeToast(
-                            "DownloadManager haipo."
-                    );
-
-                    return;
-                }
-
+                // =================================================
+                // START
+                // =================================================
 
                 long downloadId =
-                        manager.enqueue(
+                        downloadManager.enqueue(
                                 request
                         );
 
 
-                runOnUiThread(
-                        () -> {
+                // =================================================
+                // SAVE ID
+                // =================================================
 
-                            if (webView != null) {
+                synchronized (downloadIds) {
 
-                                webView.evaluateJavascript(
-                                        "window.updateAndroidDownload && " +
-                                                "window.updateAndroidDownload(" +
-                                                downloadId +
-                                                "," +
-                                                JSONObject.quote(
-                                                        safeFilename
-                                                ) +
-                                                ",0," +
-                                                JSONObject.quote(
-                                                        "Downloading..."
-                                                ) +
-                                                ");",
-                                        null
-                                );
-                            }
+                    downloadIds.add(
+                            downloadId
+                    );
+
+                }
 
 
-                            Toast.makeText(
-                                    MainActivity.this,
-                                    "Download imeanza.",
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                        }
-                );
+                // =================================================
+                // IMMEDIATE WEBSITE UPDATE
+                // =================================================
+
+                sendDownloadsToWebsite();
 
 
-                monitorDownload(
-                        manager,
-                        downloadId,
-                        safeFilename
-                );
+                // =================================================
+                // MESSAGE
+                // =================================================
 
-            }
-            catch (Exception e) {
+                runOnUiThread(() -> {
+
+                    Toast.makeText(
+
+                            MainActivity.this,
+
+                            "⬇ Download inaanza...",
+
+                            Toast.LENGTH_SHORT
+
+                    ).show();
+
+                });
+
+
+            } catch (Exception e) {
 
                 e.printStackTrace();
 
-                showBridgeToast(
-                        "Download imeshindikana kuanza."
-                );
+
+                runOnUiThread(() -> {
+
+                    Toast.makeText(
+
+                            MainActivity.this,
+
+                            "Download imeshindikana kuanza.",
+
+                            Toast.LENGTH_LONG
+
+                    ).show();
+
+                });
+
             }
+
         }
 
 
         // =================================================
-        // MONITOR DOWNLOAD
+        // GET DOWNLOADS
         // =================================================
 
-        private void monitorDownload(
-                DownloadManager manager,
-                long downloadId,
-                String filename
-        ) {
+        @JavascriptInterface
+        public String getDownloads() {
 
-            backgroundExecutor.execute(
-                    () -> {
+            return getDownloadsJson();
 
-                        boolean finished = false;
-
-
-                        while (!finished) {
-
-                            DownloadManager.Query query =
-                                    new DownloadManager.Query();
-
-
-                            query.setFilterById(
-                                    downloadId
-                            );
-
-
-                            Cursor cursor =
-                                    manager.query(query);
-
-
-                            if (cursor != null) {
-
-                                try {
-
-                                    if (cursor.moveToFirst()) {
-
-                                        int bytesDownloaded =
-                                                cursor.getInt(
-                                                        cursor.getColumnIndexOrThrow(
-                                                                DownloadManager
-                                                                        .COLUMN_BYTES_DOWNLOADED_SO_FAR
-                                                        )
-                                                );
-
-
-                                        int bytesTotal =
-                                                cursor.getInt(
-                                                        cursor.getColumnIndexOrThrow(
-                                                                DownloadManager
-                                                                        .COLUMN_TOTAL_SIZE_BYTES
-                                                        )
-                                                );
-
-
-                                        int status =
-                                                cursor.getInt(
-                                                        cursor.getColumnIndexOrThrow(
-                                                                DownloadManager
-                                                                        .COLUMN_STATUS
-                                                        )
-                                                );
-
-
-                                        int percent = 0;
-
-
-                                        if (bytesTotal > 0) {
-
-                                            percent =
-                                                    (int)
-                                                            (
-                                                                    bytesDownloaded
-                                                                            * 100L
-                                                                            /
-                                                                            bytesTotal
-                                                            );
-                                        }
-
-
-                                        String statusText =
-                                                "Downloading...";
-
-
-                                        if (
-                                                status ==
-                                                        DownloadManager
-                                                                .STATUS_SUCCESSFUL
-                                        ) {
-
-                                            percent = 100;
-
-                                            statusText =
-                                                    "Completed";
-
-                                            finished = true;
-
-                                        }
-                                        else if (
-                                                status ==
-                                                        DownloadManager
-                                                                .STATUS_FAILED
-                                        ) {
-
-                                            statusText =
-                                                    "Failed";
-
-                                            finished = true;
-                                        }
-
-
-                                        final int finalPercent =
-                                                percent;
-
-
-                                        final String finalStatus =
-                                                statusText;
-
-
-                                        runOnUiThread(
-                                                () -> {
-
-                                                    if (webView == null) {
-                                                        return;
-                                                    }
-
-
-                                                    if (
-                                                            finalStatus.equals(
-                                                                    "Completed"
-                                                            )
-                                                    ) {
-
-                                                        webView.evaluateJavascript(
-                                                                "window.finishAndroidDownload && " +
-                                                                        "window.finishAndroidDownload(" +
-                                                                        downloadId +
-                                                                        "," +
-                                                                        JSONObject.quote(
-                                                                                filename
-                                                                        ) +
-                                                                        ");",
-                                                                null
-                                                        );
-
-                                                    }
-                                                    else if (
-                                                            finalStatus.equals(
-                                                                    "Failed"
-                                                            )
-                                                    ) {
-
-                                                        webView.evaluateJavascript(
-                                                                "window.failAndroidDownload && " +
-                                                                        "window.failAndroidDownload(" +
-                                                                        downloadId +
-                                                                        "," +
-                                                                        JSONObject.quote(
-                                                                                filename
-                                                                        ) +
-                                                                        ");",
-                                                                null
-                                                        );
-
-                                                    }
-                                                    else {
-
-                                                        webView.evaluateJavascript(
-                                                                "window.updateAndroidDownload && " +
-                                                                        "window.updateAndroidDownload(" +
-                                                                        downloadId +
-                                                                        "," +
-                                                                        JSONObject.quote(
-                                                                                filename
-                                                                        ) +
-                                                                        "," +
-                                                                        finalPercent +
-                                                                        "," +
-                                                                        JSONObject.quote(
-                                                                                finalStatus
-                                                                        ) +
-                                                                        ");",
-                                                                null
-                                                        );
-                                                    }
-                                                }
-                                        );
-                                    }
-
-                                }
-                                catch (Exception e) {
-
-                                    e.printStackTrace();
-
-                                }
-                                finally {
-
-                                    cursor.close();
-                                }
-                            }
-
-
-                            if (!finished) {
-
-                                try {
-
-                                    Thread.sleep(500);
-
-                                }
-                                catch (
-                                        InterruptedException e
-                                ) {
-
-                                    Thread.currentThread()
-                                            .interrupt();
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
-            );
         }
 
-
-        // =================================================
-        // BRIDGE TOAST
-        // =================================================
-
-        private void showBridgeToast(
-                String message
-        ) {
-
-            runOnUiThread(
-                    () ->
-                            Toast.makeText(
-                                    MainActivity.this,
-                                    message,
-                                    Toast.LENGTH_LONG
-                            ).show()
-            );
-        }
     }
 
 
     // =====================================================
-    // ACTIVITY DESTROY
+    // DOWNLOAD MONITOR
+    // =====================================================
+
+    private void startDownloadMonitor() {
+
+        downloadRunnable =
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        sendDownloadsToWebsite();
+
+
+                        if (downloadHandler != null) {
+
+                            downloadHandler.postDelayed(
+
+                                    this,
+
+                                    500
+
+                            );
+
+                        }
+
+                    }
+
+                };
+
+
+        downloadHandler.post(
+                downloadRunnable
+        );
+
+    }
+
+
+    // =====================================================
+    // SEND DOWNLOADS TO WEBSITE
+    // =====================================================
+
+    private void sendDownloadsToWebsite() {
+
+        if (webView == null) {
+            return;
+        }
+
+
+        final String json =
+                getDownloadsJson();
+
+
+        runOnUiThread(() -> {
+
+            if (webView == null) {
+                return;
+            }
+
+
+            String js =
+
+                    "if(typeof window.showAndroidDownloads===" +
+                    "'function')" +
+
+                    "{" +
+
+                    "window.showAndroidDownloads(" +
+                    JSONObject.quote(json) +
+                    ");" +
+
+                    "}";
+
+
+            webView.evaluateJavascript(
+
+                    js,
+
+                    null
+
+            );
+
+        });
+
+    }
+
+
+    // =====================================================
+    // GET DOWNLOAD JSON
+    // =====================================================
+
+    private String getDownloadsJson() {
+
+        JSONArray array =
+                new JSONArray();
+
+
+        synchronized (downloadIds) {
+
+            for (
+                    int i = 0;
+                    i < downloadIds.size();
+                    i++
+            ) {
+
+                long id =
+                        downloadIds.get(i);
+
+
+                Cursor cursor = null;
+
+
+                try {
+
+                    DownloadManager.Query query =
+                            new DownloadManager.Query();
+
+
+                    query.setFilterById(id);
+
+
+                    cursor =
+                            downloadManager.query(
+                                    query
+                            );
+
+
+                    if (
+                            cursor == null ||
+                            !cursor.moveToFirst()
+                    ) {
+
+                        continue;
+
+                    }
+
+
+                    int statusColumn =
+                            cursor.getColumnIndex(
+                                    DownloadManager.COLUMN_STATUS
+                            );
+
+
+                    int titleColumn =
+                            cursor.getColumnIndex(
+                                    DownloadManager.COLUMN_TITLE
+                            );
+
+
+                    int totalColumn =
+                            cursor.getColumnIndex(
+                                    DownloadManager.COLUMN_TOTAL_SIZE_BYTES
+                            );
+
+
+                    int downloadedColumn =
+                            cursor.getColumnIndex(
+                                    DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
+                            );
+
+
+                    int reasonColumn =
+                            cursor.getColumnIndex(
+                                    DownloadManager.COLUMN_REASON
+                            );
+
+
+                    int status =
+                            cursor.getInt(
+                                    statusColumn
+                            );
+
+
+                    String title =
+                            cursor.getString(
+                                    titleColumn
+                            );
+
+
+                    long total =
+                            cursor.getLong(
+                                    totalColumn
+                            );
+
+
+                    long downloaded =
+                            cursor.getLong(
+                                    downloadedColumn
+                            );
+
+
+                    int reason =
+                            cursor.getInt(
+                                    reasonColumn
+                            );
+
+
+                    // =================================================
+                    // CALCULATE PERCENT
+                    // =================================================
+
+                    int progress = 0;
+
+
+                    if (total > 0) {
+
+                        progress =
+                                (int)
+                                (
+                                        (
+                                                downloaded * 100
+                                        )
+                                        /
+                                        total
+                                );
+
+                    }
+
+
+                    // =================================================
+                    // STATUS
+                    // =================================================
+
+                    String state =
+                            "downloading";
+
+
+                    if (
+                            status ==
+                            DownloadManager.STATUS_PENDING
+                    ) {
+
+                        state =
+                                "pending";
+
+                    }
+
+                    else if (
+                            status ==
+                            DownloadManager.STATUS_RUNNING
+                    ) {
+
+                        state =
+                                "downloading";
+
+                    }
+
+                    else if (
+                            status ==
+                            DownloadManager.STATUS_PAUSED
+                    ) {
+
+                        state =
+                                "paused";
+
+                    }
+
+                    else if (
+                            status ==
+                            DownloadManager.STATUS_SUCCESSFUL
+                    ) {
+
+                        state =
+                                "completed";
+
+                        progress = 100;
+
+                    }
+
+                    else if (
+                            status ==
+                            DownloadManager.STATUS_FAILED
+                    ) {
+
+                        state =
+                                "failed";
+
+                    }
+
+
+                    // =================================================
+                    // JSON ITEM
+                    // =================================================
+
+                    JSONObject item =
+                            new JSONObject();
+
+
+                    item.put(
+                            "id",
+                            id
+                    );
+
+
+                    item.put(
+                            "title",
+                            title != null
+                                    ? title
+                                    : "Download"
+                    );
+
+
+                    item.put(
+                            "progress",
+                            progress
+                    );
+
+
+                    item.put(
+                            "downloaded",
+                            downloaded
+                    );
+
+
+                    item.put(
+                            "total",
+                            total
+                    );
+
+
+                    item.put(
+                            "status",
+                            state
+                    );
+
+
+                    item.put(
+                            "reason",
+                            reason
+                    );
+
+
+                    array.put(item);
+
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                } finally {
+
+                    if (cursor != null) {
+
+                        cursor.close();
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
+        return array.toString();
+
+    }
+
+
+    // =====================================================
+    // RELEASE PLAYER
+    // =====================================================
+
+    private void releasePlayer() {
+
+        if (mediaPlayer != null) {
+
+            try {
+
+                if (mediaPlayer.isPlaying()) {
+
+                    mediaPlayer.stop();
+
+                }
+
+            } catch (Exception ignored) {}
+
+
+            try {
+
+                mediaPlayer.reset();
+
+            } catch (Exception ignored) {}
+
+
+            try {
+
+                mediaPlayer.release();
+
+            } catch (Exception ignored) {}
+
+
+            mediaPlayer = null;
+
+        }
+
+    }
+
+
+    // =====================================================
+    // PERMISSION RESULT
+    // =====================================================
+
+    @Override
+    public void onRequestPermissionsResult(
+
+            int requestCode,
+
+            String[] permissions,
+
+            int[] grantResults
+
+    ) {
+
+        super.onRequestPermissionsResult(
+
+                requestCode,
+
+                permissions,
+
+                grantResults
+
+        );
+
+
+        if (
+                requestCode ==
+                AUDIO_PERMISSION_CODE
+        ) {
+
+            if (
+                    grantResults.length > 0 &&
+                    grantResults[0] ==
+                            PackageManager.PERMISSION_GRANTED
+            ) {
+
+                new MMEDIAInterface(
+                        MainActivity.this
+                ).loadDeviceMusic();
+
+
+                sendDownloadsToWebsite();
+
+
+            } else {
+
+                Toast.makeText(
+
+                        this,
+
+                        "Ruhusa ya kusoma audio haijatolewa.",
+
+                        Toast.LENGTH_LONG
+
+                ).show();
+
+            }
+
+        }
+
+
+        if (
+                requestCode ==
+                NOTIFICATION_PERMISSION_CODE
+        ) {
+
+            if (
+                    grantResults.length > 0 &&
+                    grantResults[0] ==
+                            PackageManager.PERMISSION_GRANTED
+            ) {
+
+                Toast.makeText(
+
+                        this,
+
+                        "Download notifications zimewashwa.",
+
+                        Toast.LENGTH_SHORT
+
+                ).show();
+
+            }
+
+        }
+
+    }
+
+
+    // =====================================================
+    // BACK BUTTON
+    // =====================================================
+
+    @Override
+    public void onBackPressed() {
+
+        if (webView != null) {
+
+            webView.evaluateJavascript(
+
+                    "typeof window.exitDevicePage===" +
+                    "'function' ? " +
+                    "window.exitDevicePage() : false;",
+
+                    value -> {
+
+                        if (
+                                "false".equals(value) ||
+                                "null".equals(value)
+                        ) {
+
+                            if (webView.canGoBack()) {
+
+                                webView.goBack();
+
+                            } else {
+
+                                MainActivity.super
+                                        .onBackPressed();
+
+                            }
+
+                        }
+
+                    }
+
+            );
+
+        } else {
+
+            super.onBackPressed();
+
+        }
+
+    }
+
+
+    // =====================================================
+    // DESTROY
     // =====================================================
 
     @Override
     protected void onDestroy() {
 
-        if (controllerFuture != null) {
+        if (
+                downloadHandler != null &&
+                downloadRunnable != null
+        ) {
 
-            controllerFuture.cancel(true);
+            downloadHandler.removeCallbacks(
+                    downloadRunnable
+            );
 
-            controllerFuture = null;
         }
 
 
-        if (mediaController != null) {
-
-            mediaController.release();
-
-            mediaController = null;
-        }
+        releasePlayer();
 
 
         if (webView != null) {
 
-            webView.removeJavascriptInterface(
-                    "MMEDIA"
-            );
-
-            webView.stopLoading();
-
-            webView.loadUrl(
-                    "about:blank"
-            );
-
             webView.destroy();
 
             webView = null;
+
         }
 
 
         super.onDestroy();
+
     }
-                                        }
+
+    }
