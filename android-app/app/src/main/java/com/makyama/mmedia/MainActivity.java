@@ -19,10 +19,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import androidx.annotation.OptIn;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
-import androidx.media3.common.util.UnstableApi;
 import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionToken;
 
@@ -43,6 +41,12 @@ public class MainActivity extends Activity {
     private MediaController mediaController;
 
     private ListenableFuture<MediaController> controllerFuture;
+
+    /*
+     * Queue ya My Device
+     */
+    private final List<MediaItem> deviceQueue =
+            new ArrayList<>();
 
     private final List<String> pendingDownloads =
             new ArrayList<>();
@@ -544,6 +548,71 @@ public class MainActivity extends Activity {
                                             );
 
 
+                                    String finalTitle =
+                                            title == null ||
+                                                    title.trim().isEmpty()
+                                                    ? displayName
+                                                    : title;
+
+                                    String finalArtist =
+                                            artist == null
+                                                    ? ""
+                                                    : artist;
+
+                                    String finalAlbum =
+                                            album == null
+                                                    ? ""
+                                                    : album;
+
+                                    String finalMime =
+                                            mime == null
+                                                    ? "audio/*"
+                                                    : mime;
+
+
+                                    /*
+                                     * Tengeneza MediaItem ya queue
+                                     */
+                                    MediaMetadata metadata =
+                                            new MediaMetadata.Builder()
+                                                    .setTitle(
+                                                            finalTitle
+                                                    )
+                                                    .setArtist(
+                                                            finalArtist
+                                                    )
+                                                    .setAlbumTitle(
+                                                            finalAlbum
+                                                    )
+                                                    .build();
+
+
+                                    MediaItem item =
+                                            new MediaItem.Builder()
+                                                    .setMediaId(
+                                                            String.valueOf(id)
+                                                    )
+                                                    .setUri(
+                                                            contentUri
+                                                    )
+                                                    .setMediaMetadata(
+                                                            metadata
+                                                    )
+                                                    .build();
+
+
+                                    /*
+                                     * Hifadhi queue ya Android
+                                     */
+                                    synchronized (deviceQueue) {
+
+                                        deviceQueue.add(item);
+                                    }
+
+
+                                    /*
+                                     * Tuma taarifa kwenda website
+                                     */
                                     JSONObject song =
                                             new JSONObject();
 
@@ -554,31 +623,22 @@ public class MainActivity extends Activity {
 
                                     song.put(
                                             "title",
-                                            title == null ||
-                                                    title.trim().isEmpty()
-                                                    ? displayName
-                                                    : title
+                                            finalTitle
                                     );
 
                                     song.put(
                                             "artist",
-                                            artist == null
-                                                    ? ""
-                                                    : artist
+                                            finalArtist
                                     );
 
                                     song.put(
                                             "album",
-                                            album == null
-                                                    ? ""
-                                                    : album
+                                            finalAlbum
                                     );
 
                                     song.put(
                                             "mime",
-                                            mime == null
-                                                    ? "audio/*"
-                                                    : mime
+                                            finalMime
                                     );
 
                                     song.put(
@@ -640,7 +700,7 @@ public class MainActivity extends Activity {
 
 
         // =================================================
-        // PLAY DEVICE AUDIO
+        // PLAY DEVICE AUDIO + FULL QUEUE
         // =================================================
 
         @JavascriptInterface
@@ -662,35 +722,128 @@ public class MainActivity extends Activity {
 
             try {
 
-                MediaMetadata metadata =
-                        new MediaMetadata.Builder()
-                                .setTitle(
-                                        title == null ||
-                                                title.trim().isEmpty()
-                                                ? "Unknown"
-                                                : title
-                                )
-                                .setArtist(
-                                        artist == null ||
-                                                artist.trim().isEmpty()
-                                                ? "MAKYAMA MEDIA"
-                                                : artist
-                                )
-                                .build();
+                /*
+                 * Kama queue haijasomwa bado,
+                 * cheza wimbo mmoja.
+                 */
+                synchronized (deviceQueue) {
+
+                    if (deviceQueue.isEmpty()) {
+
+                        MediaMetadata metadata =
+                                new MediaMetadata.Builder()
+                                        .setTitle(
+                                                title == null ||
+                                                        title.trim().isEmpty()
+                                                        ? "Unknown"
+                                                        : title
+                                        )
+                                        .setArtist(
+                                                artist == null ||
+                                                        artist.trim().isEmpty()
+                                                        ? "MAKYAMA MEDIA"
+                                                        : artist
+                                        )
+                                        .build();
 
 
-                MediaItem item =
-                        new MediaItem.Builder()
-                                .setUri(uri)
-                                .setMediaMetadata(metadata)
-                                .build();
+                        MediaItem item =
+                                new MediaItem.Builder()
+                                        .setUri(uri)
+                                        .setMediaMetadata(metadata)
+                                        .build();
 
 
-                mediaController.setMediaItem(item);
+                        mediaController.setMediaItem(item);
 
-                mediaController.prepare();
+                        mediaController.prepare();
 
-                mediaController.play();
+                        mediaController.play();
+
+                        return;
+                    }
+
+
+                    /*
+                     * Tafuta wimbo uliochaguliwa
+                     */
+                    int selectedIndex = -1;
+
+                    for (
+                            int i = 0;
+                            i < deviceQueue.size();
+                            i++
+                    ) {
+
+                        MediaItem item =
+                                deviceQueue.get(i);
+
+                        if (
+                                item.localConfiguration != null &&
+                                item.localConfiguration.uri
+                                        .toString()
+                                        .equals(uri)
+                        ) {
+
+                            selectedIndex = i;
+
+                            break;
+                        }
+                    }
+
+
+                    /*
+                     * Kama umeupata, load queue yote
+                     */
+                    if (selectedIndex >= 0) {
+
+                        mediaController.setMediaItems(
+                                deviceQueue,
+                                selectedIndex,
+                                0L
+                        );
+
+                        mediaController.prepare();
+
+                        mediaController.play();
+
+                    }
+                    else {
+
+                        /*
+                         * Fallback kama URI haipo kwenye queue
+                         */
+                        MediaMetadata metadata =
+                                new MediaMetadata.Builder()
+                                        .setTitle(
+                                                title == null ||
+                                                        title.trim().isEmpty()
+                                                        ? "Unknown"
+                                                        : title
+                                        )
+                                        .setArtist(
+                                                artist == null ||
+                                                        artist.trim().isEmpty()
+                                                        ? "MAKYAMA MEDIA"
+                                                        : artist
+                                        )
+                                        .build();
+
+
+                        MediaItem item =
+                                new MediaItem.Builder()
+                                        .setUri(uri)
+                                        .setMediaMetadata(metadata)
+                                        .build();
+
+
+                        mediaController.setMediaItem(item);
+
+                        mediaController.prepare();
+
+                        mediaController.play();
+                    }
+                }
 
             }
             catch (Exception e) {
@@ -700,6 +853,29 @@ public class MainActivity extends Activity {
                 showToast(
                         "Imeshindikana kucheza audio."
                 );
+            }
+        }
+
+
+        // =================================================
+        // PLAY / PAUSE
+        // =================================================
+
+        @JavascriptInterface
+        public void toggleDeviceAudio() {
+
+            if (mediaController == null) {
+                return;
+            }
+
+            if (mediaController.isPlaying()) {
+
+                mediaController.pause();
+
+            }
+            else {
+
+                mediaController.play();
             }
         }
 
@@ -755,7 +931,21 @@ public class MainActivity extends Activity {
 
             if (mediaController != null) {
 
-                mediaController.seekToNext();
+                if (
+                        mediaController.hasNextMediaItem()
+                ) {
+
+                    mediaController.seekToNext();
+
+                }
+                else {
+
+                    /*
+                     * Hakuna wimbo mwingine.
+                     * Auto-next haiwezi kuendelea zaidi.
+                     */
+                    mediaController.pause();
+                }
             }
         }
 
@@ -769,7 +959,23 @@ public class MainActivity extends Activity {
 
             if (mediaController != null) {
 
-                mediaController.seekToPrevious();
+                if (
+                        mediaController.hasPreviousMediaItem()
+                ) {
+
+                    mediaController.seekToPrevious();
+
+                }
+                else {
+
+                    /*
+                     * Kama ni wimbo wa kwanza,
+                     * rudisha mwanzo.
+                     */
+                    mediaController.seekTo(
+                            0
+                    );
+                }
             }
         }
 
@@ -806,6 +1012,50 @@ public class MainActivity extends Activity {
             }
 
             return false;
+        }
+
+
+        // =================================================
+        // IS PLAYING
+        // =================================================
+
+        @JavascriptInterface
+        public boolean isDeviceAudioPlaying() {
+
+            if (mediaController != null) {
+
+                return mediaController.isPlaying();
+            }
+
+            return false;
+        }
+
+
+        // =================================================
+        // CURRENT TITLE
+        // =================================================
+
+        @JavascriptInterface
+        public String getCurrentTitle() {
+
+            if (
+                    mediaController != null &&
+                    mediaController.getCurrentMediaItem() != null &&
+                    mediaController.getCurrentMediaItem()
+                            .mediaMetadata != null
+            ) {
+
+                CharSequence title =
+                        mediaController.getCurrentMediaItem()
+                                .mediaMetadata.title;
+
+                if (title != null) {
+
+                    return title.toString();
+                }
+            }
+
+            return "";
         }
 
 
@@ -1207,4 +1457,4 @@ public class MainActivity extends Activity {
 
         super.onDestroy();
     }
-                    }
+                            }
