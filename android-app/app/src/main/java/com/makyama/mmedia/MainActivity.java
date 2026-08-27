@@ -1,4 +1,4 @@
-package com.example.mmedia;
+package com.makyama.mmedia;
 
 import android.Manifest;
 import android.app.Activity;
