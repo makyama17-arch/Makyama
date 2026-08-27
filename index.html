@@ -485,10 +485,11 @@ function render(list, title){
   
 async function sendTermuxRequest(query) {  
   if(!db) return;  
-  await db.ref("requests").push({  
-    query: query,  
-    timestamp: Date.now()  
-  });  
+  await db.ref("requests").push({
+  query: query,
+  timestamp: Date.now(),
+  status: "pending"
+});  
 }  
   
 function applyCurrentFilter(){  
