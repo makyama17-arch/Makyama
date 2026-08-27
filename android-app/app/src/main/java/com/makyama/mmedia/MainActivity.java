@@ -152,6 +152,7 @@ public class MainActivity extends Activity {
 
     showToast(error);
         }
+    }
 
 
     // =====================================================
