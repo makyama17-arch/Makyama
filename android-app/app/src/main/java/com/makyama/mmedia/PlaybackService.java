@@ -1,4 +1,4 @@
-package com.makyama.mmedia;
+ackage com.makyama.mmedia;
 
 import android.app.PendingIntent;
 import android.content.Intent;
