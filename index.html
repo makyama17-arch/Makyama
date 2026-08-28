@@ -1,19 +1,26 @@
-<!DOCTYPE html><html lang="sw">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#07110c">
-<title>MAKYAMA — Global Opportunities</title><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script><style>
+
+<title>MAKYAMA — Global Opportunities</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<style>
 :root{
   --green:#00e676;
   --green2:#00c853;
-  --bg:#070a09;
-  --panel:#101512;
-  --panel2:#151c17;
-  --line:#26332b;
+  --bg:#070b09;
+  --panel:#0e1511;
+  --panel2:#131c16;
+  --line:#223128;
   --text:#fff;
-  --muted:#8d9a91;
-  --orange:#ff9800;
+  --muted:#8d9991;
+  --orange:#ffab00;
   --red:#ff5252;
   --blue:#42a5f5;
 }
@@ -25,11 +32,15 @@
   font-family:Arial,Segoe UI,sans-serif;
 }
 
-body{
+html,body{
   background:var(--bg);
   color:var(--text);
-  min-height:100vh;
+  min-height:100%;
+}
+
+body{
   padding-bottom:40px;
+  overflow-x:hidden;
 }
 
 button,input,select,textarea{
@@ -44,87 +55,95 @@ header{
   position:sticky;
   top:0;
   z-index:1000;
-  background:rgba(7,10,9,.97);
-  backdrop-filter:blur(14px);
+  background:rgba(7,11,9,.97);
+  backdrop-filter:blur(15px);
   border-bottom:1px solid var(--line);
-  padding:13px 15px;
-}
-
-.header-inner{
-  width:min(1100px,100%);
-  margin:auto;
+  padding:11px 13px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:10px;
 }
 
-.logo{
+.brand{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:9px;
+  min-width:0;
 }
 
-.logo img{
+.logo{
   width:42px;
   height:42px;
   border-radius:50%;
-  border:1px solid var(--green);
   object-fit:cover;
+  border:1px solid var(--green);
+  flex-shrink:0;
 }
 
-.logo h1{
+.brandText{
+  min-width:0;
+}
+
+.brandText h1{
   color:var(--green);
   font-size:18px;
+  font-weight:900;
 }
 
-.logo p{
+.brandText p{
   color:var(--muted);
-  font-size:10px;
+  font-size:9px;
   margin-top:3px;
+  white-space:nowrap;
+}
+
+.headerActions{
+  display:flex;
+  gap:6px;
 }
 
 .btn{
   border:0;
   border-radius:9px;
-  padding:9px 13px;
-  font-weight:800;
+  padding:9px 11px;
   font-size:11px;
+  font-weight:900;
 }
 
-.green{
+.btnGreen{
   background:var(--green);
   color:#001b0d;
 }
 
-.dark{
-  background:#18201b;
+.btnDark{
+  background:#172019;
   color:white;
   border:1px solid var(--line);
 }
 
-.red{
+.btnRed{
   background:var(--red);
   color:white;
 }
 
-.orange{
+.btnOrange{
   background:var(--orange);
   color:#111;
 }
 
 .wrap{
-  width:min(1100px,100%);
+  width:min(1000px,100%);
   margin:auto;
-  padding:0 12px;
+  padding:0 11px;
 }
 
 .hero{
-  padding:28px 0 16px;
+  padding:25px 4px 14px;
 }
 
 .hero h2{
-  font-size:30px;
+  font-size:27px;
   line-height:1.15;
 }
 
@@ -135,14 +154,14 @@ header{
 .hero p{
   color:var(--muted);
   font-size:12px;
-  margin-top:9px;
   line-height:1.5;
+  margin-top:8px;
 }
 
 .search{
   display:flex;
   gap:8px;
-  margin:12px 0;
+  margin:8px 0 12px;
 }
 
 .search input{
@@ -150,7 +169,7 @@ header{
   min-width:0;
   background:var(--panel);
   color:#fff;
-  border:1px solid var(--line);
+  border:1px solid #304137;
   border-radius:12px;
   padding:13px;
   outline:none;
@@ -161,14 +180,14 @@ header{
 }
 
 .search button{
-  width:90px;
+  width:82px;
 }
 
 .filters{
   display:flex;
-  gap:8px;
+  gap:7px;
   overflow-x:auto;
-  padding:4px 0 15px;
+  padding:2px 0 12px;
   scrollbar-width:none;
 }
 
@@ -178,13 +197,13 @@ header{
 
 .filter{
   flex:0 0 auto;
-  padding:8px 13px;
-  border-radius:999px;
-  background:var(--panel);
-  color:#b8c1bb;
   border:1px solid var(--line);
-  font-size:11px;
-  font-weight:800;
+  background:var(--panel);
+  color:#b7c0b9;
+  border-radius:99px;
+  padding:8px 12px;
+  font-size:10px;
+  font-weight:900;
 }
 
 .filter.active{
@@ -193,40 +212,44 @@ header{
   border-color:var(--green);
 }
 
-.ad-area{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  margin:10px 0;
+/* ADS */
+
+.adsArea{
+  margin:8px 0 13px;
 }
 
-.ad{
-  min-height:70px;
-  background:linear-gradient(135deg,#151e18,#0e1511);
-  border:1px dashed var(--orange);
+.adBox{
+  background:linear-gradient(135deg,#121b15,#0d130f);
+  border:1px dashed #725400;
   border-radius:12px;
-  padding:10px;
+  margin-bottom:9px;
+  padding:8px;
   overflow:hidden;
   text-align:center;
+  min-height:50px;
 }
 
-.section{
+/* STATUS */
+
+.topStatus{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin:15px 0 10px;
+  margin:8px 2px 10px;
 }
 
-.section h3{
+.topStatus h3{
+  font-size:17px;
   border-left:4px solid var(--green);
   padding-left:8px;
-  font-size:17px;
 }
 
 #status{
-  color:var(--muted);
   font-size:10px;
+  color:var(--muted);
 }
+
+/* CARDS */
 
 .grid{
   display:grid;
@@ -235,486 +258,781 @@ header{
 }
 
 .card{
-  background:linear-gradient(135deg,#111713,#0d120f);
-  border:1px solid var(--line);
-  border-radius:13px;
+  background:linear-gradient(145deg,#101812,#0b110e);
+  border:1px solid #202d25;
+  border-radius:14px;
   padding:13px;
+  overflow:hidden;
 }
 
-.card-top{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.badges{
+.cardTop{
   display:flex;
   flex-wrap:wrap;
   gap:5px;
+  margin-bottom:8px;
 }
 
 .badge{
   display:inline-block;
-  background:#123d27;
-  color:var(--green);
-  border-radius:5px;
   padding:4px 7px;
+  border-radius:6px;
   font-size:9px;
   font-weight:900;
+  background:#103a24;
+  color:var(--green);
 }
 
-.badge.orange{
-  background:#3d2b0d;
-  color:#ffb52e;
-}
-
-.badge.blue{
-  background:#102d44;
+.badge.country{
+  background:#112d3d;
   color:#64b5f6;
 }
 
-.title{
-  font-size:14px;
-  font-weight:900;
-  line-height:1.35;
-  margin-top:8px;
+.badge.category{
+  background:#3a2c0d;
+  color:#ffbd45;
+}
+
+.badge.deadline{
+  background:#351818;
+  color:#ff7777;
+}
+
+.card h2{
+  font-size:16px;
+  line-height:1.3;
+  margin-bottom:7px;
 }
 
 .description{
-  color:#aeb8b1;
+  color:#9aa69e;
   font-size:11px;
   line-height:1.5;
-  margin-top:7px;
+  margin-bottom:9px;
 }
 
-.meta{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:9px;
-  color:var(--muted);
+.source{
+  color:#89958d;
   font-size:10px;
+  margin-bottom:10px;
 }
 
-.card-actions{
-  display:flex;
-  gap:7px;
-  margin-top:12px;
+.source strong{
+  color:#d2d9d4;
 }
 
-.card-actions a,
-.card-actions button{
-  text-decoration:none;
-  flex:1;
+.applyBtn{
+  display:block;
+  width:100%;
   text-align:center;
-  padding:8px;
-  border-radius:7px;
-  border:0;
-  font-size:10px;
+  text-decoration:none;
+  background:var(--green);
+  color:#001b0d;
+  border-radius:9px;
+  padding:10px;
+  font-size:11px;
   font-weight:900;
 }
 
-.open{
-  background:var(--green);
-  color:#001b0d;
+.applyBtn:hover{
+  background:var(--green2);
+}
+
+.noLink{
+  color:#657169;
+  font-size:10px;
+  padding-top:3px;
 }
 
 .loading,
 .empty{
   background:var(--panel);
-  border:1px dashed var(--line);
-  border-radius:12px;
+  border:1px dashed #304137;
+  border-radius:13px;
   padding:30px 15px;
   text-align:center;
   color:var(--muted);
   font-size:12px;
 }
 
+.empty strong{
+  color:white;
+  display:block;
+  font-size:14px;
+  margin-bottom:7px;
+}
+
 /* ADMIN */
 
 .admin{
   display:none;
-  background:#0c130f;
+  background:#0b130e;
   border:1px solid var(--green);
   border-radius:14px;
-  padding:14px;
-  margin:15px 0;
+  padding:13px;
+  margin:10px 0 14px;
 }
 
-.admin h3{
+.adminTitle{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.adminTitle h3{
   color:var(--green);
   font-size:16px;
-  margin-bottom:12px;
 }
 
-.stats{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px;
-  margin-bottom:12px;
-}
-
-.stat{
-  background:var(--panel2);
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:13px;
-}
-
-.stat small{
-  color:var(--muted);
-  font-size:9px;
-}
-
-.stat strong{
-  display:block;
-  color:var(--green);
-  font-size:23px;
-  margin-top:5px;
-}
-
-.admin-box{
-  background:var(--panel2);
-  border:1px solid var(--line);
-  border-radius:10px;
+.onlineBox{
+  background:#121b15;
+  border:1px solid #23412d;
+  border-radius:11px;
   padding:12px;
-  margin-top:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
 }
 
-.admin-box h4{
+.onlineText b{
   color:var(--green);
   font-size:12px;
+}
+
+.onlineText p{
+  color:var(--muted);
+  font-size:9px;
+  margin-top:3px;
+}
+
+.onlineNumber{
+  background:var(--green);
+  color:#001b0d;
+  border-radius:99px;
+  min-width:42px;
+  text-align:center;
+  padding:7px 10px;
+  font-size:16px;
+  font-weight:900;
+}
+
+.adminSection{
+  background:#121a15;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:11px;
+  margin-bottom:10px;
+}
+
+.adminSection h4{
+  font-size:12px;
   margin-bottom:8px;
+  color:var(--green);
 }
 
 .admin input,
 .admin textarea,
 .admin select{
   width:100%;
-  background:#0c120e;
-  color:#fff;
-  border:1px solid var(--line);
+  background:#172019;
+  color:white;
+  border:1px solid #2b3a31;
   border-radius:8px;
   padding:10px;
-  margin-bottom:8px;
+  margin-bottom:7px;
   outline:none;
 }
 
 .admin textarea{
-  height:90px;
+  min-height:80px;
   resize:vertical;
-  font-size:11px;
 }
 
-.admin-row{
+.row{
   display:flex;
   gap:7px;
 }
 
-.admin-row>*{
+.row>*{
   flex:1;
 }
 
-.admin-list{
-  display:grid;
-  gap:7px;
-  margin-top:9px;
-}
-
-.admin-item{
-  background:#0d1410;
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:9px;
+.adminItem{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:8px;
+  padding:8px;
+  margin-top:6px;
+  background:#172019;
+  border-radius:8px;
 }
 
-.admin-item span{
+.adminItem span{
   min-width:0;
   font-size:10px;
+  white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.admin-item button{
-  flex:0 0 auto;
-  padding:6px 9px;
+.adminItem button{
+  flex-shrink:0;
   border:0;
   border-radius:6px;
+  padding:6px 8px;
   font-size:9px;
   font-weight:900;
 }
 
-footer{
-  text-align:center;
-  color:#69756d;
-  font-size:10px;
-  padding:30px 10px;
-}
+/* MODAL */
 
 .modal{
   display:none;
   position:fixed;
   inset:0;
-  z-index:3000;
-  background:rgba(0,0,0,.82);
+  z-index:5000;
+  background:rgba(0,0,0,.84);
   align-items:center;
   justify-content:center;
   padding:15px;
 }
 
-.modal-box{
+.modalBox{
   width:min(390px,100%);
-  background:#111713;
+  background:#111813;
   border:1px solid var(--green);
   border-radius:14px;
   padding:18px;
 }
 
-.modal-box h3{
+.modalBox h3{
   color:var(--green);
   margin-bottom:13px;
 }
 
-.modal-box input{
+.modalBox input{
   width:100%;
-  background:#192019;
-  color:#fff;
+  background:#182119;
   border:1px solid var(--line);
-  padding:11px;
+  color:#fff;
   border-radius:8px;
-  margin-bottom:9px;
+  padding:11px;
+  margin-bottom:8px;
+  outline:none;
 }
 
-.modal-box .btn{
+.modalBox .btn{
   width:100%;
+  margin-top:4px;
 }
 
-.close{
+.closeModal{
   float:right;
-  border:0;
   background:none;
+  border:0;
   color:#aaa;
   font-size:23px;
 }
 
+/* TOAST */
+
 .toast{
   display:none;
   position:fixed;
-  top:75px;
+  top:70px;
   left:50%;
   transform:translateX(-50%);
-  z-index:5000;
+  z-index:6000;
   background:var(--green);
   color:#001b0d;
-  padding:10px 15px;
-  border-radius:99px;
   font-size:11px;
   font-weight:900;
+  padding:10px 15px;
+  border-radius:99px;
   max-width:90%;
   text-align:center;
 }
 
+/* FOOTER */
+
+footer{
+  text-align:center;
+  color:#637068;
+  font-size:9px;
+  padding:30px 10px;
+  line-height:1.5;
+}
+
 @media(min-width:650px){
+
   .grid{
     grid-template-columns:1fr 1fr;
   }
 
-  .stats{
-    grid-template-columns:repeat(4,1fr);
+  .hero h2{
+    font-size:32px;
   }
+
+  .card h2{
+    font-size:17px;
+  }
+
 }
-</style></head><body><header>
-  <div class="header-inner"><div class="logo">
-  <img src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png">
-  <div>
-    <h1>MAKYAMA</h1>
-    <p>GLOBAL OPPORTUNITIES</p>
+
+@media(max-width:480px){
+
+  .brandText p{
+    display:none;
+  }
+
+  .headerActions .btn{
+    padding:8px 9px;
+  }
+
+  .hero{
+    padding-top:20px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <div class="brand">
+
+    <img
+      class="logo"
+      src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png"
+      alt="MAKYAMA">
+
+    <div class="brandText">
+      <h1>MAKYAMA</h1>
+      <p>GLOBAL OPPORTUNITIES • JOBS • SCHOLARSHIPS • GRANTS</p>
+    </div>
+
   </div>
+
+  <div class="headerActions">
+    <button class="btn btnDark" onclick="openAdmin()">🔐 ADMIN</button>
+  </div>
+
+</header>
+
+
+<div id="toast" class="toast"></div>
+
+
+<main class="wrap">
+
+  <section class="hero">
+
+    <h2>
+      Discover
+      <span>Global Opportunities.</span>
+    </h2>
+
+    <p>
+      Find jobs, scholarships, grants, internships and other opportunities
+      from Tanzania and around the world.
+    </p>
+
+  </section>
+
+
+  <!-- ADS -->
+
+  <div id="adsArea" class="adsArea"></div>
+
+
+  <!-- SEARCH -->
+
+  <div class="search">
+
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="🔎 Search jobs, scholarships, grants..."
+      autocomplete="off">
+
+    <button
+      class="btn btnGreen"
+      onclick="searchOpportunities()">
+      SEARCH
+    </button>
+
+  </div>
+
+
+  <!-- FILTERS -->
+
+  <div class="filters">
+
+    <button
+      class="filter active"
+      onclick="setFilter('all',this)">
+      🌍 Global
+    </button>
+
+    <button
+      class="filter"
+      onclick="setFilter('Tanzania',this)">
+      🇹🇿 Tanzania
+    </button>
+
+    <button
+      class="filter"
+      onclick="setFilter('Africa',this)">
+      🌍 Africa
+    </button>
+
+    <button
+      class="filter"
+      onclick="setFilter('Job',this)">
+      💼 Jobs
+    </button>
+
+    <button
+      class="filter"
+      onclick="setFilter('Scholarship',this)">
+      🎓 Scholarships
+    </button>
+
+    <button
+      class="filter"
+      onclick="setFilter('Grant',this)">
+      💰 Grants
+    </button>
+
+    <button
+      class="filter"
+      onclick="setFilter('Internship',this)">
+      🧑‍💻 Internships
+    </button>
+
+  </div>
+
+
+  <!-- ADMIN -->
+
+  <section id="admin" class="admin">
+
+    <div class="adminTitle">
+
+      <h3>👑 ADMIN DASHBOARD</h3>
+
+      <button
+        class="btn btnRed"
+        onclick="logoutAdmin()">
+        LOGOUT
+      </button>
+
+    </div>
+
+
+    <!-- ONLINE USERS -->
+
+    <div class="onlineBox">
+
+      <div class="onlineText">
+
+        <b>🟢 USERS ONLINE NOW</b>
+
+        <p>
+          People currently connected to MAKYAMA
+        </p>
+
+      </div>
+
+      <div
+        id="onlineCount"
+        class="onlineNumber">
+        0
+      </div>
+
+    </div>
+
+
+    <!-- ADD AD -->
+
+    <div class="adminSection">
+
+      <h4>📢 ADD ADVERTISEMENT</h4>
+
+      <input
+        id="adName"
+        placeholder="Ad name">
+
+      <select id="adPosition">
+
+        <option value="top">
+          Top Advertisement
+        </option>
+
+        <option value="between">
+          Between Opportunities
+        </option>
+
+      </select>
+
+      <textarea
+        id="adCode"
+        placeholder="Paste your advertisement HTML / script here"></textarea>
+
+      <button
+        class="btn btnOrange"
+        style="width:100%"
+        onclick="addAd()">
+        ➕ ADD AD
+      </button>
+
+    </div>
+
+
+    <!-- ADS LIST -->
+
+    <div class="adminSection">
+
+      <h4>📋 ACTIVE ADS</h4>
+
+      <div id="adsAdminList"></div>
+
+    </div>
+
+
+    <!-- MANUAL OPPORTUNITY -->
+
+    <div class="adminSection">
+
+      <h4>➕ ADD OPPORTUNITY MANUALLY</h4>
+
+      <input
+        id="oTitle"
+        placeholder="Opportunity title">
+
+      <input
+        id="oCountry"
+        placeholder="Country e.g. Tanzania, Kenya, United States">
+
+      <select id="oCategory">
+
+        <option value="Job">Job</option>
+        <option value="Scholarship">Scholarship</option>
+        <option value="Grant">Grant</option>
+        <option value="Internship">Internship</option>
+        <option value="Fellowship">Fellowship</option>
+        <option value="Competition">Competition</option>
+
+      </select>
+
+      <input
+        id="oSource"
+        placeholder="Source e.g. HESLB, Grants.gov">
+
+      <input
+        id="oDeadline"
+        placeholder="Deadline e.g. 30 September 2026">
+
+      <input
+        id="oUrl"
+        placeholder="Application URL">
+
+      <textarea
+        id="oDescription"
+        placeholder="Opportunity description"></textarea>
+
+      <button
+        class="btn btnGreen"
+        style="width:100%"
+        onclick="addOpportunity()">
+        ADD OPPORTUNITY
+      </button>
+
+    </div>
+
+
+    <!-- MANUAL OPPORTUNITIES -->
+
+    <div class="adminSection">
+
+      <h4>📋 MANUAL OPPORTUNITIES</h4>
+
+      <div id="manualList"></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- TITLE -->
+
+  <div class="topStatus">
+
+    <h3 id="sectionTitle">
+      🌍 Global Opportunities
+    </h3>
+
+    <span id="status">
+      Loading...
+    </span>
+
+  </div>
+
+
+  <!-- RESULTS -->
+
+  <div id="results" class="grid">
+
+    <div class="loading">
+      Loading opportunities... ⏳
+    </div>
+
+  </div>
+
+
+  <footer>
+
+    © 2026 MAKYAMA • Global Opportunities<br>
+    Jobs • Scholarships • Grants • Internships • Fellowships
+
+  </footer>
+
+</main>
+
+
+<!-- LOGIN -->
+
+<div id="loginModal" class="modal">
+
+  <div class="modalBox">
+
+    <button
+      class="closeModal"
+      onclick="closeAdmin()">
+      ×
+    </button>
+
+    <h3>🔐 ADMIN LOGIN</h3>
+
+    <input
+      id="adminUser"
+      placeholder="Username">
+
+    <input
+      id="adminPass"
+      type="password"
+      placeholder="Password">
+
+    <button
+      class="btn btnGreen"
+      onclick="loginAdmin()">
+      LOGIN
+    </button>
+
+  </div>
+
 </div>
 
-<button class="btn dark" onclick="openAdmin()">🔐 ADMIN</button>
 
-  </div>
-</header><div id="toast" class="toast"></div><main class="wrap"><section class="hero">
-  <h2>Find opportunities <span>worldwide.</span></h2>
-  <p>
-    Scholarships, jobs, grants, internships and other opportunities
-    kutoka Tanzania na nchi mbalimbali duniani.
-  </p>
-</section><!-- TOP ADS --><div id="topAds" class="ad-area"></div><div class="search">
-  <input
-    id="search"
-    placeholder="🔎 Search opportunity, country, job, scholarship..."
-    autocomplete="off">
-  <button class="btn green" onclick="searchOpportunities()">SEARCH</button>
-</div><div class="filters">  <button class="filter active" onclick="setFilter('all',this)">
-    🌍 ALL
-  </button>  <button class="filter" onclick="setFilter('Job',this)">
-    💼 JOBS
-  </button>  <button class="filter" onclick="setFilter('Scholarship',this)">
-    🎓 SCHOLARSHIPS
-  </button>  <button class="filter" onclick="setFilter('Grant',this)">
-    💰 GRANTS
-  </button>  <button class="filter" onclick="setFilter('Internship',this)">
-    🧑‍💻 INTERNSHIPS
-  </button>  <button class="filter" onclick="setCountry('Tanzania',this)">
-    🇹🇿 TANZANIA
-  </button>  <button class="filter" onclick="setCountry('United States',this)">
-    🇺🇸 USA
-  </button>  <button class="filter" onclick="setCountry('United Kingdom',this)">
-    🇬🇧 UK
-  </button>  <button class="filter" onclick="setCountry('Canada',this)">
-    🇨🇦 CANADA
-  </button>  <button class="filter" onclick="setCountry('Global',this)">
-    🌐 GLOBAL
-  </button></div><!-- MIDDLE ADS --><div id="middleAds" class="ad-area"></div><div class="section">
-  <h3 id="sectionTitle">🌍 Latest Global Opportunities</h3>
-  <span id="status">Loading...</span>
-</div><div id="results" class="grid">
-  <div class="loading">
-    Loading opportunities... ⏳
-  </div>
-</div><!-- BOTTOM ADS --><div id="bottomAds" class="ad-area"></div><footer>
-  © 2026 MAKYAMA • Global Opportunities Platform
-</footer><!-- ADMIN DASHBOARD --><section id="admin" class="admin"><h3>👑 MAKYAMA ADMIN DASHBOARD</h3><div class="stats">  <div class="stat">
-    <small>👥 ONLINE NOW</small>
-    <strong id="onlineUsers">0</strong>
-  </div>  <div class="stat">
-    <small>📄 OPPORTUNITIES</small>
-    <strong id="totalOpportunities">0</strong>
-  </div>  <div class="stat">
-    <small>📢 ADS</small>
-    <strong id="totalAds">0</strong>
-  </div>  <div class="stat">
-    <small>🌍 COUNTRIES</small>
-    <strong id="totalCountries">0</strong>
-  </div></div><!-- ADS MANAGEMENT --><div class="admin-box"><h4>📢 ADD NEW AD</h4><input
-id="adName"
-placeholder="Ad name, mfano Adsterra Banner">
+<script>
 
-<select id="adPosition">
-  <option value="top">⬆️ TOP</option>
-  <option value="middle">📄 MIDDLE</option>
-  <option value="bottom">⬇️ BOTTOM</option>
-</select><textarea
-  id="adCode"
-  placeholder="Paste Adsterra / other ad script hapa..."></textarea><button
-class="btn orange"
-style="width:100%"
-onclick="addAd()">
-➕ ADD AD
-</button>
-
-<div id="adsList" class="admin-list"></div></div><!-- MANUAL OPPORTUNITY --><div class="admin-box"><h4>➕ ADD OPPORTUNITY MANUALLY</h4><input id="opTitle" placeholder="Opportunity title"><input id="opCountry" placeholder="Country"><select id="opCategory"><option value="Job">💼 Job</option>
-<option value="Scholarship">🎓 Scholarship</option>
-<option value="Grant">💰 Grant</option>
-<option value="Internship">🧑‍💻 Internship</option>
-<option value="Fellowship">🏆 Fellowship</option>
-<option value="Competition">🏅 Competition</option></select><textarea
-  id="opDescription"
-  placeholder="Short description"></textarea><input
-id="opDeadline"
-placeholder="Deadline, mfano 30 September 2026">
-
-<input
-id="opLink"
-placeholder="Official application URL">
-
-<button
-class="btn green"
-style="width:100%"
-onclick="addOpportunity()">
-➕ ADD OPPORTUNITY
-</button>
-
-</div><!-- ADMIN OPPORTUNITY LIST --><div class="admin-box"><h4>📋 RECENT OPPORTUNITIES</h4><div id="adminOpportunities" class="admin-list"></div></div><button
-class="btn red"
-style="width:100%;margin-top:10px"
-onclick="logoutAdmin()">
-LOGOUT ADMIN
-</button>
-
-</section></main><!-- LOGIN --><div id="loginModal" class="modal"><div class="modal-box"><button class="close" onclick="closeAdmin()">×</button>
-
-<h3>🔐 ADMIN LOGIN</h3><input
-id="adminUser"
-placeholder="Username">
-
-<input
-id="adminPass"
-type="password"
-placeholder="Password">
-
-<button
-class="btn green"
-onclick="loginAdmin()">
-LOGIN
-</button>
-
-</div></div><script>
-
-/* =====================================
+/* =========================================================
    FIREBASE
-===================================== */
+========================================================= */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
-  authDomain: "makyama-e5e89.firebaseapp.com",
-  databaseURL: "https://makyama-e5e89-default-rtdb.firebaseio.com/",
-  projectId: "makyama-e5e89",
-  storageBucket: "makyama-e5e89.appspot.com",
-  messagingSenderId: "229527204095",
-  appId: "1:229527204095:web:2bdfe0589cf42794b3dcca"
+
+  apiKey:
+    "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
+
+  authDomain:
+    "makyama-e5e89.firebaseapp.com",
+
+  databaseURL:
+    "https://makyama-e5e89-default-rtdb.firebaseio.com/",
+
+  projectId:
+    "makyama-e5e89",
+
+  storageBucket:
+    "makyama-e5e89.appspot.com",
+
+  messagingSenderId:
+    "229527204095",
+
+  appId:
+    "1:229527204095:web:2bdfe0589cf42794b3dcca"
+
 };
+
 
 let db = null;
 
 try{
 
   if(!firebase.apps.length){
+
     firebase.initializeApp(firebaseConfig);
+
   }
 
   db = firebase.database();
 
-}catch(e){
+}catch(error){
 
-  console.error(e);
+  console.error(error);
 
 }
 
 
-/* =====================================
-   VARIABLES
-===================================== */
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
 
 let opportunities = [];
-let currentCategory = "all";
-let currentCountry = "all";
-let admin = false;
 
+let currentFilter = "all";
 
-/* =====================================
-   HELPERS
-===================================== */
+let isAdmin = false;
 
 const $ = id => document.getElementById(id);
 
-function esc(v){
 
-  return String(v ?? "")
-    .replace(/[&<>"']/g,m=>({
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHTML(value){
+
+  return String(value ?? "")
+    .replace(/[&<>"']/g, char => ({
+
       "&":"&amp;",
       "<":"&lt;",
       ">":"&gt;",
       '"':"&quot;",
       "'":"&#039;"
-    }[m]));
+
+    }[char]));
+
+}
+
+
+function safeUrl(url){
+
+  if(!url) return "";
+
+  url = String(url).trim();
+
+  if(!/^https?:\/\//i.test(url)){
+    return "";
+  }
+
+  return url;
 
 }
 
@@ -722,697 +1040,786 @@ function esc(v){
 function toast(message){
 
   $("toast").textContent = message;
+
   $("toast").style.display = "block";
 
   clearTimeout(window.toastTimer);
 
-  window.toastTimer = setTimeout(()=>{
+  window.toastTimer = setTimeout(() => {
+
     $("toast").style.display = "none";
+
   },4000);
 
 }
 
 
-/* =====================================
-   LIVE USERS
-===================================== */
+/* =========================================================
+   COUNTRY NORMALIZATION
+========================================================= */
 
-function initPresence(){
+function normalizeCountry(country){
 
-  if(!db) return;
+  if(!country) return "International";
 
-  const usersRef = db.ref("website_stats/online_users");
+  const c = String(country).trim();
 
-  const myRef = usersRef.push();
+  if(/tanzania/i.test(c)){
+    return "Tanzania";
+  }
 
-  db.ref(".info/connected").on("value",snap=>{
+  if(
+    /kenya|uganda|rwanda|burundi|ethiopia|somalia|south sudan|
+    sudan|zambia|zimbabwe|malawi|mozambique|botswana|namibia|
+    ghana|nigeria|south africa|senegal|africa/i.test(c)
+  ){
 
-    if(snap.val() === true){
+    return c;
 
-      myRef.onDisconnect().remove();
+  }
 
-      myRef.set({
-        connected:true,
-        timestamp:firebase.database.ServerValue.TIMESTAMP
-      });
+  if(
+    /international|worldwide|global|united states|usa/i.test(c)
+  ){
 
-    }
+    return c;
 
-  });
+  }
 
-  usersRef.on("value",snap=>{
-
-    const count = snap.numChildren();
-
-    $("onlineUsers").textContent = count;
-
-  });
+  return c;
 
 }
 
 
-/* =====================================
-   LOAD OPPORTUNITIES
-===================================== */
+/* =========================================================
+   CARD
+========================================================= */
 
-function initOpportunities(){
+function opportunityCard(item){
 
-  if(!db) return;
+  const title =
+    item.title ||
+    item.name ||
+    "Untitled Opportunity";
 
-  db.ref("opportunities").on("value",snap=>{
-
-    opportunities = [];
-
-    if(snap.exists()){
-
-      snap.forEach(child=>{
-
-        const x = child.val() || {};
-
-        opportunities.push({
-
-          key:child.key,
-
-          title:x.title || x.name || "Untitled Opportunity",
-
-          country:x.country || "International",
-
-          category:x.category || x.type || "Opportunity",
-
-          description:x.description || "",
-
-          deadline:x.deadline || "",
-
-          link:x.link || x.url || "",
-
-          source:x.source || "MAKYAMA",
-
-          createdAt:x.createdAt || 0
-
-        });
-
-      });
-
-    }
-
-    opportunities.sort((a,b)=>
-      (b.createdAt || 0)-(a.createdAt || 0)
+  const country =
+    normalizeCountry(
+      item.country ||
+      item.location ||
+      item.countryName ||
+      "International"
     );
 
-    $("totalOpportunities").textContent =
-      opportunities.length;
+  const category =
+    item.category ||
+    item.type ||
+    "Opportunity";
 
-    updateCountries();
+  const source =
+    item.source ||
+    item.organization ||
+    "Official Source";
 
-    applyFilters();
+  const description =
+    item.description ||
+    item.summary ||
+    "Global opportunity. Check the official source for full details.";
 
-    if(admin) renderAdminOpportunities();
+  const deadline =
+    item.deadline ||
+    item.closingDate ||
+    "";
 
-  });
-
-}
-
-
-/* =====================================
-   FILTER
-===================================== */
-
-function applyFilters(){
-
-  const q = $("search").value
-    .trim()
-    .toLowerCase();
-
-  let list = [...opportunities];
-
-  if(currentCategory !== "all"){
-
-    list = list.filter(x=>
-      String(x.category)
-        .toLowerCase()
-        .includes(currentCategory.toLowerCase())
-    );
-
-  }
-
-  if(currentCountry !== "all"){
-
-    list = list.filter(x=>
-      String(x.country)
-        .toLowerCase()
-        .includes(currentCountry.toLowerCase())
-    );
-
-  }
-
-  if(q){
-
-    const words = q
-      .split(/\s+/)
-      .filter(Boolean);
-
-    list = list.filter(x=>{
-
-      const text = (
-
-        x.title+" "+
-        x.country+" "+
-        x.category+" "+
-        x.description+" "+
-        x.source
-
-      ).toLowerCase();
-
-      return words.every(w=>text.includes(w));
-
-    });
-
-  }
-
-  renderOpportunities(list);
-
-}
+  const url = safeUrl(
+    item.url ||
+    item.link ||
+    item.applyUrl ||
+    item.applicationUrl ||
+    item.website ||
+    item.sourceUrl
+  );
 
 
-function renderOpportunities(list){
+  let button = "";
 
-  if(!list.length){
+  /*
+    IMPORTANT:
+    BUTTON ONLY EXISTS WHEN A REAL URL EXISTS.
+  */
 
-    $("results").innerHTML = `
-      <div class="empty">
+  if(url){
 
-        <div style="font-size:25px">🌍</div>
-
-        <p style="margin-top:8px;color:#fff;font-weight:bold">
-          Hakuna opportunity iliyopatikana.
-        </p>
-
-        <p style="margin-top:7px">
-          Jaribu country, category au search nyingine.
-        </p>
-
-      </div>
+    button = `
+      <a
+        class="applyBtn"
+        href="${escapeHTML(url)}"
+        target="_blank"
+        rel="noopener noreferrer">
+        🔗 VIEW / APPLY
+      </a>
     `;
 
-    $("status").textContent = "0 results";
-
-    return;
-
   }
 
-  $("results").innerHTML =
-    list.map(opportunityCard).join("");
-
-  $("status").textContent =
-    list.length+" results";
-
-}
-
-
-function opportunityCard(x){
-
-  const category = String(x.category || "Opportunity");
-
-  let icon = "🌍";
-
-  if(category.toLowerCase().includes("job"))
-    icon="💼";
-
-  if(category.toLowerCase().includes("scholar"))
-    icon="🎓";
-
-  if(category.toLowerCase().includes("grant"))
-    icon="💰";
-
-  if(category.toLowerCase().includes("intern"))
-    icon="🧑‍💻";
-
-  const link = x.link
-    ? esc(x.link)
-    : "#";
 
   return `
 
-  <article class="card">
+    <article class="card">
 
-    <div class="card-top">
-
-      <div class="badges">
+      <div class="cardTop">
 
         <span class="badge">
-          ${icon} ${esc(category)}
+          ${escapeHTML(category)}
         </span>
 
-        <span class="badge blue">
-          🌍 ${esc(x.country)}
+        <span class="badge country">
+          🌍 ${escapeHTML(country)}
+        </span>
+
+        <span class="badge category">
+          ${escapeHTML(source)}
         </span>
 
         ${
-          x.source
-          ? `<span class="badge orange">
-               ${esc(x.source)}
-             </span>`
-          : ""
+          deadline
+          ?
+          `<span class="badge deadline">
+            ⏰ Deadline: ${escapeHTML(deadline)}
+          </span>`
+          :
+          ""
         }
 
       </div>
 
-    </div>
 
-    <div class="title">
-      ${esc(x.title)}
-    </div>
+      <h2>
+        ${escapeHTML(title)}
+      </h2>
 
-    ${
-      x.description
-      ? `<div class="description">
-           ${esc(x.description)}
-         </div>`
-      : ""
-    }
 
-    <div class="meta">
+      <div class="description">
+        ${escapeHTML(description)}
+      </div>
 
-      ${
-        x.deadline
-        ? `<span>⏰ Deadline: ${esc(x.deadline)}</span>`
-        : ""
-      }
 
-      <span>
-        📡 ${esc(x.source || "MAKYAMA")}
-      </span>
+      <div class="source">
+        📡 Source:
+        <strong>
+          ${escapeHTML(source)}
+        </strong>
+      </div>
 
-    </div>
-
-    <div class="card-actions">
 
       ${
-        x.link
-        ? `<a
-             class="open"
-             href="${link}"
-             target="_blank"
-             rel="noopener noreferrer">
-             🔗 VIEW / APPLY
-           </a>`
-        : `<button
-             class="dark"
-             disabled>
-             LINK HAIPO
-           </button>`
+        button
+        ?
+        button
+        :
+        `<div class="noLink">
+          Official application link not available yet.
+        </div>`
       }
 
-    </div>
-
-  </article>
+    </article>
 
   `;
 
 }
 
 
-/* =====================================
-   SEARCH
-===================================== */
+/* =========================================================
+   LOAD OPPORTUNITIES
+========================================================= */
 
-function searchOpportunities(){
+function initOpportunities(){
 
-  applyFilters();
+  if(!db){
 
-}
+    $("results").innerHTML = `
+      <div class="empty">
+        <strong>Firebase connection error</strong>
+        Please check Firebase configuration.
+      </div>
+    `;
 
+    return;
 
-$("search").addEventListener("keydown",e=>{
-
-  if(e.key==="Enter"){
-    searchOpportunities();
   }
 
-});
 
+  /*
+    BOT SHOULD SAVE DATA HERE:
 
-/* =====================================
-   CATEGORY FILTER
-===================================== */
+    opportunities/
 
-function setFilter(category,button){
+  */
 
-  currentCategory = category;
-  currentCountry = "all";
+  db.ref("opportunities").on("value", snapshot => {
 
-  document
-    .querySelectorAll(".filter")
-    .forEach(x=>x.classList.remove("active"));
+    const data = [];
 
-  if(button)
-    button.classList.add("active");
+    if(snapshot.exists()){
 
-  applyFilters();
+      snapshot.forEach(child => {
 
-}
+        const value = child.val() || {};
 
+        data.push({
 
-/* =====================================
-   COUNTRY FILTER
-===================================== */
+          key: child.key,
 
-function setCountry(country,button){
+          ...value
 
-  currentCountry = country;
-  currentCategory = "all";
-
-  document
-    .querySelectorAll(".filter")
-    .forEach(x=>x.classList.remove("active"));
-
-  if(button)
-    button.classList.add("active");
-
-  applyFilters();
-
-}
-
-
-/* =====================================
-   COUNTRY COUNT
-===================================== */
-
-function updateCountries(){
-
-  const countries = new Set();
-
-  opportunities.forEach(x=>{
-
-    if(x.country)
-      countries.add(x.country.trim());
-
-  });
-
-  $("totalCountries").textContent =
-    countries.size;
-
-}
-
-
-/* =====================================
-   ADS
-===================================== */
-
-function initAds(){
-
-  if(!db) return;
-
-  db.ref("ads").on("value",snap=>{
-
-    const ads = [];
-
-    if(snap.exists()){
-
-      snap.forEach(child=>{
-
-        const x = child.val() || {};
-
-        ads.push({
-          key:child.key,
-          ...x
         });
 
       });
 
     }
 
-    $("totalAds").textContent = ads.length;
 
-    renderAds(ads);
+    /*
+      ALSO SUPPORT OLD STRUCTURES IF YOUR BOT
+      SAVED DATA SOMEWHERE ELSE.
+    */
 
-    if(admin)
-      renderAdminAds(ads);
+    if(!data.length){
+
+      db.ref("opportunity").once("value")
+        .then(oldSnap => {
+
+          if(oldSnap.exists()){
+
+            oldSnap.forEach(child => {
+
+              data.push({
+
+                key: child.key,
+
+                ...(child.val() || {})
+
+              });
+
+            });
+
+          }
+
+          opportunities = data;
+
+          renderOpportunities();
+
+        })
+        .catch(() => {
+
+          opportunities = [];
+
+          renderOpportunities();
+
+        });
+
+    }else{
+
+      opportunities = data;
+
+      renderOpportunities();
+
+    }
 
   });
 
 }
 
 
-function renderAds(ads){
+/* =========================================================
+   FILTER
+========================================================= */
 
-  $("topAds").innerHTML = "";
-  $("middleAds").innerHTML = "";
-  $("bottomAds").innerHTML = "";
+function matchesFilter(item){
 
-  ads.forEach(ad=>{
+  const category =
+    String(
+      item.category ||
+      item.type ||
+      ""
+    ).toLowerCase();
 
-    const box = document.createElement("div");
+  const country =
+    String(
+      item.country ||
+      item.location ||
+      ""
+    ).toLowerCase();
 
-    box.className = "ad";
 
-    const target =
+  if(currentFilter === "all"){
+    return true;
+  }
 
-      ad.position === "middle"
-      ? $("middleAds")
-      : ad.position === "bottom"
-      ? $("bottomAds")
-      : $("topAds");
 
-    target.appendChild(box);
+  if(currentFilter === "Africa"){
 
-    runAd(box,ad.script);
+    return /africa|tanzania|kenya|uganda|rwanda|burundi|nigeria|ghana|south africa|zambia|zimbabwe|malawi|ethiopia/i
+      .test(country);
+
+  }
+
+
+  if(currentFilter === "Tanzania"){
+
+    return /tanzania/i.test(country);
+
+  }
+
+
+  return category.includes(
+    currentFilter.toLowerCase()
+  );
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function renderOpportunities(){
+
+  const query =
+    $("searchInput")
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  let list = opportunities.filter(matchesFilter);
+
+
+  if(query){
+
+    list = list.filter(item => {
+
+      const text = (
+
+        (item.title || "") +
+        " " +
+        (item.name || "") +
+        " " +
+        (item.description || "") +
+        " " +
+        (item.country || "") +
+        " " +
+        (item.category || "") +
+        " " +
+        (item.source || "")
+
+      ).toLowerCase();
+
+      return text.includes(query);
+
+    });
+
+  }
+
+
+  /*
+    Newest first
+  */
+
+  list.sort((a,b) => {
+
+    const aa =
+      Number(
+        a.createdAt ||
+        a.publishedAt ||
+        0
+      );
+
+    const bb =
+      Number(
+        b.createdAt ||
+        b.publishedAt ||
+        0
+      );
+
+    return bb-aa;
+
+  });
+
+
+  if(currentFilter === "all"){
+
+    $("sectionTitle").textContent =
+      "🌍 Global Opportunities";
+
+  }else{
+
+    $("sectionTitle").textContent =
+      "🌍 " + currentFilter;
+
+  }
+
+
+  if(query){
+
+    $("sectionTitle").textContent =
+      "🔎 " + $("searchInput").value;
+
+  }
+
+
+  $("status").textContent =
+    list.length + " opportunities";
+
+
+  if(!list.length){
+
+    $("results").innerHTML = `
+
+      <div class="empty">
+
+        <strong>
+          No opportunities found
+        </strong>
+
+        Try another search or category.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  $("results").innerHTML =
+    list.map(opportunityCard).join("");
+
+}
+
+
+function searchOpportunities(){
+
+  renderOpportunities();
+
+}
+
+
+/* =========================================================
+   FILTER BUTTON
+========================================================= */
+
+function setFilter(filter,button){
+
+  currentFilter = filter;
+
+  document
+    .querySelectorAll(".filter")
+    .forEach(btn =>
+      btn.classList.remove("active")
+    );
+
+  if(button){
+
+    button.classList.add("active");
+
+  }
+
+  renderOpportunities();
+
+}
+
+
+/* =========================================================
+   ONLINE USERS
+========================================================= */
+
+function initPresence(){
+
+  if(!db) return;
+
+
+  const usersRef =
+    db.ref("server_stats/connected_users");
+
+
+  const myUser =
+    usersRef.push();
+
+
+  db.ref(".info/connected")
+    .on("value", snapshot => {
+
+      if(snapshot.val() === true){
+
+        myUser
+          .onDisconnect()
+          .remove();
+
+        myUser.set({
+
+          connectedAt:Date.now()
+
+        });
+
+      }
+
+    });
+
+
+  usersRef.on("value", snapshot => {
+
+    const count =
+      snapshot.numChildren();
+
+
+    if($("onlineCount")){
+
+      $("onlineCount").textContent =
+        count;
+
+    }
 
   });
 
 }
 
 
-/*
-  Script za matangazo inahitaji
-  kuundwa upya kwa sababu browser
-  haitekelezi script iliyowekwa kupitia
-  innerHTML.
-*/
+/* =========================================================
+   ADS
+========================================================= */
 
-function runAd(container,code){
+function runAdCode(container,code){
 
   container.innerHTML = "";
+
+  if(!code) return;
+
 
   const temp =
     document.createElement("div");
 
   temp.innerHTML = code;
 
-  Array.from(temp.childNodes).forEach(node=>{
 
-    if(node.nodeName.toLowerCase() !== "script"){
+  Array.from(temp.childNodes)
+    .forEach(node => {
 
-      container.appendChild(
-        node.cloneNode(true)
+      if(node.nodeName.toLowerCase() !== "script"){
+
+        container.appendChild(
+          node.cloneNode(true)
+        );
+
+      }
+
+    });
+
+
+  Array.from(
+    temp.querySelectorAll("script")
+  ).forEach(oldScript => {
+
+    const script =
+      document.createElement("script");
+
+
+    Array.from(
+      oldScript.attributes
+    ).forEach(attr => {
+
+      script.setAttribute(
+        attr.name,
+        attr.value
       );
+
+    });
+
+
+    if(oldScript.textContent){
+
+      script.textContent =
+        oldScript.textContent;
+
+    }
+
+
+    container.appendChild(script);
+
+  });
+
+}
+
+
+function initAds(){
+
+  if(!db) return;
+
+
+  db.ref("ads").on("value",snapshot => {
+
+    const area =
+      $("adsArea");
+
+    area.innerHTML = "";
+
+
+    const ads = [];
+
+
+    if(snapshot.exists()){
+
+      snapshot.forEach(child => {
+
+        const ad =
+          child.val() || {};
+
+        ad.key =
+          child.key;
+
+        ads.push(ad);
+
+      });
+
+    }
+
+
+    ads.forEach(ad => {
+
+      const box =
+        document.createElement("div");
+
+      box.className = "adBox";
+
+      area.appendChild(box);
+
+      runAdCode(
+        box,
+        ad.code || ad.script || ""
+      );
+
+    });
+
+
+    if(isAdmin){
+
+      renderAdsAdmin(ads);
 
     }
 
   });
 
-  Array.from(temp.querySelectorAll("script"))
-    .forEach(oldScript=>{
-
-      const script =
-        document.createElement("script");
-
-      Array.from(oldScript.attributes)
-        .forEach(attr=>{
-          script.setAttribute(
-            attr.name,
-            attr.value
-          );
-        });
-
-      if(oldScript.textContent)
-        script.textContent =
-          oldScript.textContent;
-
-      container.appendChild(script);
-
-    });
-
 }
 
 
-/* =====================================
-   ADMIN LOGIN
-===================================== */
+/* =========================================================
+   ADD AD
+========================================================= */
 
-function openAdmin(){
+async function addAd(){
 
-  $("loginModal").style.display = "flex";
+  if(!isAdmin || !db) return;
 
-}
-
-
-function closeAdmin(){
-
-  $("loginModal").style.display = "none";
-
-}
-
-
-function loginAdmin(){
-
-  const username =
-    $("adminUser").value.trim();
-
-  const password =
-    $("adminPass").value;
-
-  /*
-    BADILISHA HIZI credentials.
-    Kwa production ni bora kutumia
-    Firebase Authentication.
-  */
-
-  if(
-    username === "MAKYAMA" &&
-    password === "Makame005@"
-  ){
-
-    admin = true;
-
-    closeAdmin();
-
-    $("admin").style.display = "block";
-
-    renderAdminOpportunities();
-
-    loadAdsForAdmin();
-
-    toast("👑 Admin dashboard imefunguliwa.");
-
-  }else{
-
-    toast("❌ Username au password si sahihi.");
-
-  }
-
-}
-
-
-function logoutAdmin(){
-
-  admin = false;
-
-  $("admin").style.display = "none";
-
-  toast("Admin logout.");
-
-}
-
-
-/* =====================================
-   ADMIN ADS
-===================================== */
-
-function addAd(){
-
-  if(!admin || !db)
-    return;
 
   const name =
-    $("adName").value.trim();
+    $("adName")
+      .value
+      .trim() ||
+    "Advertisement";
+
 
   const position =
     $("adPosition").value;
 
-  const script =
-    $("adCode").value.trim();
 
-  if(!script){
+  const code =
+    $("adCode")
+      .value
+      .trim();
 
-    toast("❌ Weka Ad script kwanza.");
+
+  if(!code){
+
+    toast(
+      "Please paste the advertisement code."
+    );
 
     return;
 
   }
 
-  db.ref("ads").push({
 
-    name:name || "MAKYAMA Ad",
+  try{
 
-    position:position,
+    await db.ref("ads").push({
 
-    script:script,
+      name:name,
 
-    createdAt:Date.now()
+      position:position,
 
-  }).then(()=>{
+      code:code,
 
-    $("adName").value="";
-    $("adCode").value="";
-
-    toast("✅ Ad imeongezwa.");
-
-  }).catch(e=>{
-
-    console.error(e);
-
-    toast("❌ Imeshindikana kuongeza Ad.");
-
-  });
-
-}
-
-
-function loadAdsForAdmin(){
-
-  if(!db) return;
-
-  db.ref("ads").once("value")
-    .then(snap=>{
-
-      const ads=[];
-
-      if(snap.exists()){
-
-        snap.forEach(child=>{
-
-          ads.push({
-            key:child.key,
-            ...child.val()
-          });
-
-        });
-
-      }
-
-      renderAdminAds(ads);
+      createdAt:Date.now()
 
     });
 
+
+    $("adName").value = "";
+
+    $("adCode").value = "";
+
+
+    toast(
+      "Advertisement added successfully."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      "Failed to add advertisement."
+    );
+
+  }
+
 }
 
 
-function renderAdminAds(ads){
+/* =========================================================
+   ADMIN ADS
+========================================================= */
+
+function renderAdsAdmin(ads){
+
+  const box =
+    $("adsAdminList");
+
 
   if(!ads.length){
 
-    $("adsList").innerHTML =
-      `<div style="color:#69756d;font-size:10px">
-        Hakuna ads.
-      </div>`;
+    box.innerHTML = `
+      <div style="color:#69756d;font-size:10px">
+        No advertisements added yet.
+      </div>
+    `;
 
     return;
 
   }
 
-  $("adsList").innerHTML =
-    ads.map(ad=>`
 
-      <div class="admin-item">
+  box.innerHTML =
+    ads.map(ad => `
+
+      <div class="adminItem">
 
         <span>
-          📢 ${esc(ad.name || "Ad")}
-          — ${esc(ad.position || "top")}
+          📢 ${escapeHTML(ad.name || "Ad")}
         </span>
 
         <button
-          class="red"
+          class="btnRed"
           onclick="deleteAd('${ad.key}')">
           DELETE
         </button>
@@ -1424,138 +1831,358 @@ function renderAdminAds(ads){
 }
 
 
-function deleteAd(key){
+async function deleteAd(key){
 
-  if(!admin || !db)
-    return;
+  if(!isAdmin || !db) return;
 
-  if(!confirm("Unataka kufuta Ad hii?"))
-    return;
 
-  db.ref("ads/"+key)
-    .remove()
-    .then(()=>{
+  if(!confirm(
+    "Delete this advertisement?"
+  )) return;
 
-      toast("🗑️ Ad imefutwa.");
 
-    });
+  try{
+
+    await db
+      .ref("ads/" + key)
+      .remove();
+
+
+    toast(
+      "Advertisement deleted."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      "Could not delete advertisement."
+    );
+
+  }
 
 }
 
 
-/* =====================================
+/* =========================================================
+   ADMIN LOGIN
+========================================================= */
+
+function openAdmin(){
+
+  $("loginModal")
+    .style
+    .display = "flex";
+
+}
+
+
+function closeAdmin(){
+
+  $("loginModal")
+    .style
+    .display = "none";
+
+}
+
+
+function loginAdmin(){
+
+  const username =
+    $("adminUser")
+      .value
+      .trim();
+
+
+  const password =
+    $("adminPass")
+      .value;
+
+
+  /*
+    ADMIN LOGIN
+  */
+
+  if(
+    username === "MAKYAMA" &&
+    password === "Makame005@"
+  ){
+
+    isAdmin = true;
+
+    closeAdmin();
+
+
+    $("admin")
+      .style
+      .display = "block";
+
+
+    renderManualList();
+
+
+    db.ref("ads")
+      .once("value")
+      .then(snapshot => {
+
+        const ads = [];
+
+        if(snapshot.exists()){
+
+          snapshot.forEach(child => {
+
+            const ad =
+              child.val() || {};
+
+            ad.key =
+              child.key;
+
+            ads.push(ad);
+
+          });
+
+        }
+
+        renderAdsAdmin(ads);
+
+      });
+
+
+    toast(
+      "Admin Dashboard enabled."
+    );
+
+  }else{
+
+    toast(
+      "Incorrect username or password."
+    );
+
+  }
+
+}
+
+
+function logoutAdmin(){
+
+  isAdmin = false;
+
+  $("admin")
+    .style
+    .display = "none";
+
+  toast(
+    "Admin logged out."
+  );
+
+}
+
+
+/* =========================================================
    MANUAL OPPORTUNITY
-===================================== */
+========================================================= */
 
-function addOpportunity(){
+async function addOpportunity(){
 
-  if(!admin || !db)
-    return;
+  if(!isAdmin || !db) return;
+
 
   const title =
-    $("opTitle").value.trim();
+    $("oTitle").value.trim();
+
 
   const country =
-    $("opCountry").value.trim();
+    $("oCountry").value.trim();
+
 
   const category =
-    $("opCategory").value;
+    $("oCategory").value;
 
-  const description =
-    $("opDescription").value.trim();
+
+  const source =
+    $("oSource").value.trim();
+
 
   const deadline =
-    $("opDeadline").value.trim();
+    $("oDeadline").value.trim();
 
-  const link =
-    $("opLink").value.trim();
 
-  if(!title || !country){
+  const url =
+    $("oUrl").value.trim();
 
-    toast("❌ Weka title na country.");
+
+  const description =
+    $("oDescription").value.trim();
+
+
+  if(!title){
+
+    toast(
+      "Please enter opportunity title."
+    );
 
     return;
 
   }
 
-  db.ref("opportunities").push({
+
+  /*
+    URL is optional.
+    If empty, the card will NOT show
+    VIEW/APPLY button.
+  */
+
+  const data = {
 
     title:title,
 
-    country:country,
+    country:
+      country || "International",
 
-    category:category,
+    category:
+      category,
 
-    description:description,
+    source:
+      source || "MAKYAMA",
 
-    deadline:deadline,
+    deadline:
+      deadline || "",
 
-    link:link,
+    description:
+      description || "",
 
-    source:"MAKYAMA Admin",
+    url:
+      safeUrl(url),
 
-    createdAt:Date.now()
+    createdAt:
+      Date.now(),
 
-  }).then(()=>{
+    manual:
+      true
+
+  };
+
+
+  try{
+
+    await db
+      .ref("opportunities")
+      .push(data);
+
 
     [
-      "opTitle",
-      "opCountry",
-      "opDescription",
-      "opDeadline",
-      "opLink"
-    ].forEach(id=>{
-      $(id).value="";
+      "oTitle",
+      "oCountry",
+      "oSource",
+      "oDeadline",
+      "oUrl",
+      "oDescription"
+    ].forEach(id => {
+
+      $(id).value = "";
+
     });
 
-    toast("✅ Opportunity imeongezwa.");
 
-  }).catch(e=>{
+    toast(
+      "Opportunity added successfully."
+    );
 
-    console.error(e);
 
-    toast("❌ Imeshindikana.");
+    renderManualList();
 
-  });
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      "Failed to add opportunity."
+    );
+
+  }
 
 }
 
 
-/* =====================================
-   ADMIN OPPORTUNITY LIST
-===================================== */
+/* =========================================================
+   MANUAL OPPORTUNITIES ADMIN LIST
+========================================================= */
 
-function renderAdminOpportunities(){
+async function renderManualList(){
 
-  if(!admin)
-    return;
+  if(!isAdmin || !db) return;
 
-  const list =
-    opportunities.slice(0,30);
 
-  if(!list.length){
+  const box =
+    $("manualList");
 
-    $("adminOpportunities").innerHTML =
-      `<div style="color:#69756d;font-size:10px">
-        Hakuna opportunities.
-      </div>`;
+
+  const snapshot =
+    await db
+      .ref("opportunities")
+      .once("value");
+
+
+  const arr = [];
+
+
+  if(snapshot.exists()){
+
+    snapshot.forEach(child => {
+
+      const item =
+        child.val() || {};
+
+
+      if(item.manual === true){
+
+        arr.push({
+
+          key:child.key,
+
+          ...item
+
+        });
+
+      }
+
+    });
+
+  }
+
+
+  if(!arr.length){
+
+    box.innerHTML = `
+      <div style="color:#69756d;font-size:10px">
+        No manually added opportunities.
+      </div>
+    `;
 
     return;
 
   }
 
-  $("adminOpportunities").innerHTML =
-    list.map(x=>`
 
-      <div class="admin-item">
+  arr.reverse();
+
+
+  box.innerHTML =
+    arr.map(item => `
+
+      <div class="adminItem">
 
         <span>
-          ${esc(x.title)}
+          ${escapeHTML(
+            item.title ||
+            "Untitled"
+          )}
         </span>
 
         <button
-          class="red"
-          onclick="deleteOpportunity('${x.key}')">
+          class="btnRed"
+          onclick="deleteOpportunity('${item.key}')">
           DELETE
         </button>
 
@@ -1566,40 +2193,83 @@ function renderAdminOpportunities(){
 }
 
 
-function deleteOpportunity(key){
+async function deleteOpportunity(key){
 
-  if(!admin || !db)
-    return;
+  if(!isAdmin || !db) return;
+
 
   if(!confirm(
-    "Unataka kufuta opportunity hii?"
-  ))
-    return;
+    "Delete this opportunity?"
+  )) return;
 
-  db.ref("opportunities/"+key)
-    .remove()
-    .then(()=>{
 
-      toast("🗑️ Opportunity imefutwa.");
+  try{
 
-    });
+    await db
+      .ref(
+        "opportunities/" +
+        key
+      )
+      .remove();
+
+
+    toast(
+      "Opportunity deleted."
+    );
+
+
+    renderManualList();
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      "Failed to delete opportunity."
+    );
+
+  }
 
 }
 
 
-/* =====================================
+/* =========================================================
+   SEARCH ENTER
+========================================================= */
+
+$("searchInput")
+  .addEventListener(
+    "keydown",
+    event => {
+
+      if(event.key === "Enter"){
+
+        searchOpportunities();
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
    START
-===================================== */
+========================================================= */
 
-window.addEventListener("load",()=>{
+window.addEventListener(
+  "load",
+  () => {
 
-  initPresence();
+    initOpportunities();
 
-  initOpportunities();
+    initAds();
 
-  initAds();
+    initPresence();
 
-});
+  }
+);
 
-</script></body>
-  </html>
+</script>
+
+</body>
+                                   </html>
