@@ -2,48 +2,58 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#07110c">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
 <title>MAKYAMA — Global Opportunities</title>
 
+<meta name="description"
+content="MAKYAMA Global Opportunities — jobs, scholarships, grants, internships and opportunities worldwide.">
+
+<meta name="theme-color" content="#07110c">
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <style>
+
 :root{
   --green:#00e676;
   --green2:#00c853;
-  --bg:#070b09;
-  --panel:#0e1511;
-  --panel2:#131c16;
-  --line:#223128;
-  --text:#fff;
-  --muted:#8d9991;
-  --orange:#ffab00;
+  --bg:#060907;
+  --card:#0d1410;
+  --card2:#121a15;
+  --line:#1d2a22;
+  --text:#ffffff;
+  --muted:#91a098;
+  --blue:#2196f3;
+  --orange:#ff9800;
   --red:#ff5252;
-  --blue:#42a5f5;
 }
 
 *{
   box-sizing:border-box;
   margin:0;
   padding:0;
-  font-family:Arial,Segoe UI,sans-serif;
+  font-family:Arial,Helvetica,sans-serif;
 }
 
-html,body{
-  background:var(--bg);
-  color:var(--text);
-  min-height:100%;
+html{
+  scroll-behavior:smooth;
 }
 
 body{
-  padding-bottom:40px;
+  background:
+    radial-gradient(circle at top,#102017 0,#060907 45%,#030504 100%);
+  color:var(--text);
+  min-height:100vh;
   overflow-x:hidden;
 }
 
-button,input,select,textarea{
+button,
+input,
+select,
+textarea{
   font:inherit;
 }
 
@@ -51,24 +61,31 @@ button{
   cursor:pointer;
 }
 
+/* HEADER */
+
 header{
   position:sticky;
   top:0;
   z-index:1000;
-  background:rgba(7,11,9,.97);
+  background:rgba(5,9,7,.96);
   backdrop-filter:blur(15px);
   border-bottom:1px solid var(--line);
-  padding:11px 13px;
+}
+
+.header-inner{
+  width:min(1100px,100%);
+  margin:auto;
+  padding:12px 14px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:10px;
 }
 
-.brand{
+.logo-area{
   display:flex;
   align-items:center;
-  gap:9px;
+  gap:10px;
   min-width:0;
 }
 
@@ -78,73 +95,51 @@ header{
   border-radius:50%;
   object-fit:cover;
   border:1px solid var(--green);
-  flex-shrink:0;
 }
 
-.brandText{
+.brand{
   min-width:0;
 }
 
-.brandText h1{
-  color:var(--green);
+.brand h1{
   font-size:18px;
-  font-weight:900;
+  color:var(--green);
+  letter-spacing:.4px;
 }
 
-.brandText p{
+.brand p{
   color:var(--muted);
   font-size:9px;
   margin-top:3px;
-  white-space:nowrap;
 }
 
-.headerActions{
-  display:flex;
-  gap:6px;
-}
-
-.btn{
-  border:0;
+.admin-btn{
+  border:1px solid #294033;
+  background:#101b14;
+  color:white;
+  padding:9px 12px;
   border-radius:9px;
-  padding:9px 11px;
   font-size:11px;
-  font-weight:900;
+  font-weight:bold;
 }
 
-.btnGreen{
-  background:var(--green);
-  color:#001b0d;
-}
+/* MAIN */
 
-.btnDark{
-  background:#172019;
-  color:white;
-  border:1px solid var(--line);
-}
-
-.btnRed{
-  background:var(--red);
-  color:white;
-}
-
-.btnOrange{
-  background:var(--orange);
-  color:#111;
-}
-
-.wrap{
-  width:min(1000px,100%);
+.container{
+  width:min(1100px,100%);
   margin:auto;
-  padding:0 11px;
+  padding:0 12px 70px;
 }
+
+/* HERO */
 
 .hero{
-  padding:25px 4px 14px;
+  padding:30px 3px 18px;
 }
 
 .hero h2{
-  font-size:27px;
-  line-height:1.15;
+  font-size:30px;
+  line-height:1.12;
 }
 
 .hero h2 span{
@@ -153,41 +148,81 @@ header{
 
 .hero p{
   color:var(--muted);
-  font-size:12px;
-  line-height:1.5;
-  margin-top:8px;
+  font-size:13px;
+  line-height:1.6;
+  margin-top:9px;
+  max-width:700px;
 }
 
-.search{
+/* STATS */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin:8px 0 15px;
+}
+
+.stat{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 8px;
+  text-align:center;
+}
+
+.stat strong{
+  display:block;
+  color:var(--green);
+  font-size:18px;
+}
+
+.stat span{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  margin-top:3px;
+}
+
+/* SEARCH */
+
+.search-box{
   display:flex;
   gap:8px;
-  margin:8px 0 12px;
+  margin:12px 0;
 }
 
-.search input{
+.search-box input{
   flex:1;
   min-width:0;
-  background:var(--panel);
-  color:#fff;
-  border:1px solid #304137;
-  border-radius:12px;
   padding:13px;
+  border-radius:11px;
+  border:1px solid #2b3b31;
+  background:#0d1510;
+  color:white;
   outline:none;
 }
 
-.search input:focus{
+.search-box input:focus{
   border-color:var(--green);
 }
 
-.search button{
-  width:82px;
+.search-btn{
+  width:88px;
+  border:0;
+  border-radius:11px;
+  background:var(--green);
+  color:#00210e;
+  font-weight:900;
 }
+
+/* FILTERS */
 
 .filters{
   display:flex;
   gap:7px;
   overflow-x:auto;
-  padding:2px 0 12px;
+  padding:3px 0 12px;
   scrollbar-width:none;
 }
 
@@ -198,12 +233,12 @@ header{
 .filter{
   flex:0 0 auto;
   border:1px solid var(--line);
-  background:var(--panel);
-  color:#b7c0b9;
-  border-radius:99px;
+  background:#0d1510;
+  color:#bdc8c0;
   padding:8px 12px;
+  border-radius:999px;
   font-size:10px;
-  font-weight:900;
+  font-weight:bold;
 }
 
 .filter.active{
@@ -212,44 +247,68 @@ header{
   border-color:var(--green);
 }
 
+/* COUNTRY */
+
+.country-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:12px;
+}
+
+.country-row select{
+  width:100%;
+  background:#0d1510;
+  color:white;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:11px;
+  outline:none;
+}
+
 /* ADS */
 
-.adsArea{
-  margin:8px 0 13px;
+.ads-top{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  margin:10px 0;
 }
 
-.adBox{
-  background:linear-gradient(135deg,#121b15,#0d130f);
-  border:1px dashed #725400;
+.ad-container{
+  min-height:0;
+}
+
+.ad-box{
+  background:linear-gradient(135deg,#151e18,#0b110e);
+  border:1px dashed #a96b00;
   border-radius:12px;
-  margin-bottom:9px;
-  padding:8px;
-  overflow:hidden;
+  padding:10px;
   text-align:center;
-  min-height:50px;
+  overflow:hidden;
 }
 
-/* STATUS */
+/* SECTION */
 
-.topStatus{
+.section-head{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin:8px 2px 10px;
+  gap:10px;
+  margin:18px 0 10px;
 }
 
-.topStatus h3{
-  font-size:17px;
+.section-head h3{
   border-left:4px solid var(--green);
   padding-left:8px;
+  font-size:17px;
 }
 
 #status{
-  font-size:10px;
   color:var(--muted);
+  font-size:10px;
 }
 
-/* CARDS */
+/* OPPORTUNITIES */
 
 .grid{
   display:grid;
@@ -257,108 +316,101 @@ header{
   gap:10px;
 }
 
-.card{
-  background:linear-gradient(145deg,#101812,#0b110e);
-  border:1px solid #202d25;
+.opportunity{
+  background:linear-gradient(135deg,#0e1611,#0a100c);
+  border:1px solid var(--line);
   border-radius:14px;
   padding:13px;
-  overflow:hidden;
+  transition:.2s;
 }
 
-.cardTop{
+.opportunity:hover{
+  border-color:#31503b;
+  transform:translateY(-1px);
+}
+
+.tags{
   display:flex;
   flex-wrap:wrap;
   gap:5px;
   margin-bottom:8px;
 }
 
-.badge{
-  display:inline-block;
+.tag{
+  font-size:9px;
+  font-weight:bold;
   padding:4px 7px;
   border-radius:6px;
-  font-size:9px;
-  font-weight:900;
-  background:#103a24;
+  background:#103522;
   color:var(--green);
 }
 
-.badge.country{
-  background:#112d3d;
+.tag.country{
+  background:#102a3d;
   color:#64b5f6;
 }
 
-.badge.category{
-  background:#3a2c0d;
-  color:#ffbd45;
+.tag.category{
+  background:#3b2b0c;
+  color:#ffb52e;
 }
 
-.badge.deadline{
-  background:#351818;
-  color:#ff7777;
-}
-
-.card h2{
-  font-size:16px;
-  line-height:1.3;
-  margin-bottom:7px;
+.opportunity h4{
+  font-size:15px;
+  line-height:1.35;
+  margin-bottom:6px;
 }
 
 .description{
-  color:#9aa69e;
+  color:#a6b1aa;
   font-size:11px;
   line-height:1.5;
-  margin-bottom:9px;
+  margin-bottom:8px;
 }
 
-.source{
-  color:#89958d;
-  font-size:10px;
-  margin-bottom:10px;
+.meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  color:#8c9890;
+  font-size:9px;
+  margin-bottom:11px;
 }
 
-.source strong{
-  color:#d2d9d4;
-}
-
-.applyBtn{
+.apply{
   display:block;
   width:100%;
   text-align:center;
   text-decoration:none;
   background:var(--green);
-  color:#001b0d;
-  border-radius:9px;
+  color:#00210e;
   padding:10px;
-  font-size:11px;
+  border-radius:9px;
+  font-size:10px;
   font-weight:900;
 }
 
-.applyBtn:hover{
-  background:var(--green2);
+.no-link{
+  display:none;
 }
 
-.noLink{
-  color:#657169;
-  font-size:10px;
-  padding-top:3px;
-}
-
-.loading,
 .empty{
-  background:var(--panel);
-  border:1px dashed #304137;
-  border-radius:13px;
+  background:#0d1510;
+  border:1px dashed #304136;
+  border-radius:12px;
   padding:30px 15px;
   text-align:center;
   color:var(--muted);
   font-size:12px;
 }
 
-.empty strong{
-  color:white;
-  display:block;
-  font-size:14px;
-  margin-bottom:7px;
+.loading{
+  background:#0d1510;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:30px;
+  text-align:center;
+  color:var(--muted);
 }
 
 /* ADMIN */
@@ -367,57 +419,18 @@ header{
   display:none;
   background:#0b130e;
   border:1px solid var(--green);
-  border-radius:14px;
-  padding:13px;
-  margin:10px 0 14px;
+  border-radius:15px;
+  padding:14px;
+  margin:15px 0;
 }
 
-.adminTitle{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.admin h3{
+  color:var(--green);
+  font-size:16px;
   margin-bottom:12px;
 }
 
-.adminTitle h3{
-  color:var(--green);
-  font-size:16px;
-}
-
-.onlineBox{
-  background:#121b15;
-  border:1px solid #23412d;
-  border-radius:11px;
-  padding:12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
-}
-
-.onlineText b{
-  color:var(--green);
-  font-size:12px;
-}
-
-.onlineText p{
-  color:var(--muted);
-  font-size:9px;
-  margin-top:3px;
-}
-
-.onlineNumber{
-  background:var(--green);
-  color:#001b0d;
-  border-radius:99px;
-  min-width:42px;
-  text-align:center;
-  padding:7px 10px;
-  font-size:16px;
-  font-weight:900;
-}
-
-.adminSection{
+.admin-box{
   background:#121a15;
   border:1px solid var(--line);
   border-radius:11px;
@@ -425,110 +438,152 @@ header{
   margin-bottom:10px;
 }
 
-.adminSection h4{
+.admin-box h4{
   font-size:12px;
   margin-bottom:8px;
-  color:var(--green);
+}
+
+.online{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.online-number{
+  background:var(--green);
+  color:#00210e;
+  padding:7px 15px;
+  border-radius:99px;
+  font-weight:900;
+  font-size:18px;
 }
 
 .admin input,
 .admin textarea,
 .admin select{
   width:100%;
-  background:#172019;
-  color:white;
-  border:1px solid #2b3a31;
+  background:#0b110d;
+  border:1px solid #2a392f;
   border-radius:8px;
+  color:white;
   padding:10px;
   margin-bottom:7px;
   outline:none;
 }
 
 .admin textarea{
-  min-height:80px;
+  min-height:100px;
   resize:vertical;
 }
 
-.row{
+.admin-row{
   display:flex;
   gap:7px;
 }
 
-.row>*{
+.admin-row>*{
   flex:1;
 }
 
-.adminItem{
+.green-btn{
+  background:var(--green);
+  color:#001b0d;
+  border:0;
+  border-radius:8px;
+  padding:9px;
+  font-weight:900;
+  font-size:10px;
+}
+
+.red-btn{
+  background:var(--red);
+  color:white;
+  border:0;
+  border-radius:8px;
+  padding:9px;
+  font-weight:900;
+  font-size:10px;
+}
+
+.orange-btn{
+  background:var(--orange);
+  color:#111;
+  border:0;
+  border-radius:8px;
+  padding:9px;
+  font-weight:900;
+  font-size:10px;
+  width:100%;
+}
+
+.admin-list{
+  display:grid;
+  gap:7px;
+}
+
+.admin-item{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:8px;
+  gap:7px;
+  background:#0c130f;
   padding:8px;
-  margin-top:6px;
-  background:#172019;
   border-radius:8px;
 }
 
-.adminItem span{
-  min-width:0;
+.admin-item span{
   font-size:10px;
-  white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
-.adminItem button{
-  flex-shrink:0;
-  border:0;
-  border-radius:6px;
-  padding:6px 8px;
-  font-size:9px;
-  font-weight:900;
+.admin-item button{
+  flex:0 0 auto;
 }
 
-/* MODAL */
+/* LOGIN */
 
 .modal{
   display:none;
   position:fixed;
   inset:0;
   z-index:5000;
-  background:rgba(0,0,0,.84);
+  background:rgba(0,0,0,.82);
   align-items:center;
   justify-content:center;
   padding:15px;
 }
 
-.modalBox{
+.login-box{
   width:min(390px,100%);
-  background:#111813;
+  background:#101812;
   border:1px solid var(--green);
-  border-radius:14px;
+  border-radius:15px;
   padding:18px;
 }
 
-.modalBox h3{
+.login-box h3{
   color:var(--green);
-  margin-bottom:13px;
+  margin-bottom:12px;
 }
 
-.modalBox input{
+.login-box input{
   width:100%;
-  background:#182119;
+  background:#0a110d;
   border:1px solid var(--line);
-  color:#fff;
-  border-radius:8px;
+  color:white;
   padding:11px;
+  border-radius:8px;
   margin-bottom:8px;
   outline:none;
 }
 
-.modalBox .btn{
+.login-box button{
   width:100%;
-  margin-top:4px;
 }
 
-.closeModal{
+.close-login{
   float:right;
   background:none;
   border:0;
@@ -544,13 +599,13 @@ header{
   top:70px;
   left:50%;
   transform:translateX(-50%);
-  z-index:6000;
+  z-index:7000;
   background:var(--green);
   color:#001b0d;
-  font-size:11px;
-  font-weight:900;
   padding:10px 15px;
   border-radius:99px;
+  font-size:11px;
+  font-weight:900;
   max-width:90%;
   text-align:center;
 }
@@ -559,43 +614,29 @@ header{
 
 footer{
   text-align:center;
-  color:#637068;
-  font-size:9px;
-  padding:30px 10px;
-  line-height:1.5;
+  color:#657169;
+  font-size:10px;
+  padding:30px 10px 10px;
 }
 
-@media(min-width:650px){
+/* DESKTOP */
+
+@media(min-width:700px){
+
+  .hero h2{
+    font-size:38px;
+  }
 
   .grid{
     grid-template-columns:1fr 1fr;
   }
 
-  .hero h2{
-    font-size:32px;
-  }
-
-  .card h2{
-    font-size:17px;
+  .stats{
+    grid-template-columns:repeat(3,180px);
   }
 
 }
 
-@media(max-width:480px){
-
-  .brandText p{
-    display:none;
-  }
-
-  .headerActions .btn{
-    padding:8px 9px;
-  }
-
-  .hero{
-    padding-top:20px;
-  }
-
-}
 </style>
 </head>
 
@@ -603,165 +644,179 @@ footer{
 
 <header>
 
-  <div class="brand">
+  <div class="header-inner">
 
-    <img
-      class="logo"
-      src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png"
-      alt="MAKYAMA">
+    <div class="logo-area">
 
-    <div class="brandText">
-      <h1>MAKYAMA</h1>
-      <p>GLOBAL OPPORTUNITIES • JOBS • SCHOLARSHIPS • GRANTS</p>
+      <img
+        class="logo"
+        src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png"
+        alt="MAKYAMA">
+
+      <div class="brand">
+        <h1>MAKYAMA</h1>
+        <p>GLOBAL OPPORTUNITIES</p>
+      </div>
+
     </div>
 
-  </div>
+    <button class="admin-btn" onclick="openLogin()">
+      🔐 ADMIN
+    </button>
 
-  <div class="headerActions">
-    <button class="btn btnDark" onclick="openAdmin()">🔐 ADMIN</button>
   </div>
 
 </header>
 
-
 <div id="toast" class="toast"></div>
 
-
-<main class="wrap">
+<main class="container">
 
   <section class="hero">
 
     <h2>
-      Discover
-      <span>Global Opportunities.</span>
+      Discover opportunities
+      <span>worldwide.</span>
     </h2>
 
     <p>
-      Find jobs, scholarships, grants, internships and other opportunities
-      from Tanzania and around the world.
+      Find jobs, scholarships, grants, internships and other
+      opportunities from Tanzania and countries around the world.
     </p>
 
   </section>
 
+  <!-- STATS -->
+
+  <div class="stats">
+
+    <div class="stat">
+      <strong id="totalCount">0</strong>
+      <span>Opportunities</span>
+    </div>
+
+    <div class="stat">
+      <strong id="countryCount">0</strong>
+      <span>Countries</span>
+    </div>
+
+    <div class="stat">
+      <strong id="liveCount">0</strong>
+      <span>Online Now</span>
+    </div>
+
+  </div>
 
   <!-- ADS -->
 
-  <div id="adsArea" class="adsArea"></div>
-
+  <div id="topAds" class="ads-top"></div>
 
   <!-- SEARCH -->
 
-  <div class="search">
+  <div class="search-box">
 
     <input
       id="searchInput"
       type="search"
-      placeholder="🔎 Search jobs, scholarships, grants..."
+      placeholder="Search jobs, scholarships, grants..."
       autocomplete="off">
 
-    <button
-      class="btn btnGreen"
-      onclick="searchOpportunities()">
+    <button class="search-btn" onclick="searchOpportunities()">
       SEARCH
     </button>
 
   </div>
 
-
-  <!-- FILTERS -->
+  <!-- CATEGORY -->
 
   <div class="filters">
 
-    <button
-      class="filter active"
-      onclick="setFilter('all',this)">
-      🌍 Global
+    <button class="filter active"
+      onclick="setCategory('All',this)">
+      🌍 All
     </button>
 
-    <button
-      class="filter"
-      onclick="setFilter('Tanzania',this)">
-      🇹🇿 Tanzania
-    </button>
-
-    <button
-      class="filter"
-      onclick="setFilter('Africa',this)">
-      🌍 Africa
-    </button>
-
-    <button
-      class="filter"
-      onclick="setFilter('Job',this)">
+    <button class="filter"
+      onclick="setCategory('Job',this)">
       💼 Jobs
     </button>
 
-    <button
-      class="filter"
-      onclick="setFilter('Scholarship',this)">
+    <button class="filter"
+      onclick="setCategory('Scholarship',this)">
       🎓 Scholarships
     </button>
 
-    <button
-      class="filter"
-      onclick="setFilter('Grant',this)">
+    <button class="filter"
+      onclick="setCategory('Grant',this)">
       💰 Grants
     </button>
 
-    <button
-      class="filter"
-      onclick="setFilter('Internship',this)">
+    <button class="filter"
+      onclick="setCategory('Internship',this)">
       🧑‍💻 Internships
+    </button>
+
+    <button class="filter"
+      onclick="setCategory('Fellowship',this)">
+      📚 Fellowships
     </button>
 
   </div>
 
+  <!-- COUNTRY -->
+
+  <div class="country-row">
+
+    <select id="countryFilter" onchange="applyFilters()">
+
+      <option value="All">
+        🌍 All Countries
+      </option>
+
+    </select>
+
+  </div>
 
   <!-- ADMIN -->
 
-  <section id="admin" class="admin">
+  <section id="adminPanel" class="admin">
 
-    <div class="adminTitle">
+    <h3>👑 ADMIN DASHBOARD</h3>
 
-      <h3>👑 ADMIN DASHBOARD</h3>
+    <!-- ONLINE -->
 
-      <button
-        class="btn btnRed"
-        onclick="logoutAdmin()">
-        LOGOUT
-      </button>
+    <div class="admin-box">
 
-    </div>
+      <div class="online">
 
+        <div>
 
-    <!-- ONLINE USERS -->
+          <h4 style="color:var(--green)">
+            🟢 USERS ONLINE
+          </h4>
 
-    <div class="onlineBox">
+          <p style="font-size:9px;color:var(--muted)">
+            People currently connected to MAKYAMA
+          </p>
 
-      <div class="onlineText">
+        </div>
 
-        <b>🟢 USERS ONLINE NOW</b>
+        <div id="adminOnline"
+             class="online-number">
+          0
+        </div>
 
-        <p>
-          People currently connected to MAKYAMA
-        </p>
-
-      </div>
-
-      <div
-        id="onlineCount"
-        class="onlineNumber">
-        0
       </div>
 
     </div>
 
+    <!-- ADS -->
 
-    <!-- ADD AD -->
+    <div class="admin-box">
 
-    <div class="adminSection">
-
-      <h4>📢 ADD ADVERTISEMENT</h4>
+      <h4 style="color:var(--orange)">
+        📢 ADD NEW AD
+      </h4>
 
       <input
         id="adName"
@@ -784,69 +839,67 @@ footer{
         placeholder="Paste your advertisement HTML / script here"></textarea>
 
       <button
-        class="btn btnOrange"
-        style="width:100%"
+        class="orange-btn"
         onclick="addAd()">
         ➕ ADD AD
       </button>
 
     </div>
 
-
     <!-- ADS LIST -->
 
-    <div class="adminSection">
+    <div class="admin-box">
 
-      <h4>📋 ACTIVE ADS</h4>
+      <h4 style="color:var(--green)">
+        📋 ACTIVE ADS
+      </h4>
 
-      <div id="adsAdminList"></div>
+      <div id="adminAds"
+           class="admin-list">
+      </div>
 
     </div>
 
-
     <!-- MANUAL OPPORTUNITY -->
 
-    <div class="adminSection">
+    <div class="admin-box">
 
-      <h4>➕ ADD OPPORTUNITY MANUALLY</h4>
+      <h4 style="color:var(--green)">
+        ➕ ADD OPPORTUNITY
+      </h4>
 
       <input
-        id="oTitle"
+        id="opTitle"
         placeholder="Opportunity title">
 
       <input
-        id="oCountry"
-        placeholder="Country e.g. Tanzania, Kenya, United States">
+        id="opCountry"
+        placeholder="Country">
 
-      <select id="oCategory">
+      <select id="opCategory">
 
         <option value="Job">Job</option>
         <option value="Scholarship">Scholarship</option>
         <option value="Grant">Grant</option>
         <option value="Internship">Internship</option>
         <option value="Fellowship">Fellowship</option>
-        <option value="Competition">Competition</option>
 
       </select>
 
       <input
-        id="oSource"
-        placeholder="Source e.g. HESLB, Grants.gov">
+        id="opSource"
+        placeholder="Source">
 
       <input
-        id="oDeadline"
-        placeholder="Deadline e.g. 30 September 2026">
-
-      <input
-        id="oUrl"
+        id="opUrl"
         placeholder="Application URL">
 
       <textarea
-        id="oDescription"
-        placeholder="Opportunity description"></textarea>
+        id="opDescription"
+        placeholder="Description"></textarea>
 
       <button
-        class="btn btnGreen"
+        class="green-btn"
         style="width:100%"
         onclick="addOpportunity()">
         ADD OPPORTUNITY
@@ -854,26 +907,35 @@ footer{
 
     </div>
 
+    <!-- ADMIN OPPORTUNITIES -->
 
-    <!-- MANUAL OPPORTUNITIES -->
+    <div class="admin-box">
 
-    <div class="adminSection">
+      <h4 style="color:var(--green)">
+        📋 OPPORTUNITIES
+      </h4>
 
-      <h4>📋 MANUAL OPPORTUNITIES</h4>
-
-      <div id="manualList"></div>
+      <div id="adminOpportunities"
+           class="admin-list">
+      </div>
 
     </div>
 
+    <button
+      class="red-btn"
+      style="width:100%;margin-top:5px"
+      onclick="logoutAdmin()">
+      LOGOUT
+    </button>
+
   </section>
 
+  <!-- SECTION -->
 
-  <!-- TITLE -->
-
-  <div class="topStatus">
+  <div class="section-head">
 
     <h3 id="sectionTitle">
-      🌍 Global Opportunities
+      🌍 Latest Opportunities
     </h3>
 
     <span id="status">
@@ -882,53 +944,50 @@ footer{
 
   </div>
 
-
   <!-- RESULTS -->
 
   <div id="results" class="grid">
 
     <div class="loading">
-      Loading opportunities... ⏳
+      Loading opportunities...
     </div>
 
   </div>
 
-
-  <footer>
-
-    © 2026 MAKYAMA • Global Opportunities<br>
-    Jobs • Scholarships • Grants • Internships • Fellowships
-
-  </footer>
-
 </main>
 
+<footer>
+
+  © 2026 MAKYAMA GLOBAL OPPORTUNITIES<br>
+  Jobs • Scholarships • Grants • Internships • Fellowships
+
+</footer>
 
 <!-- LOGIN -->
 
 <div id="loginModal" class="modal">
 
-  <div class="modalBox">
+  <div class="login-box">
 
     <button
-      class="closeModal"
-      onclick="closeAdmin()">
+      class="close-login"
+      onclick="closeLogin()">
       ×
     </button>
 
     <h3>🔐 ADMIN LOGIN</h3>
 
     <input
-      id="adminUser"
+      id="username"
       placeholder="Username">
 
     <input
-      id="adminPass"
+      id="password"
       type="password"
       placeholder="Password">
 
     <button
-      class="btn btnGreen"
+      class="green-btn"
       onclick="loginAdmin()">
       LOGIN
     </button>
@@ -936,7 +995,6 @@ footer{
   </div>
 
 </div>
-
 
 <script>
 
@@ -969,7 +1027,6 @@ const firebaseConfig = {
 
 };
 
-
 let db = null;
 
 try{
@@ -984,55 +1041,58 @@ try{
 
 }catch(error){
 
-  console.error(error);
+  console.error("Firebase error:",error);
 
 }
 
 
 /* =========================================================
-   GLOBAL VARIABLES
+   VARIABLES
 ========================================================= */
 
 let opportunities = [];
 
-let currentFilter = "all";
+let selectedCategory = "All";
 
 let isAdmin = false;
-
-const $ = id => document.getElementById(id);
 
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
+const $ = id =>
+  document.getElementById(id);
+
+
 function escapeHTML(value){
 
   return String(value ?? "")
-    .replace(/[&<>"']/g, char => ({
-
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#039;"
-
-    }[char]));
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
 }
 
 
-function safeUrl(url){
+function validUrl(url){
 
-  if(!url) return "";
+  if(!url) return false;
 
-  url = String(url).trim();
+  try{
 
-  if(!/^https?:\/\//i.test(url)){
-    return "";
+    const u = new URL(url);
+
+    return u.protocol === "http:" ||
+           u.protocol === "https:";
+
+  }catch(e){
+
+    return false;
+
   }
-
-  return url;
 
 }
 
@@ -1045,180 +1105,455 @@ function toast(message){
 
   clearTimeout(window.toastTimer);
 
-  window.toastTimer = setTimeout(() => {
+  window.toastTimer = setTimeout(()=>{
 
     $("toast").style.display = "none";
 
-  },4000);
+  },3500);
 
 }
 
 
 /* =========================================================
-   COUNTRY NORMALIZATION
+   NORMALIZE OPPORTUNITY
 ========================================================= */
 
-function normalizeCountry(country){
+function normalizeOpportunity(key,data){
 
-  if(!country) return "International";
+  data = data || {};
 
-  const c = String(country).trim();
+  return {
 
-  if(/tanzania/i.test(c)){
-    return "Tanzania";
-  }
+    key:key,
 
-  if(
-    /kenya|uganda|rwanda|burundi|ethiopia|somalia|south sudan|
-    sudan|zambia|zimbabwe|malawi|mozambique|botswana|namibia|
-    ghana|nigeria|south africa|senegal|africa/i.test(c)
-  ){
+    title:
+      data.title ||
+      data.jina ||
+      data.name ||
+      "Untitled Opportunity",
 
-    return c;
+    country:
+      data.country ||
+      data.nchi ||
+      "International",
 
-  }
+    category:
+      data.category ||
+      data.type ||
+      data.kategoria ||
+      "Opportunity",
 
-  if(
-    /international|worldwide|global|united states|usa/i.test(c)
-  ){
+    source:
+      data.source ||
+      data.sourceName ||
+      "MAKYAMA",
 
-    return c;
+    description:
+      data.description ||
+      data.desc ||
+      "",
 
-  }
+    url:
+      data.url ||
+      data.link ||
+      data.applyUrl ||
+      data.applicationUrl ||
+      data.application_link ||
+      data.linkApply ||
+      "",
 
-  return c;
+    deadline:
+      data.deadline ||
+      data.closingDate ||
+      "",
+
+    createdAt:
+      data.createdAt ||
+      data.publishedAt ||
+      0
+
+  };
 
 }
 
 
 /* =========================================================
-   CARD
+   LOAD OPPORTUNITIES
 ========================================================= */
 
-function opportunityCard(item){
+function loadOpportunities(){
 
-  const title =
-    item.title ||
-    item.name ||
-    "Untitled Opportunity";
+  if(!db){
 
-  const country =
-    normalizeCountry(
-      item.country ||
-      item.location ||
-      item.countryName ||
-      "International"
-    );
+    $("results").innerHTML =
+      '<div class="empty">Unable to connect to database.</div>';
 
-  const category =
-    item.category ||
-    item.type ||
-    "Opportunity";
+    return;
 
-  const source =
-    item.source ||
-    item.organization ||
-    "Official Source";
-
-  const description =
-    item.description ||
-    item.summary ||
-    "Global opportunity. Check the official source for full details.";
-
-  const deadline =
-    item.deadline ||
-    item.closingDate ||
-    "";
-
-  const url = safeUrl(
-    item.url ||
-    item.link ||
-    item.applyUrl ||
-    item.applicationUrl ||
-    item.website ||
-    item.sourceUrl
-  );
-
-
-  let button = "";
+  }
 
   /*
-    IMPORTANT:
-    BUTTON ONLY EXISTS WHEN A REAL URL EXISTS.
+    Main bot path
   */
 
-  if(url){
+  db.ref("opportunities").on("value",snapshot=>{
 
-    button = `
-      <a
-        class="applyBtn"
-        href="${escapeHTML(url)}"
-        target="_blank"
-        rel="noopener noreferrer">
-        🔗 VIEW / APPLY
-      </a>
-    `;
+    const list = [];
+
+    if(snapshot.exists()){
+
+      snapshot.forEach(child=>{
+
+        list.push(
+          normalizeOpportunity(
+            child.key,
+            child.val()
+          )
+        );
+
+      });
+
+    }
+
+    opportunities = list;
+
+    finishOpportunityLoad();
+
+  },error=>{
+
+    console.error(error);
+
+    /*
+      Fallback to media is intentionally NOT used.
+      This is no longer a music website.
+    */
+
+    $("results").innerHTML =
+      '<div class="empty">Unable to load opportunities.</div>';
+
+  });
+
+}
+
+
+function finishOpportunityLoad(){
+
+  /*
+    Newest first
+  */
+
+  opportunities.sort((a,b)=>{
+
+    return Number(b.createdAt || 0) -
+           Number(a.createdAt || 0);
+
+  });
+
+  updateStats();
+
+  buildCountryList();
+
+  applyFilters();
+
+  if(isAdmin){
+
+    renderAdminOpportunities();
 
   }
 
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function updateStats(){
+
+  $("totalCount").textContent =
+    opportunities.length;
+
+  const countries =
+    new Set(
+      opportunities.map(x =>
+        x.country
+      )
+    );
+
+  $("countryCount").textContent =
+    countries.size;
+
+}
+
+
+/* =========================================================
+   COUNTRY FILTER
+========================================================= */
+
+function buildCountryList(){
+
+  const select =
+    $("countryFilter");
+
+  const current =
+    select.value;
+
+  const countries =
+    [...new Set(
+      opportunities
+        .map(x=>x.country)
+        .filter(Boolean)
+    )]
+    .sort((a,b)=>
+      String(a).localeCompare(String(b))
+    );
+
+  select.innerHTML =
+    '<option value="All">🌍 All Countries</option>';
+
+  countries.forEach(country=>{
+
+    const option =
+      document.createElement("option");
+
+    option.value = country;
+
+    option.textContent =
+      "🌎 " + country;
+
+    select.appendChild(option);
+
+  });
+
+  if(
+    countries.includes(current)
+  ){
+
+    select.value = current;
+
+  }
+
+}
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+function setCategory(category,button){
+
+  selectedCategory = category;
+
+  document
+    .querySelectorAll(".filter")
+    .forEach(x =>
+      x.classList.remove("active")
+    );
+
+  if(button){
+
+    button.classList.add("active");
+
+  }
+
+  applyFilters();
+
+}
+
+
+function applyFilters(){
+
+  const search =
+    $("searchInput")
+      .value
+      .trim()
+      .toLowerCase();
+
+  const country =
+    $("countryFilter").value;
+
+  let filtered =
+    opportunities.filter(item=>{
+
+      const categoryOK =
+        selectedCategory === "All" ||
+        String(item.category)
+          .toLowerCase()
+          .includes(
+            selectedCategory.toLowerCase()
+          );
+
+      const countryOK =
+        country === "All" ||
+        String(item.country)
+          .toLowerCase() ===
+        String(country)
+          .toLowerCase();
+
+      const text =
+        (
+          item.title +
+          " " +
+          item.country +
+          " " +
+          item.category +
+          " " +
+          item.source +
+          " " +
+          item.description
+        ).toLowerCase();
+
+      const searchOK =
+        !search ||
+        text.includes(search);
+
+      return (
+        categoryOK &&
+        countryOK &&
+        searchOK
+      );
+
+    });
+
+  renderOpportunities(filtered);
+
+}
+
+
+function searchOpportunities(){
+
+  applyFilters();
+
+  $("sectionTitle").textContent =
+    $("searchInput").value.trim()
+      ? "🔎 Search Results"
+      : "🌍 Latest Opportunities";
+
+}
+
+
+/* =========================================================
+   RENDER OPPORTUNITIES
+========================================================= */
+
+function renderOpportunities(list){
+
+  const results =
+    $("results");
+
+  if(!list.length){
+
+    results.innerHTML = `
+
+      <div class="empty">
+
+        <div style="font-size:25px">
+          🔎
+        </div>
+
+        <strong style="color:white;display:block;margin-top:8px">
+          No opportunities found
+        </strong>
+
+        <p style="margin-top:7px">
+          Try another keyword, category or country.
+        </p>
+
+      </div>
+
+    `;
+
+    $("status").textContent =
+      "0 results";
+
+    return;
+
+  }
+
+  results.innerHTML =
+    list.map(renderCard).join("");
+
+  $("status").textContent =
+    list.length + " results";
+
+}
+
+
+function renderCard(item){
+
+  const urlOK =
+    validUrl(item.url);
+
+  const deadline =
+    item.deadline
+      ? "📅 Deadline: " +
+        escapeHTML(item.deadline)
+      : "";
 
   return `
 
-    <article class="card">
+    <article class="opportunity">
 
-      <div class="cardTop">
+      <div class="tags">
 
-        <span class="badge">
-          ${escapeHTML(category)}
+        <span class="tag">
+          ${categoryIcon(item.category)}
+          ${escapeHTML(item.category)}
         </span>
 
-        <span class="badge country">
-          🌍 ${escapeHTML(country)}
+        <span class="tag country">
+          🌎
+          ${escapeHTML(item.country)}
         </span>
 
-        <span class="badge category">
-          ${escapeHTML(source)}
+        <span class="tag category">
+          ${escapeHTML(item.source)}
         </span>
+
+      </div>
+
+      <h4>
+        ${escapeHTML(item.title)}
+      </h4>
+
+      ${
+        item.description
+        ?
+        `<div class="description">
+          ${escapeHTML(item.description)}
+        </div>`
+        :
+        ""
+      }
+
+      <div class="meta">
 
         ${
           deadline
           ?
-          `<span class="badge deadline">
-            ⏰ Deadline: ${escapeHTML(deadline)}
-          </span>`
+          `<span>${deadline}</span>`
           :
           ""
         }
 
+        <span>
+          📡 ${escapeHTML(item.source)}
+        </span>
+
       </div>
-
-
-      <h2>
-        ${escapeHTML(title)}
-      </h2>
-
-
-      <div class="description">
-        ${escapeHTML(description)}
-      </div>
-
-
-      <div class="source">
-        📡 Source:
-        <strong>
-          ${escapeHTML(source)}
-        </strong>
-      </div>
-
 
       ${
-        button
+        urlOK
         ?
-        button
+        `<a
+          class="apply"
+          href="${escapeHTML(item.url)}"
+          target="_blank"
+          rel="noopener noreferrer">
+          🔗 VIEW / APPLY
+        </a>`
         :
-        `<div class="noLink">
-          Official application link not available yet.
-        </div>`
+        ""
       }
 
     </article>
@@ -1228,304 +1563,28 @@ function opportunityCard(item){
 }
 
 
-/* =========================================================
-   LOAD OPPORTUNITIES
-========================================================= */
+function categoryIcon(category){
 
-function initOpportunities(){
-
-  if(!db){
-
-    $("results").innerHTML = `
-      <div class="empty">
-        <strong>Firebase connection error</strong>
-        Please check Firebase configuration.
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  /*
-    BOT SHOULD SAVE DATA HERE:
-
-    opportunities/
-
-  */
-
-  db.ref("opportunities").on("value", snapshot => {
-
-    const data = [];
-
-    if(snapshot.exists()){
-
-      snapshot.forEach(child => {
-
-        const value = child.val() || {};
-
-        data.push({
-
-          key: child.key,
-
-          ...value
-
-        });
-
-      });
-
-    }
-
-
-    /*
-      ALSO SUPPORT OLD STRUCTURES IF YOUR BOT
-      SAVED DATA SOMEWHERE ELSE.
-    */
-
-    if(!data.length){
-
-      db.ref("opportunity").once("value")
-        .then(oldSnap => {
-
-          if(oldSnap.exists()){
-
-            oldSnap.forEach(child => {
-
-              data.push({
-
-                key: child.key,
-
-                ...(child.val() || {})
-
-              });
-
-            });
-
-          }
-
-          opportunities = data;
-
-          renderOpportunities();
-
-        })
-        .catch(() => {
-
-          opportunities = [];
-
-          renderOpportunities();
-
-        });
-
-    }else{
-
-      opportunities = data;
-
-      renderOpportunities();
-
-    }
-
-  });
-
-}
-
-
-/* =========================================================
-   FILTER
-========================================================= */
-
-function matchesFilter(item){
-
-  const category =
-    String(
-      item.category ||
-      item.type ||
-      ""
-    ).toLowerCase();
-
-  const country =
-    String(
-      item.country ||
-      item.location ||
-      ""
-    ).toLowerCase();
-
-
-  if(currentFilter === "all"){
-    return true;
-  }
-
-
-  if(currentFilter === "Africa"){
-
-    return /africa|tanzania|kenya|uganda|rwanda|burundi|nigeria|ghana|south africa|zambia|zimbabwe|malawi|ethiopia/i
-      .test(country);
-
-  }
-
-
-  if(currentFilter === "Tanzania"){
-
-    return /tanzania/i.test(country);
-
-  }
-
-
-  return category.includes(
-    currentFilter.toLowerCase()
-  );
-
-}
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-function renderOpportunities(){
-
-  const query =
-    $("searchInput")
-      .value
-      .trim()
+  const c =
+    String(category)
       .toLowerCase();
 
+  if(c.includes("job"))
+    return "💼";
 
-  let list = opportunities.filter(matchesFilter);
+  if(c.includes("scholar"))
+    return "🎓";
 
+  if(c.includes("grant"))
+    return "💰";
 
-  if(query){
+  if(c.includes("intern"))
+    return "🧑‍💻";
 
-    list = list.filter(item => {
+  if(c.includes("fellow"))
+    return "📚";
 
-      const text = (
-
-        (item.title || "") +
-        " " +
-        (item.name || "") +
-        " " +
-        (item.description || "") +
-        " " +
-        (item.country || "") +
-        " " +
-        (item.category || "") +
-        " " +
-        (item.source || "")
-
-      ).toLowerCase();
-
-      return text.includes(query);
-
-    });
-
-  }
-
-
-  /*
-    Newest first
-  */
-
-  list.sort((a,b) => {
-
-    const aa =
-      Number(
-        a.createdAt ||
-        a.publishedAt ||
-        0
-      );
-
-    const bb =
-      Number(
-        b.createdAt ||
-        b.publishedAt ||
-        0
-      );
-
-    return bb-aa;
-
-  });
-
-
-  if(currentFilter === "all"){
-
-    $("sectionTitle").textContent =
-      "🌍 Global Opportunities";
-
-  }else{
-
-    $("sectionTitle").textContent =
-      "🌍 " + currentFilter;
-
-  }
-
-
-  if(query){
-
-    $("sectionTitle").textContent =
-      "🔎 " + $("searchInput").value;
-
-  }
-
-
-  $("status").textContent =
-    list.length + " opportunities";
-
-
-  if(!list.length){
-
-    $("results").innerHTML = `
-
-      <div class="empty">
-
-        <strong>
-          No opportunities found
-        </strong>
-
-        Try another search or category.
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  $("results").innerHTML =
-    list.map(opportunityCard).join("");
-
-}
-
-
-function searchOpportunities(){
-
-  renderOpportunities();
-
-}
-
-
-/* =========================================================
-   FILTER BUTTON
-========================================================= */
-
-function setFilter(filter,button){
-
-  currentFilter = filter;
-
-  document
-    .querySelectorAll(".filter")
-    .forEach(btn =>
-      btn.classList.remove("active")
-    );
-
-  if(button){
-
-    button.classList.add("active");
-
-  }
-
-  renderOpportunities();
+  return "🌍";
 
 }
 
@@ -1538,47 +1597,37 @@ function initPresence(){
 
   if(!db) return;
 
-
-  const usersRef =
+  const connections =
     db.ref("server_stats/connected_users");
 
-
-  const myUser =
-    usersRef.push();
-
+  const myConnection =
+    connections.push();
 
   db.ref(".info/connected")
-    .on("value", snapshot => {
+    .on("value",snapshot=>{
 
       if(snapshot.val() === true){
 
-        myUser
+        myConnection
           .onDisconnect()
           .remove();
 
-        myUser.set({
-
-          connectedAt:Date.now()
-
-        });
+        myConnection.set(true);
 
       }
 
     });
 
-
-  usersRef.on("value", snapshot => {
+  connections.on("value",snapshot=>{
 
     const count =
       snapshot.numChildren();
 
+    $("liveCount").textContent =
+      count;
 
-    if($("onlineCount")){
-
-      $("onlineCount").textContent =
-        count;
-
-    }
+    $("adminOnline").textContent =
+      count;
 
   });
 
@@ -1589,87 +1638,22 @@ function initPresence(){
    ADS
 ========================================================= */
 
-function runAdCode(container,code){
-
-  container.innerHTML = "";
-
-  if(!code) return;
-
-
-  const temp =
-    document.createElement("div");
-
-  temp.innerHTML = code;
-
-
-  Array.from(temp.childNodes)
-    .forEach(node => {
-
-      if(node.nodeName.toLowerCase() !== "script"){
-
-        container.appendChild(
-          node.cloneNode(true)
-        );
-
-      }
-
-    });
-
-
-  Array.from(
-    temp.querySelectorAll("script")
-  ).forEach(oldScript => {
-
-    const script =
-      document.createElement("script");
-
-
-    Array.from(
-      oldScript.attributes
-    ).forEach(attr => {
-
-      script.setAttribute(
-        attr.name,
-        attr.value
-      );
-
-    });
-
-
-    if(oldScript.textContent){
-
-      script.textContent =
-        oldScript.textContent;
-
-    }
-
-
-    container.appendChild(script);
-
-  });
-
-}
-
-
 function initAds(){
 
   if(!db) return;
 
+  db.ref("ads").on("value",snapshot=>{
 
-  db.ref("ads").on("value",snapshot => {
+    const top =
+      $("topAds");
 
-    const area =
-      $("adsArea");
-
-    area.innerHTML = "";
-
+    top.innerHTML = "";
 
     const ads = [];
 
-
     if(snapshot.exists()){
 
-      snapshot.forEach(child => {
+      snapshot.forEach(child=>{
 
         const ad =
           child.val() || {};
@@ -1679,31 +1663,25 @@ function initAds(){
 
         ads.push(ad);
 
+        if(
+          ad.position === "top" ||
+          ad.position === "social"
+        ){
+
+          addAdToPage(
+            top,
+            ad
+          );
+
+        }
+
       });
 
     }
 
-
-    ads.forEach(ad => {
-
-      const box =
-        document.createElement("div");
-
-      box.className = "adBox";
-
-      area.appendChild(box);
-
-      runAdCode(
-        box,
-        ad.code || ad.script || ""
-      );
-
-    });
-
-
     if(isAdmin){
 
-      renderAdsAdmin(ads);
+      renderAdminAds(ads);
 
     }
 
@@ -1712,42 +1690,111 @@ function initAds(){
 }
 
 
-/* =========================================================
-   ADD AD
-========================================================= */
+function addAdToPage(container,ad){
+
+  if(!ad.script) return;
+
+  const wrapper =
+    document.createElement("div");
+
+  wrapper.className =
+    "ad-container";
+
+  const box =
+    document.createElement("div");
+
+  box.className =
+    "ad-box";
+
+  wrapper.appendChild(box);
+
+  container.appendChild(wrapper);
+
+  /*
+    Safely recreate script tags
+  */
+
+  const temp =
+    document.createElement("div");
+
+  temp.innerHTML =
+    ad.script;
+
+  Array.from(temp.childNodes)
+    .forEach(node=>{
+
+      if(
+        node.nodeName
+          .toLowerCase() !== "script"
+      ){
+
+        box.appendChild(
+          node.cloneNode(true)
+        );
+
+      }
+
+    });
+
+  const scripts =
+    temp.querySelectorAll("script");
+
+  scripts.forEach(oldScript=>{
+
+    const script =
+      document.createElement("script");
+
+    Array.from(
+      oldScript.attributes
+    ).forEach(attr=>{
+
+      script.setAttribute(
+        attr.name,
+        attr.value
+      );
+
+    });
+
+    script.textContent =
+      oldScript.textContent;
+
+    box.appendChild(script);
+
+  });
+
+}
+
 
 async function addAd(){
 
-  if(!isAdmin || !db) return;
+  if(!isAdmin || !db){
 
+    toast("Admin access required.");
+
+    return;
+
+  }
 
   const name =
     $("adName")
       .value
-      .trim() ||
-    "Advertisement";
-
+      .trim() || "Advertisement";
 
   const position =
     $("adPosition").value;
-
 
   const code =
     $("adCode")
       .value
       .trim();
 
-
   if(!code){
 
-    toast(
-      "Please paste the advertisement code."
-    );
+    toast("Paste the advertisement code first.");
 
     return;
 
   }
-
 
   try{
 
@@ -1757,69 +1804,55 @@ async function addAd(){
 
       position:position,
 
-      code:code,
+      script:code,
 
       createdAt:Date.now()
 
     });
 
-
     $("adName").value = "";
 
     $("adCode").value = "";
 
-
-    toast(
-      "Advertisement added successfully."
-    );
+    toast("Advertisement added successfully.");
 
   }catch(error){
 
     console.error(error);
 
-    toast(
-      "Failed to add advertisement."
-    );
+    toast("Failed to add advertisement.");
 
   }
 
 }
 
 
-/* =========================================================
-   ADMIN ADS
-========================================================= */
+function renderAdminAds(ads){
 
-function renderAdsAdmin(ads){
-
-  const box =
-    $("adsAdminList");
-
+  const list =
+    $("adminAds");
 
   if(!ads.length){
 
-    box.innerHTML = `
-      <div style="color:#69756d;font-size:10px">
-        No advertisements added yet.
-      </div>
-    `;
+    list.innerHTML =
+      '<div style="color:#718078;font-size:10px">No active ads.</div>';
 
     return;
 
   }
 
+  list.innerHTML =
+    ads.map(ad=>`
 
-  box.innerHTML =
-    ads.map(ad => `
-
-      <div class="adminItem">
+      <div class="admin-item">
 
         <span>
-          📢 ${escapeHTML(ad.name || "Ad")}
+          📢
+          ${escapeHTML(ad.name || "Advertisement")}
         </span>
 
         <button
-          class="btnRed"
+          class="red-btn"
           onclick="deleteAd('${ad.key}')">
           DELETE
         </button>
@@ -1835,11 +1868,11 @@ async function deleteAd(key){
 
   if(!isAdmin || !db) return;
 
-
-  if(!confirm(
-    "Delete this advertisement?"
-  )) return;
-
+  if(
+    !confirm(
+      "Delete this advertisement?"
+    )
+  ) return;
 
   try{
 
@@ -1847,18 +1880,13 @@ async function deleteAd(key){
       .ref("ads/" + key)
       .remove();
 
-
-    toast(
-      "Advertisement deleted."
-    );
+    toast("Advertisement deleted.");
 
   }catch(error){
 
     console.error(error);
 
-    toast(
-      "Could not delete advertisement."
-    );
+    toast("Unable to delete advertisement.");
 
   }
 
@@ -1869,7 +1897,7 @@ async function deleteAd(key){
    ADMIN LOGIN
 ========================================================= */
 
-function openAdmin(){
+function openLogin(){
 
   $("loginModal")
     .style
@@ -1878,7 +1906,7 @@ function openAdmin(){
 }
 
 
-function closeAdmin(){
+function closeLogin(){
 
   $("loginModal")
     .style
@@ -1890,18 +1918,15 @@ function closeAdmin(){
 function loginAdmin(){
 
   const username =
-    $("adminUser")
+    $("username")
       .value
       .trim();
 
-
   const password =
-    $("adminPass")
-      .value;
-
+    $("password").value;
 
   /*
-    ADMIN LOGIN
+    Existing MAKYAMA admin credentials
   */
 
   if(
@@ -1911,47 +1936,24 @@ function loginAdmin(){
 
     isAdmin = true;
 
-    closeAdmin();
+    closeLogin();
 
-
-    $("admin")
+    $("adminPanel")
       .style
       .display = "block";
 
+    renderAdminAdsFromFirebase();
 
-    renderManualList();
-
-
-    db.ref("ads")
-      .once("value")
-      .then(snapshot => {
-
-        const ads = [];
-
-        if(snapshot.exists()){
-
-          snapshot.forEach(child => {
-
-            const ad =
-              child.val() || {};
-
-            ad.key =
-              child.key;
-
-            ads.push(ad);
-
-          });
-
-        }
-
-        renderAdsAdmin(ads);
-
-      });
-
+    renderAdminOpportunities();
 
     toast(
-      "Admin Dashboard enabled."
+      "Admin dashboard enabled."
     );
+
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
 
   }else{
 
@@ -1968,129 +1970,161 @@ function logoutAdmin(){
 
   isAdmin = false;
 
-  $("admin")
+  $("adminPanel")
     .style
     .display = "none";
 
-  toast(
-    "Admin logged out."
-  );
+  toast("Logged out.");
 
 }
 
 
 /* =========================================================
-   MANUAL OPPORTUNITY
+   ADMIN ADS REFRESH
+========================================================= */
+
+async function renderAdminAdsFromFirebase(){
+
+  if(!db) return;
+
+  try{
+
+    const snap =
+      await db
+        .ref("ads")
+        .once("value");
+
+    const ads = [];
+
+    if(snap.exists()){
+
+      snap.forEach(child=>{
+
+        const ad =
+          child.val() || {};
+
+        ad.key =
+          child.key;
+
+        ads.push(ad);
+
+      });
+
+    }
+
+    renderAdminAds(ads);
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   ADMIN ADD OPPORTUNITY
 ========================================================= */
 
 async function addOpportunity(){
 
-  if(!isAdmin || !db) return;
+  if(!isAdmin || !db){
 
+    toast("Admin access required.");
+
+    return;
+
+  }
 
   const title =
-    $("oTitle").value.trim();
-
+    $("opTitle")
+      .value
+      .trim();
 
   const country =
-    $("oCountry").value.trim();
-
+    $("opCountry")
+      .value
+      .trim();
 
   const category =
-    $("oCategory").value;
-
+    $("opCategory").value;
 
   const source =
-    $("oSource").value.trim();
-
-
-  const deadline =
-    $("oDeadline").value.trim();
-
+    $("opSource")
+      .value
+      .trim();
 
   const url =
-    $("oUrl").value.trim();
-
+    $("opUrl")
+      .value
+      .trim();
 
   const description =
-    $("oDescription").value.trim();
+    $("opDescription")
+      .value
+      .trim();
 
-
-  if(!title){
+  if(!title || !country){
 
     toast(
-      "Please enter opportunity title."
+      "Title and country are required."
     );
 
     return;
 
   }
 
+  if(url && !validUrl(url)){
 
-  /*
-    URL is optional.
-    If empty, the card will NOT show
-    VIEW/APPLY button.
-  */
+    toast(
+      "Application URL is not valid."
+    );
 
-  const data = {
+    return;
 
-    title:title,
-
-    country:
-      country || "International",
-
-    category:
-      category,
-
-    source:
-      source || "MAKYAMA",
-
-    deadline:
-      deadline || "",
-
-    description:
-      description || "",
-
-    url:
-      safeUrl(url),
-
-    createdAt:
-      Date.now(),
-
-    manual:
-      true
-
-  };
-
+  }
 
   try{
 
     await db
       .ref("opportunities")
-      .push(data);
+      .push({
 
+        title:title,
+
+        country:country,
+
+        category:category,
+
+        source:
+          source || "MAKYAMA",
+
+        url:url,
+
+        description:description,
+
+        createdAt:Date.now(),
+
+        manual:true
+
+      });
 
     [
-      "oTitle",
-      "oCountry",
-      "oSource",
-      "oDeadline",
-      "oUrl",
-      "oDescription"
-    ].forEach(id => {
+      "opTitle",
+      "opCountry",
+      "opSource",
+      "opUrl",
+      "opDescription"
+    ].forEach(id=>{
 
       $(id).value = "";
 
     });
 
-
     toast(
       "Opportunity added successfully."
     );
-
-
-    renderManualList();
 
   }catch(error){
 
@@ -2106,89 +2140,46 @@ async function addOpportunity(){
 
 
 /* =========================================================
-   MANUAL OPPORTUNITIES ADMIN LIST
+   ADMIN OPPORTUNITY LIST
 ========================================================= */
 
-async function renderManualList(){
-
-  if(!isAdmin || !db) return;
-
+function renderAdminOpportunities(){
 
   const box =
-    $("manualList");
+    $("adminOpportunities");
 
+  if(!box) return;
 
-  const snapshot =
-    await db
-      .ref("opportunities")
-      .once("value");
+  if(!opportunities.length){
 
-
-  const arr = [];
-
-
-  if(snapshot.exists()){
-
-    snapshot.forEach(child => {
-
-      const item =
-        child.val() || {};
-
-
-      if(item.manual === true){
-
-        arr.push({
-
-          key:child.key,
-
-          ...item
-
-        });
-
-      }
-
-    });
-
-  }
-
-
-  if(!arr.length){
-
-    box.innerHTML = `
-      <div style="color:#69756d;font-size:10px">
-        No manually added opportunities.
-      </div>
-    `;
+    box.innerHTML =
+      '<div style="color:#718078;font-size:10px">No opportunities.</div>';
 
     return;
 
   }
 
-
-  arr.reverse();
-
-
   box.innerHTML =
-    arr.map(item => `
+    opportunities
+      .slice(0,100)
+      .map(item=>`
 
-      <div class="adminItem">
+        <div class="admin-item">
 
-        <span>
-          ${escapeHTML(
-            item.title ||
-            "Untitled"
-          )}
-        </span>
+          <span>
+            ${escapeHTML(item.title)}
+          </span>
 
-        <button
-          class="btnRed"
-          onclick="deleteOpportunity('${item.key}')">
-          DELETE
-        </button>
+          <button
+            class="red-btn"
+            onclick="deleteOpportunity('${item.key}')">
+            DELETE
+          </button>
 
-      </div>
+        </div>
 
-    `).join("");
+      `)
+      .join("");
 
 }
 
@@ -2197,11 +2188,11 @@ async function deleteOpportunity(key){
 
   if(!isAdmin || !db) return;
 
-
-  if(!confirm(
-    "Delete this opportunity?"
-  )) return;
-
+  if(
+    !confirm(
+      "Delete this opportunity?"
+    )
+  ) return;
 
   try{
 
@@ -2212,20 +2203,16 @@ async function deleteOpportunity(key){
       )
       .remove();
 
-
     toast(
       "Opportunity deleted."
     );
-
-
-    renderManualList();
 
   }catch(error){
 
     console.error(error);
 
     toast(
-      "Failed to delete opportunity."
+      "Unable to delete opportunity."
     );
 
   }
@@ -2240,7 +2227,7 @@ async function deleteOpportunity(key){
 $("searchInput")
   .addEventListener(
     "keydown",
-    event => {
+    function(event){
 
       if(event.key === "Enter"){
 
@@ -2258,13 +2245,13 @@ $("searchInput")
 
 window.addEventListener(
   "load",
-  () => {
+  function(){
 
-    initOpportunities();
-
-    initAds();
+    loadOpportunities();
 
     initPresence();
+
+    initAds();
 
   }
 );
@@ -2272,4 +2259,4 @@ window.addEventListener(
 </script>
 
 </body>
-                                   </html>
+      </html>
