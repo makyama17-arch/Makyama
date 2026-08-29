@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#07110c">
 
-<title>MAKYAMA GLOBAL — Opportunities, Education, Jobs & News</title>
+<title>MAKYAMA — Global Opportunities</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -14,12 +14,12 @@
 :root{
   --green:#00e676;
   --green2:#00c853;
-  --bg:#070a09;
+  --bg:#060908;
   --panel:#101512;
-  --panel2:#151b17;
+  --panel2:#151c17;
   --text:#fff;
-  --muted:#8c9990;
-  --line:#253029;
+  --muted:#94a099;
+  --line:#26322b;
   --orange:#ff9800;
   --red:#ff5252;
   --blue:#42a5f5;
@@ -36,17 +36,12 @@ html,body{
   background:var(--bg);
   color:var(--text);
   min-height:100%;
-  overflow-x:hidden;
 }
 
 body{
   padding-bottom:40px;
   background:
-  linear-gradient(rgba(7,10,9,.94),rgba(7,10,9,.96)),
-  url("https://i.postimg.cc/J0CCmJnw/file-000000001b508210abb525894acdb99e.png");
-  background-size:cover;
-  background-position:center;
-  background-attachment:fixed;
+    radial-gradient(circle at top,#102017 0,#060908 45%);
 }
 
 button,input,select,textarea{
@@ -57,13 +52,22 @@ button{
   cursor:pointer;
 }
 
-header{
+a{
+  text-decoration:none;
+}
+
+.header{
   position:sticky;
   top:0;
   z-index:1000;
-  background:rgba(7,10,9,.97);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid #1d2921;
+  background:rgba(6,9,8,.97);
+  backdrop-filter:blur(15px);
+  border-bottom:1px solid var(--line);
+}
+
+.header-inner{
+  width:min(1200px,100%);
+  margin:auto;
   padding:12px;
   display:flex;
   align-items:center;
@@ -71,28 +75,31 @@ header{
   gap:10px;
 }
 
-.brand{
+.logo-area{
   display:flex;
   align-items:center;
-  gap:9px;
+  gap:10px;
   min-width:0;
 }
 
-.brand img{
-  width:40px;
-  height:40px;
+.logo{
+  width:42px;
+  height:42px;
   border-radius:50%;
   object-fit:cover;
   border:1px solid var(--green);
 }
 
-.brand h1{
-  font-size:16px;
-  color:var(--green);
-  white-space:nowrap;
+.logo-text{
+  min-width:0;
 }
 
-.brand p{
+.logo-text h1{
+  color:var(--green);
+  font-size:18px;
+}
+
+.logo-text p{
   color:var(--muted);
   font-size:9px;
   margin-top:3px;
@@ -106,40 +113,40 @@ header{
 .btn{
   border:0;
   border-radius:8px;
-  padding:9px 11px;
-  font-size:10px;
+  padding:9px 12px;
+  font-size:11px;
   font-weight:900;
 }
 
-.btn-green{
+.green{
   background:var(--green);
   color:#001b0d;
 }
 
-.btn-dark{
+.dark{
   background:#18201b;
   color:#fff;
   border:1px solid var(--line);
 }
 
-.btn-red{
-  background:var(--red);
-  color:#fff;
-}
-
-.btn-orange{
+.orange{
   background:var(--orange);
   color:#111;
 }
 
+.red{
+  background:var(--red);
+  color:#fff;
+}
+
 .wrap{
-  width:min(1000px,100%);
+  width:min(1200px,100%);
   margin:auto;
-  padding:0 11px;
+  padding:0 12px;
 }
 
 .hero{
-  padding:25px 0 12px;
+  padding:25px 0 15px;
 }
 
 .hero h2{
@@ -158,133 +165,174 @@ header{
   margin-top:8px;
 }
 
-/* SEARCH */
-
-.search{
+.search-box{
   display:flex;
   gap:7px;
-  margin:10px 0;
+  margin:12px 0;
 }
 
-.search input{
+.search-box input{
   flex:1;
   min-width:0;
   background:var(--panel);
   color:#fff;
-  border:1px solid #334238;
-  border-radius:12px;
+  border:1px solid var(--line);
+  border-radius:11px;
   padding:13px;
   outline:none;
 }
 
-.search input:focus{
+.search-box input:focus{
   border-color:var(--green);
 }
 
-.search button{
-  width:80px;
+.search-box button{
+  width:85px;
 }
 
-/* COUNTRY */
-
-.country-title{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin:14px 0 7px;
-}
-
-.country-title h3{
-  font-size:15px;
-  border-left:4px solid var(--green);
-  padding-left:8px;
-}
-
-.country-title span{
-  color:var(--muted);
-  font-size:10px;
-}
-
-.country-select{
-  width:100%;
-  background:var(--panel);
-  color:#fff;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:12px;
-  outline:none;
-}
-
-/* CATEGORY */
-
-.categories{
+.controls{
   display:flex;
   gap:7px;
   overflow-x:auto;
-  padding:11px 0;
+  padding:4px 0 12px;
   scrollbar-width:none;
 }
 
-.categories::-webkit-scrollbar{
+.controls::-webkit-scrollbar{
   display:none;
 }
 
-.cat{
+.control{
   flex:0 0 auto;
-  background:var(--panel);
-  color:#b9c2bc;
   border:1px solid var(--line);
+  background:var(--panel);
+  color:#c5cec8;
   border-radius:999px;
   padding:8px 12px;
   font-size:10px;
   font-weight:900;
 }
 
-.cat.active{
+.control.active{
   background:var(--green);
   color:#001b0d;
   border-color:var(--green);
 }
 
-/* ADS */
-
 .ad-area{
   display:flex;
   flex-direction:column;
-  gap:9px;
-  margin:8px 0;
+  gap:8px;
+  margin:10px 0;
 }
 
 .ad-card{
-  min-height:70px;
-  padding:10px;
-  background:linear-gradient(135deg,#151f18,#0f1712);
+  background:linear-gradient(135deg,#172019,#0d120f);
   border:1px dashed var(--orange);
   border-radius:12px;
-  text-align:center;
+  padding:10px;
+  min-height:70px;
+  overflow:hidden;
 }
 
-/* SECTION */
+.layout{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:14px;
+}
 
-.section{
+.sidebar{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:12px;
+  height:max-content;
+  position:sticky;
+  top:75px;
+}
+
+.sidebar h3{
+  color:var(--green);
+  font-size:13px;
+  margin-bottom:10px;
+}
+
+.side-button{
+  width:100%;
+  text-align:left;
+  border:0;
+  border-bottom:1px solid #1d2721;
+  background:transparent;
+  color:#c6cec9;
+  padding:9px 5px;
+  font-size:11px;
+}
+
+.side-button:hover{
+  color:var(--green);
+}
+
+.country-select{
+  width:100%;
+  background:#151c17;
+  color:#fff;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:9px;
+  outline:none;
+}
+
+.main-content{
+  min-width:0;
+}
+
+.section-head{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  margin:12px 0 8px;
+  align-items:center;
+  gap:8px;
+  margin:7px 0 10px;
 }
 
-.section h3{
-  font-size:16px;
+.section-head h3{
+  font-size:17px;
   border-left:4px solid var(--green);
   padding-left:8px;
 }
 
-#status{
+.status{
   color:var(--muted);
   font-size:10px;
 }
 
-/* GRID */
+.category-row{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  margin-bottom:10px;
+  scrollbar-width:none;
+}
+
+.category-row::-webkit-scrollbar{
+  display:none;
+}
+
+.category-btn{
+  flex:0 0 auto;
+  background:var(--panel);
+  color:#aeb8b1;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:8px 10px;
+  font-size:10px;
+  font-weight:900;
+}
+
+.category-btn.active{
+  background:#123d27;
+  color:var(--green);
+  border-color:var(--green);
+}
 
 .grid{
   display:grid;
@@ -293,74 +341,75 @@ header{
 }
 
 .card{
-  background:linear-gradient(135deg,#111713,#0d120f);
+  background:linear-gradient(135deg,#111713,#0b100d);
   border:1px solid var(--line);
   border-radius:13px;
-  padding:11px;
+  padding:12px;
 }
 
 .card-top{
   display:flex;
-  gap:10px;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:8px;
 }
 
-.card-image{
-  width:82px;
-  height:82px;
-  border-radius:9px;
-  object-fit:cover;
-  background:#080b09;
-  flex-shrink:0;
-}
-
-.card-info{
-  min-width:0;
-  flex:1;
+.card-title{
+  font-size:14px;
+  font-weight:900;
+  line-height:1.35;
 }
 
 .badges{
   display:flex;
-  gap:5px;
   flex-wrap:wrap;
-  margin-bottom:5px;
+  gap:5px;
+  margin-bottom:7px;
 }
 
 .badge{
   background:#123d27;
   color:var(--green);
-  padding:3px 6px;
+  padding:4px 6px;
   border-radius:5px;
   font-size:8px;
   font-weight:900;
 }
 
-.badge.orange{
-  background:#3d2b0d;
-  color:#ffb52e;
-}
-
-.badge.blue{
-  background:#122b40;
+.badge.country{
+  background:#1b2935;
   color:#64b5f6;
 }
 
-.title{
-  font-size:13px;
-  font-weight:900;
-  line-height:1.3;
+.badge.orange{
+  background:#3c2c0e;
+  color:#ffb52e;
 }
 
-.meta{
-  color:#aab4ad;
-  font-size:10px;
-  margin-top:5px;
+.badge.news{
+  background:#30220d;
+  color:#ffc107;
 }
 
 .description{
-  color:#9da8a1;
-  font-size:10px;
+  color:#aab5ae;
+  font-size:11px;
   line-height:1.5;
-  margin-top:7px;
+  margin-top:8px;
+
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  color:#758179;
+  font-size:9px;
+  margin-top:8px;
 }
 
 .card-actions{
@@ -369,59 +418,205 @@ header{
   margin-top:10px;
 }
 
-.card-actions button{
+.card-actions button,
+.card-actions a{
   flex:1;
-  border:0;
+  text-align:center;
+  padding:8px 6px;
   border-radius:7px;
-  padding:8px 5px;
   font-size:9px;
   font-weight:900;
 }
 
-.details{
-  background:#18201b;
-  color:#fff;
-  border:1px solid var(--line)!important;
+.details-btn{
+  background:#18221c;
+  color:var(--green);
+  border:1px solid var(--green);
 }
 
-.apply{
+.share-btn{
+  background:#17212a;
+  color:#64b5f6;
+  border:1px solid #31516b;
+}
+
+.apply-btn{
   background:var(--green);
   color:#001b0d;
 }
 
-.share{
-  background:#172535;
-  color:#64b5f6;
-}
-
-/* EMPTY */
-
 .empty,
 .loading{
   background:var(--panel);
-  border:1px dashed #334238;
+  border:1px dashed var(--line);
   border-radius:12px;
   padding:30px 15px;
   text-align:center;
   color:var(--muted);
-  font-size:11px;
+  font-size:12px;
+}
+
+.load-more{
+  display:block;
+  margin:15px auto;
+}
+
+footer{
+  text-align:center;
+  color:#657169;
+  font-size:10px;
+  padding:30px 10px;
+}
+
+/* DETAILS MODAL */
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:4000;
+  background:rgba(0,0,0,.88);
+  padding:15px;
+  overflow-y:auto;
+}
+
+.modal-box{
+  width:min(650px,100%);
+  margin:20px auto;
+  background:#101612;
+  border:1px solid var(--green);
+  border-radius:15px;
+  padding:17px;
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+
+.modal-title{
+  color:var(--green);
+  font-size:18px;
+  line-height:1.3;
+}
+
+.close{
+  border:0;
+  background:transparent;
+  color:#aaa;
+  font-size:25px;
+}
+
+.detail-content{
+  margin-top:15px;
+}
+
+.detail-description{
+  color:#d1d8d3;
+  font-size:12px;
+  line-height:1.7;
+  white-space:pre-wrap;
+}
+
+.detail-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:15px;
+}
+
+.info-box{
+  background:#151d18;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:9px;
+}
+
+.info-box small{
+  display:block;
+  color:#78857d;
+  font-size:8px;
+  margin-bottom:4px;
+}
+
+.info-box b{
+  font-size:10px;
+}
+
+.detail-actions{
+  display:flex;
+  gap:7px;
+  margin-top:15px;
+}
+
+.detail-actions>*{
+  flex:1;
+  text-align:center;
+}
+
+.language{
+  width:100%;
+  background:#151d18;
+  color:#fff;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:9px;
+}
+
+/* LOGIN */
+
+.login-box{
+  width:min(380px,100%);
+  margin:100px auto;
+  background:#111713;
+  border:1px solid var(--green);
+  border-radius:14px;
+  padding:18px;
+}
+
+.login-box h3{
+  color:var(--green);
+  margin-bottom:14px;
+}
+
+.login-box input{
+  width:100%;
+  background:#151d18;
+  color:#fff;
+  border:1px solid var(--line);
+  padding:11px;
+  border-radius:8px;
+  margin-bottom:9px;
+  outline:none;
+}
+
+.login-box .btn{
+  width:100%;
 }
 
 /* ADMIN */
 
 .admin{
   display:none;
-  background:#0d1510;
+  background:#0c130f;
   border:1px solid var(--green);
   border-radius:14px;
-  padding:12px;
-  margin:12px 0;
+  padding:13px;
+  margin:10px 0 15px;
 }
 
 .admin h3{
   color:var(--green);
   font-size:15px;
-  margin-bottom:10px;
+  margin-bottom:12px;
+}
+
+.admin-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
 }
 
 .admin-box{
@@ -429,60 +624,52 @@ header{
   border:1px solid var(--line);
   border-radius:10px;
   padding:10px;
-  margin-bottom:10px;
 }
 
 .admin-box h4{
+  color:var(--green);
   font-size:11px;
   margin-bottom:7px;
 }
 
-.admin input,
-.admin textarea,
-.admin select{
+.admin-box input,
+.admin-box textarea,
+.admin-box select{
   width:100%;
-  background:#192019;
+  background:#101612;
   color:#fff;
   border:1px solid var(--line);
-  border-radius:8px;
-  padding:10px;
+  border-radius:7px;
+  padding:9px;
   margin-bottom:7px;
   outline:none;
+  font-size:10px;
 }
 
-.admin textarea{
-  height:75px;
+.admin-box textarea{
+  height:80px;
   resize:none;
-  font-size:10px;
 }
 
 .admin-row{
   display:flex;
-  gap:7px;
+  gap:6px;
 }
 
 .admin-row>*{
   flex:1;
 }
 
-.live{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.live-number{
-  background:var(--green);
-  color:#001b0d;
-  font-size:17px;
+.online-number{
+  font-size:25px;
+  color:var(--green);
   font-weight:900;
-  padding:6px 14px;
-  border-radius:99px;
 }
 
 .admin-list{
   display:grid;
   gap:6px;
+  margin-top:8px;
 }
 
 .admin-item{
@@ -490,7 +677,8 @@ header{
   align-items:center;
   justify-content:space-between;
   gap:7px;
-  background:#101712;
+  background:#101612;
+  border:1px solid var(--line);
   padding:8px;
   border-radius:7px;
 }
@@ -502,133 +690,85 @@ header{
   white-space:nowrap;
 }
 
-/* MODAL */
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.84);
-  z-index:3000;
-  align-items:center;
-  justify-content:center;
-  padding:15px;
-}
-
-.modal-box{
-  width:min(450px,100%);
-  max-height:90vh;
-  overflow:auto;
-  background:#111713;
-  border:1px solid var(--green);
-  border-radius:14px;
-  padding:17px;
-}
-
-.modal-box h3{
-  color:var(--green);
-  margin-bottom:10px;
-}
-
-.modal-box input,
-.modal-box select{
-  width:100%;
-  background:#192019;
+.admin-item button{
+  flex:0 0 auto;
+  border:0;
+  background:var(--red);
   color:#fff;
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:11px;
-  margin-bottom:8px;
-}
-
-.modal-box button{
-  width:100%;
-}
-
-.close-x{
-  float:right;
-  background:none;
-  border:0;
-  color:#aaa;
-  font-size:23px;
-}
-
-/* DETAILS */
-
-.detail-title{
-  font-size:20px;
-  line-height:1.3;
-  margin-bottom:7px;
-}
-
-.detail-meta{
-  color:var(--muted);
-  font-size:10px;
-  margin-bottom:13px;
-}
-
-.detail-description{
-  color:#d6ddd8;
-  font-size:12px;
-  line-height:1.7;
-  white-space:pre-wrap;
-}
-
-.detail-actions{
-  display:flex;
-  gap:7px;
-  margin-top:17px;
-}
-
-.detail-actions a,
-.detail-actions button{
-  flex:1;
-  text-align:center;
-  text-decoration:none;
-  border:0;
-  border-radius:8px;
-  padding:11px 5px;
-  font-size:10px;
+  padding:6px;
+  border-radius:5px;
+  font-size:8px;
   font-weight:900;
 }
 
-footer{
-  text-align:center;
-  color:#69756d;
-  font-size:9px;
-  padding:30px 10px;
-}
+/* TOAST */
 
 .toast{
   position:fixed;
-  top:75px;
+  top:70px;
   left:50%;
   transform:translateX(-50%);
-  z-index:5000;
-  background:var(--green);
-  color:#001b0d;
-  font-size:10px;
-  font-weight:900;
-  padding:10px 15px;
-  border-radius:99px;
+  z-index:6000;
   display:none;
   max-width:90%;
-  text-align:center;
+  background:var(--green);
+  color:#001b0d;
+  padding:10px 14px;
+  border-radius:50px;
+  font-size:10px;
+  font-weight:900;
 }
 
-@media(min-width:650px){
+/* RESPONSIVE */
 
+@media(max-width:700px){
+
+  .layout{
+    display:block;
+  }
+
+  .sidebar{
+    position:static;
+    margin-bottom:12px;
+  }
+
+  .sidebar-content{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+  }
+
+  .side-button{
+    min-width:max-content;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:8px 10px;
+  }
+
+  .country-select{
+    margin-top:8px;
+  }
+
+  .admin-grid{
+    grid-template-columns:1fr;
+  }
+
+  .detail-info{
+    grid-template-columns:1fr;
+  }
+
+  .logo-text p{
+    display:none;
+  }
+
+  .header-actions .btn{
+    padding:8px;
+  }
+}
+
+@media(min-width:800px){
   .grid{
     grid-template-columns:1fr 1fr;
-  }
-
-  .card-image{
-    width:95px;
-    height:95px;
-  }
-
-  .title{
-    font-size:14px;
   }
 }
 </style>
@@ -636,500 +776,545 @@ footer{
 
 <body>
 
-<header>
+<header class="header">
+  <div class="header-inner">
 
-  <div class="brand">
+    <div class="logo-area">
+      <img
+        class="logo"
+        src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png"
+        alt="MAKYAMA"
+      >
 
-    <img
-      src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png"
-      alt="MAKYAMA">
+      <div class="logo-text">
+        <h1>MAKYAMA</h1>
+        <p>Global Opportunities • Education • Jobs • Grants • Events</p>
+      </div>
+    </div>
 
-    <div>
-      <h1>MAKYAMA GLOBAL</h1>
-      <p>Global Opportunities • Education • Jobs • News</p>
+    <div class="header-actions">
+      <button class="btn dark" onclick="openLogin()">
+        🔐 Admin
+      </button>
     </div>
 
   </div>
-
-  <div class="header-actions">
-
-    <select
-      id="language"
-      class="btn btn-dark"
-      onchange="changeLanguage()"
-      style="max-width:90px">
-
-      <option value="en">English</option>
-      <option value="sw">Swahili</option>
-      <option value="fr">Français</option>
-      <option value="es">Español</option>
-      <option value="ar">العربية</option>
-      <option value="pt">Português</option>
-      <option value="de">Deutsch</option>
-      <option value="hi">हिन्दी</option>
-      <option value="zh">中文</option>
-
-    </select>
-
-    <button
-      class="btn btn-dark"
-      onclick="openAdmin()">
-      🔑 Admin
-    </button>
-
-  </div>
-
 </header>
 
 <div id="toast" class="toast"></div>
 
-<div id="socialAdsArea" class="ad-area"></div>
-
 <main class="wrap">
 
 <section class="hero">
-
   <h2>
-    Discover opportunities
-    <span>worldwide.</span>
+    Discover <span>Global Opportunities</span>
   </h2>
 
-  <p id="heroText">
-    Find education, jobs, grants, events and important global news from countries around the world.
+  <p>
+    Find education, scholarships, jobs, grants, events and important
+    opportunities from countries around the world.
   </p>
-
 </section>
 
-<div class="search">
+<div id="topAds" class="ad-area"></div>
 
+<div class="search-box">
   <input
-    id="search"
-    placeholder="🔎 Search country, opportunity, job or news..."
-    autocomplete="off">
+    id="searchInput"
+    placeholder="🔎 Search opportunities, country, organisation..."
+    autocomplete="off"
+  >
 
-  <button
-    class="btn btn-green"
-    onclick="searchData()">
+  <button class="btn green" onclick="performSearch()">
     SEARCH
   </button>
-
 </div>
 
-<div class="country-title">
+<div class="controls">
 
-  <h3>🌍 Countries</h3>
-
-  <span id="countryCount">
-    195+ countries
-  </span>
-
-</div>
-
-<select
-  id="country"
-  class="country-select"
-  onchange="countryChanged()">
-
-  <option value="ALL">
-    🌍 All Countries
-  </option>
-
-</select>
-
-<div class="categories">
-
-  <button
-    class="cat active"
-    onclick="setCategory('ALL',this)">
-    🌍 All
+  <button class="control active" onclick="showLatest(this)">
+    🆕 Latest
   </button>
 
-  <button
-    class="cat"
-    onclick="setCategory('Education',this)">
+  <button class="control" onclick="filterCategory('Education',this)">
     🎓 Education
   </button>
 
-  <button
-    class="cat"
-    onclick="setCategory('Job',this)">
+  <button class="control" onclick="filterCategory('Job',this)">
     💼 Jobs
   </button>
 
-  <button
-    class="cat"
-    onclick="setCategory('Grant',this)">
-    💰 Grants
-  </button>
-
-  <button
-    class="cat"
-    onclick="setCategory('Scholarship',this)">
+  <button class="control" onclick="filterCategory('Scholarship',this)">
     🎓 Scholarships
   </button>
 
-  <button
-    class="cat"
-    onclick="setCategory('Event',this)">
+  <button class="control" onclick="filterCategory('Grant',this)">
+    💰 Grants
+  </button>
+
+  <button class="control" onclick="filterCategory('Event',this)">
     📅 Events
   </button>
 
-  <button
-    class="cat"
-    onclick="setCategory('News',this)">
+  <button class="control" onclick="filterCategory('News',this)">
     📰 News
   </button>
 
-  <button
-    class="cat"
-    onclick="setCategory('Internship',this)">
-    🧑‍💻 Internships
-  </button>
-
-  <button
-    class="cat"
-    onclick="setCategory('Competition',this)">
-    🏆 Competitions
+  <button class="control" onclick="showAll(this)">
+    🌍 All
   </button>
 
 </div>
 
-<div id="bannerAdsArea" class="ad-area"></div>
+<section id="adminPanel" class="admin">
 
-<!-- ADMIN -->
+<h3>👑 ADMIN DASHBOARD</h3>
 
-<section id="admin" class="admin">
+<div class="admin-grid">
 
-  <h3>👑 ADMIN DASHBOARD</h3>
+<div class="admin-box">
 
-  <div class="admin-box">
+<h4>🟢 USERS ONLINE</h4>
 
-    <div class="live">
+<div id="onlineCount" class="online-number">
+0
+</div>
 
-      <div>
-        <h4 style="color:var(--green)">
-          🟢 ONLINE USERS
-        </h4>
+<small style="color:#77837b">
+Currently connected visitors
+</small>
 
-        <p style="font-size:9px;color:var(--muted)">
-          People currently connected to the website
-        </p>
-      </div>
+</div>
 
-      <div
-        id="liveUsers"
-        class="live-number">
-        0
-      </div>
+<div class="admin-box">
 
-    </div>
+<h4>📊 DATABASE</h4>
 
-  </div>
+<div style="font-size:20px;font-weight:900;color:#64b5f6">
+<span id="adminOpportunityCount">0</span>
+</div>
 
-  <!-- ADS -->
+<small style="color:#77837b">
+Opportunities
+</small>
 
-  <div class="admin-box">
+</div>
 
-    <h4 style="color:var(--orange)">
-      📢 ADD ADVERTISEMENT
-    </h4>
+</div>
 
-    <input
-      id="adName"
-      placeholder="Ad name">
+<br>
 
-    <select id="adPosition">
+<div class="admin-box">
 
-      <option value="social">
-        Top Social Bar
-      </option>
+<h4>📢 ADD AD</h4>
 
-      <option value="banner">
-        Banner Advertisement
-      </option>
+<input id="adName" placeholder="Ad name">
 
-    </select>
+<select id="adPosition">
+<option value="top">Top Banner</option>
+<option value="middle">Middle Banner</option>
+</select>
 
-    <textarea
-      id="adCode"
-      placeholder="Paste your advertisement code here"></textarea>
+<textarea
+id="adScript"
+placeholder="Paste your approved advertising code here..."
+></textarea>
 
-    <button
-      class="btn btn-orange"
-      onclick="addAd()">
-      ➕ ADD AD
-    </button>
+<button
+class="btn orange"
+style="width:100%"
+onclick="addAd()"
+>
+➕ ADD AD
+</button>
 
-  </div>
+</div>
 
-  <div class="admin-box">
+<br>
 
-    <h4 style="color:var(--orange)">
-      📋 ADS
-    </h4>
+<div class="admin-box">
 
-    <div
-      id="adminAds"
-      class="admin-list">
-    </div>
+<h4>📢 ACTIVE ADS</h4>
 
-  </div>
+<div id="adminAdsList" class="admin-list">
+Loading...
+</div>
 
-  <!-- MANUAL OPPORTUNITY -->
+</div>
 
-  <div class="admin-box">
+<br>
 
-    <h4 style="color:var(--green)">
-      ➕ ADD OPPORTUNITY
-    </h4>
+<div class="admin-box">
 
-    <input
-      id="opTitle"
-      placeholder="Title">
+<h4>➕ MANUALLY ADD OPPORTUNITY</h4>
 
-    <select id="opCategory">
+<input id="adminTitle" placeholder="Title">
 
-      <option value="Education">
-        Education
-      </option>
+<input id="adminDescription" placeholder="Description">
 
-      <option value="Job">
-        Job
-      </option>
+<select id="adminCategory">
+<option value="Education">Education</option>
+<option value="Scholarship">Scholarship</option>
+<option value="Job">Job</option>
+<option value="Grant">Grant</option>
+<option value="Event">Event</option>
+<option value="News">News</option>
+<option value="Opportunity">Opportunity</option>
+</select>
 
-      <option value="Grant">
-        Grant
-      </option>
+<input id="adminCountry" placeholder="Country">
 
-      <option value="Scholarship">
-        Scholarship
-      </option>
+<input id="adminSource" placeholder="Source">
 
-      <option value="Event">
-        Event
-      </option>
+<input id="adminURL" placeholder="Official URL">
 
-      <option value="News">
-        News
-      </option>
+<input id="adminDeadline" placeholder="Deadline (optional)">
 
-      <option value="Internship">
-        Internship
-      </option>
+<div class="admin-row">
 
-      <option value="Competition">
-        Competition
-      </option>
+<button class="btn green" onclick="addOpportunity()">
+ADD
+</button>
 
-    </select>
+<button class="btn red" onclick="logoutAdmin()">
+LOGOUT
+</button>
 
-    <select id="opCountry"></select>
+</div>
 
-    <input
-      id="opSource"
-      placeholder="Source">
-
-    <input
-      id="opUrl"
-      placeholder="Official URL — https://...">
-
-    <input
-      id="opApply"
-      placeholder="Apply URL — https://...">
-
-    <input
-      id="opImage"
-      placeholder="Image URL (optional)">
-
-    <input
-      id="opDeadline"
-      placeholder="Deadline (optional)">
-
-    <textarea
-      id="opDescription"
-      placeholder="Full detailed information..."></textarea>
-
-    <button
-      class="btn btn-green"
-      onclick="addOpportunity()">
-      ADD OPPORTUNITY
-    </button>
-
-  </div>
-
-  <div class="admin-box">
-
-    <h4 style="color:var(--green)">
-      📚 DATABASE
-    </h4>
-
-    <div
-      id="adminOpportunities"
-      class="admin-list">
-    </div>
-
-  </div>
-
-  <button
-    class="btn btn-red"
-    style="width:100%;margin-top:4px"
-    onclick="logoutAdmin()">
-    LOGOUT
-  </button>
+</div>
 
 </section>
 
-<div class="section">
+<div class="layout">
 
-  <h3 id="sectionTitle">
-    🌍 Global Opportunities
-  </h3>
+<aside class="sidebar">
 
-  <span id="status">
-    Loading...
-  </span>
+<h3>🌍 COUNTRIES</h3>
+
+<select
+id="countrySelect"
+class="country-select"
+onchange="selectCountry(this.value)"
+>
+<option value="ALL">All Countries</option>
+</select>
+
+<div style="height:8px"></div>
+
+<div class="sidebar-content">
+
+<button class="side-button" onclick="showLatest()">
+🆕 Latest
+</button>
+
+<button class="side-button" onclick="showAll()">
+🌍 All Opportunities
+</button>
+
+<button class="side-button" onclick="filterCategory('Education')">
+🎓 Education
+</button>
+
+<button class="side-button" onclick="filterCategory('Job')">
+💼 Work Opportunities
+</button>
+
+<button class="side-button" onclick="filterCategory('Grant')">
+💰 Grants
+</button>
+
+<button class="side-button" onclick="filterCategory('Event')">
+📅 Events
+</button>
+
+<button class="side-button" onclick="filterCategory('News')">
+📰 Global News
+</button>
 
 </div>
 
-<div
-  id="results"
-  class="grid">
+</aside>
 
-  <div class="loading">
-    Loading global opportunities... ⏳
-  </div>
+<section class="main-content">
+
+<div id="middleAds" class="ad-area"></div>
+
+<div class="section-head">
+
+<h3 id="sectionTitle">
+🆕 Latest Opportunities
+</h3>
+
+<span id="status" class="status">
+Loading...
+</span>
+
+</div>
+
+<div class="category-row">
+
+<button
+class="category-btn active"
+onclick="filterCategory('ALL',this)"
+>
+All
+</button>
+
+<button
+class="category-btn"
+onclick="filterCategory('Education',this)"
+>
+Education
+</button>
+
+<button
+class="category-btn"
+onclick="filterCategory('Job',this)"
+>
+Jobs
+</button>
+
+<button
+class="category-btn"
+onclick="filterCategory('Scholarship',this)"
+>
+Scholarships
+</button>
+
+<button
+class="category-btn"
+onclick="filterCategory('Grant',this)"
+>
+Grants
+</button>
+
+<button
+class="category-btn"
+onclick="filterCategory('Event',this)"
+>
+Events
+</button>
+
+<button
+class="category-btn"
+onclick="filterCategory('News',this)"
+>
+News
+</button>
+
+</div>
+
+<div id="results" class="grid">
+
+<div class="loading">
+Loading global opportunities... ⏳
+</div>
+
+</div>
+
+<button
+id="loadMore"
+class="btn dark load-more"
+style="display:none"
+onclick="loadMore()"
+>
+LOAD MORE
+</button>
+
+</section>
 
 </div>
 
 <footer>
-
-  © 2026 MAKYAMA GLOBAL<br>
-  Global opportunities, education, jobs, events and news.
-
+© 2026 MAKYAMA — Global Opportunities Platform
+<br>
+Education • Jobs • Scholarships • Grants • Events • News
 </footer>
 
 </main>
 
-<!-- DETAILS MODAL -->
+<!-- DETAILS -->
 
-<div
-  id="detailsModal"
-  class="modal">
+<div id="detailsModal" class="modal">
 
-  <div class="modal-box">
+<div class="modal-box">
 
-    <button
-      class="close-x"
-      onclick="closeDetails()">
-      ×
-    </button>
+<div class="modal-header">
 
-    <h3 id="detailTitle" class="detail-title">
-      Opportunity
-    </h3>
+<div>
+<div id="detailCategoryBadge" class="badge">
+OPPORTUNITY
+</div>
 
-    <div
-      id="detailMeta"
-      class="detail-meta">
-    </div>
+<h2 id="detailTitle" class="modal-title">
+Opportunity
+</h2>
+</div>
 
-    <div
-      id="detailDescription"
-      class="detail-description">
-    </div>
+<button class="close" onclick="closeDetails()">
+×
+</button>
 
-    <div class="detail-actions">
+</div>
 
-      <a
-        id="detailSource"
-        class="details"
-        href="#"
-        target="_blank"
-        rel="noopener">
-        🔗 SOURCE
-      </a>
+<div class="detail-content">
 
-      <a
-        id="detailApply"
-        class="apply"
-        href="#"
-        target="_blank"
-        rel="noopener">
-        🚀 APPLY
-      </a>
+<div id="detailDescription" class="detail-description">
+Loading...
+</div>
 
-    </div>
+<div class="detail-info">
 
-  </div>
+<div class="info-box">
+<small>COUNTRY</small>
+<b id="detailCountry">—</b>
+</div>
+
+<div class="info-box">
+<small>CATEGORY</small>
+<b id="detailCategory">—</b>
+</div>
+
+<div class="info-box">
+<small>SOURCE</small>
+<b id="detailSource">—</b>
+</div>
+
+<div class="info-box">
+<small>DEADLINE</small>
+<b id="detailDeadline">—</b>
+</div>
+
+<div class="info-box">
+<small>PUBLISHED</small>
+<b id="detailPublished">—</b>
+</div>
+
+<div class="info-box">
+<small>VIEWS</small>
+<b id="detailViews">0</b>
+</div>
+
+</div>
+
+<br>
+
+<label style="font-size:10px;color:#94a099">
+🌐 Read in another language
+</label>
+
+<select
+id="detailLanguage"
+class="language"
+onchange="translateCurrentDetail()"
+>
+<option value="en">English</option>
+<option value="sw">Swahili</option>
+<option value="fr">French</option>
+<option value="es">Spanish</option>
+<option value="pt">Portuguese</option>
+<option value="ar">Arabic</option>
+<option value="de">German</option>
+<option value="it">Italian</option>
+<option value="tr">Turkish</option>
+<option value="hi">Hindi</option>
+<option value="zh-CN">Chinese</option>
+<option value="ja">Japanese</option>
+</select>
+
+<div class="detail-actions">
+
+<button
+class="btn share-btn"
+onclick="shareCurrent()"
+>
+📤 Share
+</button>
+
+<a
+id="detailApply"
+class="btn apply-btn"
+href="#"
+target="_blank"
+rel="noopener noreferrer"
+>
+🔗 Apply / Official Source
+</a>
+
+</div>
+
+<p
+style="
+color:#68746d;
+font-size:9px;
+line-height:1.5;
+margin-top:12px;
+text-align:center;
+"
+>
+Read the information above first. Use the official source only
+when you are ready to apply or need additional official information.
+</p>
+
+</div>
+
+</div>
 
 </div>
 
 <!-- LOGIN -->
 
-<div
-  id="loginModal"
-  class="modal">
+<div id="loginModal" class="modal">
 
-  <div class="modal-box">
+<div class="login-box">
 
-    <button
-      class="close-x"
-      onclick="closeAdmin()">
-      ×
-    </button>
+<button
+class="close"
+style="float:right"
+onclick="closeLogin()"
+>
+×
+</button>
 
-    <h3>
-      🔒 ADMIN LOGIN
-    </h3>
+<h3>🔐 ADMIN LOGIN</h3>
 
-    <input
-      id="username"
-      placeholder="Username">
+<input
+id="loginUsername"
+placeholder="Username"
+>
 
-    <input
-      id="password"
-      type="password"
-      placeholder="Password">
+<input
+id="loginPassword"
+type="password"
+placeholder="Password"
+>
 
-    <button
-      class="btn btn-green"
-      onclick="loginAdmin()">
-      LOGIN
-    </button>
+<button
+class="btn green"
+onclick="loginAdmin()"
+>
+LOGIN
+</button>
 
-  </div>
+</div>
 
 </div>
 
 <script>
 
-/* =========================================================
+/* ============================================================
    FIREBASE
-========================================================= */
+============================================================ */
 
 const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
-
-  authDomain:
-    "makyama-e5e89.firebaseapp.com",
-
-  databaseURL:
-    "https://makyama-e5e89-default-rtdb.firebaseio.com/",
-
-  projectId:
-    "makyama-e5e89",
-
-  storageBucket:
-    "makyama-e5e89.appspot.com",
-
-  messagingSenderId:
-    "229527204095",
-
-  appId:
-    "1:229527204095:web:2bdfe0589cf42794b3dcca"
-
+  apiKey: "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
+  authDomain: "makyama-e5e89.firebaseapp.com",
+  databaseURL: "https://makyama-e5e89-default-rtdb.firebaseio.com/",
+  projectId: "makyama-e5e89",
+  storageBucket: "makyama-e5e89.appspot.com",
+  messagingSenderId: "229527204095",
+  appId: "1:229527204095:web:2bdfe0589cf42794b3dcca"
 };
 
 let db = null;
@@ -1142,15 +1327,107 @@ try{
 
   db = firebase.database();
 
-}catch(e){
+}catch(error){
 
-  console.error(e);
+  console.error(error);
 
 }
 
-/* =========================================================
-   GLOBAL COUNTRIES
-========================================================= */
+
+/* ============================================================
+   STATE
+============================================================ */
+
+let allOpportunities = [];
+let filteredOpportunities = [];
+
+let currentFilter = "latest";
+let currentCountry = "ALL";
+
+let currentDetail = null;
+
+let displayLimit = 30;
+
+let admin = false;
+
+
+/* ============================================================
+   HELPERS
+============================================================ */
+
+const $ = id => document.getElementById(id);
+
+function esc(value){
+
+  return String(value ?? "")
+    .replace(/[&<>"']/g, char => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    })[char]);
+
+}
+
+function toast(message){
+
+  const el = $("toast");
+
+  el.textContent = message;
+  el.style.display = "block";
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer = setTimeout(()=>{
+    el.style.display = "none";
+  },4000);
+
+}
+
+function validURL(value){
+
+  if(!value) return false;
+
+  try{
+
+    const url = new URL(value);
+
+    return (
+      (url.protocol === "https:" ||
+       url.protocol === "http:") &&
+      !!url.hostname
+    );
+
+  }catch{
+    return false;
+  }
+
+}
+
+function formatDate(value){
+
+  if(!value) return "Not specified";
+
+  const date = new Date(value);
+
+  if(isNaN(date.getTime())) return String(value);
+
+  return date.toLocaleDateString(
+    undefined,
+    {
+      year:"numeric",
+      month:"short",
+      day:"numeric"
+    }
+  );
+
+}
+
+
+/* ============================================================
+   COUNTRY LIST
+============================================================ */
 
 const COUNTRIES = [
 
@@ -1165,6 +1442,7 @@ const COUNTRIES = [
 "Australia",
 "Austria",
 "Azerbaijan",
+
 "Bahamas",
 "Bahrain",
 "Bangladesh",
@@ -1182,6 +1460,7 @@ const COUNTRIES = [
 "Bulgaria",
 "Burkina Faso",
 "Burundi",
+
 "Cabo Verde",
 "Cambodia",
 "Cameroon",
@@ -1192,16 +1471,20 @@ const COUNTRIES = [
 "China",
 "Colombia",
 "Comoros",
+"Congo",
 "Costa Rica",
+"Côte d'Ivoire",
 "Croatia",
 "Cuba",
 "Cyprus",
 "Czech Republic",
+
 "Democratic Republic of the Congo",
 "Denmark",
 "Djibouti",
 "Dominica",
 "Dominican Republic",
+
 "Ecuador",
 "Egypt",
 "El Salvador",
@@ -1210,9 +1493,11 @@ const COUNTRIES = [
 "Estonia",
 "Eswatini",
 "Ethiopia",
+
 "Fiji",
 "Finland",
 "France",
+
 "Gabon",
 "Gambia",
 "Georgia",
@@ -1224,9 +1509,11 @@ const COUNTRIES = [
 "Guinea",
 "Guinea-Bissau",
 "Guyana",
+
 "Haiti",
 "Honduras",
 "Hungary",
+
 "Iceland",
 "India",
 "Indonesia",
@@ -1235,16 +1522,17 @@ const COUNTRIES = [
 "Ireland",
 "Israel",
 "Italy",
-"Ivory Coast",
+
 "Jamaica",
 "Japan",
 "Jordan",
+
 "Kazakhstan",
 "Kenya",
 "Kiribati",
-"Kosovo",
 "Kuwait",
 "Kyrgyzstan",
+
 "Laos",
 "Latvia",
 "Lebanon",
@@ -1254,6 +1542,7 @@ const COUNTRIES = [
 "Liechtenstein",
 "Lithuania",
 "Luxembourg",
+
 "Madagascar",
 "Malawi",
 "Malaysia",
@@ -1272,6 +1561,7 @@ const COUNTRIES = [
 "Morocco",
 "Mozambique",
 "Myanmar",
+
 "Namibia",
 "Nauru",
 "Nepal",
@@ -1283,10 +1573,11 @@ const COUNTRIES = [
 "North Korea",
 "North Macedonia",
 "Norway",
+
 "Oman",
+
 "Pakistan",
 "Palau",
-"Palestine",
 "Panama",
 "Papua New Guinea",
 "Paraguay",
@@ -1294,11 +1585,13 @@ const COUNTRIES = [
 "Philippines",
 "Poland",
 "Portugal",
+
 "Qatar",
-"Republic of the Congo",
+
 "Romania",
 "Russia",
 "Rwanda",
+
 "Saint Kitts and Nevis",
 "Saint Lucia",
 "Saint Vincent and the Grenadines",
@@ -1325,6 +1618,7 @@ const COUNTRIES = [
 "Sweden",
 "Switzerland",
 "Syria",
+
 "Taiwan",
 "Tajikistan",
 "Tanzania",
@@ -1337,6 +1631,7 @@ const COUNTRIES = [
 "Turkey",
 "Turkmenistan",
 "Tuvalu",
+
 "Uganda",
 "Ukraine",
 "United Arab Emirates",
@@ -1344,633 +1639,1011 @@ const COUNTRIES = [
 "United States",
 "Uruguay",
 "Uzbekistan",
+
 "Vanuatu",
 "Vatican City",
 "Venezuela",
 "Vietnam",
+
 "Yemen",
+
 "Zambia",
 "Zimbabwe"
 
 ].sort();
 
-/* =========================================================
-   STATE
-========================================================= */
 
-let opportunities = [];
+function buildCountryList(){
 
-let currentCategory = "ALL";
+  const select = $("countrySelect");
 
-let currentCountry = "ALL";
+  COUNTRIES.forEach(country=>{
 
-let admin = false;
+    const option = document.createElement("option");
 
-/* =========================================================
-   HELPERS
-========================================================= */
+    option.value = country;
+    option.textContent = country;
 
-const $ = id =>
-  document.getElementById(id);
-
-function esc(value){
-
-  return String(value ?? "")
-    .replace(/[&<>"']/g,m=>({
-
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#039;"
-
-    }[m]));
-
-}
-
-function validURL(value){
-
-  if(!value) return false;
-
-  try{
-
-    const u = new URL(value);
-
-    return (
-      u.protocol === "http:" ||
-      u.protocol === "https:"
-    );
-
-  }catch{
-
-    return false;
-
-  }
-
-}
-
-function toast(message){
-
-  $("toast").textContent = message;
-
-  $("toast").style.display = "block";
-
-  clearTimeout(window.__toast);
-
-  window.__toast =
-    setTimeout(
-      () => $("toast").style.display = "none",
-      3500
-    );
-
-}
-
-/* =========================================================
-   COUNTRY DROPDOWNS
-========================================================= */
-
-function buildCountries(){
-
-  const country =
-    $("country");
-
-  const adminCountry =
-    $("opCountry");
-
-  COUNTRIES.forEach(c=>{
-
-    const option =
-      document.createElement("option");
-
-    option.value = c;
-    option.textContent = c;
-
-    country.appendChild(option);
-
-    const option2 =
-      document.createElement("option");
-
-    option2.value = c;
-    option2.textContent = c;
-
-    adminCountry.appendChild(option2);
+    select.appendChild(option);
 
   });
 
 }
 
-/* =========================================================
-   FIREBASE OPPORTUNITIES
-========================================================= */
 
-function initDatabase(){
+/* ============================================================
+   LOAD OPPORTUNITIES
+============================================================ */
+
+function initOpportunities(){
 
   if(!db){
 
     $("results").innerHTML =
-      `<div class="empty">
-        ❌ Firebase connection unavailable.
-      </div>`;
+      '<div class="empty">Firebase connection failed.</div>';
 
     return;
-
   }
 
-  db.ref("opportunities").on(
-    "value",
-    snap => {
+  db.ref("opportunities").on("value", snapshot=>{
 
-      const list = [];
+    const list = [];
 
-      if(snap.exists()){
+    snapshot.forEach(child=>{
 
-        snap.forEach(child=>{
+      const item = child.val() || {};
 
-          const x =
-            child.val() || {};
+      /*
+       * IMPORTANT:
+       * Every item displayed to visitors must have a valid URL.
+       */
 
-          if(x.active === false)
-            return;
+      if(!validURL(item.url)) return;
 
-          if(!validURL(x.url))
-            return;
+      if(item.active === false) return;
 
-          list.push({
+      list.push({
 
-            key:child.key,
+        id:
+          item.id ||
+          child.key,
 
-            ...x
+        title:
+          item.title ||
+          "Untitled Opportunity",
 
-          });
+        description:
+          item.description ||
+          "No detailed description available.",
 
-        });
+        category:
+          item.category ||
+          "Opportunity",
 
-      }
+        country:
+          item.country ||
+          "International",
 
-      opportunities = list;
+        countries:
+          Array.isArray(item.countries)
+            ? item.countries
+            : [item.country || "International"],
 
-      render();
+        source:
+          item.source ||
+          "Unknown",
 
-      if(admin)
-        loadAdminOpportunities();
+        url:
+          item.url,
 
-    },
-    error => {
+        applyUrl:
+          validURL(item.applyUrl)
+            ? item.applyUrl
+            : item.url,
 
-      console.error(error);
+        detailsUrl:
+          validURL(item.detailsUrl)
+            ? item.detailsUrl
+            : item.url,
 
-      $("results").innerHTML =
-        `<div class="empty">
-          ❌ Unable to load opportunities.
-        </div>`;
+        playUrl:
+          validURL(item.playUrl)
+            ? item.playUrl
+            : item.url,
 
-    }
-  );
+        deadline:
+          item.deadline ||
+          "",
 
-}
+        publishedAt:
+          item.publishedAt ||
+          item.createdAt ||
+          0,
 
-/* =========================================================
-   FILTER
-========================================================= */
+        createdAt:
+          item.createdAt ||
+          0,
 
-function getFiltered(){
+        updatedAt:
+          item.updatedAt ||
+          0,
 
-  const q =
-    $("search").value
-      .trim()
-      .toLowerCase();
+        views:
+          Number(item.views || 0),
 
-  return opportunities.filter(item=>{
+        shares:
+          Number(item.shares || 0),
 
-    const categoryOK =
-      currentCategory === "ALL" ||
-      String(item.category || "")
-        .toLowerCase() ===
-      currentCategory.toLowerCase();
+        image:
+          validURL(item.image)
+            ? item.image
+            : ""
 
-    const countryOK =
-      currentCountry === "ALL" ||
-      String(item.country || "")
-        .toLowerCase() ===
-      currentCountry.toLowerCase() ||
-      (Array.isArray(item.countries) &&
-       item.countries.some(c =>
-         String(c).toLowerCase() ===
-         currentCountry.toLowerCase()
-       ));
+      });
 
-    const searchOK =
-      !q ||
-      (
-        (item.title || "") +
-        " " +
-        (item.description || "") +
-        " " +
-        (item.country || "") +
-        " " +
-        (item.source || "") +
-        " " +
-        (item.category || "")
-      )
-      .toLowerCase()
-      .includes(q);
+    });
 
-    return categoryOK &&
-           countryOK &&
-           searchOK;
+    /*
+     * NEWEST FIRST
+     */
 
-  }).sort((a,b)=>{
+    list.sort((a,b)=>{
 
-    return String(a.country || "")
-      .localeCompare(
-        String(b.country || "")
-      );
+      const aTime =
+        new Date(a.publishedAt || a.createdAt || 0).getTime();
+
+      const bTime =
+        new Date(b.publishedAt || b.createdAt || 0).getTime();
+
+      return bTime - aTime;
+
+    });
+
+    allOpportunities = list;
+
+    $("adminOpportunityCount").textContent =
+      list.length;
+
+    applyFilter();
 
   });
 
 }
 
-/* =========================================================
-   RENDER
-========================================================= */
 
-function render(){
+/* ============================================================
+   FILTERING
+============================================================ */
+
+function applyFilter(){
+
+  let list = [...allOpportunities];
+
+  const search =
+    $("searchInput").value
+      .trim()
+      .toLowerCase();
+
+  if(currentCountry !== "ALL"){
+
+    list = list.filter(item=>{
+
+      const countries =
+        item.countries || [];
+
+      return (
+        item.country === currentCountry ||
+        countries.includes(currentCountry)
+      );
+
+    });
+
+  }
+
+  if(currentFilter !== "latest" &&
+     currentFilter !== "ALL"){
+
+    list = list.filter(item=>{
+
+      const category =
+        String(item.category || "")
+          .toLowerCase();
+
+      const wanted =
+        currentFilter.toLowerCase();
+
+      if(wanted === "education"){
+
+        return (
+          category.includes("education") ||
+          category.includes("scholar")
+        );
+
+      }
+
+      if(wanted === "news"){
+
+        return (
+          category.includes("news") ||
+          category.includes("event")
+        );
+
+      }
+
+      return category.includes(wanted);
+
+    });
+
+  }
+
+  if(search){
+
+    const terms =
+      search
+        .split(/\s+/)
+        .filter(Boolean);
+
+    list = list.filter(item=>{
+
+      const text = [
+
+        item.title,
+        item.description,
+        item.category,
+        item.country,
+        item.source
+
+      ]
+      .join(" ")
+      .toLowerCase();
+
+      return terms.every(term =>
+        text.includes(term)
+      );
+
+    });
+
+  }
+
+  /*
+   * Always keep newest first.
+   */
+
+  list.sort((a,b)=>{
+
+    const aTime =
+      new Date(a.publishedAt || a.createdAt || 0).getTime();
+
+    const bTime =
+      new Date(b.publishedAt || b.createdAt || 0).getTime();
+
+    return bTime - aTime;
+
+  });
+
+  filteredOpportunities = list;
+
+  displayLimit = 30;
+
+  renderOpportunities();
+
+}
+
+
+/* ============================================================
+   RENDER
+============================================================ */
+
+function renderOpportunities(){
+
+  const results = $("results");
 
   const list =
-    getFiltered();
-
-  let title =
-    "🌍 Global Opportunities";
-
-  if(currentCountry !== "ALL")
-    title =
-      "🌍 " + currentCountry;
-
-  if(currentCategory !== "ALL")
-    title +=
-      " • " + currentCategory;
-
-  if($("search").value.trim())
-    title =
-      "🔎 " +
-      $("search").value.trim();
-
-  $("sectionTitle").textContent =
-    title;
-
-  $("status").textContent =
-    list.length +
-    " opportunities";
+    filteredOpportunities.slice(
+      0,
+      displayLimit
+    );
 
   if(!list.length){
 
-    $("results").innerHTML =
-      `<div class="empty">
-        <div style="font-size:30px">🌍</div>
-        <p style="margin-top:8px;color:#fff;font-weight:bold">
-          No opportunities found.
-        </p>
-        <p style="margin-top:6px">
-          Try another country, category or search.
-        </p>
-      </div>`;
+    results.innerHTML = `
+      <div class="empty">
+        <div style="font-size:24px">🔎</div>
+
+        <br>
+
+        No opportunities found.
+
+        <br><br>
+
+        Try another country, category or search term.
+      </div>
+    `;
+
+    $("status").textContent =
+      "0 results";
+
+    $("loadMore").style.display =
+      "none";
 
     return;
 
   }
 
-  $("results").innerHTML =
-    list.map(card).join("");
+  results.innerHTML =
+    list.map(renderCard).join("");
+
+  $("status").textContent =
+    filteredOpportunities.length +
+    " opportunities";
+
+  $("loadMore").style.display =
+    filteredOpportunities.length > displayLimit
+      ? "block"
+      : "none";
 
 }
 
-/* =========================================================
-   CARD
-========================================================= */
 
-function card(item){
+function renderCard(item){
 
-  const image =
-    validURL(item.image)
-      ? item.image
-      : "https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png";
+  const category =
+    String(item.category || "Opportunity");
 
-  const description =
-    item.description ||
-    "Detailed information is not available.";
+  let badgeClass = "badge";
 
-  const shortDescription =
-    description.length > 190
-      ? description.substring(0,190) + "..."
-      : description;
+  if(category === "News"){
+    badgeClass += " news";
+  }
 
   const apply =
     validURL(item.applyUrl)
-      ? item.applyUrl
-      : item.url;
+      ? `
+        <a
+          class="apply-btn"
+          href="${esc(item.applyUrl)}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          🔗 APPLY
+        </a>
+      `
+      : "";
 
   return `
 
-  <article class="card">
+<article class="card">
 
-    <div class="card-top">
+  <div class="badges">
 
-      <img
-        class="card-image"
-        src="${esc(image)}"
-        alt="${esc(item.title)}"
-        loading="lazy"
-        onerror="this.src='https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png'">
+    <span class="${badgeClass}">
+      ${esc(category)}
+    </span>
 
-      <div class="card-info">
+    <span class="badge country">
+      🌍 ${esc(item.country)}
+    </span>
 
-        <div class="badges">
+  </div>
 
-          <span class="badge">
-            ${esc(item.category || "Opportunity")}
-          </span>
+  <div class="card-top">
 
-          <span class="badge blue">
-            🌍 ${esc(item.country || "International")}
-          </span>
-
-        </div>
-
-        <div class="title">
-          ${esc(item.title)}
-        </div>
-
-        <div class="meta">
-          🏢 ${esc(item.source || "Unknown")}
-        </div>
-
-      </div>
-
+    <div class="card-title">
+      ${esc(item.title)}
     </div>
 
-    <div class="description">
-      ${esc(shortDescription)}
-    </div>
+  </div>
 
-    <div class="card-actions">
+  <div class="description">
+    ${esc(item.description)}
+  </div>
 
-      <button
-        class="details"
-        onclick="showDetails('${esc(item.key)}')">
-        📖 DETAILS
-      </button>
+  <div class="meta">
 
-      <a
-        class="apply"
-        href="${esc(apply)}"
-        target="_blank"
-        rel="noopener"
-        onclick="countView('${esc(item.key)}')">
-        🚀 APPLY
-      </a>
+    <span>
+      🏢 ${esc(item.source)}
+    </span>
 
-      <button
-        class="share"
-        onclick="shareOpportunity('${esc(item.key)}')">
-        📤 SHARE
-      </button>
+    <span>
+      📅 ${formatDate(item.publishedAt)}
+    </span>
 
-    </div>
+    ${
+      item.deadline
+      ? `<span>⏳ ${esc(formatDate(item.deadline))}</span>`
+      : ""
+    }
 
-  </article>
+  </div>
 
-  `;
+  <div class="card-actions">
+
+    <button
+      class="details-btn"
+      onclick="openDetails('${esc(item.id)}')"
+    >
+      📄 DETAILS
+    </button>
+
+    <button
+      class="share-btn"
+      onclick="shareOpportunity('${esc(item.id)}')"
+    >
+      📤 SHARE
+    </button>
+
+    ${apply}
+
+  </div>
+
+</article>
+
+`;
 
 }
 
-/* =========================================================
-   DETAILS
-========================================================= */
 
-function showDetails(key){
+/* ============================================================
+   CATEGORY BUTTONS
+============================================================ */
+
+function activateControls(button){
+
+  document
+    .querySelectorAll(".control")
+    .forEach(btn=>{
+      btn.classList.remove("active");
+    });
+
+  if(button){
+    button.classList.add("active");
+  }
+
+}
+
+function activateCategory(button){
+
+  document
+    .querySelectorAll(".category-btn")
+    .forEach(btn=>{
+      btn.classList.remove("active");
+    });
+
+  if(button){
+    button.classList.add("active");
+  }
+
+}
+
+
+function showLatest(button){
+
+  currentFilter = "latest";
+
+  currentCountry = "ALL";
+
+  $("countrySelect").value = "ALL";
+
+  activateControls(button);
+
+  applyFilter();
+
+  $("sectionTitle").textContent =
+    "🆕 Latest Opportunities";
+
+}
+
+
+function showAll(button){
+
+  currentFilter = "ALL";
+
+  activateControls(button);
+
+  applyFilter();
+
+  $("sectionTitle").textContent =
+    "🌍 All Global Opportunities";
+
+}
+
+
+function filterCategory(category,button){
+
+  currentFilter = category;
+
+  if(category === "ALL"){
+
+    $("sectionTitle").textContent =
+      "🌍 All Global Opportunities";
+
+  }else{
+
+    $("sectionTitle").textContent =
+      "📂 " + category;
+
+  }
+
+  activateControls(button);
+
+  activateCategory(button);
+
+  applyFilter();
+
+}
+
+
+function selectCountry(country){
+
+  currentCountry =
+    country || "ALL";
+
+  if(currentCountry === "ALL"){
+
+    $("sectionTitle").textContent =
+      "🌍 All Global Opportunities";
+
+  }else{
+
+    $("sectionTitle").textContent =
+      "🌍 " + currentCountry;
+
+  }
+
+  applyFilter();
+
+}
+
+
+/* ============================================================
+   SEARCH
+============================================================ */
+
+function performSearch(){
+
+  currentFilter = "ALL";
+
+  $("sectionTitle").textContent =
+    "🔎 Search Results";
+
+  applyFilter();
+
+}
+
+$("searchInput")
+  .addEventListener("keydown",event=>{
+
+    if(event.key === "Enter"){
+      performSearch();
+    }
+
+  });
+
+
+/* ============================================================
+   LOAD MORE
+============================================================ */
+
+function loadMore(){
+
+  displayLimit += 30;
+
+  renderOpportunities();
+
+}
+
+
+/* ============================================================
+   DETAILS
+============================================================ */
+
+function openDetails(id){
 
   const item =
-    opportunities.find(
-      x => x.key === key
+    allOpportunities.find(x =>
+      x.id === id
     );
 
   if(!item) return;
 
-  $("detailTitle").textContent =
-    item.title || "Opportunity";
+  currentDetail = item;
 
-  $("detailMeta").textContent =
-    `${item.category || "Opportunity"} • ${item.country || "International"} • ${item.source || "Unknown"}`;
+  $("detailTitle").textContent =
+    item.title;
 
   $("detailDescription").textContent =
-    item.description ||
-    "No detailed information available.";
+    item.description;
 
-  const source =
-    validURL(item.detailsUrl)
-      ? item.detailsUrl
-      : item.url;
+  $("detailCountry").textContent =
+    item.country || "International";
+
+  $("detailCategory").textContent =
+    item.category || "Opportunity";
+
+  $("detailSource").textContent =
+    item.source || "Unknown";
+
+  $("detailDeadline").textContent =
+    item.deadline
+      ? formatDate(item.deadline)
+      : "No deadline specified";
+
+  $("detailPublished").textContent =
+    formatDate(
+      item.publishedAt ||
+      item.createdAt
+    );
+
+  $("detailViews").textContent =
+    item.views || 0;
+
+  $("detailCategoryBadge").textContent =
+    item.category || "OPPORTUNITY";
 
   const apply =
-    validURL(item.applyUrl)
-      ? item.applyUrl
-      : item.url;
+    $("detailApply");
 
-  $("detailSource").href =
-    source;
+  if(validURL(item.applyUrl)){
 
-  $("detailApply").href =
-    apply;
+    apply.href =
+      item.applyUrl;
+
+    apply.style.display =
+      "block";
+
+  }else{
+
+    apply.style.display =
+      "none";
+
+  }
+
+  $("detailLanguage").value =
+    "en";
 
   $("detailsModal").style.display =
-    "flex";
+    "block";
 
-  countView(key);
+  document.body.style.overflow =
+    "hidden";
+
+  /*
+   * Increase views.
+   */
+
+  incrementView(item.id);
 
 }
+
 
 function closeDetails(){
 
   $("detailsModal").style.display =
     "none";
 
+  document.body.style.overflow =
+    "";
+
 }
 
-/* =========================================================
-   SHARE
-========================================================= */
 
-async function shareOpportunity(key){
+/* ============================================================
+   VIEWS
+============================================================ */
+
+function incrementView(id){
+
+  if(!db || !id) return;
+
+  const ref =
+    db.ref("opportunities/" + id + "/views");
+
+  ref.transaction(current =>
+    (Number(current) || 0) + 1
+  );
+
+}
+
+
+/* ============================================================
+   SHARE
+============================================================ */
+
+async function shareOpportunity(id){
 
   const item =
-    opportunities.find(
-      x => x.key === key
+    allOpportunities.find(x =>
+      x.id === id
     );
 
   if(!item) return;
 
-  const shareData = {
+  const shareText =
+    `${item.title}\n\n` +
+    `${item.description}\n\n` +
+    `Country: ${item.country}\n` +
+    `Category: ${item.category}\n\n` +
+    `MAKYAMA Global Opportunities`;
 
-    title:item.title,
+  if(navigator.share){
 
-    text:
-      `${item.title}\n${item.country || ""}\n\n${item.description || ""}`,
+    try{
 
-    url:
-      validURL(item.url)
-        ? item.url
-        : location.href
+      await navigator.share({
+        title:item.title,
+        text:shareText,
+        url:location.href
+      });
 
-  };
+      incrementShare(item.id);
 
-  try{
+    }catch(error){}
 
-    if(navigator.share){
+  }else{
 
-      await navigator.share(
-        shareData
-      );
-
-    }else{
+    try{
 
       await navigator.clipboard.writeText(
-        `${item.title}\n${item.url}`
+        shareText + "\n" + location.href
       );
 
-      toast("🔗 Link copied.");
+      toast("📋 Opportunity copied to clipboard.");
+
+      incrementShare(item.id);
+
+    }catch{
+
+      toast("Share is not supported on this device.");
 
     }
 
-    countShare(key);
-
-  }catch(e){
-
-    console.log(e);
-
   }
 
 }
 
-/* =========================================================
-   VIEWS
-========================================================= */
 
-function countView(key){
+async function shareCurrent(){
 
-  if(!db || !key) return;
+  if(currentDetail){
 
-  db.ref(
-    "opportunities/" +
-    key +
-    "/views"
-  ).transaction(
-    value =>
-      (Number(value) || 0) + 1
-  );
-
-}
-
-function countShare(key){
-
-  if(!db || !key) return;
-
-  db.ref(
-    "opportunities/" +
-    key +
-    "/shares"
-  ).transaction(
-    value =>
-      (Number(value) || 0) + 1
-  );
-
-}
-
-/* =========================================================
-   CATEGORY
-========================================================= */
-
-function setCategory(category,button){
-
-  currentCategory =
-    category;
-
-  document
-    .querySelectorAll(".cat")
-    .forEach(x =>
-      x.classList.remove("active")
+    await shareOpportunity(
+      currentDetail.id
     );
 
-  if(button)
-    button.classList.add("active");
-
-  render();
+  }
 
 }
 
-/* =========================================================
-   COUNTRY
-========================================================= */
 
-function countryChanged(){
+function incrementShare(id){
 
-  currentCountry =
-    $("country").value;
+  if(!db || !id) return;
 
-  render();
-
-}
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-function searchData(){
-
-  render();
+  db.ref(
+    "opportunities/" +
+    id +
+    "/shares"
+  ).transaction(current =>
+    (Number(current) || 0) + 1
+  );
 
 }
 
-$("search").addEventListener(
-  "keydown",
-  e => {
 
-    if(e.key === "Enter")
-      searchData();
+/* ============================================================
+   LANGUAGE
+============================================================ */
+
+function translateCurrentDetail(){
+
+  if(!currentDetail) return;
+
+  const language =
+    $("detailLanguage").value;
+
+  if(language === "en"){
+
+    $("detailDescription").textContent =
+      currentDetail.description;
+
+    return;
 
   }
-);
 
-/* =========================================================
-   ADMIN LOGIN
-========================================================= */
+  /*
+   * Uses Google's translation page as an optional helper.
+   * The original English content remains available.
+   */
 
-function openAdmin(){
+  const text =
+    encodeURIComponent(
+      currentDetail.description
+    );
 
-  $("loginModal").style.display =
-    "flex";
+  const url =
+    "https://translate.google.com/?sl=auto&tl=" +
+    encodeURIComponent(language) +
+    "&text=" +
+    text +
+    "&op=translate";
+
+  window.open(
+    url,
+    "_blank",
+    "noopener,noreferrer"
+  );
 
 }
 
-function closeAdmin(){
+
+/* ============================================================
+   ADS
+============================================================ */
+
+function injectAd(container,script){
+
+  container.innerHTML = "";
+
+  const temp =
+    document.createElement("div");
+
+  temp.innerHTML =
+    script || "";
+
+  Array
+    .from(temp.childNodes)
+    .forEach(node=>{
+
+      if(node.nodeName !== "SCRIPT"){
+
+        container.appendChild(
+          node.cloneNode(true)
+        );
+
+      }
+
+    });
+
+  Array
+    .from(temp.querySelectorAll("script"))
+    .forEach(oldScript=>{
+
+      const scriptElement =
+        document.createElement("script");
+
+      Array
+        .from(oldScript.attributes)
+        .forEach(attr=>{
+          scriptElement.setAttribute(
+            attr.name,
+            attr.value
+          );
+        });
+
+      scriptElement.textContent =
+        oldScript.textContent;
+
+      container.appendChild(
+        scriptElement
+      );
+
+    });
+
+}
+
+
+function initAds(){
+
+  if(!db) return;
+
+  db.ref("ads").on(
+    "value",
+    snapshot=>{
+
+      const top =
+        $("topAds");
+
+      const middle =
+        $("middleAds");
+
+      top.innerHTML = "";
+      middle.innerHTML = "";
+
+      const ads = [];
+
+      snapshot.forEach(child=>{
+
+        const ad =
+          child.val() || {};
+
+        ads.push({
+          key:child.key,
+          ...ad
+        });
+
+        if(ad.position === "top"){
+
+          const box =
+            document.createElement("div");
+
+          box.className =
+            "ad-card";
+
+          top.appendChild(box);
+
+          injectAd(
+            box,
+            ad.script
+          );
+
+        }
+
+        if(ad.position === "middle"){
+
+          const box =
+            document.createElement("div");
+
+          box.className =
+            "ad-card";
+
+          middle.appendChild(box);
+
+          injectAd(
+            box,
+            ad.script
+          );
+
+        }
+
+      });
+
+      if(admin){
+
+        renderAdminAds(
+          ads
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+/* ============================================================
+   ADMIN
+============================================================ */
+
+function openLogin(){
+
+  $("loginModal").style.display =
+    "block";
+
+}
+
+function closeLogin(){
 
   $("loginModal").style.display =
     "none";
 
 }
 
+
 function loginAdmin(){
 
   const username =
-    $("username").value.trim();
+    $("loginUsername").value.trim();
 
   const password =
-    $("password").value;
+    $("loginPassword").value;
 
   /*
-   IMPORTANT:
-   This is only a frontend gate.
-   For real security use Firebase Authentication.
-  */
+   * Current simple login.
+   *
+   * For production, Firebase Authentication
+   * should replace this.
+   */
 
   if(
     username === "MAKYAMA" &&
@@ -1979,16 +2652,16 @@ function loginAdmin(){
 
     admin = true;
 
-    closeAdmin();
+    closeLogin();
 
-    $("admin").style.display =
+    $("adminPanel").style.display =
       "block";
 
     loadAdminAds();
 
-    loadAdminOpportunities();
-
-    toast("👑 Admin dashboard enabled.");
+    toast(
+      "👑 Admin dashboard enabled."
+    );
 
   }else{
 
@@ -2000,315 +2673,150 @@ function loginAdmin(){
 
 }
 
+
 function logoutAdmin(){
 
   admin = false;
 
-  $("admin").style.display =
+  $("adminPanel").style.display =
     "none";
 
-  toast("Logged out.");
-
-}
-
-/* =========================================================
-   ONLINE USERS
-========================================================= */
-
-function initPresence(){
-
-  if(!db) return;
-
-  const connections =
-    db.ref(
-      "server_stats/connected_users"
-    );
-
-  const myConnection =
-    connections.push();
-
-  db.ref(".info/connected")
-    .on("value",snap=>{
-
-      if(snap.val() === true){
-
-        myConnection
-          .onDisconnect()
-          .remove();
-
-        myConnection.set({
-          connected:true,
-          timestamp:firebase.database.ServerValue.TIMESTAMP
-        });
-
-      }
-
-    });
-
-  connections.on(
-    "value",
-    snap => {
-
-      $("liveUsers").textContent =
-        snap.numChildren();
-
-    }
+  toast(
+    "Admin logged out."
   );
 
 }
 
-/* =========================================================
-   ADS
-========================================================= */
 
-function injectAd(container,code){
-
-  container.innerHTML = "";
-
-  const temp =
-    document.createElement("div");
-
-  temp.innerHTML = code;
-
-  const nodes =
-    Array.from(temp.childNodes);
-
-  nodes.forEach(node=>{
-
-    if(
-      node.nodeName.toLowerCase()
-      !== "script"
-    ){
-
-      container.appendChild(
-        node.cloneNode(true)
-      );
-
-    }
-
-  });
-
-  Array.from(
-    temp.querySelectorAll("script")
-  ).forEach(oldScript=>{
-
-    const script =
-      document.createElement("script");
-
-    Array.from(
-      oldScript.attributes
-    ).forEach(attr=>{
-
-      script.setAttribute(
-        attr.name,
-        attr.value
-      );
-
-    });
-
-    script.textContent =
-      oldScript.textContent;
-
-    container.appendChild(
-      script
-    );
-
-  });
-
-}
-
-function initAds(){
-
-  if(!db) return;
-
-  db.ref("ads").on(
-    "value",
-    snap=>{
-
-      const social =
-        $("socialAdsArea");
-
-      const banner =
-        $("bannerAdsArea");
-
-      social.innerHTML = "";
-      banner.innerHTML = "";
-
-      if(!snap.exists()){
-
-        if(admin)
-          loadAdminAds();
-
-        return;
-
-      }
-
-      snap.forEach(child=>{
-
-        const ad =
-          child.val() || {};
-
-        if(!ad.script)
-          return;
-
-        const box =
-          document.createElement("div");
-
-        box.className =
-          "ad-card";
-
-        if(ad.position === "social"){
-
-          social.appendChild(box);
-
-          injectAd(
-            box,
-            ad.script
-          );
-
-        }else{
-
-          banner.appendChild(box);
-
-          injectAd(
-            box,
-            ad.script
-          );
-
-        }
-
-      });
-
-      if(admin)
-        loadAdminAds();
-
-    }
-  );
-
-}
-
-/* =========================================================
-   ADD AD
-========================================================= */
+/* ============================================================
+   ADMIN ADS
+============================================================ */
 
 async function addAd(){
 
-  if(!admin || !db)
-    return;
+  if(!admin || !db) return;
 
   const name =
-    $("adName").value.trim() ||
-    "Advertisement";
+    $("adName").value.trim();
 
   const position =
     $("adPosition").value;
 
-  const code =
-    $("adCode").value.trim();
+  const script =
+    $("adScript").value.trim();
 
-  if(!code){
+  if(!script){
 
     toast(
-      "Paste advertisement code first."
+      "Paste the advertising code first."
     );
 
     return;
 
   }
 
-  await db.ref("ads").push({
+  try{
 
-    name:name,
+    await db.ref("ads").push({
 
-    position:position,
+      name:
+        name || "Advertisement",
 
-    script:code,
+      position,
 
-    createdAt:Date.now(),
+      script,
 
-    active:true
+      createdAt:
+        Date.now(),
 
-  });
+      active:
+        true
 
-  $("adName").value = "";
-  $("adCode").value = "";
+    });
 
-  toast(
-    "📢 Advertisement added."
-  );
+    $("adName").value = "";
+    $("adScript").value = "";
+
+    toast(
+      "📢 Advertisement added."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      "❌ Failed to add advertisement."
+    );
+
+  }
 
 }
 
-/* =========================================================
-   ADMIN ADS
-========================================================= */
 
-function loadAdminAds(){
+async function loadAdminAds(){
 
   if(!db) return;
 
-  db.ref("ads").once(
-    "value",
-    snap=>{
+  const snapshot =
+    await db.ref("ads").once("value");
 
-      const list = [];
+  const ads = [];
 
-      if(snap.exists()){
+  snapshot.forEach(child=>{
 
-        snap.forEach(child=>{
+    ads.push({
+      key:child.key,
+      ...child.val()
+    });
 
-          list.push({
+  });
 
-            key:child.key,
-
-            ...child.val()
-
-          });
-
-        });
-
-      }
-
-      if(!list.length){
-
-        $("adminAds").innerHTML =
-          `<div style="color:#69756d;font-size:9px">
-            No advertisements.
-          </div>`;
-
-        return;
-
-      }
-
-      $("adminAds").innerHTML =
-        list.map(ad=>`
-
-          <div class="admin-item">
-
-            <span>
-              📢 ${esc(ad.name)}
-              (${esc(ad.position)})
-            </span>
-
-            <button
-              class="btn btn-red"
-              onclick="deleteAd('${esc(ad.key)}')">
-              DELETE
-            </button>
-
-          </div>
-
-        `).join("");
-
-    }
-  );
+  renderAdminAds(ads);
 
 }
 
+
+function renderAdminAds(ads){
+
+  const box =
+    $("adminAdsList");
+
+  if(!ads.length){
+
+    box.innerHTML =
+      '<div style="color:#68746d;font-size:9px">No ads.</div>';
+
+    return;
+
+  }
+
+  box.innerHTML =
+    ads.map(ad=>`
+
+      <div class="admin-item">
+
+        <span>
+          📢 ${esc(ad.name || "Advertisement")}
+          — ${esc(ad.position || "")}
+        </span>
+
+        <button
+          onclick="deleteAd('${esc(ad.key)}')"
+        >
+          DELETE
+        </button>
+
+      </div>
+
+    `).join("");
+
+}
+
+
 async function deleteAd(key){
 
-  if(!admin || !db)
-    return;
+  if(!admin || !db) return;
 
   if(
     !confirm(
@@ -2316,57 +2824,53 @@ async function deleteAd(key){
     )
   ) return;
 
-  await db.ref(
-    "ads/" + key
-  ).remove();
+  await db
+    .ref("ads/" + key)
+    .remove();
 
   toast(
     "Advertisement deleted."
   );
 
+  loadAdminAds();
+
 }
 
-/* =========================================================
-   ADD OPPORTUNITY
-========================================================= */
+
+/* ============================================================
+   ADMIN ADD OPPORTUNITY
+============================================================ */
 
 async function addOpportunity(){
 
-  if(!admin || !db)
-    return;
+  if(!admin || !db) return;
 
   const title =
-    $("opTitle").value.trim();
-
-  const category =
-    $("opCategory").value;
-
-  const country =
-    $("opCountry").value;
-
-  const source =
-    $("opSource").value.trim();
-
-  const url =
-    $("opUrl").value.trim();
-
-  const applyUrl =
-    $("opApply").value.trim();
-
-  const image =
-    $("opImage").value.trim();
-
-  const deadline =
-    $("opDeadline").value.trim();
+    $("adminTitle").value.trim();
 
   const description =
-    $("opDescription").value.trim();
+    $("adminDescription").value.trim();
+
+  const category =
+    $("adminCategory").value;
+
+  const country =
+    $("adminCountry").value.trim() ||
+    "International";
+
+  const source =
+    $("adminSource").value.trim() ||
+    "MAKYAMA";
+
+  const url =
+    $("adminURL").value.trim();
+
+  const deadline =
+    $("adminDeadline").value.trim();
 
   if(!title){
 
-    toast(
-      "Title is required."
-    );
+    toast("Title is required.");
 
     return;
 
@@ -2375,20 +2879,7 @@ async function addOpportunity(){
   if(!validURL(url)){
 
     toast(
-      "Valid official URL is required."
-    );
-
-    return;
-
-  }
-
-  if(
-    applyUrl &&
-    !validURL(applyUrl)
-  ){
-
-    toast(
-      "Apply URL is invalid."
+      "A valid http/https URL is required."
     );
 
     return;
@@ -2402,259 +2893,188 @@ async function addOpportunity(){
       Date.now()
     )
     .toLowerCase()
-    .replace(
-      /[^a-z0-9]+/g,
-      "-"
-    )
-    .substring(0,120);
+    .replace(/[^a-z0-9]+/g,"-");
 
-  await db.ref(
-    "opportunities/" + id
-  ).set({
+  try{
 
-    id:id,
+    await db
+      .ref("opportunities/" + id)
+      .set({
 
-    title:title,
+        id,
 
-    description:
-      description ||
-      "No detailed information available.",
+        title,
 
-    category:category,
+        description:
+          description ||
+          "No detailed description available.",
 
-    country:country,
+        category,
 
-    countries:[country],
+        country,
 
-    source:
-      source ||
-      "MAKYAMA",
+        countries:[
+          country
+        ],
 
-    url:url,
+        source,
 
-    applyUrl:
-      validURL(applyUrl)
-        ? applyUrl
-        : url,
+        url,
 
-    detailsUrl:url,
+        applyUrl:
+          url,
 
-    playUrl:url,
+        detailsUrl:
+          url,
 
-    image:
-      validURL(image)
-        ? image
-        : "",
+        playUrl:
+          url,
 
-    deadline:deadline,
+        deadline,
 
-    publishedAt:Date.now(),
+        publishedAt:
+          Date.now(),
 
-    createdAt:Date.now(),
+        createdAt:
+          Date.now(),
 
-    updatedAt:Date.now(),
+        updatedAt:
+          Date.now(),
 
-    active:true,
+        active:
+          true,
 
-    views:0,
+        views:
+          0,
 
-    shares:0
+        shares:
+          0
 
-  });
+      });
 
-  [
-    "opTitle",
-    "opSource",
-    "opUrl",
-    "opApply",
-    "opImage",
-    "opDeadline",
-    "opDescription"
-  ].forEach(id=>{
+    [
+      "adminTitle",
+      "adminDescription",
+      "adminCountry",
+      "adminSource",
+      "adminURL",
+      "adminDeadline"
+    ].forEach(id=>{
+      $(id).value = "";
+    });
 
-    $(id).value = "";
+    toast(
+      "✅ Opportunity added."
+    );
 
-  });
+  }catch(error){
 
-  toast(
-    "✅ Opportunity added."
-  );
+    console.error(error);
+
+    toast(
+      "❌ Failed to add opportunity."
+    );
+
+  }
 
 }
 
-/* =========================================================
-   ADMIN OPPORTUNITIES
-========================================================= */
 
-function loadAdminOpportunities(){
+/* ============================================================
+   ONLINE USERS
+============================================================ */
 
-  if(!db || !admin)
-    return;
+function initPresence(){
 
-  db.ref(
-    "opportunities"
-  ).limitToLast(100).once(
-    "value",
-    snap=>{
+  if(!db) return;
 
-      const list = [];
+  const connections =
+    db.ref(
+      "server_stats/connected_users"
+    );
 
-      if(snap.exists()){
+  const connection =
+    connections.push();
 
-        snap.forEach(child=>{
+  db.ref(".info/connected")
+    .on("value",snapshot=>{
 
-          list.push({
+      if(snapshot.val() === true){
 
-            key:child.key,
+        connection
+          .onDisconnect()
+          .remove();
 
-            ...child.val()
-
-          });
-
+        connection.set({
+          connectedAt:
+            firebase.database.ServerValue.TIMESTAMP
         });
 
       }
 
-      list.reverse();
+    });
 
-      $("adminOpportunities").innerHTML =
-        list.length
+  connections.on(
+    "value",
+    snapshot=>{
 
-        ?
+      const count =
+        snapshot.numChildren();
 
-        list.map(item=>`
-
-          <div class="admin-item">
-
-            <span>
-              ${esc(item.title)}
-              • ${esc(item.country || "")}
-            </span>
-
-            <button
-              class="btn btn-red"
-              onclick="deleteOpportunity('${esc(item.key)}')">
-              DELETE
-            </button>
-
-          </div>
-
-        `).join("")
-
-        :
-
-        `<div style="color:#69756d;font-size:9px">
-          No opportunities.
-        </div>`;
+      $("onlineCount").textContent =
+        count;
 
     }
   );
 
 }
 
-async function deleteOpportunity(key){
 
-  if(!admin || !db)
-    return;
+/* ============================================================
+   CLOSE MODALS
+============================================================ */
 
-  if(
-    !confirm(
-      "Delete this opportunity?"
-    )
-  ) return;
+window.addEventListener(
+  "click",
+  event=>{
 
-  await db.ref(
-    "opportunities/" + key
-  ).remove();
+    if(
+      event.target ===
+      $("detailsModal")
+    ){
 
-  toast(
-    "Opportunity deleted."
-  );
+      closeDetails();
 
-}
+    }
 
-/* =========================================================
-   LANGUAGE
-========================================================= */
+    if(
+      event.target ===
+      $("loginModal")
+    ){
 
-const translations = {
+      closeLogin();
 
-  en:{
-    hero:
-      "Find education, jobs, grants, events and important global news from countries around the world."
-  },
+    }
 
-  sw:{
-    hero:
-      "Pata elimu, kazi, ruzuku, matukio na habari muhimu kutoka nchi mbalimbali duniani."
-  },
-
-  fr:{
-    hero:
-      "Trouvez des opportunités d'éducation, des emplois, des subventions, des événements et des actualités mondiales."
-  },
-
-  es:{
-    hero:
-      "Encuentra oportunidades educativas, empleos, subvenciones, eventos y noticias globales."
-  },
-
-  ar:{
-    hero:
-      "اكتشف فرص التعليم والعمل والمنح والفعاليات والأخبار العالمية."
-  },
-
-  pt:{
-    hero:
-      "Encontre oportunidades de educação, empregos, bolsas, eventos e notícias globais."
-  },
-
-  de:{
-    hero:
-      "Finden Sie Bildungsangebote, Jobs, Zuschüsse, Veranstaltungen und globale Nachrichten."
-  },
-
-  hi:{
-    hero:
-      "दुनिया भर से शिक्षा, नौकरियों, अनुदानों, कार्यक्रमों और वैश्विक समाचारों के अवसर खोजें।"
-  },
-
-  zh:{
-    hero:
-      "发现来自世界各地的教育、工作、资助、活动和全球新闻机会。"
   }
+);
 
-};
 
-function changeLanguage(){
-
-  const lang =
-    $("language").value;
-
-  const t =
-    translations[lang] ||
-    translations.en;
-
-  $("heroText").textContent =
-    t.hero;
-
-}
-
-/* =========================================================
-   INIT
-========================================================= */
+/* ============================================================
+   INITIALIZE
+============================================================ */
 
 window.addEventListener(
   "load",
   ()=>{
 
-    buildCountries();
+    buildCountryList();
 
-    initDatabase();
-
-    initPresence();
+    initOpportunities();
 
     initAds();
+
+    initPresence();
 
   }
 );
