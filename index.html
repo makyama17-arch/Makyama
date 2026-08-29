@@ -1,5741 +1,1315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#07110c">
-
-<title>MAKYAMA — Global Opportunities & World News</title>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-<style>
-:root{
-  --green:#00e676;
-  --green2:#00c853;
-  --bg:#060908;
-  --panel:#101512;
-  --panel2:#151c17;
-  --text:#fff;
-  --muted:#94a099;
-  --line:#26322b;
-  --orange:#ff9800;
-  --red:#ff5252;
-  --blue:#42a5f5;
-  --yellow:#ffc107;
-}
-
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,Segoe UI,sans-serif;
-}
-
-html,body{
-  background:var(--bg);
-  color:var(--text);
-  min-height:100%;
-}
-
-body{
-  padding-bottom:40px;
-  background:
-    radial-gradient(circle at top,#102017 0,#060908 45%);
-}
-
-button,input,select,textarea{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-a{
-  text-decoration:none;
-}
-
-.header{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  background:rgba(6,9,8,.97);
-  backdrop-filter:blur(15px);
-  border-bottom:1px solid var(--line);
-}
-
-.header-inner{
-  width:min(1200px,100%);
-  margin:auto;
-  padding:12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.logo-area{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-}
-
-.logo{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  object-fit:cover;
-  border:1px solid var(--green);
-}
-
-.logo-text{
-  min-width:0;
-}
-
-.logo-text h1{
-  color:var(--green);
-  font-size:18px;
-}
-
-.logo-text p{
-  color:var(--muted);
-  font-size:9px;
-  margin-top:3px;
-}
-
-.header-actions{
-  display:flex;
-  gap:6px;
-}
-
-.btn{
-  border:0;
-  border-radius:8px;
-  padding:9px 12px;
-  font-size:11px;
-  font-weight:900;
-}
-
-.green{
-  background:var(--green);
-  color:#001b0d;
-}
-
-.dark{
-  background:#18201b;
-  color:#fff;
-  border:1px solid var(--line);
-}
-
-.orange{
-  background:var(--orange);
-  color:#111;
-}
-
-.red{
-  background:var(--red);
-  color:#fff;
-}
-
-.blue{
-  background:var(--blue);
-  color:#06131f;
-}
-
-.wrap{
-  width:min(1200px,100%);
-  margin:auto;
-  padding:0 12px;
-}
-
-.hero{
-  padding:25px 0 15px;
-}
-
-.hero h2{
-  font-size:27px;
-  line-height:1.15;
-}
-
-.hero h2 span{
-  color:var(--green);
-}
-
-.hero p{
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.5;
-  margin-top:8px;
-}
-
-.global-status{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-
-.status-pill{
-  border:1px solid var(--line);
-  background:#101713;
-  color:#aab5ae;
-  border-radius:999px;
-  padding:7px 10px;
-  font-size:9px;
-  font-weight:900;
-}
-
-.status-pill.live{
-  color:var(--green);
-  border-color:#155a34;
-}
-
-.search-box{
-  display:flex;
-  gap:7px;
-  margin:12px 0;
-}
-
-.search-box input{
-  flex:1;
-  min-width:0;
-  background:var(--panel);
-  color:#fff;
-  border:1px solid var(--line);
-  border-radius:11px;
-  padding:13px;
-  outline:none;
-}
-
-.search-box input:focus{
-  border-color:var(--green);
-}
-
-.search-box button{
-  width:85px;
-}
-
-.controls{
-  display:flex;
-  gap:7px;
-  overflow-x:auto;
-  padding:4px 0 12px;
-  scrollbar-width:none;
-}
-
-.controls::-webkit-scrollbar{
-  display:none;
-}
-
-.control{
-  flex:0 0 auto;
-  border:1px solid var(--line);
-  background:var(--panel);
-  color:#c5cec8;
-  border-radius:999px;
-  padding:8px 12px;
-  font-size:10px;
-  font-weight:900;
-}
-
-.control.active{
-  background:var(--green);
-  color:#001b0d;
-  border-color:var(--green);
-}
-
-.ad-area{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  margin:10px 0;
-}
-
-.ad-card{
-  background:linear-gradient(135deg,#172019,#0d120f);
-  border:1px dashed var(--orange);
-  border-radius:12px;
-  padding:10px;
-  min-height:70px;
-  overflow:hidden;
-}
-
-.layout{
-  display:grid;
-  grid-template-columns:230px 1fr;
-  gap:14px;
-}
-
-.sidebar{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:13px;
-  padding:12px;
-  height:max-content;
-  position:sticky;
-  top:75px;
-}
-
-.sidebar h3{
-  color:var(--green);
-  font-size:13px;
-  margin-bottom:10px;
-}
-
-.country-search{
-  width:100%;
-  background:#101612;
-  color:#fff;
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:9px;
-  margin-bottom:8px;
-  outline:none;
-  font-size:10px;
-}
-
-.country-select{
-  width:100%;
-  background:#151c17;
-  color:#fff;
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:9px;
-  outline:none;
-}
-
-.side-button{
-  width:100%;
-  text-align:left;
-  border:0;
-  border-bottom:1px solid #1d2721;
-  background:transparent;
-  color:#c6cec9;
-  padding:9px 5px;
-  font-size:11px;
-}
-
-.side-button:hover{
-  color:var(--green);
-}
-
-.country-info{
-  margin-top:10px;
-  padding:10px;
-  background:#151d18;
-  border:1px solid var(--line);
-  border-radius:9px;
-  display:none;
-}
-
-.country-info h4{
-  color:var(--green);
-  font-size:11px;
-  margin-bottom:7px;
-}
-
-.country-info p{
-  color:#aab5ae;
-  font-size:9px;
-  line-height:1.5;
-  margin-bottom:4px;
-}
-
-.main-content{
-  min-width:0;
-}
-
-.section-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  margin:7px 0 10px;
-}
-
-.section-head h3{
-  font-size:17px;
-  border-left:4px solid var(--green);
-  padding-left:8px;
-}
-
-.status{
-  color:var(--muted);
-  font-size:10px;
-}
-
-.category-row{
-  display:flex;
-  gap:7px;
-  overflow-x:auto;
-  margin-bottom:10px;
-  scrollbar-width:none;
-}
-
-.category-row::-webkit-scrollbar{
-  display:none;
-}
-
-.category-btn{
-  flex:0 0 auto;
-  background:var(--panel);
-  color:#aeb8b1;
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:8px 10px;
-  font-size:10px;
-  font-weight:900;
-}
-
-.category-btn.active{
-  background:#123d27;
-  color:var(--green);
-  border-color:var(--green);
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:10px;
-}
-
-.card{
-  background:linear-gradient(135deg,#111713,#0b100d);
-  border:1px solid var(--line);
-  border-radius:13px;
-  padding:12px;
-  transition:.2s;
-}
-
-.card:hover{
-  border-color:#31553d;
-  transform:translateY(-1px);
-}
-
-.card-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:8px;
-}
-
-.card-title{
-  font-size:14px;
-  font-weight:900;
-  line-height:1.35;
-}
-
-.badges{
-  display:flex;
-  flex-wrap:wrap;
-  gap:5px;
-  margin-bottom:7px;
-}
-
-.badge{
-  background:#123d27;
-  color:var(--green);
-  padding:4px 6px;
-  border-radius:5px;
-  font-size:8px;
-  font-weight:900;
-}
-
-.badge.country{
-  background:#1b2935;
-  color:#64b5f6;
-}
-
-.badge.orange{
-  background:#3c2c0e;
-  color:#ffb52e;
-}
-
-.badge.news{
-  background:#30220d;
-  color:#ffc107;
-}
-
-.badge.world{
-  background:#21172f;
-  color:#ce93d8;
-}
-
-.description{
-  color:#aab5ae;
-  font-size:11px;
-  line-height:1.5;
-  margin-top:8px;
-
-  display:-webkit-box;
-  -webkit-line-clamp:4;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-}
-
-.meta{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  color:#758179;
-  font-size:9px;
-  margin-top:8px;
-}
-
-.card-actions{
-  display:flex;
-  gap:6px;
-  margin-top:10px;
-}
-
-.card-actions button,
-.card-actions a{
-  flex:1;
-  text-align:center;
-  padding:8px 6px;
-  border-radius:7px;
-  font-size:9px;
-  font-weight:900;
-}
-
-.details-btn{
-  background:#18221c;
-  color:var(--green);
-  border:1px solid var(--green);
-}
-
-.share-btn{
-  background:#17212a;
-  color:#64b5f6;
-  border:1px solid #31516b;
-}
-
-.apply-btn{
-  background:var(--green);
-  color:#001b0d;
-  border:0;
-}
-
-.news-btn{
-  background:#30220d;
-  color:#ffc107;
-  border:1px solid #6d5010;
-}
-
-.empty,
-.loading{
-  background:var(--panel);
-  border:1px dashed var(--line);
-  border-radius:12px;
-  padding:30px 15px;
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
-}
-
-.loading-spinner{
-  font-size:28px;
-  margin-bottom:8px;
-}
-
-.load-more{
-  display:block;
-  margin:15px auto;
-}
-
-footer{
-  text-align:center;
-  color:#657169;
-  font-size:10px;
-  padding:30px 10px;
-}
-
-/* MODAL */
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:4000;
-  background:rgba(0,0,0,.9);
-  padding:15px;
-  overflow-y:auto;
-}
-
-.modal-box{
-  width:min(700px,100%);
-  margin:20px auto;
-  background:#101612;
-  border:1px solid var(--green);
-  border-radius:15px;
-  padding:17px;
-}
-
-.modal-header{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  align-items:flex-start;
-}
-
-.modal-title{
-  color:var(--green);
-  font-size:18px;
-  line-height:1.3;
-  margin-top:7px;
-}
-
-.close{
-  border:0;
-  background:transparent;
-  color:#aaa;
-  font-size:25px;
-}
-
-.detail-content{
-  margin-top:15px;
-}
-
-.detail-description{
-  color:#d1d8d3;
-  font-size:12px;
-  line-height:1.7;
-  white-space:pre-wrap;
-}
-
-.detail-info{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:15px;
-}
-
-.info-box{
-  background:#151d18;
-  border:1px solid var(--line);
-  border-radius:9px;
-  padding:9px;
-}
-
-.info-box small{
-  display:block;
-  color:#78857d;
-  font-size:8px;
-  margin-bottom:4px;
-}
-
-.info-box b{
-  font-size:10px;
-  word-break:break-word;
-}
-
-.detail-actions{
-  display:flex;
-  gap:7px;
-  margin-top:15px;
-}
-
-.detail-actions>*{
-  flex:1;
-  text-align:center;
-}
-
-.language{
-  width:100%;
-  background:#151d18;
-  color:#fff;
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:9px;
-  margin-top:8px;
-}
-
-.detail-image{
-  width:100%;
-  max-height:260px;
-  object-fit:cover;
-  border-radius:10px;
-  margin-bottom:12px;
-  display:none;
-}
-
-.news-source{
-  color:#64b5f6;
-  font-size:10px;
-  margin-top:10px;
-  word-break:break-all;
-}
-
-/* LOGIN */
-
-.login-box{
-  width:min(380px,100%);
-  margin:100px auto;
-  background:#111713;
-  border:1px solid var(--green);
-  border-radius:14px;
-  padding:18px;
-}
-
-.login-box h3{
-  color:var(--green);
-  margin-bottom:14px;
-}
-
-.login-box input{
-  width:100%;
-  background:#151d18;
-  color:#fff;
-  border:1px solid var(--line);
-  padding:11px;
-  border-radius:8px;
-  margin-bottom:9px;
-  outline:none;
-}
-
-.login-box .btn{
-  width:100%;
-}
-
-/* ADMIN */
-
-.admin{
-  display:none;
-  background:#0c130f;
-  border:1px solid var(--green);
-  border-radius:14px;
-  padding:13px;
-  margin:10px 0 15px;
-}
-
-.admin h3{
-  color:var(--green);
-  font-size:15px;
-  margin-bottom:12px;
-}
-
-.admin-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-}
-
-.admin-box{
-  background:#151d18;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:10px;
-}
-
-.admin-box h4{
-  color:var(--green);
-  font-size:11px;
-  margin-bottom:7px;
-}
-
-.admin-box input,
-.admin-box textarea,
-.admin-box select{
-  width:100%;
-  background:#101612;
-  color:#fff;
-  border:1px solid var(--line);
-  border-radius:7px;
-  padding:9px;
-  margin-bottom:7px;
-  outline:none;
-  font-size:10px;
-}
-
-.admin-box textarea{
-  height:80px;
-  resize:none;
-}
-
-.admin-row{
-  display:flex;
-  gap:6px;
-}
-
-.admin-row>*{
-  flex:1;
-}
-
-.online-number{
-  font-size:25px;
-  color:var(--green);
-  font-weight:900;
-}
-
-.admin-list{
-  display:grid;
-  gap:6px;
-  margin-top:8px;
-}
-
-.admin-item{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:7px;
-  background:#101612;
-  border:1px solid var(--line);
-  padding:8px;
-  border-radius:7px;
-}
-
-.admin-item span{
-  font-size:9px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.admin-item button{
-  flex:0 0 auto;
-  border:0;
-  background:var(--red);
-  color:#fff;
-  padding:6px;
-  border-radius:5px;
-  font-size:8px;
-  font-weight:900;
-}
-
-/* TOAST */
-
-.toast{
-  position:fixed;
-  top:70px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:6000;
-  display:none;
-  max-width:90%;
-  background:var(--green);
-  color:#001b0d;
-  padding:10px 14px;
-  border-radius:50px;
-  font-size:10px;
-  font-weight:900;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:700px){
-
-  .layout{
-    display:block;
-  }
-
-  .sidebar{
-    position:static;
-    margin-bottom:12px;
-  }
-
-  .sidebar-content{
-    display:flex;
-    gap:6px;
-    overflow-x:auto;
-  }
-
-  .side-button{
-    min-width:max-content;
-    border:1px solid var(--line);
-    border-radius:999px;
-    padding:8px 10px;
-  }
-
-  .country-select{
-    margin-top:0;
-  }
-
-  .admin-grid{
-    grid-template-columns:1fr;
-  }
-
-  .detail-info{
-    grid-template-columns:1fr;
-  }
-
-  .logo-text p{
-    display:none;
-  }
-
-  .header-actions .btn{
-    padding:8px;
-  }
-
-  .search-box button{
-    width:75px;
-    padding:8px;
-  }
-}
-
-@media(min-width:800px){
-  .grid{
-    grid-template-columns:1fr 1fr;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="MAKYAMA Global - Jobs, Education and News from around the world."
+  >
+
+  <title>MAKYAMA GLOBAL</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background: #f5f7fb;
+      color: #172033;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+      background:
+        linear-gradient(
+          135deg,
+          #07111f,
+          #102b4c
+        );
+
+      color: white;
+      padding: 18px 5%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+
+      box-shadow:
+        0 4px 20px rgba(0,0,0,.18);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .logo span {
+      color: #28a9ff;
+    }
+
+    nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      border: 0;
+      background: transparent;
+      color: #dce8f5;
+
+      padding: 10px 15px;
+      border-radius: 9px;
+
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    nav button:hover,
+    nav button.active {
+      background: #168cf0;
+      color: white;
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+      background:
+        linear-gradient(
+          135deg,
+          #0a1830,
+          #123d68
+        );
+
+      color: white;
+      padding: 55px 5%;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: auto;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 58px);
+      margin-bottom: 15px;
+    }
+
+    .hero h1 span {
+      color: #36b4ff;
+    }
+
+    .hero p {
+      color: #d4e3f2;
+      max-width: 700px;
+      margin: auto;
+      line-height: 1.7;
+      font-size: 17px;
+    }
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    .search-area {
+      max-width: 850px;
+      margin: -25px auto 35px;
+      padding: 0 20px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .search-box {
+      background: white;
+      padding: 12px;
+
+      border-radius: 15px;
+
+      display: flex;
+      gap: 10px;
+
+      box-shadow:
+        0 10px 35px rgba(0,0,0,.12);
+    }
+
+    .search-box input {
+      flex: 1;
+
+      border: 0;
+      outline: 0;
+
+      font-size: 16px;
+      padding: 13px;
+    }
+
+    .search-box button {
+      border: 0;
+      background: #168cf0;
+      color: white;
+
+      padding: 0 22px;
+      border-radius: 10px;
+
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 20px 50px;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .section-header h2 {
+      font-size: 27px;
+    }
+
+    .section-header p {
+      color: #6c7687;
+      margin-top: 5px;
+    }
+
+    /* =========================
+       COUNTRY
+    ========================= */
+
+    .country-bar {
+      background: white;
+      padding: 15px;
+
+      border-radius: 14px;
+      margin-bottom: 25px;
+
+      box-shadow:
+        0 5px 20px rgba(0,0,0,.06);
+
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .country-bar label {
+      font-weight: 700;
+    }
+
+    .country-bar select {
+      border: 1px solid #dbe2ea;
+      background: white;
+
+      padding: 11px 14px;
+      border-radius: 9px;
+
+      min-width: 220px;
+      outline: none;
+    }
+
+    /* =========================
+       CARDS
+    ========================= */
+
+    .cards {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(270px, 1fr)
+        );
+
+      gap: 18px;
+    }
+
+    .card {
+      background: white;
+
+      border-radius: 15px;
+      padding: 20px;
+
+      border: 1px solid #e8edf3;
+
+      box-shadow:
+        0 5px 18px rgba(0,0,0,.05);
+
+      transition:
+        transform .2s,
+        box-shadow .2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+
+      box-shadow:
+        0 12px 28px rgba(0,0,0,.10);
+    }
+
+    .card-type {
+      display: inline-block;
+
+      font-size: 12px;
+      font-weight: 800;
+
+      padding: 6px 10px;
+      border-radius: 20px;
+
+      background: #e9f5ff;
+      color: #0876c9;
+
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      font-size: 18px;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #687386;
+      line-height: 1.6;
+      font-size: 14px;
+
+      margin-bottom: 15px;
+    }
+
+    .card-meta {
+      font-size: 13px;
+      color: #788496;
+
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      margin-bottom: 15px;
+    }
+
+    .card a {
+      display: inline-block;
+
+      background: #168cf0;
+      color: white;
+
+      text-decoration: none;
+
+      padding: 10px 15px;
+
+      border-radius: 8px;
+
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .card a:hover {
+      background: #0876d1;
+    }
+
+    /* =========================
+       EMPTY
+    ========================= */
+
+    .empty {
+      background: white;
+
+      padding: 45px 20px;
+
+      text-align: center;
+
+      border-radius: 15px;
+
+      color: #718096;
+    }
+
+    .empty strong {
+      display: block;
+      font-size: 20px;
+      color: #273449;
+      margin-bottom: 8px;
+    }
+
+    /* =========================
+       LOADING
+    ========================= */
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #687386;
+    }
+
+    .spinner {
+      width: 35px;
+      height: 35px;
+
+      border:
+        4px solid #e4eaf1;
+
+      border-top-color:
+        #168cf0;
+
+      border-radius: 50%;
+
+      margin:
+        0 auto 15px;
+
+      animation:
+        spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      background: #07111f;
+      color: #b8c7d8;
+
+      padding: 35px 20px;
+
+      text-align: center;
+
+      margin-top: 30px;
+    }
+
+    footer strong {
+      color: white;
+    }
+
+    footer p {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 700px) {
+
+      header {
+        padding: 14px;
+      }
+
+      .header-inner {
+        flex-direction: column;
+      }
+
+      nav {
+        width: 100%;
+        justify-content: center;
+      }
+
+      nav button {
+        padding: 8px 10px;
+        font-size: 13px;
+      }
+
+      .hero {
+        padding: 40px 20px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      .search-box {
+        flex-direction: column;
+      }
+
+      .search-box button {
+        padding: 13px;
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .country-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .country-bar select {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header class="header">
+<!-- =========================
+     HEADER
+========================= -->
 
-<div class="header-inner">
+<header>
 
-<div class="logo-area">
+  <div class="header-inner">
 
-<img
-class="logo"
-src="https://i.postimg.cc/C1SkBrds/file-00000000594881f4bddf05d3034a3da6.png"
-alt="MAKYAMA"
->
+    <div class="logo">
+      MAKYAMA<span>GLOBAL</span>
+    </div>
 
-<div class="logo-text">
+    <nav>
 
-<h1>MAKYAMA</h1>
+      <button
+        class="active"
+        onclick="showSection('jobs', this)"
+      >
+        💼 Jobs
+      </button>
 
-<p>
-Global Opportunities • World News • Education • Jobs
-</p>
+      <button
+        onclick="showSection('education', this)"
+      >
+        🎓 Education
+      </button>
 
-</div>
+      <button
+        onclick="showSection('news', this)"
+      >
+        📰 News
+      </button>
 
-</div>
+    </nav>
 
-<div class="header-actions">
-
-<button
-class="btn dark"
-onclick="openLogin()"
->
-🔐 Admin
-</button>
-
-</div>
-
-</div>
+  </div>
 
 </header>
 
-<div id="toast" class="toast"></div>
 
-<main class="wrap">
+<!-- =========================
+     HERO
+========================= -->
 
 <section class="hero">
 
-<h2>
-Discover <span>Global Opportunities</span>
-</h2>
+  <div class="hero-inner">
 
-<p>
-Jobs, scholarships, education, grants, events and
-verified world news from countries around the world.
-</p>
+    <h1>
+      MAKYAMA <span>GLOBAL</span>
+    </h1>
 
-<div class="global-status">
+    <p>
+      Discover verified jobs, education opportunities
+      and trusted news from countries around the world.
+    </p>
 
-<div class="status-pill live">
-🟢 GLOBAL NEWS LIVE
-</div>
-
-<div class="status-pill">
-🌍 190+ COUNTRIES
-</div>
-
-<div class="status-pill">
-📰 RECENT PUBLICATIONS
-</div>
-
-</div>
+  </div>
 
 </section>
 
-<div id="topAds" class="ad-area"></div>
 
-<div class="search-box">
+<!-- =========================
+     SEARCH
+========================= -->
 
-<input
-id="searchInput"
-placeholder="🔎 Search country, news, jobs, scholarships..."
-autocomplete="off"
->
+<div class="search-area">
 
-<button
-class="btn green"
-onclick="performSearch()"
->
-SEARCH
-</button>
+  <div class="search-box">
 
-</div>
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="Search jobs, education or news..."
+      oninput="searchItems()"
+    >
 
-<div class="controls">
+    <button
+      onclick="searchItems()"
+    >
+      Search
+    </button>
 
-<button
-class="control active"
-onclick="showLatest(this)"
->
-🆕 Latest
-</button>
-
-<button
-class="control"
-onclick="showWorldNews(this)"
->
-📰 World News
-</button>
-
-<button
-class="control"
-onclick="filterCategory('Education',this)"
->
-🎓 Education
-</button>
-
-<button
-class="control"
-onclick="filterCategory('Job',this)"
->
-💼 Jobs
-</button>
-
-<button
-class="control"
-onclick="filterCategory('Scholarship',this)"
->
-🎓 Scholarships
-</button>
-
-<button
-class="control"
-onclick="filterCategory('Grant',this)"
->
-💰 Grants
-</button>
-
-<button
-class="control"
-onclick="filterCategory('Event',this)"
->
-📅 Events
-</button>
-
-<button
-class="control"
-onclick="showAll(this)"
->
-🌍 All
-</button>
+  </div>
 
 </div>
 
-<section
-id="adminPanel"
-class="admin"
->
 
-<h3>
-👑 ADMIN DASHBOARD
-</h3>
+<!-- =========================
+     MAIN
+========================= -->
 
-<div class="admin-grid">
+<main>
 
-<div class="admin-box">
+  <!-- COUNTRY -->
 
-<h4>
-🟢 USERS ONLINE
-</h4>
+  <div class="country-bar">
 
-<div
-id="onlineCount"
-class="online-number"
->
-0
-</div>
+    <label for="countrySelect">
+      🌍 Country
+    </label>
 
-<small style="color:#77837b">
-Currently connected visitors
-</small>
+    <select
+      id="countrySelect"
+      onchange="loadData()"
+    >
 
-</div>
+      <option value="all">
+        All Countries
+      </option>
 
-<div class="admin-box">
+    </select>
 
-<h4>
-📊 DATABASE
-</h4>
+  </div>
 
-<div
-style="font-size:20px;font-weight:900;color:#64b5f6"
->
-<span id="adminOpportunityCount">
-0
-</span>
-</div>
 
-<small style="color:#77837b">
-Firebase opportunities
-</small>
+  <!-- =====================
+       JOBS
+  ====================== -->
 
-</div>
+  <section
+    id="jobs"
+    class="section active"
+  >
 
-</div>
+    <div class="section-header">
 
-<br>
+      <div>
+        <h2>💼 Jobs</h2>
 
-<div class="admin-box">
+        <p>
+          Find job opportunities from verified sources.
+        </p>
+      </div>
 
-<h4>
-📢 ADD AD
-</h4>
+    </div>
 
-<input
-id="adName"
-placeholder="Ad name"
->
+    <div
+      id="jobsContainer"
+      class="cards"
+    >
 
-<select id="adPosition">
+      <div class="loading">
+        <div class="spinner"></div>
+        Loading jobs...
+      </div>
 
-<option value="top">
-Top Banner
-</option>
+    </div>
 
-<option value="middle">
-Middle Banner
-</option>
+  </section>
 
-</select>
 
-<textarea
-id="adScript"
-placeholder="Paste your approved advertising code here..."
-></textarea>
+  <!-- =====================
+       EDUCATION
+  ====================== -->
 
-<button
-class="btn orange"
-style="width:100%"
-onclick="addAd()"
->
-➕ ADD AD
-</button>
+  <section
+    id="education"
+    class="section"
+  >
 
-</div>
+    <div class="section-header">
 
-<br>
+      <div>
 
-<div class="admin-box">
+        <h2>🎓 Education</h2>
 
-<h4>
-📢 ACTIVE ADS
-</h4>
+        <p>
+          Discover education opportunities and updates.
+        </p>
 
-<div
-id="adminAdsList"
-class="admin-list"
->
-Loading...
-</div>
-
-</div>
+      </div>
 
-<br>
+    </div>
 
-<div class="admin-box">
+    <div
+      id="educationContainer"
+      class="cards"
+    >
 
-<h4>
-➕ MANUALLY ADD OPPORTUNITY
-</h4>
+      <div class="loading">
+        <div class="spinner"></div>
+        Loading education...
+      </div>
 
-<input
-id="adminTitle"
-placeholder="Title"
->
-
-<textarea
-id="adminDescription"
-placeholder="Full description"
-></textarea>
-
-<select id="adminCategory">
+    </div>
 
-<option value="Education">
-Education
-</option>
+  </section>
 
-<option value="Scholarship">
-Scholarship
-</option>
 
-<option value="Job">
-Job
-</option>
+  <!-- =====================
+       NEWS
+  ====================== -->
 
-<option value="Grant">
-Grant
-</option>
+  <section
+    id="news"
+    class="section"
+  >
 
-<option value="Event">
-Event
-</option>
+    <div class="section-header">
 
-<option value="News">
-News
-</option>
+      <div>
 
-<option value="Opportunity">
-Opportunity
-</option>
-
-</select>
-
-<input
-id="adminCountry"
-placeholder="Country"
->
-
-<input
-id="adminSource"
-placeholder="Source"
->
-
-<input
-id="adminURL"
-placeholder="Official URL"
->
-
-<input
-id="adminDeadline"
-placeholder="Deadline (optional)"
->
-
-<input
-id="adminPublished"
-type="datetime-local"
-title="Official publication date"
->
-
-<div class="admin-row">
-
-<button
-class="btn green"
-onclick="addOpportunity()"
->
-ADD
-</button>
-
-<button
-class="btn red"
-onclick="logoutAdmin()"
->
-LOGOUT
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-<div class="layout">
-
-<aside class="sidebar">
-
-<h3>
-🌍 COUNTRIES
-</h3>
-
-<input
-id="countrySearch"
-class="country-search"
-placeholder="🔎 Find country..."
-oninput="filterCountryOptions()"
->
-
-<select
-id="countrySelect"
-class="country-select"
-onchange="selectCountry(this.value)"
->
-
-<option value="ALL">
-All Countries
-</option>
-
-</select>
-
-<div
-id="countryInfo"
-class="country-info"
->
-</div>
-
-<div style="height:8px"></div>
-
-<div class="sidebar-content">
-
-<button
-class="side-button"
-onclick="showLatest()"
->
-🆕 Latest
-</button>
-
-<button
-class="side-button"
-onclick="showWorldNews()"
->
-📰 World News
-</button>
-
-<button
-class="side-button"
-onclick="showAll()"
->
-🌍 All Opportunities
-</button>
-
-<button
-class="side-button"
-onclick="filterCategory('Education')"
->
-🎓 Education
-</button>
-
-<button
-class="side-button"
-onclick="filterCategory('Job')"
->
-💼 Work Opportunities
-</button>
-
-<button
-class="side-button"
-onclick="filterCategory('Scholarship')"
->
-🎓 Scholarships
-</button>
-
-<button
-class="side-button"
-onclick="filterCategory('Grant')"
->
-💰 Grants
-</button>
-
-<button
-class="side-button"
-onclick="filterCategory('Event')"
->
-📅 Events
-</button>
-
-<button
-class="side-button"
-onclick="filterCategory('News')"
->
-📰 Global News
-</button>
-
-</div>
-
-</aside>
-
-<section class="main-content">
-
-<div
-id="middleAds"
-class="ad-area"
-></div>
-
-<div class="section-head">
-
-<h3 id="sectionTitle">
-🆕 Latest Global Information
-</h3>
-
-<span
-id="status"
-class="status"
->
-Loading...
-</span>
-
-</div>
-
-<div class="category-row">
-
-<button
-class="category-btn active"
-onclick="filterCategory('ALL',this)"
->
-All
-</button>
-
-<button
-class="category-btn"
-onclick="showWorldNews(this)"
->
-News
-</button>
-
-<button
-class="category-btn"
-onclick="filterCategory('Education',this)"
->
-Education
-</button>
-
-<button
-class="category-btn"
-onclick="filterCategory('Job',this)"
->
-Jobs
-</button>
-
-<button
-class="category-btn"
-onclick="filterCategory('Scholarship',this)"
->
-Scholarships
-</button>
-
-<button
-class="category-btn"
-onclick="filterCategory('Grant',this)"
->
-Grants
-</button>
-
-<button
-class="category-btn"
-onclick="filterCategory('Event',this)"
->
-Events
-</button>
-
-</div>
-
-<div
-id="results"
-class="grid"
->
-
-<div class="loading">
-
-<div class="loading-spinner">
-🌍
-</div>
-
-Loading global information...
-
-</div>
-
-</div>
-
-<button
-id="loadMore"
-class="btn dark load-more"
-style="display:none"
-onclick="loadMore()"
->
-LOAD MORE
-</button>
-
-</section>
-
-</div>
-
-<footer>
-
-© 2026 MAKYAMA — Global Opportunities Platform
-
-<br>
-
-Education • Jobs • Scholarships • Grants • Events • World News
-
-</footer>
+        <h2>📰 News</h2>
+
+        <p>
+          Latest trusted news from verified sources.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div
+      id="newsContainer"
+      class="cards"
+    >
+
+      <div class="loading">
+        <div class="spinner"></div>
+        Loading news...
+      </div>
+
+    </div>
+
+  </section>
 
 </main>
 
 
-<!-- DETAILS MODAL -->
+<!-- =========================
+     FOOTER
+========================= -->
 
-<div
-id="detailsModal"
-class="modal"
->
+<footer>
 
-<div class="modal-box">
+  <strong>
+    MAKYAMA GLOBAL
+  </strong>
 
-<div class="modal-header">
+  <p>
+    Jobs • Education • News
+  </p>
 
-<div>
+  <p>
+    © 2026 MAKYAMA. All rights reserved.
+  </p>
 
-<div
-id="detailCategoryBadge"
-class="badge"
->
-OPPORTUNITY
-</div>
-
-<h2
-id="detailTitle"
-class="modal-title"
->
-Information
-</h2>
-
-</div>
-
-<button
-class="close"
-onclick="closeDetails()"
->
-×
-</button>
-
-</div>
-
-<div class="detail-content">
-
-<img
-id="detailImage"
-class="detail-image"
-src=""
-alt=""
->
-
-<div
-id="detailDescription"
-class="detail-description"
->
-Loading...
-</div>
-
-<div class="detail-info">
-
-<div class="info-box">
-
-<small>
-COUNTRY
-</small>
-
-<b id="detailCountry">
-—
-</b>
-
-</div>
-
-<div class="info-box">
-
-<small>
-CATEGORY
-</small>
-
-<b id="detailCategory">
-—
-</b>
-
-</div>
-
-<div class="info-box">
-
-<small>
-SOURCE
-</small>
-
-<b id="detailSource">
-—
-</b>
-
-</div>
-
-<div class="info-box">
-
-<small>
-PUBLISHED
-</small>
-
-<b id="detailPublished">
-—
-</b>
-
-</div>
-
-<div class="info-box">
-
-<small>
-DEADLINE
-</small>
-
-<b id="detailDeadline">
-—
-</b>
-
-</div>
-
-<div class="info-box">
-
-<small>
-VIEWS
-</small>
-
-<b id="detailViews">
-0
-</b>
-
-</div>
-
-</div>
-
-<div
-id="detailCountryExtra"
-style="
-margin-top:12px;
-display:none;
-background:#151d18;
-border:1px solid #26322b;
-border-radius:9px;
-padding:10px;
-"
->
-</div>
-
-<br>
-
-<label
-style="font-size:10px;color:#94a099"
->
-🌐 Read / translate
-</label>
-
-<select
-id="detailLanguage"
-class="language"
-onchange="translateCurrentDetail()"
->
-
-<option value="en">
-English
-</option>
-
-<option value="sw">
-Swahili
-</option>
-
-<option value="fr">
-French
-</option>
-
-<option value="es">
-Spanish
-</option>
-
-<option value="pt">
-Portuguese
-</option>
-
-<option value="ar">
-Arabic
-</option>
-
-<option value="de">
-German
-</option>
-
-<option value="it">
-Italian
-</option>
-
-<option value="tr">
-Turkish
-</option>
-
-<option value="hi">
-Hindi
-</option>
-
-<option value="zh-CN">
-Chinese
-</option>
-
-<option value="ja">
-Japanese
-</option>
-
-</select>
-
-<div
-class="detail-actions"
->
-
-<button
-class="btn share-btn"
-onclick="shareCurrent()"
->
-📤 Share
-</button>
-
-<a
-id="detailApply"
-class="btn apply-btn"
-href="#"
-target="_blank"
-rel="noopener noreferrer"
->
-🔗 OFFICIAL SOURCE
-</a>
-
-</div>
-
-<p
-style="
-color:#68746d;
-font-size:9px;
-line-height:1.5;
-margin-top:12px;
-text-align:center;
-"
->
-MAKYAMA shows the publication date supplied by the source/feed.
-Always open the official source before applying or making important decisions.
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- LOGIN -->
-
-<div
-id="loginModal"
-class="modal"
->
-
-<div class="login-box">
-
-<button
-class="close"
-style="float:right"
-onclick="closeLogin()"
->
-×
-</button>
-
-<h3>
-🔐 ADMIN LOGIN
-</h3>
-
-<input
-id="loginUsername"
-placeholder="Username"
->
-
-<input
-id="loginPassword"
-type="password"
-placeholder="Password"
->
-
-<button
-class="btn green"
-onclick="loginAdmin()"
->
-LOGIN
-</button>
-
-</div>
-
-</div>
+</footer>
 
 
 <script>
 
-/* ============================================================
-   FIREBASE
-============================================================ */
+  /*
+  ============================================================
+  CONFIGURATION
+  ============================================================
+  */
+
+  const API_URL =
+    "https://makyama-bot-v2.onrender.com";
 
-const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
-
-  authDomain:
-    "makyama-e5e89.firebaseapp.com",
-
-  databaseURL:
-    "https://makyama-e5e89-default-rtdb.firebaseio.com/",
-
-  projectId:
-    "makyama-e5e89",
-
-  storageBucket:
-    "makyama-e5e89.appspot.com",
-
-  messagingSenderId:
-    "229527204095",
-
-  appId:
-    "1:229527204095:web:2bdfe0589cf42794b3dcca"
-
-};
-
-let db = null;
-
-try{
-
-  if(!firebase.apps.length){
-    firebase.initializeApp(firebaseConfig);
-  }
-
-  db = firebase.database();
-
-}catch(error){
-
-  console.error(
-    "Firebase initialization error:",
-    error
-  );
-
-}
-
-
-/* ============================================================
-   GLOBAL STATE
-============================================================ */
-
-let allOpportunities = [];
-
-let filteredOpportunities = [];
-
-let currentFilter = "latest";
-
-let currentCountry = "ALL";
-
-let currentDetail = null;
-
-let displayLimit = 30;
-
-let admin = false;
-
-let countryCache = {};
-
-let countryOptionData = [];
-
-let newsLoading = false;
-
-let lastNewsCountry = "";
-
-
-/* ============================================================
-   DOM HELPER
-============================================================ */
-
-const $ = id =>
-  document.getElementById(id);
-
-
-/* ============================================================
-   ESCAPE
-============================================================ */
-
-function esc(value){
-
-  return String(value ?? "")
-    .replace(
-      /[&<>"']/g,
-      char => ({
-
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
-
-      })[char]
-    );
-
-}
-
-
-/* ============================================================
-   TOAST
-============================================================ */
-
-function toast(message){
-
-  const el =
-    $("toast");
-
-  el.textContent =
-    message;
-
-  el.style.display =
-    "block";
-
-  clearTimeout(
-    window.toastTimer
-  );
-
-  window.toastTimer =
-    setTimeout(()=>{
-
-      el.style.display =
-        "none";
-
-    },4000);
-
-}
-
-
-/* ============================================================
-   URL VALIDATION
-============================================================ */
-
-function validURL(value){
-
-  if(!value) return false;
-
-  try{
-
-    const url =
-      new URL(value);
-
-    return (
-      (
-        url.protocol === "https:" ||
-        url.protocol === "http:"
-      ) &&
-      !!url.hostname
-    );
-
-  }catch{
-
-    return false;
-
-  }
-
-}
-
-
-/* ============================================================
-   DATE
-============================================================ */
-
-function formatDate(value){
-
-  if(
-    value === undefined ||
-    value === null ||
-    value === ""
-  ){
-
-    return "Not specified";
-
-  }
-
-  let date;
-
-  if(
-    typeof value === "number" ||
-    /^\d+$/.test(String(value))
-  ){
-
-    let number =
-      Number(value);
-
-    if(number < 10000000000){
-      number *= 1000;
-    }
-
-    date =
-      new Date(number);
-
-  }else{
-
-    date =
-      new Date(value);
-
-  }
-
-  if(
-    isNaN(
-      date.getTime()
-    )
-  ){
-
-    return String(value);
-
-  }
-
-  return date.toLocaleString(
-    undefined,
-    {
-      year:"numeric",
-      month:"short",
-      day:"numeric",
-      hour:"2-digit",
-      minute:"2-digit"
-    }
-  );
-
-}
-
-
-function getTime(value){
-
-  if(!value) return 0;
-
-  if(
-    typeof value === "number"
-  ){
-
-    return value < 10000000000
-      ? value * 1000
-      : value;
-
-  }
-
-  const d =
-    new Date(value);
-
-  return isNaN(d.getTime())
-    ? 0
-    : d.getTime();
-
-}
-
-
-/* ============================================================
-   COUNTRIES
-============================================================ */
-
-const COUNTRIES = [
-
-"Afghanistan",
-"Albania",
-"Algeria",
-"Andorra",
-"Angola",
-"Antigua and Barbuda",
-"Argentina",
-"Armenia",
-"Australia",
-"Austria",
-"Azerbaijan",
-
-"Bahamas",
-"Bahrain",
-"Bangladesh",
-"Barbados",
-"Belarus",
-"Belgium",
-"Belize",
-"Benin",
-"Bhutan",
-"Bolivia",
-"Bosnia and Herzegovina",
-"Botswana",
-"Brazil",
-"Brunei",
-"Bulgaria",
-"Burkina Faso",
-"Burundi",
-
-"Cabo Verde",
-"Cambodia",
-"Cameroon",
-"Canada",
-"Central African Republic",
-"Chad",
-"Chile",
-"China",
-"Colombia",
-"Comoros",
-"Costa Rica",
-"Côte d'Ivoire",
-"Croatia",
-"Cuba",
-"Cyprus",
-"Czech Republic",
-
-"Democratic Republic of the Congo",
-"Denmark",
-"Djibouti",
-"Dominica",
-"Dominican Republic",
-
-"Ecuador",
-"Egypt",
-"El Salvador",
-"Equatorial Guinea",
-"Eritrea",
-"Estonia",
-"Eswatini",
-"Ethiopia",
-
-"Fiji",
-"Finland",
-"France",
-
-"Gabon",
-"Gambia",
-"Georgia",
-"Germany",
-"Ghana",
-"Greece",
-"Grenada",
-"Guatemala",
-"Guinea",
-"Guinea-Bissau",
-"Guyana",
-
-"Haiti",
-"Honduras",
-"Hungary",
-
-"Iceland",
-"India",
-"Indonesia",
-"Iran",
-"Iraq",
-"Ireland",
-"Israel",
-"Italy",
-
-"Jamaica",
-"Japan",
-"Jordan",
-
-"Kazakhstan",
-"Kenya",
-"Kiribati",
-"Kuwait",
-"Kyrgyzstan",
-
-"Laos",
-"Latvia",
-"Lebanon",
-"Lesotho",
-"Liberia",
-"Libya",
-"Liechtenstein",
-"Lithuania",
-"Luxembourg",
-
-"Madagascar",
-"Malawi",
-"Malaysia",
-"Maldives",
-"Mali",
-"Malta",
-"Marshall Islands",
-"Mauritania",
-"Mauritius",
-"Mexico",
-"Micronesia",
-"Moldova",
-"Monaco",
-"Mongolia",
-"Montenegro",
-"Morocco",
-"Mozambique",
-"Myanmar",
-
-"Namibia",
-"Nauru",
-"Nepal",
-"Netherlands",
-"New Zealand",
-"Nicaragua",
-"Niger",
-"Nigeria",
-"North Korea",
-"North Macedonia",
-"Norway",
-
-"Oman",
-
-"Pakistan",
-"Palau",
-"Panama",
-"Papua New Guinea",
-"Paraguay",
-"Peru",
-"Philippines",
-"Poland",
-"Portugal",
-
-"Qatar",
-
-"Romania",
-"Russia",
-"Rwanda",
-
-"Saint Kitts and Nevis",
-"Saint Lucia",
-"Saint Vincent and the Grenadines",
-"Samoa",
-"San Marino",
-"Sao Tome and Principe",
-"Saudi Arabia",
-"Senegal",
-"Serbia",
-"Seychelles",
-"Sierra Leone",
-"Singapore",
-"Slovakia",
-"Slovenia",
-"Solomon Islands",
-"Somalia",
-"South Africa",
-"South Korea",
-"South Sudan",
-"Spain",
-"Sri Lanka",
-"Sudan",
-"Suriname",
-"Sweden",
-"Switzerland",
-"Syria",
-
-"Taiwan",
-"Tajikistan",
-"Tanzania",
-"Thailand",
-"Timor-Leste",
-"Togo",
-"Tonga",
-"Trinidad and Tobago",
-"Tunisia",
-"Turkey",
-"Turkmenistan",
-"Tuvalu",
-
-"Uganda",
-"Ukraine",
-"United Arab Emirates",
-"United Kingdom",
-"United States",
-"Uruguay",
-"Uzbekistan",
-
-"Vanuatu",
-"Vatican City",
-"Venezuela",
-"Vietnam",
-
-"Yemen",
-
-"Zambia",
-"Zimbabwe"
-
-].sort(
-  (a,b)=>
-    a.localeCompare(
-      b
-    )
-);
-
-
-/* ============================================================
-   COUNTRY CODE MAP
-============================================================ */
-
-const COUNTRY_CODES = {
-
-"Afghanistan":"AF",
-"Albania":"AL",
-"Algeria":"AG",
-"Andorra":"AN",
-"Angola":"AO",
-"Argentina":"AR",
-"Armenia":"AM",
-"Australia":"AS",
-"Austria":"AU",
-"Azerbaijan":"AJ",
-
-"Bahamas":"BF",
-"Bahrain":"BA",
-"Bangladesh":"BG",
-"Barbados":"BB",
-"Belarus":"BO",
-"Belgium":"BE",
-"Belize":"BH",
-"Benin":"BN",
-"Bhutan":"BT",
-"Bolivia":"BL",
-"Botswana":"BC",
-"Brazil":"BR",
-"Brunei":"BX",
-"Bulgaria":"BU",
-"Burkina Faso":"UV",
-"Burundi":"BY",
-
-"Cabo Verde":"CV",
-"Cambodia":"CB",
-"Cameroon":"CM",
-"Canada":"CA",
-"Central African Republic":"CT",
-"Chad":"CD",
-"Chile":"CI",
-"China":"CH",
-"Colombia":"CO",
-"Comoros":"CN",
-"Costa Rica":"CS",
-"Côte d'Ivoire":"IV",
-"Croatia":"HR",
-"Cuba":"CU",
-"Cyprus":"CY",
-"Czech Republic":"EZ",
-
-"Democratic Republic of the Congo":"CG",
-"Denmark":"DA",
-"Djibouti":"DJ",
-"Dominica":"DO",
-"Dominican Republic":"DR",
-
-"Ecuador":"EC",
-"Egypt":"EG",
-"El Salvador":"ES",
-"Equatorial Guinea":"EK",
-"Eritrea":"ER",
-"Estonia":"EN",
-"Eswatini":"WZ",
-"Ethiopia":"ET",
-
-"Fiji":"FJ",
-"Finland":"FI",
-"France":"FR",
-
-"Gabon":"GB",
-"Gambia":"GA",
-"Georgia":"GG",
-"Germany":"GM",
-"Ghana":"GH",
-"Greece":"GR",
-"Grenada":"GJ",
-"Guatemala":"GT",
-"Guinea":"GV",
-"Guinea-Bissau":"PU",
-"Guyana":"GY",
-
-"Haiti":"HA",
-"Honduras":"HO",
-"Hungary":"HU",
-
-"Iceland":"IC",
-"India":"IN",
-"Indonesia":"ID",
-"Iran":"IR",
-"Iraq":"IZ",
-"Ireland":"EI",
-"Israel":"IS",
-"Italy":"IT",
-
-"Jamaica":"JM",
-"Japan":"JA",
-"Jordan":"JO",
-
-"Kazakhstan":"KZ",
-"Kenya":"KE",
-"Kiribati":"KR",
-"Kuwait":"KU",
-"Kyrgyzstan":"KG",
-
-"Laos":"LA",
-"Latvia":"LG",
-"Lebanon":"LE",
-"Lesotho":"LT",
-"Liberia":"LI",
-"Libya":"LY",
-"Liechtenstein":"LS",
-"Lithuania":"LH",
-"Luxembourg":"LU",
-
-"Madagascar":"MA",
-"Malawi":"MI",
-"Malaysia":"MY",
-"Maldives":"MV",
-"Mali":"ML",
-"Malta":"MT",
-"Marshall Islands":"RM",
-"Mauritania":"MR",
-"Mauritius":"MP",
-"Mexico":"MX",
-"Micronesia":"FM",
-"Moldova":"MD",
-"Monaco":"MN",
-"Mongolia":"MG",
-"Montenegro":"MJ",
-"Morocco":"MO",
-"Mozambique":"MZ",
-"Myanmar":"BM",
-
-"Namibia":"WA",
-"Nauru":"NR",
-"Nepal":"NP",
-"Netherlands":"NL",
-"New Zealand":"NZ",
-"Nicaragua":"NU",
-"Niger":"NG",
-"Nigeria":"NI",
-"North Korea":"KN",
-"North Macedonia":"MK",
-"Norway":"NO",
-
-"Oman":"MU",
-
-"Pakistan":"PK",
-"Palau":"PS",
-"Panama":"PM",
-"Papua New Guinea":"PP",
-"Paraguay":"PA",
-"Peru":"PE",
-"Philippines":"RP",
-"Poland":"PL",
-"Portugal":"PO",
-
-"Qatar":"QA",
-
-"Romania":"RO",
-"Russia":"RS",
-"Rwanda":"RW",
-
-"Saint Kitts and Nevis":"SC",
-"Saint Lucia":"ST",
-"Saint Vincent and the Grenadines":"VC",
-"Samoa":"WS",
-"San Marino":"SM",
-"Sao Tome and Principe":"TP",
-"Saudi Arabia":"SA",
-"Senegal":"SG",
-"Serbia":"RI",
-"Seychelles":"SE",
-"Sierra Leone":"SL",
-"Singapore":"SN",
-"Slovakia":"LO",
-"Slovenia":"SI",
-"Solomon Islands":"BP",
-"Somalia":"SO",
-"South Africa":"SF",
-"South Korea":"KS",
-"South Sudan":"OD",
-"Spain":"SP",
-"Sri Lanka":"CE",
-"Sudan":"SU",
-"Suriname":"NS",
-"Sweden":"SW",
-"Switzerland":"SZ",
-"Syria":"SY",
-
-"Taiwan":"TW",
-"Tajikistan":"TI",
-"Tanzania":"TZ",
-"Thailand":"TH",
-"Timor-Leste":"TT",
-"Togo":"TO",
-"Tonga":"TN",
-"Trinidad and Tobago":"TD",
-"Tunisia":"TS",
-"Turkey":"TU",
-"Turkmenistan":"TX",
-"Tuvalu":"TV",
-
-"Uganda":"UG",
-"Ukraine":"UP",
-"United Arab Emirates":"AE",
-"United Kingdom":"UK",
-"United States":"US",
-"Uruguay":"UY",
-"Uzbekistan":"UZ",
-
-"Vanuatu":"NH",
-"Vatican City":"VT",
-"Venezuela":"VE",
-"Vietnam":"VM",
-
-"Yemen":"YM",
-
-"Zambia":"ZA",
-"Zimbabwe":"ZI"
-
-};
-
-
-/* ============================================================
-   COUNTRY LIST
-============================================================ */
-
-function buildCountryList(){
-
-  const select =
-    $("countrySelect");
-
-  select.innerHTML =
-    '<option value="ALL">🌍 All Countries</option>';
-
-  COUNTRIES.forEach(country=>{
-
-    const option =
-      document.createElement(
-        "option"
-      );
-
-    option.value =
-      country;
-
-    option.textContent =
-      country;
-
-    select.appendChild(
-      option
-    );
-
-  });
-
-}
-
-
-function filterCountryOptions(){
-
-  const search =
-    $("countrySearch")
-      .value
-      .trim()
-      .toLowerCase();
-
-  const select =
-    $("countrySelect");
-
-  select.innerHTML =
-    '<option value="ALL">🌍 All Countries</option>';
-
-  COUNTRIES
-    .filter(country =>
-      country
-        .toLowerCase()
-        .includes(search)
-    )
-    .forEach(country=>{
-
-      const option =
-        document.createElement(
-          "option"
-        );
-
-      option.value =
-        country;
-
-      option.textContent =
-        country;
-
-      if(
-        country ===
-        currentCountry
-      ){
-
-        option.selected =
-          true;
-
-      }
-
-      select.appendChild(
-        option
-      );
-
-    });
-
-}
-
-
-/* ============================================================
-   FIREBASE OPPORTUNITIES
-============================================================ */
-
-function initOpportunities(){
-
-  if(!db){
-
-    $("results").innerHTML =
-      '<div class="empty">Firebase connection failed.</div>';
-
-    return;
-
-  }
-
-  db.ref(
-    "opportunities"
-  ).on(
-    "value",
-    snapshot=>{
-
-      const list = [];
-
-      snapshot.forEach(
-        child=>{
-
-          const item =
-            child.val() || {};
-
-          /*
-           * IMPORTANT:
-           * Do not throw away an opportunity
-           * just because URL is missing.
-           *
-           * Details must still work.
-           */
-
-          if(
-            item.active === false
-          ){
-
-            return;
-
-          }
-
-          list.push({
-
-            id:
-              String(
-                item.id ||
-                child.key
-              ),
-
-            title:
-              item.title ||
-              "Untitled Opportunity",
-
-            description:
-              item.description ||
-              "No detailed description available.",
-
-            category:
-              item.category ||
-              "Opportunity",
-
-            country:
-              item.country ||
-              "International",
-
-            countries:
-              Array.isArray(
-                item.countries
-              )
-              ? item.countries
-              : [
-                  item.country ||
-                  "International"
-                ],
-
-            source:
-              item.source ||
-              "Unknown",
-
-            url:
-              validURL(item.url)
-                ? item.url
-                : "",
-
-            applyUrl:
-              validURL(item.applyUrl)
-                ? item.applyUrl
-                : (
-                    validURL(item.url)
-                      ? item.url
-                      : ""
-                  ),
-
-            detailsUrl:
-              validURL(item.detailsUrl)
-                ? item.detailsUrl
-                : (
-                    validURL(item.url)
-                      ? item.url
-                      : ""
-                  ),
-
-            deadline:
-              item.deadline ||
-              "",
-
-            publishedAt:
-              item.publishedAt ||
-              item.createdAt ||
-              0,
-
-            createdAt:
-              item.createdAt ||
-              0,
-
-            updatedAt:
-              item.updatedAt ||
-              0,
-
-            views:
-              Number(
-                item.views || 0
-              ),
-
-            shares:
-              Number(
-                item.shares || 0
-              ),
-
-            image:
-              validURL(item.image)
-                ? item.image
-                : "",
-
-            type:
-              "firebase"
-
-          });
-
-        }
-      );
-
-      list.sort(
-        (a,b)=>
-          getTime(
-            b.publishedAt ||
-            b.createdAt
-          )
-          -
-          getTime(
-            a.publishedAt ||
-            a.createdAt
-          )
-      );
-
-      allOpportunities =
-        list;
-
-      $("adminOpportunityCount")
-        .textContent =
-        list.length;
-
-      applyFilter();
-
-    }
-  );
-
-}
-
-
-/* ============================================================
-   GDELT NEWS
-============================================================ */
-
-function gdeltCountryName(
-  country
-){
 
   /*
-   * Search the country name directly.
-   *
-   * GDELT DOC supports sourcecountry:
-   * for press from a country.
-   */
+  ============================================================
+  STATE
+  ============================================================
+  */
 
-  return country
-    .replace(
-      /'/g,
-      ""
-    );
+  let allItems = [];
 
-}
+  let currentSection =
+    "jobs";
 
-
-async function fetchCountryNews(
-  country,
-  limit = 40
-){
-
-  if(
-    !country ||
-    country === "ALL"
-  ){
-
-    return [];
-
-  }
-
-  const query =
-    `sourcecountry:${gdeltCountryName(country)}`;
-
-  const url =
-    "https://api.gdeltproject.org/api/v2/doc/doc?" +
-    new URLSearchParams({
-
-      query,
-
-      mode:
-        "artlist",
-
-      maxrecords:
-        String(limit),
-
-      timespan:
-        "1month",
-
-      sort:
-        "datedesc",
-
-      format:
-        "json"
-
-    }).toString();
-
-  try{
-
-    const response =
-      await fetch(
-        url,
-        {
-          cache:"no-store"
-        }
-      );
-
-    if(
-      !response.ok
-    ){
-
-      throw new Error(
-        "GDELT HTTP " +
-        response.status
-      );
-
-    }
-
-    const data =
-      await response.json();
-
-    const articles =
-      Array.isArray(
-        data.articles
-      )
-      ? data.articles
-      : [];
-
-    return articles
-      .map(
-        (article,index)=>{
-
-          const articleUrl =
-            article.url ||
-            article.socialimage ||
-            "";
-
-          return {
-
-            id:
-              "gdelt-" +
-              btoa(
-                unescape(
-                  encodeURIComponent(
-                    articleUrl ||
-                    article.title ||
-                    country +
-                    index
-                  )
-                )
-              )
-              .replace(
-                /[^a-zA-Z0-9]/g,
-                ""
-              )
-              .slice(
-                0,
-                60
-              ),
-
-            title:
-              article.title ||
-              "World News",
-
-            description:
-              article.title ||
-              "Latest published news report.",
-
-            category:
-              "News",
-
-            country:
-              country,
-
-            countries:[
-              country
-            ],
-
-            source:
-              article.domain ||
-              article.sourcecountry ||
-              "News Source",
-
-            url:
-              validURL(
-                articleUrl
-              )
-              ? articleUrl
-              : "",
-
-            applyUrl:
-              validURL(
-                articleUrl
-              )
-              ? articleUrl
-              : "",
-
-            detailsUrl:
-              validURL(
-                articleUrl
-              )
-              ? articleUrl
-              : "",
-
-            deadline:
-              "",
-
-            publishedAt:
-              article.seendate ||
-              "",
-
-            createdAt:
-              article.seendate ||
-              "",
-
-            updatedAt:
-              article.seendate ||
-              "",
-
-            views:
-              0,
-
-            shares:
-              0,
-
-            image:
-              validURL(
-                article.socialimage
-              )
-              ? article.socialimage
-              : "",
-
-            language:
-              article.language ||
-              "",
-
-            type:
-              "gdelt",
-
-            articleId:
-              article.url ||
-              article.title
-
-          };
-
-        }
-      )
-      .filter(
-        item =>
-          validURL(
-            item.url
-          )
-      );
-
-  }catch(error){
-
-    console.error(
-      "GDELT error:",
-      error
-    );
-
-    return [];
-
-  }
-
-}
-
-
-/* ============================================================
-   GLOBAL NEWS
-============================================================ */
-
-async function fetchGlobalNews(){
-
-  if(newsLoading){
-
-    return;
-
-  }
-
-  newsLoading =
-    true;
-
-  try{
-
-    $("status")
-      .textContent =
-      "Loading world news...";
-
-    /*
-     * Global query.
-     *
-     * This gives recent global
-     * articles without requiring
-     * Firebase records.
-     */
-
-    const url =
-      "https://api.gdeltproject.org/api/v2/doc/doc?" +
-      new URLSearchParams({
-
-        query:
-          "(news OR world OR government OR education OR economy OR jobs)",
-
-        mode:
-          "artlist",
-
-        maxrecords:
-          "75",
-
-        timespan:
-          "7d",
-
-        sort:
-          "datedesc",
-
-        format:
-          "json"
-
-      }).toString();
-
-    const response =
-      await fetch(
-        url,
-        {
-          cache:"no-store"
-        }
-      );
-
-    if(
-      !response.ok
-    ){
-
-      throw new Error(
-        "GDELT " +
-        response.status
-      );
-
-    }
-
-    const data =
-      await response.json();
-
-    const articles =
-      Array.isArray(
-        data.articles
-      )
-      ? data.articles
-      : [];
-
-    const news =
-      articles
-        .map(
-          (article,index)=>{
-
-            const articleUrl =
-              article.url ||
-              "";
-
-            return {
-
-              id:
-                "global-" +
-                index +
-                "-" +
-                Date.now(),
-
-              title:
-                article.title ||
-                "Global News",
-
-              description:
-                article.title ||
-                "Latest global news report.",
-
-              category:
-                "News",
-
-              country:
-                article.sourcecountry ||
-                "International",
-
-              countries:[
-                article.sourcecountry ||
-                "International"
-              ],
-
-              source:
-                article.domain ||
-                "News Source",
-
-              url:
-                validURL(
-                  articleUrl
-                )
-                ? articleUrl
-                : "",
-
-              applyUrl:
-                validURL(
-                  articleUrl
-                )
-                ? articleUrl
-                : "",
-
-              detailsUrl:
-                validURL(
-                  articleUrl
-                )
-                ? articleUrl
-                : "",
-
-              publishedAt:
-                article.seendate ||
-                "",
-
-              createdAt:
-                article.seendate ||
-                "",
-
-              deadline:
-                "",
-
-              views:
-                0,
-
-              shares:
-                0,
-
-              image:
-                validURL(
-                  article.socialimage
-                )
-                ? article.socialimage
-                : "",
-
-              language:
-                article.language ||
-                "",
-
-              type:
-                "gdelt"
-
-            };
-
-          }
-        )
-        .filter(
-          item =>
-            validURL(
-              item.url
-            )
-        );
-
-    return news;
-
-  }catch(error){
-
-    console.error(
-      error
-    );
-
-    toast(
-      "⚠️ Global news could not be loaded right now."
-    );
-
-    return [];
-
-  }finally{
-
-    newsLoading =
-      false;
-
-  }
-
-}
-
-
-/* ============================================================
-   LOAD COUNTRY
-============================================================ */
-
-async function loadCountryInformation(
-  country
-){
-
-  if(
-    !country ||
-    country === "ALL"
-  ){
-
-    $("countryInfo")
-      .style.display =
-      "none";
-
-    return;
-
-  }
-
-  try{
-
-    const response =
-      await fetch(
-        "https://restcountries.com/v3.1/name/" +
-        encodeURIComponent(
-          country
-        ) +
-        "?fullText=true",
-        {
-          cache:"force-cache"
-        }
-      );
-
-    if(
-      !response.ok
-    ){
-
-      throw new Error(
-        "Country API " +
-        response.status
-      );
-
-    }
-
-    const data =
-      await response.json();
-
-    const item =
-      data[0];
-
-    if(!item){
-
-      return;
-
-    }
-
-    countryCache[
-      country
-    ] =
-      item;
-
-    const capital =
-      item.capital &&
-      item.capital[0]
-      ? item.capital[0]
-      : "—";
-
-    const region =
-      item.region ||
-      "—";
-
-    const population =
-      item.population
-        ? Number(
-            item.population
-          ).toLocaleString()
-        : "—";
-
-    const currencies =
-      item.currencies
-        ? Object.values(
-            item.currencies
-          )
-          .map(
-            x =>
-              x.name +
-              (
-                x.symbol
-                  ? " (" +
-                    x.symbol +
-                    ")"
-                  : ""
-              )
-          )
-          .join(", ")
-        : "—";
-
-    $("countryInfo").innerHTML = `
-
-      <h4>
-        🌍 ${esc(country)}
-      </h4>
-
-      <p>
-        🏛️ Capital:
-        <b>${esc(capital)}</b>
-      </p>
-
-      <p>
-        🌎 Region:
-        <b>${esc(region)}</b>
-      </p>
-
-      <p>
-        👥 Population:
-        <b>${esc(population)}</b>
-      </p>
-
-      <p>
-        💰 Currency:
-        <b>${esc(currencies)}</b>
-      </p>
-
-    `;
-
-    $("countryInfo")
-      .style.display =
-      "block";
-
-  }catch(error){
-
-    console.error(
-      error
-    );
-
-  }
-
-}
-
-
-/* ============================================================
-   COUNTRY SELECTION
-============================================================ */
-
-async function selectCountry(
-  country
-){
-
-  currentCountry =
-    country || "ALL";
-
-  currentFilter =
-    "country";
-
-  displayLimit =
-    30;
-
-  if(
-    currentCountry === "ALL"
-  ){
-
-    $("sectionTitle")
-      .textContent =
-      "🌍 All Global Information";
-
-    $("countryInfo")
-      .style.display =
-      "none";
-
-    applyFilter();
-
-    return;
-
-  }
-
-  $("sectionTitle")
-    .textContent =
-    "🌍 " +
-    currentCountry;
-
-  loadCountryInformation(
-    currentCountry
-  );
 
   /*
-   * First show Firebase
-   * records for the country.
-   */
-
-  applyFilter();
-
-  /*
-   * Then fetch actual recent
-   * news from GDELT.
-   */
-
-  $("status")
-    .textContent =
-    "Searching recent publications...";
-
-  const news =
-    await fetchCountryNews(
-      currentCountry,
-      50
-    );
-
-  lastNewsCountry =
-    currentCountry;
-
-  const firebaseItems =
-    allOpportunities.filter(
-      item =>
-        item.country ===
-          currentCountry ||
-        (
-          item.countries &&
-          item.countries.includes(
-            currentCountry
-          )
-        )
-    );
-
-  const merged =
-    mergeUnique(
-      firebaseItems,
-      news
-    );
-
-  filteredOpportunities =
-    merged.sort(
-      (a,b)=>
-        getTime(
-          b.publishedAt
-        ) -
-        getTime(
-          a.publishedAt
-        )
-    );
-
-  renderOpportunities();
-
-  if(!news.length){
-
-    toast(
-      "ℹ️ No recent indexed news was found for " +
-      currentCountry +
-      "."
-    );
-
-  }
-
-}
-
-
-/* ============================================================
-   MERGE
-============================================================ */
-
-function mergeUnique(
-  first,
-  second
-){
-
-  const map =
-    new Map();
-
-  [...first,...second]
-    .forEach(
-      item=>{
-
-        const key =
-          (
-            item.url ||
-            item.title +
-            "|" +
-            item.country
-          )
-          .toLowerCase();
-
-        if(
-          !map.has(key)
-        ){
-
-          map.set(
-            key,
-            item
-          );
-
-        }
-
-      }
-    );
-
-  return Array.from(
-    map.values()
-  );
-
-}
-
-
-/* ============================================================
-   FILTER
-============================================================ */
-
-function applyFilter(){
-
-  let list =
-    [...allOpportunities];
-
-  const search =
-    $("searchInput")
-      .value
-      .trim()
-      .toLowerCase();
-
-  if(
-    currentCountry !==
-    "ALL"
-  ){
-
-    list =
-      list.filter(
-        item=>{
-
-          const countries =
-            item.countries ||
-            [];
-
-          return (
-            item.country ===
-              currentCountry ||
-            countries.includes(
-              currentCountry
-            )
-          );
-
-        }
-      );
-
-  }
-
-  if(
-    currentFilter !==
-      "latest" &&
-    currentFilter !==
-      "ALL" &&
-    currentFilter !==
-      "country"
-  ){
-
-    list =
-      list.filter(
-        item=>{
-
-          const category =
-            String(
-              item.category ||
-              ""
-            )
-            .toLowerCase();
-
-          const wanted =
-            currentFilter
-              .toLowerCase();
-
-          if(
-            wanted ===
-            "education"
-          ){
-
-            return (
-              category.includes(
-                "education"
-              ) ||
-              category.includes(
-                "scholar"
-              )
-            );
-
-          }
-
-          return category.includes(
-            wanted
-          );
-
-        }
-      );
-
-  }
-
-  if(search){
-
-    const terms =
-      search
-        .split(/\s+/)
-        .filter(Boolean);
-
-    list =
-      list.filter(
-        item=>{
-
-          const text = [
-
-            item.title,
-            item.description,
-            item.category,
-            item.country,
-            item.source
-
-          ]
-          .join(" ")
-          .toLowerCase();
-
-          return terms.every(
-            term =>
-              text.includes(
-                term
-              )
-          );
-
-        }
-      );
-
-  }
-
-  list.sort(
-    (a,b)=>
-      getTime(
-        b.publishedAt ||
-        b.createdAt
-      ) -
-      getTime(
-        a.publishedAt ||
-        a.createdAt
-      )
-  );
-
-  filteredOpportunities =
-    list;
-
-  displayLimit =
-    30;
-
-  renderOpportunities();
-
-}
-
-
-/* ============================================================
-   RENDER
-============================================================ */
-
-function renderOpportunities(){
-
-  const results =
-    $("results");
-
-  const list =
-    filteredOpportunities.slice(
-      0,
-      displayLimit
-    );
-
-  if(!list.length){
-
-    results.innerHTML = `
-
-      <div class="empty">
-
-        <div style="font-size:30px">
-          🌍
-        </div>
-
-        <br>
-
-        No information found for this filter.
-
-        <br><br>
-
-        Try another country,
-        category or search.
-
-      </div>
-
-    `;
-
-    $("status")
-      .textContent =
-      "0 results";
-
-    $("loadMore")
-      .style.display =
-      "none";
-
-    return;
-
-  }
-
-  results.innerHTML =
-    list
-      .map(
-        renderCard
-      )
-      .join("");
-
-  $("status")
-    .textContent =
-    filteredOpportunities.length +
-    " results";
-
-  $("loadMore")
-    .style.display =
-    filteredOpportunities.length >
-    displayLimit
-      ? "block"
-      : "none";
-
-}
-
-
-/* ============================================================
-   CARD
-============================================================ */
-
-function renderCard(
-  item
-){
-
-  const category =
-    String(
-      item.category ||
-      "Opportunity"
-    );
-
-  let badgeClass =
-    "badge";
-
-  if(
-    category
-      .toLowerCase()
-      .includes(
-        "news"
-      )
-  ){
-
-    badgeClass +=
-      " news";
-
-  }
-
-  let applyButton = "";
-
-  if(
-    validURL(
-      item.applyUrl ||
-      item.url
-    )
-  ){
-
-    applyButton = `
-
-      <a
-        class="apply-btn"
-        href="${esc(
-          item.applyUrl ||
-          item.url
-        )}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        🔗 OPEN
-      </a>
-
-    `;
-
-  }
-
-  const newsButton =
-    item.type ===
-    "gdelt"
-      ? `
-
-        <a
-          class="news-btn"
-          href="${esc(item.url)}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          📰 SOURCE
-        </a>
-
-      `
-      : "";
-
-  return `
-
-<article
-  class="card"
->
-
-  <div class="badges">
-
-    <span
-      class="${badgeClass}"
-    >
-      ${esc(category)}
-    </span>
-
-    <span
-      class="badge country"
-    >
-      🌍 ${esc(
-        item.country
-      )}
-    </span>
-
-    ${
-      item.type ===
-      "gdelt"
-        ? `
-          <span
-            class="badge world"
-          >
-            LIVE NEWS
-          </span>
-        `
-        : ""
-    }
-
-  </div>
-
-  <div class="card-top">
-
-    <div
-      class="card-title"
-    >
-      ${esc(
-        item.title
-      )}
-    </div>
-
-  </div>
-
-  <div class="description">
-
-    ${esc(
-      item.description
-    )}
-
-  </div>
-
-  <div class="meta">
-
-    <span>
-      🏢 ${esc(
-        item.source
-      )}
-    </span>
-
-    <span>
-      📅 ${esc(
-        formatDate(
-          item.publishedAt
-        )
-      )}
-    </span>
-
-    ${
-      item.language
-        ? `
-          <span>
-            🌐 ${esc(
-              item.language
-            )}
-          </span>
-        `
-        : ""
-    }
-
-  </div>
-
-  <div class="card-actions">
-
-    <button
-      class="details-btn"
-      data-detail-id="${esc(
-        item.id
-      )}"
-    >
-      📄 DETAILS
-    </button>
-
-    <button
-      class="share-btn"
-      data-share-id="${esc(
-        item.id
-      )}"
-    >
-      📤 SHARE
-    </button>
-
-    ${newsButton}
-
-    ${applyButton}
-
-  </div>
-
-</article>
-
-`;
-
-}
-
-
-/* ============================================================
-   EVENT DELEGATION
-============================================================ */
-
-$("results")
-  .addEventListener(
-    "click",
-    event=>{
-
-      const detailButton =
-        event.target.closest(
-          "[data-detail-id]"
-        );
-
-      if(detailButton){
-
-        openDetails(
-          detailButton
-            .getAttribute(
-              "data-detail-id"
-            )
-        );
-
-        return;
-
-      }
-
-      const shareButton =
-        event.target.closest(
-          "[data-share-id]"
-        );
-
-      if(shareButton){
-
-        shareOpportunity(
-          shareButton
-            .getAttribute(
-              "data-share-id"
-            )
-        );
-
-      }
-
-    }
-  );
-
-
-/* ============================================================
-   CONTROLS
-============================================================ */
-
-function activateControls(
-  button
-){
-
-  document
-    .querySelectorAll(
-      ".control"
-    )
-    .forEach(
-      btn =>
-        btn.classList
-          .remove(
+  ============================================================
+  SECTION SWITCH
+  ============================================================
+  */
+
+  function showSection(
+    section,
+    button
+  ) {
+
+    currentSection =
+      section;
+
+    document
+      .querySelectorAll(".section")
+      .forEach(
+        element => {
+          element.classList.remove(
             "active"
-          )
-    );
+          );
+        }
+      );
 
-  if(button){
+    document
+      .getElementById(section)
+      .classList.add(
+        "active"
+      );
+
+    document
+      .querySelectorAll("nav button")
+      .forEach(
+        btn => {
+          btn.classList.remove(
+            "active"
+          );
+        }
+      );
 
     button.classList.add(
       "active"
     );
 
+    renderItems();
   }
 
-}
-
-
-function activateCategory(
-  button
-){
-
-  document
-    .querySelectorAll(
-      ".category-btn"
-    )
-    .forEach(
-      btn =>
-        btn.classList
-          .remove(
-            "active"
-          )
-    );
-
-  if(button){
-
-    button.classList.add(
-      "active"
-    );
-
-  }
-
-}
-
-
-/* ============================================================
-   LATEST
-============================================================ */
-
-async function showLatest(
-  button
-){
-
-  currentFilter =
-    "latest";
-
-  currentCountry =
-    "ALL";
-
-  $("countrySelect")
-    .value =
-    "ALL";
-
-  activateControls(
-    button
-  );
-
-  $("sectionTitle")
-    .textContent =
-    "🆕 Latest Global Information";
 
   /*
-   * Firebase latest
-   */
-
-  applyFilter();
-
-  /*
-   * Add actual current
-   * global news.
-   */
-
-  const news =
-    await fetchGlobalNews();
-
-  filteredOpportunities =
-    mergeUnique(
-      filteredOpportunities,
-      news
-    );
-
-  filteredOpportunities.sort(
-    (a,b)=>
-      getTime(
-        b.publishedAt
-      ) -
-      getTime(
-        a.publishedAt
-      )
-  );
-
-  displayLimit =
-    30;
-
-  renderOpportunities();
-
-}
-
-
-/* ============================================================
-   WORLD NEWS
-============================================================ */
-
-async function showWorldNews(
-  button
-){
-
-  currentFilter =
-    "ALL";
-
-  currentCountry =
-    "ALL";
-
-  $("countrySelect")
-    .value =
-    "ALL";
-
-  activateControls(
-    button
-  );
-
-  activateCategory(
-    button
-  );
-
-  $("sectionTitle")
-    .textContent =
-    "📰 Latest World News";
-
-  $("results").innerHTML = `
-
-    <div class="loading">
-
-      <div class="loading-spinner">
-        📰
-      </div>
-
-      Searching recent world news...
-
-    </div>
-
-  `;
-
-  const news =
-    await fetchGlobalNews();
-
-  filteredOpportunities =
-    news;
-
-  displayLimit =
-    30;
-
-  renderOpportunities();
-
-}
-
-
-/* ============================================================
-   ALL
-============================================================ */
-
-function showAll(
-  button
-){
-
-  currentFilter =
-    "ALL";
-
-  currentCountry =
-    "ALL";
-
-  $("countrySelect")
-    .value =
-    "ALL";
-
-  activateControls(
-    button
-  );
-
-  $("sectionTitle")
-    .textContent =
-    "🌍 All Global Opportunities";
-
-  applyFilter();
-
-}
-
-
-/* ============================================================
-   CATEGORY
-============================================================ */
-
-function filterCategory(
-  category,
-  button
-){
-
-  currentFilter =
-    category;
-
-  currentCountry =
-    "ALL";
-
-  $("countrySelect")
-    .value =
-    "ALL";
-
-  if(
-    category ===
-    "ALL"
-  ){
-
-    $("sectionTitle")
-      .textContent =
-      "🌍 All Global Information";
-
-  }else{
-
-    $("sectionTitle")
-      .textContent =
-      "📂 " +
-      category;
-
-  }
-
-  activateControls(
-    button
-  );
-
-  activateCategory(
-    button
-  );
-
-  applyFilter();
-
-}
-
-
-/* ============================================================
-   SEARCH
-============================================================ */
-
-function performSearch(){
-
-  currentFilter =
-    "ALL";
-
-  $("sectionTitle")
-    .textContent =
-    "🔎 Search Results";
-
-  applyFilter();
-
-}
-
-
-$("searchInput")
-  .addEventListener(
-    "keydown",
-    event=>{
-
-      if(
-        event.key ===
-        "Enter"
-      ){
-
-        performSearch();
-
-      }
-
-    }
-  );
-
-
-/* ============================================================
-   LOAD MORE
-============================================================ */
-
-function loadMore(){
-
-  displayLimit +=
-    30;
-
-  renderOpportunities();
-
-}
-
-
-/* ============================================================
-   DETAILS
-============================================================ */
-
-async function openDetails(
-  id
-){
-
-  const item =
-    allOpportunities.find(
-      x =>
-        String(x.id) ===
-        String(id)
-    )
-    ||
-    filteredOpportunities.find(
-      x =>
-        String(x.id) ===
-        String(id)
-    );
-
-  if(!item){
-
-    toast(
-      "Information not found."
-    );
-
-    return;
-
-  }
-
-  currentDetail =
-    item;
-
-  $("detailTitle")
-    .textContent =
-    item.title;
-
-  $("detailDescription")
-    .textContent =
-    item.description ||
-    "No detailed description available.";
-
-  $("detailCountry")
-    .textContent =
-    item.country ||
-    "International";
-
-  $("detailCategory")
-    .textContent =
-    item.category ||
-    "Opportunity";
-
-  $("detailSource")
-    .textContent =
-    item.source ||
-    "Unknown";
-
-  $("detailDeadline")
-    .textContent =
-    item.deadline
-      ? formatDate(
-          item.deadline
-        )
-      : "No deadline specified";
-
-  $("detailPublished")
-    .textContent =
-    formatDate(
-      item.publishedAt ||
-      item.createdAt
-    );
-
-  $("detailViews")
-    .textContent =
-    item.views ||
-    0;
-
-  $("detailCategoryBadge")
-    .textContent =
-    (
-      item.category ||
-      "OPPORTUNITY"
-    )
-    .toUpperCase();
-
-  const image =
-    $("detailImage");
-
-  if(
-    validURL(
-      item.image
-    )
-  ){
-
-    image.src =
-      item.image;
-
-    image.style.display =
-      "block";
-
-  }else{
-
-    image.removeAttribute(
-      "src"
-    );
-
-    image.style.display =
-      "none";
-
-  }
-
-  const apply =
-    $("detailApply");
-
-  const officialUrl =
-    item.applyUrl ||
-    item.detailsUrl ||
-    item.url;
-
-  if(
-    validURL(
-      officialUrl
-    )
-  ){
-
-    apply.href =
-      officialUrl;
-
-    apply.style.display =
-      "block";
-
-  }else{
-
-    apply.removeAttribute(
-      "href"
-    );
-
-    apply.style.display =
-      "none";
-
-  }
-
-  /*
-   * Country extra info
-   */
-
-  const extra =
-    $("detailCountryExtra");
-
-  extra.style.display =
-    "none";
-
-  if(
-    item.country &&
-    item.country !==
-      "International"
-  ){
-
-    await loadDetailCountry(
-      item.country
-    );
-
-  }
-
-  $("detailLanguage")
-    .value =
-    "en";
-
-  $("detailsModal")
-    .style.display =
-    "block";
-
-  document.body.style.overflow =
-    "hidden";
-
-  /*
-   * Firebase view only
-   */
-
-  if(
-    item.type !==
-    "gdelt"
-  ){
-
-    incrementView(
-      item.id
-    );
-
-  }
-
-}
-
-
-/* ============================================================
-   COUNTRY DETAIL
-============================================================ */
-
-async function loadDetailCountry(
-  country
-){
-
-  try{
-
-    let data =
-      countryCache[
-        country
-      ];
-
-    if(!data){
+  ============================================================
+  LOAD DATA
+  ============================================================
+  */
+
+  async function loadData() {
+
+    try {
+
+      /*
+       * If your backend later exposes:
+       *
+       * /api/opportunities
+       *
+       * this frontend will use it.
+       */
 
       const response =
         await fetch(
-          "https://restcountries.com/v3.1/name/" +
-          encodeURIComponent(
-            country
-          ) +
-          "?fullText=true"
+          `${API_URL}/api/opportunities`
         );
 
-      if(
-        !response.ok
-      ){
-
-        return;
-
+      if (!response.ok) {
+        throw new Error(
+          "API unavailable"
+        );
       }
 
-      const result =
+      const data =
         await response.json();
 
-      data =
-        result[0];
+      allItems =
+        Array.isArray(data)
+          ? data
+          : (
+              data.items ||
+              data.opportunities ||
+              []
+            );
 
-      countryCache[
-        country
-      ] =
-        data;
+      buildCountries();
 
+      renderItems();
+
+    } catch (error) {
+
+      console.log(
+        "API error:",
+        error.message
+      );
+
+      /*
+       * Do not crash the page.
+       */
+
+      renderEmpty(
+        currentSection,
+        "No data available yet."
+      );
     }
-
-    if(!data) return;
-
-    const capital =
-      data.capital &&
-      data.capital[0]
-        ? data.capital[0]
-        : "—";
-
-    const population =
-      data.population
-        ? Number(
-            data.population
-          ).toLocaleString()
-        : "—";
-
-    const region =
-      data.region ||
-      "—";
-
-    const languages =
-      data.languages
-        ? Object.values(
-            data.languages
-          ).join(", ")
-        : "—";
-
-    const currencies =
-      data.currencies
-        ? Object.values(
-            data.currencies
-          )
-          .map(
-            c =>
-              c.name +
-              (
-                c.symbol
-                  ? " " +
-                    c.symbol
-                  : ""
-              )
-          )
-          .join(", ")
-        : "—";
-
-    const extra =
-      $("detailCountryExtra");
-
-    extra.innerHTML = `
-
-      <div
-        style="
-          color:#00e676;
-          font-size:11px;
-          font-weight:900;
-          margin-bottom:7px;
-        "
-      >
-        🌍 ${esc(country)} — Country Information
-      </div>
-
-      <div
-        style="
-          color:#aab5ae;
-          font-size:9px;
-          line-height:1.7;
-        "
-      >
-
-        🏛️ Capital:
-        <b>${esc(capital)}</b>
-        <br>
-
-        🌎 Region:
-        <b>${esc(region)}</b>
-        <br>
-
-        👥 Population:
-        <b>${esc(population)}</b>
-        <br>
-
-        🗣️ Languages:
-        <b>${esc(languages)}</b>
-        <br>
-
-        💰 Currency:
-        <b>${esc(currencies)}</b>
-
-      </div>
-
-    `;
-
-    extra.style.display =
-      "block";
-
-  }catch(error){
-
-    console.error(
-      error
-    );
-
   }
 
-}
-
-
-/* ============================================================
-   CLOSE DETAILS
-============================================================ */
-
-function closeDetails(){
-
-  $("detailsModal")
-    .style.display =
-    "none";
-
-  document.body.style.overflow =
-    "";
-
-}
-
-
-/* ============================================================
-   VIEWS
-============================================================ */
-
-function incrementView(
-  id
-){
-
-  if(
-    !db ||
-    !id
-  ){
-
-    return;
-
-  }
-
-  db.ref(
-    "opportunities/" +
-    id +
-    "/views"
-  )
-  .transaction(
-    current =>
-      (
-        Number(
-          current
-        ) ||
-        0
-      ) + 1
-  );
-
-}
-
-
-/* ============================================================
-   SHARE
-============================================================ */
-
-async function shareOpportunity(
-  id
-){
-
-  const item =
-    allOpportunities.find(
-      x =>
-        String(x.id) ===
-        String(id)
-    )
-    ||
-    filteredOpportunities.find(
-      x =>
-        String(x.id) ===
-        String(id)
-    );
-
-  if(!item){
-
-    toast(
-      "Information not found."
-    );
-
-    return;
-
-  }
-
-  const shareText =
-    `${item.title}\n\n` +
-    `${item.description}\n\n` +
-    `Country: ${item.country}\n` +
-    `Category: ${item.category}\n` +
-    `Source: ${item.source}\n\n` +
-    `MAKYAMA Global Opportunities`;
-
-  if(
-    navigator.share
-  ){
-
-    try{
-
-      await navigator.share({
-
-        title:
-          item.title,
-
-        text:
-          shareText,
-
-        url:
-          item.url ||
-          location.href
-
-      });
-
-      if(
-        item.type !==
-        "gdelt"
-      ){
-
-        incrementShare(
-          item.id
-        );
-
-      }
-
-    }catch(error){}
-
-  }else{
-
-    try{
-
-      await navigator.clipboard.writeText(
-        shareText +
-        "\n" +
-        (
-          item.url ||
-          location.href
-        )
-      );
-
-      toast(
-        "📋 Information copied."
-      );
-
-      if(
-        item.type !==
-        "gdelt"
-      ){
-
-        incrementShare(
-          item.id
-        );
-
-      }
-
-    }catch{
-
-      toast(
-        "Share is not supported."
-      );
-
-    }
-
-  }
-
-}
-
-
-async function shareCurrent(){
-
-  if(
-    currentDetail
-  ){
-
-    await shareOpportunity(
-      currentDetail.id
-    );
-
-  }
-
-}
-
-
-function incrementShare(
-  id
-){
-
-  if(
-    !db ||
-    !id
-  ){
-
-    return;
-
-  }
-
-  db.ref(
-    "opportunities/" +
-    id +
-    "/shares"
-  )
-  .transaction(
-    current =>
-      (
-        Number(
-          current
-        ) ||
-        0
-      ) + 1
-  );
-
-}
-
-
-/* ============================================================
-   TRANSLATION
-============================================================ */
-
-function translateCurrentDetail(){
-
-  if(
-    !currentDetail
-  ){
-
-    return;
-
-  }
-
-  const language =
-    $("detailLanguage")
-      .value;
-
-  if(
-    language ===
-    "en"
-  ){
-
-    $("detailDescription")
-      .textContent =
-      currentDetail
-        .description ||
-      "";
-
-    return;
-
-  }
-
-  const text =
-    encodeURIComponent(
-      currentDetail
-        .description ||
-      ""
-    );
-
-  const url =
-    "https://translate.google.com/?sl=auto&tl=" +
-    encodeURIComponent(
-      language
-    ) +
-    "&text=" +
-    text +
-    "&op=translate";
-
-  window.open(
-    url,
-    "_blank",
-    "noopener,noreferrer"
-  );
-
-}
-
-
-/* ============================================================
-   ADS
-============================================================ */
-
-function injectAd(
-  container,
-  script
-){
-
-  container.innerHTML =
-    "";
-
-  const temp =
-    document.createElement(
-      "div"
-    );
-
-  temp.innerHTML =
-    script ||
-    "";
-
-  Array
-    .from(
-      temp.childNodes
-    )
-    .forEach(
-      node=>{
-
-        if(
-          node.nodeName !==
-          "SCRIPT"
-        ){
-
-          container.appendChild(
-            node.cloneNode(
-              true
-            )
-          );
-
-        }
-
-      }
-    );
-
-  Array
-    .from(
-      temp.querySelectorAll(
-        "script"
-      )
-    )
-    .forEach(
-      oldScript=>{
-
-        const scriptElement =
-          document.createElement(
-            "script"
-          );
-
-        Array
-          .from(
-            oldScript.attributes
-          )
-          .forEach(
-            attr=>{
-
-              scriptElement
-                .setAttribute(
-                  attr.name,
-                  attr.value
-                );
-
-            }
-          );
-
-        scriptElement.textContent =
-          oldScript.textContent;
-
-        container.appendChild(
-          scriptElement
-        );
-
-      }
-    );
-
-}
-
-
-function initAds(){
-
-  if(!db) return;
-
-  db.ref(
-    "ads"
-  ).on(
-    "value",
-    snapshot=>{
-
-      const top =
-        $("topAds");
-
-      const middle =
-        $("middleAds");
-
-      top.innerHTML =
-        "";
-
-      middle.innerHTML =
-        "";
-
-      const ads =
-        [];
-
-      snapshot.forEach(
-        child=>{
-
-          const ad =
-            child.val() ||
-            {};
-
-          ads.push({
-
-            key:
-              child.key,
-
-            ...ad
-
-          });
-
-          if(
-            ad.active === false
-          ){
-
-            return;
-
-          }
-
-          if(
-            ad.position ===
-            "top"
-          ){
-
-            const box =
-              document.createElement(
-                "div"
-              );
-
-            box.className =
-              "ad-card";
-
-            top.appendChild(
-              box
-            );
-
-            injectAd(
-              box,
-              ad.script
-            );
-
-          }
-
-          if(
-            ad.position ===
-            "middle"
-          ){
-
-            const box =
-              document.createElement(
-                "div"
-              );
-
-            box.className =
-              "ad-card";
-
-            middle.appendChild(
-              box
-            );
-
-            injectAd(
-              box,
-              ad.script
-            );
-
-          }
-
-        }
-      );
-
-      if(admin){
-
-        renderAdminAds(
-          ads
-        );
-
-      }
-
-    }
-  );
-
-}
-
-
-/* ============================================================
-   LOGIN
-============================================================ */
-
-function openLogin(){
-
-  $("loginModal")
-    .style.display =
-    "block";
-
-}
-
-
-function closeLogin(){
-
-  $("loginModal")
-    .style.display =
-    "none";
-
-}
-
-
-function loginAdmin(){
-
-  const username =
-    $("loginUsername")
-      .value
-      .trim();
-
-  const password =
-    $("loginPassword")
-      .value;
 
   /*
-   * Existing credentials preserved.
-   *
-   * Production should use
-   * Firebase Authentication.
-   */
+  ============================================================
+  COUNTRY LIST
+  ============================================================
+  */
 
-  if(
-    username ===
-      "MAKYAMA" &&
-    password ===
-      "Makame005@"
-  ){
+  function buildCountries() {
 
-    admin =
-      true;
+    const select =
+      document.getElementById(
+        "countrySelect"
+      );
 
-    closeLogin();
-
-    $("adminPanel")
-      .style.display =
-      "block";
-
-    loadAdminAds();
-
-    toast(
-      "👑 Admin dashboard enabled."
-    );
-
-  }else{
-
-    toast(
-      "❌ Incorrect username or password."
-    );
-
-  }
-
-}
-
-
-function logoutAdmin(){
-
-  admin =
-    false;
-
-  $("adminPanel")
-    .style.display =
-    "none";
-
-  toast(
-    "Admin logged out."
-  );
-
-}
-
-
-/* ============================================================
-   ADMIN ADS
-============================================================ */
-
-async function addAd(){
-
-  if(
-    !admin ||
-    !db
-  ){
-
-    return;
-
-  }
-
-  const name =
-    $("adName")
-      .value
-      .trim();
-
-  const position =
-    $("adPosition")
-      .value;
-
-  const script =
-    $("adScript")
-      .value
-      .trim();
-
-  if(!script){
-
-    toast(
-      "Paste advertising code first."
-    );
-
-    return;
-
-  }
-
-  try{
-
-    await db
-      .ref("ads")
-      .push({
-
-        name:
-          name ||
-          "Advertisement",
-
-        position,
-
-        script,
-
-        createdAt:
-          Date.now(),
-
-        active:
-          true
-
-      });
-
-    $("adName")
-      .value =
-      "";
-
-    $("adScript")
-      .value =
-      "";
-
-    toast(
-      "📢 Advertisement added."
-    );
-
-  }catch(error){
-
-    console.error(
-      error
-    );
-
-    toast(
-      "❌ Failed to add advertisement."
-    );
-
-  }
-
-}
-
-
-async function loadAdminAds(){
-
-  if(!db) return;
-
-  const snapshot =
-    await db
-      .ref("ads")
-      .once("value");
-
-  const ads =
-    [];
-
-  snapshot.forEach(
-    child=>{
-
-      ads.push({
-
-        key:
-          child.key,
-
-        ...(
-          child.val() ||
-          {}
+    const countries =
+      [
+        ...new Set(
+          allItems
+            .map(
+              item =>
+                item.country
+            )
+            .filter(Boolean)
         )
-
-      });
-
-    }
-  );
-
-  renderAdminAds(
-    ads
-  );
-
-}
-
-
-function renderAdminAds(
-  ads
-){
-
-  const box =
-    $("adminAdsList");
-
-  if(!ads.length){
-
-    box.innerHTML =
-      '<div style="color:#68746d;font-size:9px">No ads.</div>';
-
-    return;
-
-  }
-
-  box.innerHTML =
-    ads
-      .map(
-        ad=>`
-
-          <div class="admin-item">
-
-            <span>
-              📢 ${esc(
-                ad.name ||
-                "Advertisement"
-              )}
-              —
-              ${esc(
-                ad.position ||
-                ""
-              )}
-            </span>
-
-            <button
-              onclick="deleteAd('${esc(
-                ad.key
-              )}')"
-            >
-              DELETE
-            </button>
-
-          </div>
-
-        `
-      )
-      .join("");
-
-}
-
-
-async function deleteAd(
-  key
-){
-
-  if(
-    !admin ||
-    !db
-  ){
-
-    return;
-
-  }
-
-  if(
-    !confirm(
-      "Delete this advertisement?"
-    )
-  ){
-
-    return;
-
-  }
-
-  await db
-    .ref(
-      "ads/" +
-      key
-    )
-    .remove();
-
-  toast(
-    "Advertisement deleted."
-  );
-
-  loadAdminAds();
-
-}
-
-
-/* ============================================================
-   ADMIN ADD OPPORTUNITY
-============================================================ */
-
-async function addOpportunity(){
-
-  if(
-    !admin ||
-    !db
-  ){
-
-    return;
-
-  }
-
-  const title =
-    $("adminTitle")
-      .value
-      .trim();
-
-  const description =
-    $("adminDescription")
-      .value
-      .trim();
-
-  const category =
-    $("adminCategory")
-      .value;
-
-  const country =
-    $("adminCountry")
-      .value
-      .trim() ||
-    "International";
-
-  const source =
-    $("adminSource")
-      .value
-      .trim() ||
-    "MAKYAMA";
-
-  const url =
-    $("adminURL")
-      .value
-      .trim();
-
-  const deadline =
-    $("adminDeadline")
-      .value
-      .trim();
-
-  const publishedInput =
-    $("adminPublished")
-      .value;
-
-  if(!title){
-
-    toast(
-      "Title is required."
-    );
-
-    return;
-
-  }
-
-  if(
-    !validURL(url)
-  ){
-
-    toast(
-      "A valid http/https URL is required."
-    );
-
-    return;
-
-  }
-
-  const publishedAt =
-    publishedInput
-      ? new Date(
-          publishedInput
-        ).getTime()
-      : Date.now();
-
-  const id =
-    (
-      title +
-      "-" +
-      Date.now()
-    )
-    .toLowerCase()
-    .replace(
-      /[^a-z0-9]+/g,
-      "-"
-    );
-
-  try{
-
-    await db
-      .ref(
-        "opportunities/" +
-        id
-      )
-      .set({
-
-        id,
-
-        title,
-
-        description:
-          description ||
-          "No detailed description available.",
-
-        category,
-
-        country,
-
-        countries:[
-          country
-        ],
-
-        source,
-
-        url,
-
-        applyUrl:
-          url,
-
-        detailsUrl:
-          url,
-
-        deadline,
-
-        publishedAt,
-
-        createdAt:
-          Date.now(),
-
-        updatedAt:
-          Date.now(),
-
-        active:
-          true,
-
-        views:
-          0,
-
-        shares:
-          0
-
-      });
-
-    [
-
-      "adminTitle",
-      "adminDescription",
-      "adminCountry",
-      "adminSource",
-      "adminURL",
-      "adminDeadline",
-      "adminPublished"
-
-    ].forEach(
-      id=>{
-
-        $(id).value =
-          "";
-
-      }
-    );
-
-    toast(
-      "✅ Opportunity added."
-    );
-
-  }catch(error){
-
-    console.error(
-      error
-    );
-
-    toast(
-      "❌ Failed to add opportunity."
-    );
-
-  }
-
-}
-
-
-/* ============================================================
-   ONLINE USERS
-============================================================ */
-
-function initPresence(){
-
-  if(!db) return;
-
-  const connections =
-    db.ref(
-      "server_stats/connected_users"
-    );
-
-  const connection =
-    connections.push();
-
-  db.ref(
-    ".info/connected"
-  )
-  .on(
-    "value",
-    snapshot=>{
-
-      if(
-        snapshot.val() ===
-        true
-      ){
-
-        connection
-          .onDisconnect()
-          .remove();
-
-        connection.set({
-
-          connectedAt:
-            firebase
-              .database
-              .ServerValue
-              .TIMESTAMP
-
-        });
-
-      }
-
-    }
-  );
-
-  connections.on(
-    "value",
-    snapshot=>{
-
-      const count =
-        snapshot.numChildren();
-
-      $("onlineCount")
-        .textContent =
-        count;
-
-    }
-  );
-
-}
-
-
-/* ============================================================
-   CLOSE MODALS
-============================================================ */
-
-window.addEventListener(
-  "click",
-  event=>{
-
-    if(
-      event.target ===
-      $("detailsModal")
-    ){
-
-      closeDetails();
-
-    }
-
-    if(
-      event.target ===
-      $("loginModal")
-    ){
-
-      closeLogin();
-
-    }
-
-  }
-);
-
-
-/* ============================================================
-   ESC CLOSE
-============================================================ */
-
-window.addEventListener(
-  "keydown",
-  event=>{
-
-    if(
-      event.key ===
-      "Escape"
-    ){
-
-      closeDetails();
-      closeLogin();
-
-    }
-
-  }
-);
-
-
-/* ============================================================
-   INITIALIZE
-============================================================ */
-
-window.addEventListener(
-  "load",
-  ()=>{
-
-    buildCountryList();
-
-    initOpportunities();
-
-    initAds();
-
-    initPresence();
-
-    /*
-     * Load global news immediately.
-     * This means the homepage is not
-     * dependent only on Firebase.
-     */
-
-    setTimeout(
-      async()=>{
-
-        const news =
-          await fetchGlobalNews();
-
-        if(
-          news.length
-        ){
-
-          filteredOpportunities =
-            mergeUnique(
-              allOpportunities,
-              news
-            );
-
-          filteredOpportunities.sort(
-            (a,b)=>
-              getTime(
-                b.publishedAt
-              ) -
-              getTime(
-                a.publishedAt
-              )
+      ]
+      .sort();
+
+    select.innerHTML = `
+      <option value="all">
+        All Countries
+      </option>
+    `;
+
+    countries.forEach(
+      country => {
+
+        const option =
+          document.createElement(
+            "option"
           );
 
-          renderOpportunities();
+        option.value =
+          country;
 
+        option.textContent =
+          country;
+
+        select.appendChild(
+          option
+        );
+      }
+    );
+  }
+
+
+  /*
+  ============================================================
+  FILTER
+  ============================================================
+  */
+
+  function getFilteredItems() {
+
+    const country =
+      document
+        .getElementById(
+          "countrySelect"
+        )
+        .value;
+
+    const search =
+      document
+        .getElementById(
+          "searchInput"
+        )
+        .value
+        .toLowerCase()
+        .trim();
+
+    return allItems.filter(
+      item => {
+
+        const category =
+          String(
+            item.category ||
+            ""
+          ).toLowerCase();
+
+        const title =
+          String(
+            item.title ||
+            ""
+          ).toLowerCase();
+
+        const description =
+          String(
+            item.description ||
+            ""
+          ).toLowerCase();
+
+        const itemCountry =
+          String(
+            item.country ||
+            ""
+          );
+
+        /*
+         * Only these 3 categories.
+         */
+
+        const validCategory =
+          (
+            category.includes("job") ||
+            category.includes("education") ||
+            category.includes("news")
+          );
+
+        if (!validCategory) {
+          return false;
         }
 
-      },
-      1000
-    );
+        /*
+         * Current section.
+         */
 
+        if (
+          currentSection === "jobs" &&
+          !category.includes("job")
+        ) {
+          return false;
+        }
+
+        if (
+          currentSection === "education" &&
+          !category.includes("education")
+        ) {
+          return false;
+        }
+
+        if (
+          currentSection === "news" &&
+          !category.includes("news")
+        ) {
+          return false;
+        }
+
+        /*
+         * Country.
+         */
+
+        if (
+          country !== "all" &&
+          itemCountry !== country
+        ) {
+          return false;
+        }
+
+        /*
+         * Search.
+         */
+
+        if (
+          search &&
+          !title.includes(search) &&
+          !description.includes(search) &&
+          !itemCountry
+            .toLowerCase()
+            .includes(search)
+        ) {
+          return false;
+        }
+
+        return true;
+      }
+    );
   }
-);
+
+
+  /*
+  ============================================================
+  RENDER
+  ============================================================
+  */
+
+  function renderItems() {
+
+    const items =
+      getFilteredItems();
+
+    const container =
+      document.getElementById(
+        `${currentSection}Container`
+      );
+
+    if (!items.length) {
+
+      container.innerHTML = `
+        <div class="empty">
+          <strong>
+            No ${currentSection} found
+          </strong>
+
+          <span>
+            Try another country or search term.
+          </span>
+        </div>
+      `;
+
+      return;
+    }
+
+    container.innerHTML =
+      items
+        .slice(0, 100)
+        .map(
+          createCard
+        )
+        .join("");
+  }
+
+
+  /*
+  ============================================================
+  CARD
+  ============================================================
+  */
+
+  function createCard(item) {
+
+    const title =
+      escapeHtml(
+        item.title ||
+        "Untitled"
+      );
+
+    const description =
+      escapeHtml(
+        item.description ||
+        "No description available."
+      );
+
+    const organization =
+      escapeHtml(
+        item.organization ||
+        item.source ||
+        "Verified source"
+      );
+
+    const country =
+      escapeHtml(
+        item.country ||
+        "International"
+      );
+
+    const source =
+      escapeHtml(
+        item.source ||
+        "Verified source"
+      );
+
+    const url =
+      item.applicationUrl ||
+      item.sourceUrl ||
+      "#";
+
+    let label =
+      "Opportunity";
+
+    if (
+      currentSection === "jobs"
+    ) {
+      label = "JOB";
+    }
+
+    if (
+      currentSection === "education"
+    ) {
+      label = "EDUCATION";
+    }
+
+    if (
+      currentSection === "news"
+    ) {
+      label = "NEWS";
+    }
+
+    return `
+      <article class="card">
+
+        <span class="card-type">
+          ${label}
+        </span>
+
+        <h3>
+          ${title}
+        </h3>
+
+        <p>
+          ${description.substring(0, 240)}
+          ${description.length > 240 ? "..." : ""}
+        </p>
+
+        <div class="card-meta">
+
+          <span>
+            🏢 ${organization}
+          </span>
+
+          <span>
+            🌍 ${country}
+          </span>
+
+          <span>
+            🔗 ${source}
+          </span>
+
+        </div>
+
+        <a
+          href="${escapeAttribute(url)}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View Source →
+        </a>
+
+      </article>
+    `;
+  }
+
+
+  /*
+  ============================================================
+  SEARCH
+  ============================================================
+  */
+
+  function searchItems() {
+    renderItems();
+  }
+
+
+  /*
+  ============================================================
+  EMPTY
+  ============================================================
+  */
+
+  function renderEmpty(
+    section,
+    message
+  ) {
+
+    const container =
+      document.getElementById(
+        `${section}Container`
+      );
+
+    if (!container) {
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="empty">
+
+        <strong>
+          ${section.toUpperCase()}
+        </strong>
+
+        <span>
+          ${message}
+        </span>
+
+      </div>
+    `;
+  }
+
+
+  /*
+  ============================================================
+  SECURITY
+  ============================================================
+  */
+
+  function escapeHtml(
+    value
+  ) {
+
+    return String(value)
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+  }
+
+
+  function escapeAttribute(
+    value
+  ) {
+
+    return escapeHtml(
+      value
+    );
+  }
+
+
+  /*
+  ============================================================
+  START
+  ============================================================
+  */
+
+  loadData();
 
 </script>
 
