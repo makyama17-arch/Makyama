@@ -323,6 +323,14 @@
       margin-top: 15px;
     }
 
+    .notification-box {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      background: rgba(0,123,255,.10);
+      border: 1px solid rgba(0,217,255,.25);
+    }
+
     footer {
       text-align: center;
       padding: 30px 15px;
@@ -630,6 +638,8 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-messaging-compat.js"></script>
+
 
 <script>
 
@@ -671,6 +681,30 @@ const auth =
 
 const database =
   firebase.database();
+
+
+/* =========================================================
+   FIREBASE MESSAGING
+========================================================= */
+
+let messaging = null;
+
+try {
+
+  messaging =
+    firebase.messaging();
+
+} catch (error) {
+
+  console.error(
+    "Firebase Messaging haijaanzishwa:",
+    error
+  );
+
+}
+
+const VAPID_KEY =
+  "BCs6hwdO9D94ZamQcDk1YdhvC1M13x52igURFUqDmLDn4heYn25BYBsE8hlv1GjukFXchcUUwbRGENo7FJiZHFs";
 
 
 /* =========================================================
@@ -1252,17 +1286,9 @@ async function login() {
     }
 
 
-    /* =====================================================
-       SAVE SESSION
-    ===================================================== */
-
     currentSession =
       data;
 
-
-    /* =====================================================
-       FIREBASE LOGIN
-    ===================================================== */
 
     await auth.signInWithCustomToken(
       data.token
@@ -1329,6 +1355,251 @@ async function login() {
       </div>
 
     `;
+
+  }
+
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+async function enableNotifications() {
+
+  try {
+
+    if (!("Notification" in window)) {
+
+      alert(
+        "❌ Browser yako hai-support notifications."
+      );
+
+      return;
+
+    }
+
+    if (!currentSession) {
+
+      alert(
+        "❌ Ingia kwanza kabla ya kuwasha notifications."
+      );
+
+      showPage("login");
+
+      return;
+
+    }
+
+    if (!messaging) {
+
+      throw new Error(
+        "Firebase Messaging haijapatikana kwenye browser."
+      );
+
+    }
+
+    if (
+      !("serviceWorker" in navigator)
+    ) {
+
+      throw new Error(
+        "Browser yako haisupport Service Worker."
+      );
+
+    }
+
+    const permission =
+      await Notification.requestPermission();
+
+    if (
+      permission !== "granted"
+    ) {
+
+      alert(
+        "❌ Notification permission haijaruhusiwa."
+      );
+
+      return;
+
+    }
+
+    const registration =
+      await navigator.serviceWorker.register(
+        "/firebase-messaging-sw.js"
+      );
+
+    await navigator.serviceWorker.ready;
+
+    const token =
+      await messaging.getToken({
+
+        vapidKey:
+          VAPID_KEY,
+
+        serviceWorkerRegistration:
+          registration
+
+      });
+
+    if (!token) {
+
+      throw new Error(
+        "Imeshindikana kupata notification token."
+      );
+
+    }
+
+    const authUser =
+      firebase.auth().currentUser;
+
+    if (!authUser) {
+
+      throw new Error(
+        "Hujaingia Firebase."
+      );
+
+    }
+
+    const idToken =
+      await authUser.getIdToken(true);
+
+    const response =
+      await fetch(
+        SERVER +
+        "/api/register-device",
+        {
+
+          method: "POST",
+
+          headers: {
+
+            "Content-Type":
+              "application/json",
+
+            "Authorization":
+              "Bearer " +
+              idToken
+
+          },
+
+          body:
+            JSON.stringify({
+
+              token
+
+            })
+
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (
+      !response.ok ||
+      !data.ok
+    ) {
+
+      throw new Error(
+        data.error ||
+        "Imeshindikana kusajili notifications."
+      );
+
+    }
+
+    localStorage.setItem(
+      "makyamaNotifications",
+      "enabled"
+    );
+
+    alert(
+      "🔔 Notifications zimewashwa!"
+    );
+
+  } catch (error) {
+
+    console.error(
+      "NOTIFICATION ERROR:",
+      error
+    );
+
+    alert(
+      "❌ " +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   FOREGROUND NOTIFICATIONS
+========================================================= */
+
+function setupForegroundNotifications() {
+
+  if (!messaging) {
+
+    return;
+
+  }
+
+  try {
+
+    messaging.onMessage(
+      payload => {
+
+        console.log(
+          "🔔 Foreground notification:",
+          payload
+        );
+
+        const title =
+          payload.notification?.title ||
+          "MAKYAMA TRANSPORT";
+
+        const body =
+          payload.notification?.body ||
+          "Una taarifa mpya kuhusu mzigo wako.";
+
+        if (
+          Notification.permission ===
+          "granted"
+        ) {
+
+          try {
+
+            new Notification(
+              title,
+              {
+                body,
+                icon:
+                  "/favicon.ico"
+              }
+            );
+
+          } catch (error) {
+
+            console.error(
+              "Browser notification error:",
+              error
+            );
+
+          }
+
+        }
+
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      "FOREGROUND FCM ERROR:",
+      error
+    );
 
   }
 
@@ -1703,7 +1974,6 @@ function normalizeHistory(history) {
 
 /* =========================================================
    DASHBOARD
-   AUTHORIZATION TOKEN
 ========================================================= */
 
 async function loadDashboard() {
@@ -1871,10 +2141,6 @@ function renderAgentDashboard(cargo) {
   let actionButton = "";
 
 
-  /* =====================================================
-     AGENT 1
-  ===================================================== */
-
   if (
     stageNumber === 1
   ) {
@@ -1912,10 +2178,6 @@ function renderAgentDashboard(cargo) {
 
   }
 
-
-  /* =====================================================
-     AGENT 2+
-  ===================================================== */
 
   else {
 
@@ -2049,6 +2311,38 @@ function renderAgentDashboard(cargo) {
         ${actionButton}
 
       </div>
+
+
+      <div class="card notification-box">
+
+        <h2>
+          🔔 Notifications
+        </h2>
+
+        <p class="small">
+
+          Washa notifications ili upate ujumbe
+          mzigo unapofika kwenye hatua yako.
+
+        </p>
+
+        <br>
+
+        <button
+          class="success"
+          onclick="enableNotifications()">
+
+          🔔 Washa Notifications
+
+        </button>
+
+        <div
+          id="notificationStatus"
+          class="notice hidden">
+        </div>
+
+      </div>
+
 
       <div class="card">
 
@@ -2584,6 +2878,33 @@ function renderBossDashboard(cargo) {
         </p>
 
       </div>
+
+
+      <div class="card notification-box">
+
+        <h2>
+          🔔 Notifications
+        </h2>
+
+        <p class="small">
+
+          Washa notifications ili Boss apate
+          taarifa mzigo unapofika hatua ya mwisho.
+
+        </p>
+
+        <br>
+
+        <button
+          class="success"
+          onclick="enableNotifications()">
+
+          🔔 Washa Notifications
+
+        </button>
+
+      </div>
+
 
       ${bossButton}
 
@@ -3456,6 +3777,8 @@ auth.onAuthStateChanged(
           "hidden"
         );
 
+      setupForegroundNotifications();
+
     } else {
 
       document
@@ -3486,4 +3809,4 @@ console.log(
 </script>
 
 </body>
-  </html>
+      </html>
