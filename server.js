@@ -1,29 +1,26 @@
+// server.js
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
-const admin = require("firebase-admin");
 const crypto = require("crypto");
-const path = require("path");
+const admin = require("firebase-admin");
 
 const app = express();
-const PORT = process.env.PORT || 10000;
 
-app.use(cors());
-app.use(express.json({ limit: "2mb" }));
-app.use(express.static(__dirname));
+app.use(cors({
+  origin: true,
+  methods: ["GET","POST","PATCH","DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"]
+}));
 
+app.use(express.json({limit:"1mb"}));
 
-/* =========================================================
-   FIREBASE
-========================================================= */
-
-if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
-  console.error(
-    "❌ FIREBASE_SERVICE_ACCOUNT haijawekwa kwenye Render."
-  );
-
-  process.exit(1);
-}
+const PORT = process.env.PORT || 3000;
+const DATABASE_URL =
+  process.env.FIREBASE_DATABASE_URL ||
+  "https://makyama-e5e89-default-rtdb.firebaseio.com";
 
 let serviceAccount;
 
@@ -31,129 +28,58 @@ try {
   serviceAccount = JSON.parse(
     process.env.FIREBASE_SERVICE_ACCOUNT
   );
-} catch (err) {
-  console.error(
-    "❌ FIREBASE_SERVICE_ACCOUNT si JSON sahihi."
-  );
-
+} catch (error) {
+  console.error("FIREBASE_SERVICE_ACCOUNT si JSON sahihi.");
   process.exit(1);
 }
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert(
-      serviceAccount
-    ),
-
-    databaseURL:
-      process.env.FIREBASE_DATABASE_URL ||
-      "https://makyama-e5e89-default-rtdb.firebaseio.com"
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: DATABASE_URL
   });
 }
 
 const db = admin.database();
 
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function makeTrackingId() {
-  return (
-    "MKT-" +
-    Math.floor(
-      100000 +
-      Math.random() * 900000
-    )
-  );
-}
-
-function makePin() {
-  return String(
-    Math.floor(
-      100000 +
-      Math.random() * 900000
-    )
-  );
-}
-
-function makeUid() {
-  return crypto.randomUUID();
-}
-
 function nowISO() {
   return new Date().toISOString();
 }
 
-function cleanText(
-  value,
-  max = 200
-) {
-  if (
-    typeof value !== "string"
-  ) {
-    return "";
-  }
-
-  return value
+function cleanText(value, max = 500) {
+  return String(value ?? "")
     .trim()
+    .replace(/\s+/g, " ")
     .slice(0, max);
 }
 
-
-/* =========================================================
-   LOCATION
-========================================================= */
-
-async function reverseGeocode(
-  lat,
-  lng
-) {
-  try {
-    const url =
-      "https://nominatim.openstreetmap.org/reverse" +
-      `?lat=${encodeURIComponent(lat)}` +
-      `&lon=${encodeURIComponent(lng)}` +
-      "&format=json&zoom=18";
-
-    const response =
-      await fetch(
-        url,
-        {
-          headers: {
-            "User-Agent":
-              "MAKYAMA-TRANSPORT/1.0"
-          }
-        }
-      );
-
-    if (!response.ok) {
-      return "";
-    }
-
-    const data =
-      await response.json();
-
-    return data.display_name || "";
-
-  } catch (err) {
-    return "";
-  }
+function normalizePhone(phone) {
+  return cleanText(phone, 30).replace(/[^\d+]/g, "");
 }
 
+function makeTrackingId() {
+  return "MKT-" + Math.floor(100000 + Math.random() * 900000);
+}
 
-function validLocation(
-  location
-) {
-  if (!location) {
-    return false;
-  }
+function makePin() {
+  return String(
+    Math.floor(100000 + Math.random() * 900000)
+  );
+}
 
-  const lat =
-    Number(location.lat);
+function makeUid(prefix = "user") {
+  return (
+    prefix +
+    "_" +
+    crypto.randomBytes(12).toString("hex")
+  );
+}
 
-  const lng =
-    Number(location.lng);
+function validLocation(location) {
+  if (!location) return false;
+
+  const lat = Number(location.lat);
+  const lng = Number(location.lng);
 
   return (
     Number.isFinite(lat) &&
@@ -165,52 +91,73 @@ function validLocation(
   );
 }
 
+async function reverseGeocode(location) {
+  if (!validLocation(location)) return null;
 
-/* =========================================================
-   AUTHENTICATION
-========================================================= */
+  try {
+    const lat = Number(location.lat);
+    const lng = Number(location.lng);
 
-async function requireAuth(
-  req,
-  res,
-  next
-) {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
+      {
+        headers: {
+          "User-Agent": "MAKYAMA-TRANSPORT/1.0"
+        }
+      }
+    );
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+
+    return {
+      lat,
+      lng,
+      address:
+        data.display_name ||
+        `${lat}, ${lng}`
+    };
+  } catch (error) {
+    console.error(
+      "REVERSE GEOCODE ERROR:",
+      error.message
+    );
+
+    return {
+      lat: Number(location.lat),
+      lng: Number(location.lng),
+      address: `${location.lat}, ${location.lng}`
+    };
+  }
+}
+
+async function requireAuth(req, res, next) {
   try {
     const header =
-      req.headers.authorization ||
-      "";
+      req.headers.authorization || "";
 
-    if (
-      !header.startsWith(
-        "Bearer "
-      )
-    ) {
+    if (!header.startsWith("Bearer ")) {
       return res.status(401).json({
         ok: false,
-        error:
-          "Authorization token haipo."
+        error: "Authorization token haipo."
       });
     }
 
-    const token =
-      header.substring(7);
+    const token = header.substring(7);
 
     const decoded =
-      await admin.auth()
-        .verifyIdToken(
-          token,
-          true
-        );
+      await admin.auth().verifyIdToken(
+        token,
+        true
+      );
 
-    req.user =
-      decoded;
-
+    req.user = decoded;
     next();
-
-  } catch (err) {
+  } catch (error) {
     console.error(
       "AUTH ERROR:",
-      err.message
+      error.message
     );
 
     return res.status(401).json({
@@ -221,249 +168,148 @@ async function requireAuth(
   }
 }
 
+async function requireAdmin(req, res, next) {
+  await requireAuth(req, res, () => {
+    if (
+      req.user.role !== "admin" ||
+      req.user.admin !== true
+    ) {
+      return res.status(403).json({
+        ok: false,
+        error: "Admin access required."
+      });
+    }
 
-/* =========================================================
-   GET CARGO
-========================================================= */
+    next();
+  });
+}
 
-async function getCargo(
-  trackingId
-) {
-  const snapshot =
-    await db
-      .ref(
-        `cargo/${trackingId}`
-      )
-      .once("value");
+async function getCargo(trackingId) {
+  const snapshot = await db
+    .ref(`cargo/${trackingId}`)
+    .once("value");
 
-  if (
-    !snapshot.exists()
-  ) {
+  if (!snapshot.exists()) {
     return null;
   }
 
   return snapshot.val();
 }
 
+function removePrivateData(cargo) {
+  const copy = JSON.parse(
+    JSON.stringify(cargo)
+  );
 
-/* =========================================================
-   REMOVE PRIVATE DATA
-========================================================= */
+  delete copy.private;
 
-function removePrivateData(
-  cargo
-) {
-  if (!cargo) {
-    return null;
+  if (copy.boss) {
+    delete copy.boss.private;
   }
 
-  const safeCargo = {
-    trackingId:
-      cargo.trackingId,
+  if (copy.stages) {
+    const stages = Array.isArray(copy.stages)
+      ? copy.stages
+      : Object.values(copy.stages);
 
-    cargoName:
-      cargo.cargoName,
-
-    origin:
-      cargo.origin,
-
-    destination:
-      cargo.destination,
-
-    bossName:
-      cargo.bossName,
-
-    status:
-      cargo.status,
-
-    createdAt:
-      cargo.createdAt
-  };
-
-
-  if (cargo.boss) {
-    safeCargo.boss = {
-      uid:
-        cargo.boss.uid,
-
-      name:
-        cargo.boss.name,
-
-      history:
-        cargo.boss.history ||
-        {}
-    };
-  }
-
-
-  safeCargo.stages = {};
-
-  const stages =
-    cargo.stages || {};
-
-  for (
-    const key of Object.keys(
-      stages
-    )
-  ) {
-    const stage =
-      stages[key];
-
-    safeCargo.stages[key] = {
-      stage:
-        stage.stage,
-
-      name:
-        stage.name,
-
-      uid:
-        stage.uid,
-
-      status:
-        stage.status,
-
-      history:
-        stage.history ||
-        {}
-    };
-  }
-
-  return safeCargo;
-}
-
-
-/* =========================================================
-   PUBLIC CARGO
-========================================================= */
-
-function makePublicCargo(
-  cargo
-) {
-  if (!cargo) {
-    return null;
-  }
-
-  return {
-    trackingId:
-      cargo.trackingId,
-
-    cargoName:
-      cargo.cargoName,
-
-    origin:
-      cargo.origin,
-
-    destination:
-      cargo.destination,
-
-    status:
-      cargo.status,
-
-    createdAt:
-      cargo.createdAt
-  };
-}
-
-
-/* =========================================================
-   AGENT-SPECIFIC CARGO
-========================================================= */
-
-function makeAgentCargo(
-  cargo,
-  stageNumber
-) {
-  if (!cargo) {
-    return null;
-  }
-
-  const stageKey =
-    `stage_${stageNumber}`;
-
-  const myStage =
-    cargo.stages?.[
-      stageKey
-    ];
-
-  if (!myStage) {
-    return null;
-  }
-
-
-  /*
-    AGENT 1
-    Anaweza kuona taarifa zote
-    za operational bila PIN hashes.
-  */
-
-  if (
-    Number(stageNumber) === 1
-  ) {
-    return removePrivateData(
-      cargo
-    );
-  }
-
-
-  /*
-    AGENTS 2+
-    Wanaona:
-    - taarifa za mzigo
-    - stage yao
-    - history yao
-
-    Hawaoni:
-    - agents wengine
-    - GPS za agents wengine
-    - history za agents wengine
-    - Boss history
-  */
-
-  return {
-    trackingId:
-      cargo.trackingId,
-
-    cargoName:
-      cargo.cargoName,
-
-    origin:
-      cargo.origin,
-
-    destination:
-      cargo.destination,
-
-    status:
-      cargo.status,
-
-    createdAt:
-      cargo.createdAt,
-
-    stages: {
-      [stageKey]: {
-        stage:
-          myStage.stage,
-
-        name:
-          myStage.name,
-
-        uid:
-          myStage.uid,
-
-        status:
-          myStage.status,
-
-        history:
-          myStage.history ||
-          {}
+    stages.forEach(stage => {
+      if (stage.private) {
+        delete stage.private;
       }
-    }
+    });
+  }
+
+  return copy;
+}
+
+function makePublicCargo(cargo) {
+  return {
+    trackingId: cargo.trackingId,
+    cargoName: cargo.cargoName,
+    origin: cargo.origin,
+    destination: cargo.destination,
+    status: cargo.status,
+    createdAt: cargo.createdAt
   };
 }
 
+function makeAgentCargo(cargo, stageNumber) {
+  const result = {
+    trackingId: cargo.trackingId,
+    cargoName: cargo.cargoName,
+    origin: cargo.origin,
+    destination: cargo.destination,
+    status: cargo.status,
+    createdAt: cargo.createdAt,
+    stages: []
+  };
 
-/* =========================================================
-   NOTIFICATIONS - FCM
-========================================================= */
+  const stages = Array.isArray(cargo.stages)
+    ? cargo.stages
+    : Object.values(cargo.stages || {});
+
+  const ownStage = stages.find(
+    stage =>
+      Number(stage.stage) ===
+      Number(stageNumber)
+  );
+
+  if (ownStage) {
+    const copy = JSON.parse(
+      JSON.stringify(ownStage)
+    );
+
+    delete copy.private;
+
+    result.stages = [copy];
+  }
+
+  if (Number(stageNumber) === 1) {
+    result.stages = stages.map(stage => {
+      const copy = JSON.parse(
+        JSON.stringify(stage)
+      );
+
+      delete copy.private;
+      return copy;
+    });
+  }
+
+  return result;
+}
+
+function makeAdminCargo(cargo) {
+  return removePrivateData(cargo);
+}
+
+async function createFirebaseUser(uid, displayName) {
+  try {
+    return await admin.auth().getUser(uid);
+  } catch (error) {
+    return await admin.auth().createUser({
+      uid,
+      displayName: displayName || undefined
+    });
+  }
+}
+
+async function deleteFirebaseUser(uid) {
+  if (!uid) return;
+
+  try {
+    await admin.auth().deleteUser(uid);
+  } catch (error) {
+    if (
+      error.code !==
+      "auth/user-not-found"
+    ) {
+      console.error(
+        "DELETE FIREBASE USER:",
+        error.message
+      );
+    }
+  }
+}
 
 async function sendNotificationToRecipient(
   trackingId,
@@ -472,128 +318,68 @@ async function sendNotificationToRecipient(
   body
 ) {
   try {
-    const snapshot =
-      await db
-        .ref(
-          `deviceTokens/${trackingId}/${recipientKey}`
-        )
-        .once("value");
-
-    if (!snapshot.exists()) {
-      console.log(
-        `🔕 Hakuna notification device: ${trackingId}/${recipientKey}`
-      );
-
-      return;
-    }
-
-    const devices =
-      snapshot.val() || {};
-
-
-    for (
-      const tokenId of Object.keys(
-        devices
+    const snapshot = await db
+      .ref(
+        `deviceTokens/${trackingId}/${recipientKey}`
       )
-    ) {
-      const device =
-        devices[tokenId];
+      .once("value");
 
-      if (
-        !device ||
-        !device.token
-      ) {
-        continue;
+    if (!snapshot.exists()) return;
+
+    const tokens = [];
+    const tokenIds = [];
+
+    snapshot.forEach(child => {
+      const value = child.val();
+
+      if (value?.token) {
+        tokens.push(value.token);
+        tokenIds.push(child.key);
       }
+    });
 
+    if (!tokens.length) return;
 
-      try {
-        await admin.messaging().send({
-          token:
-            device.token,
+    const response =
+      await admin.messaging().sendEachForMulticast({
+        tokens,
+        notification: {
+          title,
+          body
+        },
+        data: {
+          trackingId
+        }
+      });
 
-          notification: {
-            title,
-            body
-          },
+    const invalidCodes = new Set([
+      "messaging/registration-token-not-registered",
+      "messaging/invalid-registration-token"
+    ]);
 
-          data: {
-            trackingId:
-              String(trackingId),
+    const removals = [];
 
-            recipient:
-              String(recipientKey),
-
-            click_action:
-              "/"
-          },
-
-          webpush: {
-            notification: {
-              title,
-              body,
-
-              icon:
-                "/favicon.ico",
-
-              badge:
-                "/favicon.ico",
-
-              requireInteraction:
-                true
-            },
-
-            fcmOptions: {
-              link:
-                "/"
-            }
-          }
-        });
-
-
-        console.log(
-          `🔔 Notification imetumwa -> ${trackingId}/${recipientKey}`
-        );
-
-      } catch (error) {
-
-        console.error(
-          `FCM SEND ERROR (${recipientKey}):`,
-          error.message
-        );
-
-
-        const invalidTokenCodes = [
-          "messaging/registration-token-not-registered",
-          "messaging/invalid-registration-token"
-        ];
-
-
+    response.responses.forEach(
+      (item, index) => {
         if (
-          invalidTokenCodes.includes(
-            error.code
+          !item.success &&
+          invalidCodes.has(
+            item.error?.code
           )
         ) {
-          await db
-            .ref(
-              `deviceTokens/${trackingId}/${recipientKey}/${tokenId}`
-            )
-            .remove();
-
-          console.log(
-            "🗑️ Invalid FCM token imeondolewa."
+          removals.push(
+            db
+              .ref(
+                `deviceTokens/${trackingId}/${recipientKey}/${tokenIds[index]}`
+              )
+              .remove()
           );
         }
       }
-    }
+    );
 
+    await Promise.all(removals);
   } catch (error) {
-
-    /*
-      Notification ikishindwa,
-      action ya mzigo isianguke.
-    */
-
     console.error(
       "NOTIFICATION ERROR:",
       error.message
@@ -601,310 +387,46 @@ async function sendNotificationToRecipient(
   }
 }
 
-
-/* =========================================================
-   REGISTER DEVICE FOR NOTIFICATIONS
-========================================================= */
-
-app.post(
-  "/api/register-device",
-  requireAuth,
-  async (req, res) => {
-
-    try {
-
-      const token =
-        cleanText(
-          req.body.token,
-          5000
-        );
-
-
-      if (!token) {
-
-        return res.status(400).json({
-          ok: false,
-          error:
-            "Notification token haipo."
-        });
-
-      }
-
-
-      const trackingId =
-        cleanText(
-          req.user.trackingId,
-          50
-        ).toUpperCase();
-
-
-      let recipientKey;
-
-
-      /* =========================
-         BOSS
-      ========================= */
-
-      if (
-        req.user.role ===
-        "boss"
-      ) {
-
-        recipientKey =
-          "boss";
-
-      }
-
-
-      /* =========================
-         AGENT
-      ========================= */
-
-      else if (
-        req.user.role ===
-        "agent"
-      ) {
-
-        const stage =
-          Number(
-            req.user.stage
-          );
-
-
-        if (
-          !Number.isInteger(
-            stage
-          ) ||
-          stage < 1
-        ) {
-
-          return res.status(400).json({
-            ok: false,
-            error:
-              "Agent stage si sahihi."
-          });
-
-        }
-
-
-        recipientKey =
-          `stage_${stage}`;
-
-      }
-
-
-      else {
-
-        return res.status(403).json({
-          ok: false,
-          error:
-            "Role hairuhusiwi."
-        });
-
-      }
-
-
-      /* =========================
-         CARGO
-      ========================= */
-
-      const cargo =
-        await getCargo(
-          trackingId
-        );
-
-
-      if (!cargo) {
-
-        return res.status(404).json({
-          ok: false,
-          error:
-            "Mzigo haujapatikana."
-        });
-
-      }
-
-
-      /* =========================
-         BOSS SECURITY
-      ========================= */
-
-      if (
-        req.user.role ===
-        "boss"
-      ) {
-
-        if (
-          cargo.boss?.uid !==
-          req.user.uid
-        ) {
-
-          return res.status(403).json({
-            ok: false,
-            error:
-              "Huna ruhusa ya notification za mzigo huu."
-          });
-
-        }
-
-      }
-
-
-      /* =========================
-         AGENT SECURITY
-      ========================= */
-
-      if (
-        req.user.role ===
-        "agent"
-      ) {
-
-        const stage =
-          Number(
-            req.user.stage
-          );
-
-        const stageKey =
-          `stage_${stage}`;
-
-
-        if (
-          cargo.stages?.[
-            stageKey
-          ]?.uid !==
-          req.user.uid
-        ) {
-
-          return res.status(403).json({
-            ok: false,
-            error:
-              "Huna ruhusa ya notification za agent huyu."
-          });
-
-        }
-
-      }
-
-
-      /* =========================
-         TOKEN ID
-      ========================= */
-
-      const tokenId =
-        crypto
-          .createHash("sha256")
-          .update(token)
-          .digest("hex");
-
-
-      const tokenRef =
-        db.ref(
-          `deviceTokens/${trackingId}/${recipientKey}/${tokenId}`
-        );
-
-
-      const existing =
-        await tokenRef.once(
-          "value"
-        );
-
-
-      await tokenRef.set({
-        token,
-
-        uid:
-          req.user.uid,
-
-        role:
-          req.user.role,
-
-        stage:
-          req.user.stage ||
-          null,
-
-        updatedAt:
-          nowISO(),
-
-        createdAt:
-          existing.exists()
-            ? (
-                existing.val()
-                  ?.createdAt ||
-                nowISO()
-              )
-            : nowISO()
-      });
-
-
-      return res.json({
-        ok: true,
-
-        message:
-          "Device ya notifications imesajiliwa."
-      });
-
-
-    } catch (err) {
-
-      console.error(
-        "REGISTER DEVICE ERROR:",
-        err
-      );
-
-      return res.status(500).json({
-        ok: false,
-        error:
-          "Imeshindikana kusajili device."
-      });
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   ROOT
-========================================================= */
-
-app.get(
-  "/",
-  (req, res) => {
-
-    res.sendFile(
-      path.join(
-        __dirname,
-        "index.html"
+async function notifyCargoAgents(
+  cargo,
+  title,
+  body
+) {
+  const jobs = [];
+
+  const stages = Array.isArray(cargo.stages)
+    ? cargo.stages
+    : Object.values(cargo.stages || {});
+
+  stages.forEach(stage => {
+    jobs.push(
+      sendNotificationToRecipient(
+        cargo.trackingId,
+        `stage_${stage.stage}`,
+        title,
+        body
       )
     );
+  });
 
-  }
-);
+  await Promise.all(jobs);
+}
 
+app.get("/", (req, res) => {
+  res.json({
+    ok: true,
+    service: "MAKYAMA TRANSPORT",
+    status: "online"
+  });
+});
 
-/* =========================================================
-   HEALTH
-========================================================= */
-
-app.get(
-  "/api/health",
-  (req, res) => {
-
-    res.json({
-
-      ok: true,
-
-      service:
-        "MAKYAMA TRANSPORT",
-
-      time:
-        nowISO()
-
-    });
-
-  }
-);
-
+app.get("/health", (req, res) => {
+  res.json({
+    ok: true,
+    service: "MAKYAMA TRANSPORT",
+    time: nowISO()
+  });
+});
 
 /* =========================================================
    CREATE CARGO
@@ -913,181 +435,78 @@ app.get(
 app.post(
   "/api/create-cargo",
   async (req, res) => {
-
     try {
-
       const cargoName =
-        cleanText(
-          req.body.cargoName
-        );
+        cleanText(req.body.cargoName, 200);
 
       const origin =
-        cleanText(
-          req.body.origin
-        );
+        cleanText(req.body.origin, 200);
 
       const destination =
-        cleanText(
-          req.body.destination
-        );
+        cleanText(req.body.destination, 200);
 
       const bossName =
-        cleanText(
-          req.body.bossName
-        );
-
+        cleanText(req.body.bossName, 150);
 
       let agents =
-        Array.isArray(
-          req.body.agents
-        )
+        Array.isArray(req.body.agents)
           ? req.body.agents
           : [];
 
-
-      agents =
-        agents
-          .map(
-            agent => ({
-              name:
-                cleanText(
-                  agent?.name
-                )
-            })
-          )
-          .filter(
-            agent =>
-              agent.name
-          );
-
-
-      if (!cargoName) {
-
-        return res.status(400).json({
-          ok: false,
-          error:
-            "Jina la mzigo linahitajika."
-        });
-
-      }
-
-
-      if (!origin) {
-
-        return res.status(400).json({
-          ok: false,
-          error:
-            "Sehemu ya kuanzia inahitajika."
-        });
-
-      }
-
-
-      if (!destination) {
-
-        return res.status(400).json({
-          ok: false,
-          error:
-            "Sehemu ya mwisho inahitajika."
-        });
-
-      }
-
-
-      if (!bossName) {
-
-        return res.status(400).json({
-          ok: false,
-          error:
-            "Jina la Boss linahitajika."
-        });
-
-      }
-
-
       if (
-        agents.length < 1
+        !cargoName ||
+        !origin ||
+        !destination ||
+        !bossName
       ) {
-
         return res.status(400).json({
           ok: false,
           error:
-            "Weka angalau Agent mmoja."
+            "Cargo name, origin, destination na Boss name vinahitajika."
         });
-
       }
 
-
       if (
+        agents.length < 1 ||
         agents.length > 20
       ) {
-
         return res.status(400).json({
           ok: false,
           error:
-            "Agents ni wengi sana."
+            "Agents lazima wawe kati ya 1 na 20."
         });
-
       }
 
-
-      /* =========================
-         TRACKING ID
-      ========================= */
+      agents = agents.map(
+        (agent, index) => ({
+          name:
+            cleanText(
+              agent?.name,
+              150
+            ) ||
+            `Agent ${index + 1}`
+        })
+      );
 
       let trackingId;
 
-
-      for (
-        let i = 0;
-        i < 20;
-        i++
-      ) {
-
-        const candidate =
+      do {
+        trackingId =
           makeTrackingId();
+      } while (
+        await db
+          .ref(`cargo/${trackingId}`)
+          .once("value")
+          .then(snapshot =>
+            snapshot.exists()
+          )
+      );
 
-
-        const snapshot =
-          await db
-            .ref(
-              `cargo/${candidate}`
-            )
-            .once("value");
-
-
-        if (
-          !snapshot.exists()
-        ) {
-
-          trackingId =
-            candidate;
-
-          break;
-
-        }
-
-      }
-
-
-      if (!trackingId) {
-
-        return res.status(500).json({
-          ok: false,
-          error:
-            "Imeshindikana kutengeneza Tracking ID."
-        });
-
-      }
-
-
-      /* =========================
-         BOSS
-      ========================= */
+      const bossUid =
+        makeUid("boss");
 
       const bossPin =
         makePin();
-
 
       const bossPinHash =
         await bcrypt.hash(
@@ -1095,29 +514,23 @@ app.post(
           12
         );
 
-
-      /* =========================
-         AGENTS
-      ========================= */
-
-      const stages = {};
+      const stages = [];
 
       const returnedAgents = [];
-
 
       for (
         let i = 0;
         i < agents.length;
         i++
       ) {
-
-        const stageNumber =
-          i + 1;
-
+        const stageNumber = i + 1;
+        const uid =
+          makeUid(
+            `agent${stageNumber}`
+          );
 
         const pin =
           makePin();
-
 
         const pinHash =
           await bcrypt.hash(
@@ -1125,716 +538,395 @@ app.post(
             12
           );
 
-
-        const uid =
-          makeUid();
-
-
-        stages[
-          `stage_${stageNumber}`
-        ] = {
-
-          stage:
-            stageNumber,
-
-          name:
-            agents[i].name,
-
+        stages.push({
+          stage: stageNumber,
+          name: agents[i].name,
           uid,
-
-          private: {
-            pinHash
-          },
-
           status:
             stageNumber === 1
               ? "WAITING_FOR_RELEASE"
               : "WAITING_FOR_RECEIVE",
-
-          history: {}
-
-        };
-
-
-        returnedAgents.push({
-
-          stage:
-            stageNumber,
-
-          name:
-            agents[i].name,
-
-          pin
-
+          history: [],
+          private: {
+            pinHash
+          }
         });
 
+        returnedAgents.push({
+          stage: stageNumber,
+          name: agents[i].name,
+          pin
+        });
+
+        await createFirebaseUser(
+          uid,
+          agents[i].name
+        );
       }
 
-
-      /* =========================
-         CARGO
-      ========================= */
+      await createFirebaseUser(
+        bossUid,
+        bossName
+      );
 
       const cargo = {
-
         trackingId,
-
         cargoName,
-
         origin,
-
         destination,
-
         bossName,
-
         status:
           "WAITING_FOR_RELEASE",
-
-        createdAt:
-          nowISO(),
-
+        createdAt: nowISO(),
+        stages,
         boss: {
-
-          uid:
-            makeUid(),
-
-          name:
-            bossName,
-
+          uid: bossUid,
+          name: bossName,
+          history: [],
           private: {
-
-            pinHash:
-              bossPinHash
-
-          },
-
-          history: {}
-
-        },
-
-        stages
-
+            pinHash: bossPinHash
+          }
+        }
       };
 
-
       await db
-        .ref(
-          `cargo/${trackingId}`
-        )
-        .set(
-          cargo
-        );
-
+        .ref(`cargo/${trackingId}`)
+        .set(cargo);
 
       return res.json({
-
         ok: true,
-
-        message:
-          "Mzigo umefanikiwa kusajiliwa.",
-
         trackingId,
-
         boss: {
-
-          name:
-            bossName,
-
-          pin:
-            bossPin
-
+          name: bossName,
+          pin: bossPin
         },
-
-        agents:
-          returnedAgents
-
+        agents: returnedAgents
       });
-
-
-    } catch (err) {
-
+    } catch (error) {
       console.error(
         "CREATE CARGO ERROR:",
-        err
+        error
       );
 
       return res.status(500).json({
-
         ok: false,
-
         error:
-          "Server error wakati wa kusajili mzigo."
-
+          "Imeshindikana kusajili mzigo."
       });
-
     }
-
   }
 );
 
-
 /* =========================================================
-   LOGIN
+   CARGO LOGIN
 ========================================================= */
 
 app.post(
   "/api/login",
   async (req, res) => {
-
     try {
-
       const trackingId =
         cleanText(
           req.body.trackingId,
           50
         ).toUpperCase();
 
-
       const pin =
         cleanText(
           req.body.pin,
-          20
+          50
         );
 
-
-      if (
-        !trackingId ||
-        !pin
-      ) {
-
+      if (!trackingId || !pin) {
         return res.status(400).json({
           ok: false,
           error:
             "Tracking ID na PIN vinahitajika."
         });
-
       }
 
-
       const cargo =
-        await getCargo(
-          trackingId
-        );
-
+        await getCargo(trackingId);
 
       if (!cargo) {
-
         return res.status(404).json({
           ok: false,
           error:
-            "Mzigo haujapatikana."
+            "Tracking ID haijapatikana."
         });
-
       }
-
-
-      /* =========================
-         CHECK BOSS
-      ========================= */
 
       if (
-        cargo.boss?.private?.pinHash
-      ) {
-
-        const match =
-          await bcrypt.compare(
-            pin,
-            cargo.boss.private.pinHash
-          );
-
-
-        if (match) {
-
-          const uid =
-            cargo.boss.uid;
-
-
-          try {
-
-            await admin.auth()
-              .deleteUser(
-                uid
-              );
-
-          } catch (_) {}
-
-
-          try {
-
-            await admin.auth()
-              .createUser({
-                uid
-              });
-
-          } catch (_) {}
-
-
-          const token =
-            await admin.auth()
-              .createCustomToken(
-                uid,
-                {
-                  role:
-                    "boss",
-
-                  trackingId,
-
-                  supervisor:
-                    true
-                }
-              );
-
-
-          return res.json({
-
-            ok: true,
-
-            role:
-              "boss",
-
-            name:
-              cargo.boss.name,
-
-            trackingId,
-
-            token
-
-          });
-
-        }
-
-      }
-
-
-      /* =========================
-         CHECK AGENTS
-      ========================= */
-
-      const stages =
-        cargo.stages ||
-        {};
-
-
-      for (
-        const key of Object.keys(
-          stages
+        cargo.boss?.private?.pinHash &&
+        await bcrypt.compare(
+          pin,
+          cargo.boss.private.pinHash
         )
       ) {
+        const uid =
+          cargo.boss.uid;
 
-        const stage =
-          stages[key];
+        await createFirebaseUser(
+          uid,
+          cargo.bossName
+        );
 
+        const token =
+          await admin.auth()
+            .createCustomToken(
+              uid,
+              {
+                role: "boss",
+                trackingId,
+                supervisor: true
+              }
+            );
 
+        return res.json({
+          ok: true,
+          token,
+          role: "boss",
+          name: cargo.bossName,
+          trackingId
+        });
+      }
+
+      const stages =
+        Array.isArray(cargo.stages)
+          ? cargo.stages
+          : Object.values(
+              cargo.stages || {}
+            );
+
+      for (const stage of stages) {
         if (
-          !stage.private?.pinHash
-        ) {
-          continue;
-        }
-
-
-        const match =
+          stage.private?.pinHash &&
           await bcrypt.compare(
             pin,
             stage.private.pinHash
-          );
-
-
-        if (match) {
-
+          )
+        ) {
           const uid =
             stage.uid;
 
-
-          try {
-
-            await admin.auth()
-              .deleteUser(
-                uid
-              );
-
-          } catch (_) {}
-
-
-          try {
-
-            await admin.auth()
-              .createUser({
-                uid
-              });
-
-          } catch (_) {}
-
+          await createFirebaseUser(
+            uid,
+            stage.name
+          );
 
           const token =
             await admin.auth()
               .createCustomToken(
                 uid,
                 {
-                  role:
-                    "agent",
-
+                  role: "agent",
                   trackingId,
-
-                  stage:
-                    stage.stage,
-
+                  stage: Number(stage.stage),
                   supervisor:
-                    stage.stage === 1
+                    Number(stage.stage) === 1
                 }
               );
 
-
           return res.json({
-
             ok: true,
-
-            role:
-              "agent",
-
-            stage:
-              stage.stage,
-
-            name:
-              stage.name,
-
-            trackingId,
-
-            token
-
+            token,
+            role: "agent",
+            stage: Number(stage.stage),
+            name: stage.name,
+            trackingId
           });
-
         }
-
       }
 
-
       return res.status(401).json({
-
         ok: false,
-
         error:
-          "PIN si sahihi."
-
+          "Tracking ID au PIN si sahihi."
       });
-
-
-    } catch (err) {
-
+    } catch (error) {
       console.error(
         "LOGIN ERROR:",
-        err
+        error
       );
 
       return res.status(500).json({
-
         ok: false,
-
         error:
-          "Server error wakati wa login."
-
+          "Login imeshindikana."
       });
-
     }
-
   }
 );
 
-
 /* =========================================================
-   CARGO ACCESS
+   PUBLIC / PRIVATE CARGO
 ========================================================= */
 
 app.get(
   "/api/cargo/:trackingId",
   async (req, res) => {
-
     try {
-
       const trackingId =
         cleanText(
           req.params.trackingId,
           50
         ).toUpperCase();
 
-
-      if (!trackingId) {
-
-        return res.status(400).json({
-          ok: false,
-          error:
-            "Tracking ID haipo."
-        });
-
-      }
-
-
       const cargo =
-        await getCargo(
-          trackingId
-        );
-
+        await getCargo(trackingId);
 
       if (!cargo) {
-
         return res.status(404).json({
           ok: false,
           error:
             "Mzigo haujapatikana."
         });
-
       }
-
-
-      /* =========================
-         PUBLIC USER
-      ========================= */
 
       const header =
-        req.headers.authorization ||
-        "";
+        req.headers.authorization || "";
 
-
-      if (
-        !header.startsWith(
-          "Bearer "
-        )
-      ) {
-
+      if (!header.startsWith("Bearer ")) {
         return res.json({
-
           ok: true,
-
           cargo:
-            makePublicCargo(
-              cargo
-            )
-
+            makePublicCargo(cargo)
         });
-
       }
 
-
-      /* =========================
-         AUTHENTICATED USER
-      ========================= */
+      const token =
+        header.substring(7);
 
       let decoded;
 
-
       try {
-
-        const token =
-          header.substring(7);
-
-
         decoded =
           await admin.auth()
             .verifyIdToken(
               token,
               true
             );
-
-      } catch (authError) {
-
-        return res.status(401).json({
-
-          ok: false,
-
-          error:
-            "Session si sahihi."
-
+      } catch {
+        return res.json({
+          ok: true,
+          cargo:
+            makePublicCargo(cargo)
         });
-
       }
-
 
       if (
         decoded.trackingId !==
         trackingId
       ) {
-
         return res.status(403).json({
-
           ok: false,
-
           error:
-            "Huna ruhusa ya kuona mzigo huu."
-
+            "Huna ruhusa ya mzigo huu."
         });
-
       }
 
-
-      /* =========================
-         BOSS
-      ========================= */
-
       if (
-        decoded.role ===
-        "boss"
+        decoded.role === "boss"
       ) {
-
         if (
-          cargo.boss?.uid !==
-          decoded.uid
+          decoded.uid !==
+          cargo.boss?.uid
         ) {
-
           return res.status(403).json({
-
             ok: false,
-
             error:
-              "Huna ruhusa ya kuona taarifa za Boss."
-
+              "Boss account si ya mzigo huu."
           });
-
         }
 
-
         return res.json({
-
           ok: true,
-
-          role:
-            "boss",
-
           cargo:
             removePrivateData(
               cargo
             )
-
         });
-
       }
 
-
-      /* =========================
-         AGENT
-      ========================= */
-
       if (
-        decoded.role ===
-        "agent"
+        decoded.role === "agent"
       ) {
+        const stage =
+          Number(decoded.stage);
 
-        const stageNumber =
-          Number(
-            decoded.stage
+        const stages =
+          Array.isArray(cargo.stages)
+            ? cargo.stages
+            : Object.values(
+                cargo.stages || {}
+              );
+
+        const target =
+          stages.find(
+            item =>
+              Number(item.stage) ===
+              stage
           );
 
-
         if (
-          !Number.isInteger(
-            stageNumber
-          ) ||
-          stageNumber < 1
+          !target ||
+          target.uid !==
+            decoded.uid
         ) {
-
           return res.status(403).json({
-
             ok: false,
-
             error:
-              "Agent stage si sahihi."
-
+              "Agent account si ya hatua hii."
           });
-
         }
-
-
-        const stageKey =
-          `stage_${stageNumber}`;
-
-
-        const stage =
-          cargo.stages?.[
-            stageKey
-          ];
-
-
-        if (!stage) {
-
-          return res.status(403).json({
-
-            ok: false,
-
-            error:
-              "Agent huyu hayupo kwenye mzigo huu."
-
-          });
-
-        }
-
-
-        if (
-          stage.uid !==
-          decoded.uid
-        ) {
-
-          return res.status(403).json({
-
-            ok: false,
-
-            error:
-              "Huna ruhusa ya taarifa za Agent huyu."
-
-          });
-
-        }
-
 
         return res.json({
-
           ok: true,
-
-          role:
-            "agent",
-
-          stage:
-            stageNumber,
-
           cargo:
             makeAgentCargo(
               cargo,
-              stageNumber
+              stage
             )
-
         });
-
       }
 
+      if (
+        decoded.role === "platform_agent" ||
+        decoded.role === "transporter"
+      ) {
+        return res.status(403).json({
+          ok: false,
+          error:
+            "Platform account haina access ya cargo dashboard."
+        });
+      }
+
+      if (decoded.role === "admin") {
+        return res.json({
+          ok: true,
+          cargo:
+            makeAdminCargo(cargo)
+        });
+      }
 
       return res.status(403).json({
-
         ok: false,
-
-        error:
-          "Role haijaruhusiwa."
-
+        error: "Role haijulikani."
       });
-
-
-    } catch (err) {
-
+    } catch (error) {
       console.error(
-        "CARGO ACCESS ERROR:",
-        err
+        "GET CARGO ERROR:",
+        error
       );
 
       return res.status(500).json({
-
         ok: false,
-
         error:
-          "Imeshindikana kupata taarifa za mzigo."
-
+          "Imeshindikana kupata mzigo."
       });
-
     }
-
   }
 );
-
 
 /* =========================================================
    AGENT ACTION
@@ -1844,25 +936,16 @@ app.post(
   "/api/agent-action",
   requireAuth,
   async (req, res) => {
-
     try {
-
       if (
-        req.user.role !==
-        "agent"
+        req.user.role !== "agent"
       ) {
-
         return res.status(403).json({
-
           ok: false,
-
           error:
-            "Hii ni kwa Agent pekee."
-
+            "Agent access required."
         });
-
       }
-
 
       const trackingId =
         cleanText(
@@ -1870,591 +953,225 @@ app.post(
           50
         ).toUpperCase();
 
-
-      const stageNumber =
-        Number(
-          req.user.stage
-        );
-
-
       const action =
         cleanText(
           req.body.action,
           30
         ).toUpperCase();
 
-
-      const location =
-        req.body.location ||
-        null;
-
+      const stageNumber =
+        Number(req.user.stage);
 
       if (
-        ![
-          "RELEASE",
-          "RECEIVE"
-        ].includes(
-          action
-        )
+        !["RECEIVE","RELEASE"]
+          .includes(action)
       ) {
-
         return res.status(400).json({
-
           ok: false,
-
           error:
             "Action si sahihi."
-
         });
-
       }
-
 
       const cargoRef =
         db.ref(
           `cargo/${trackingId}`
         );
 
-
       const snapshot =
-        await cargoRef
-          .once("value");
+        await cargoRef.once("value");
 
-
-      if (
-        !snapshot.exists()
-      ) {
-
+      if (!snapshot.exists()) {
         return res.status(404).json({
-
           ok: false,
-
           error:
             "Mzigo haujapatikana."
-
         });
-
       }
-
 
       const cargo =
         snapshot.val();
 
+      const stages =
+        Array.isArray(cargo.stages)
+          ? cargo.stages
+          : Object.values(
+              cargo.stages || {}
+            );
 
-      const stageKey =
-        `stage_${stageNumber}`;
+      const index =
+        stages.findIndex(
+          stage =>
+            Number(stage.stage) ===
+            stageNumber
+        );
 
-
-      const stage =
-        cargo.stages?.[
-          stageKey
-        ];
-
-
-      if (!stage) {
-
+      if (index < 0) {
         return res.status(404).json({
-
           ok: false,
-
           error:
-            "Agent stage haijapatikana."
-
+            "Agent hakupatikana."
         });
-
       }
 
+      const stage =
+        stages[index];
 
       if (
         stage.uid !==
         req.user.uid
       ) {
-
         return res.status(403).json({
-
           ok: false,
-
           error:
-            "Huna ruhusa ya kufanya action hii."
-
+            "Agent account si sahihi."
         });
-
       }
 
-
-      /* =====================================================
-         AGENT 1
-      ===================================================== */
-
-      if (
-        stageNumber === 1
-      ) {
-
+      if (stageNumber === 1) {
         if (
-          action !==
-          "RELEASE"
-        ) {
-
-          return res.status(400).json({
-
-            ok: false,
-
-            error:
-              "Agent 1 anatakiwa kuanza kwa RELEASE."
-
-          });
-
-        }
-
-
-        if (
+          action !== "RELEASE" ||
           stage.status !==
-          "WAITING_FOR_RELEASE"
+            "WAITING_FOR_RELEASE"
         ) {
-
           return res.status(400).json({
-
             ok: false,
-
             error:
-              "Agent 1 tayari ameshafanya action hii."
-
+              "Agent 1 anaweza RELEASE tu katika hatua yake."
           });
-
         }
-
-      }
-
-
-      /* =====================================================
-         AGENT 2+
-      ===================================================== */
-
-      else {
-
+      } else {
         if (
-          action ===
-          "RECEIVE" &&
+          action === "RECEIVE" &&
           stage.status !==
-          "WAITING_FOR_RECEIVE"
+            "WAITING_FOR_RECEIVE"
         ) {
-
           return res.status(400).json({
-
             ok: false,
-
             error:
               "Mzigo haujasubiri kupokelewa na Agent huyu."
-
           });
-
         }
-
 
         if (
-          action ===
-          "RELEASE" &&
+          action === "RELEASE" &&
           stage.status !==
-          "WAITING_FOR_RELEASE_AFTER_RECEIVE"
+            "WAITING_FOR_RELEASE_AFTER_RECEIVE"
         ) {
-
           return res.status(400).json({
-
             ok: false,
-
             error:
-              "Agent lazima apokee mzigo kwanza."
-
+              "Agent lazima RECEIVE kwanza."
           });
-
         }
-
       }
 
-
-      /* =====================================================
-         GPS
-      ===================================================== */
-
-      let address = "";
-
-
-      if (
-        validLocation(
-          location
-        )
-      ) {
-
-        address =
-          await reverseGeocode(
-
-            Number(
-              location.lat
-            ),
-
-            Number(
-              location.lng
-            )
-
-          );
-
-      }
-
-
-      /* =====================================================
-         EVENT
-      ===================================================== */
-
-      const eventId =
-        makeUid();
-
-
-      const event = {
-
-        id:
-          eventId,
-
-        action,
-
-        stage:
-          stageNumber,
-
-        agentName:
-          stage.name,
-
-        timestamp:
-          nowISO(),
-
-        location:
-          validLocation(
-            location
-          )
-            ? {
-
-                lat:
-                  Number(
-                    location.lat
-                  ),
-
-                lng:
-                  Number(
-                    location.lng
-                  ),
-
-                address:
-                  address || ""
-
-              }
-
-            : null
-
-      };
-
-
-      await cargoRef
-        .child(
-          `stages/${stageKey}/history/${eventId}`
-        )
-        .set(
-          event
+      let location =
+        await reverseGeocode(
+          req.body.location
         );
 
+      const event = {
+        action,
+        stage: stageNumber,
+        agentName:
+          stage.name,
+        timestamp: nowISO()
+      };
 
-      /* =====================================================
-         AGENT 1 RELEASE
-      ===================================================== */
-
-      if (
-        stageNumber === 1 &&
-        action === "RELEASE"
-      ) {
-
-        await cargoRef
-          .child(
-            `stages/${stageKey}/status`
-          )
-          .set(
-            "RELEASED"
-          );
-
-
-        const nextStage =
-          cargo.stages?.stage_2;
-
-
-        if (nextStage) {
-
-          await cargoRef
-            .child(
-              "stages/stage_2/status"
-            )
-            .set(
-              "WAITING_FOR_RECEIVE"
-            );
-
-
-          await cargoRef
-            .child(
-              "status"
-            )
-            .set(
-              "WAITING_FOR_RECEIVE"
-            );
-
-
-          /* =========================
-             NOTIFY AGENT 2
-          ========================= */
-
-          await sendNotificationToRecipient(
-
-            trackingId,
-
-            "stage_2",
-
-            "🚚 Mzigo umetolewa",
-
-            `Mzigo ${trackingId} umetolewa na Agent 1.`
-
-          );
-
-        } else {
-
-          await cargoRef
-            .child(
-              "status"
-            )
-            .set(
-              "WAITING_FOR_BOSS"
-            );
-
-
-          /*
-            Kama kuna Agent 1 tu,
-            Agent 1 ndiye agent wa mwisho.
-
-            Notification inaenda kwa:
-            Agent 1 + Boss
-          */
-
-          await sendNotificationToRecipient(
-
-            trackingId,
-
-            "stage_1",
-
-            "🚚 Mzigo umetolewa",
-
-            `Mzigo ${trackingId} umetolewa na Agent wa mwisho.`
-
-          );
-
-
-          await sendNotificationToRecipient(
-
-            trackingId,
-
-            "boss",
-
-            "🚚 Mzigo umetolewa",
-
-            `Mzigo ${trackingId} umetolewa na Agent wa mwisho.`
-
-          );
-
-        }
-
+      if (location) {
+        event.location =
+          location;
       }
 
+      if (!Array.isArray(stage.history)) {
+        stage.history = [];
+      }
 
-      /* =====================================================
-         AGENT 2+ RECEIVE
-      ===================================================== */
+      stage.history.push(event);
+
+      let nextStage =
+        stages.find(
+          item =>
+            Number(item.stage) ===
+            stageNumber + 1
+        );
 
       if (
-        stageNumber > 1 &&
         action === "RECEIVE"
       ) {
+        stage.status =
+          "WAITING_FOR_RELEASE_AFTER_RECEIVE";
 
-        await cargoRef
-          .child(
-            `stages/${stageKey}/status`
-          )
-          .set(
-            "WAITING_FOR_RELEASE_AFTER_RECEIVE"
-          );
-
-
-        await cargoRef
-          .child(
-            "status"
-          )
-          .set(
-            `AGENT_${stageNumber}_RECEIVED`
-          );
-
+        cargo.status =
+          `AGENT_${stageNumber}_RECEIVED`;
       }
-
-
-      /* =====================================================
-         AGENT 2+ RELEASE
-      ===================================================== */
 
       if (
-        stageNumber > 1 &&
         action === "RELEASE"
       ) {
-
-        await cargoRef
-          .child(
-            `stages/${stageKey}/status`
-          )
-          .set(
-            "RELEASED"
-          );
-
-
-        const nextStageNumber =
-          stageNumber + 1;
-
-
-        const nextStage =
-          cargo.stages?.[
-            `stage_${nextStageNumber}`
-          ];
-
+        stage.status =
+          "RELEASED";
 
         if (nextStage) {
+          nextStage.status =
+            "WAITING_FOR_RECEIVE";
 
-          await cargoRef
-            .child(
-              `stages/stage_${nextStageNumber}/status`
-            )
-            .set(
-              "WAITING_FOR_RECEIVE"
-            );
-
-
-          await cargoRef
-            .child(
-              "status"
-            )
-            .set(
-              `WAITING_FOR_AGENT_${nextStageNumber}`
-            );
-
-
-          /* =========================
-             NOTIFY NEXT AGENT
-          ========================= */
+          cargo.status =
+            `WAITING_FOR_AGENT_${stageNumber + 1}`;
 
           await sendNotificationToRecipient(
-
             trackingId,
-
-            `stage_${nextStageNumber}`,
-
-            "🚚 Mzigo umetolewa",
-
-            `Mzigo ${trackingId} umetolewa na Agent ${stageNumber}.`
-
+            `stage_${stageNumber + 1}`,
+            "📦 Mzigo umewasili kwa hatua inayofuata",
+            `Mzigo ${trackingId} unasubiri kupokelewa na Agent ${stageNumber + 1}.`
           );
-
         } else {
+          cargo.status =
+            "WAITING_FOR_BOSS";
 
-          /*
-            HUYU NDIYE AGENT WA MWISHO.
-
-            Notification lazima iende:
-            1. Agent 1
-            2. Boss
-
-            Hakuna "unasubiri kupokelewa"
-            kwenye notification.
-          */
-
-          await cargoRef
-            .child(
-              "status"
+          await Promise.all([
+            sendNotificationToRecipient(
+              trackingId,
+              "stage_1",
+              "🚚 Mzigo umetolewa",
+              `Mzigo ${trackingId} umetolewa na Agent wa mwisho.`
+            ),
+            sendNotificationToRecipient(
+              trackingId,
+              "boss",
+              "🚚 Mzigo umetolewa",
+              `Mzigo ${trackingId} umetolewa na Agent wa mwisho.`
             )
-            .set(
-              "WAITING_FOR_BOSS"
-            );
-
-
-          /* =========================
-             NOTIFY AGENT 1
-          ========================= */
-
-          await sendNotificationToRecipient(
-
-            trackingId,
-
-            "stage_1",
-
-            "🚚 Mzigo umetolewa",
-
-            `Mzigo ${trackingId} umetolewa na Agent wa mwisho.`
-
-          );
-
-
-          /* =========================
-             NOTIFY BOSS
-          ========================= */
-
-          await sendNotificationToRecipient(
-
-            trackingId,
-
-            "boss",
-
-            "🚚 Mzigo umetolewa",
-
-            `Mzigo ${trackingId} umetolewa na Agent wa mwisho.`
-
-          );
-
+          ]);
         }
-
       }
 
+      cargo.stages = stages;
+
+      await cargoRef.set(cargo);
 
       return res.json({
-
         ok: true,
-
-        message:
-          action === "RECEIVE"
-            ? "Mzigo umepokelewa."
-            : "Mzigo umetolewa.",
-
-        event
-
+        action,
+        status:
+          cargo.status,
+        location
       });
-
-
-    } catch (err) {
-
+    } catch (error) {
       console.error(
         "AGENT ACTION ERROR:",
-        err
+        error
       );
 
       return res.status(500).json({
-
         ok: false,
-
         error:
-          "Imeshindikana kuhifadhi action."
-
+          "Agent action imeshindikana."
       });
-
     }
-
   }
 );
-
 
 /* =========================================================
    BOSS RECEIVE
@@ -2464,25 +1181,16 @@ app.post(
   "/api/boss-receive",
   requireAuth,
   async (req, res) => {
-
     try {
-
       if (
-        req.user.role !==
-        "boss"
+        req.user.role !== "boss"
       ) {
-
         return res.status(403).json({
-
           ok: false,
-
           error:
-            "Boss pekee ndiye anaweza kupokea mzigo wa mwisho."
-
+            "Boss access required."
         });
-
       }
-
 
       const trackingId =
         cleanText(
@@ -2490,255 +1198,108 @@ app.post(
           50
         ).toUpperCase();
 
-
-      const location =
-        req.body.location ||
-        null;
-
-
       const cargoRef =
         db.ref(
           `cargo/${trackingId}`
         );
 
-
       const snapshot =
-        await cargoRef
-          .once("value");
+        await cargoRef.once("value");
 
-
-      if (
-        !snapshot.exists()
-      ) {
-
+      if (!snapshot.exists()) {
         return res.status(404).json({
-
           ok: false,
-
           error:
             "Mzigo haujapatikana."
-
         });
-
       }
-
 
       const cargo =
         snapshot.val();
-
 
       if (
         cargo.boss?.uid !==
         req.user.uid
       ) {
-
         return res.status(403).json({
-
           ok: false,
-
           error:
-            "Huna ruhusa ya kupokea mzigo huu."
-
+            "Boss account si ya mzigo huu."
         });
-
       }
-
-
-      /* =========================
-         BOSS RECEIVE ONLY
-      ========================= */
 
       if (
         cargo.status !==
         "WAITING_FOR_BOSS"
       ) {
-
         return res.status(400).json({
-
           ok: false,
-
           error:
-            "Mzigo bado haujafika hatua ya kupokelewa na Boss."
-
+            "Mzigo haujasubiri kupokelewa na Boss."
         });
-
       }
 
-
-      /* =====================================================
-         GPS
-      ===================================================== */
-
-      let address = "";
-
-
-      if (
-        validLocation(
-          location
-        )
-      ) {
-
-        address =
-          await reverseGeocode(
-
-            Number(
-              location.lat
-            ),
-
-            Number(
-              location.lng
-            )
-
-          );
-
-      }
-
-
-      /* =====================================================
-         BOSS EVENT
-      ===================================================== */
-
-      const eventId =
-        makeUid();
-
+      const location =
+        await reverseGeocode(
+          req.body.location
+        );
 
       const event = {
-
-        id:
-          eventId,
-
-        action:
-          "BOSS_RECEIVE",
-
-        stage:
-          "BOSS",
-
+        action: "BOSS_RECEIVE",
+        stage: "BOSS",
         agentName:
-          cargo.bossName,
-
-        timestamp:
-          nowISO(),
-
-        location:
-          validLocation(
-            location
-          )
-            ? {
-
-                lat:
-                  Number(
-                    location.lat
-                  ),
-
-                lng:
-                  Number(
-                    location.lng
-                  ),
-
-                address:
-                  address || ""
-
-              }
-
-            : null
-
+          cargo.bossName ||
+          "Boss",
+        timestamp: nowISO()
       };
 
-
-      await cargoRef
-        .child(
-          `boss/history/${eventId}`
-        )
-        .set(
-          event
-        );
-
-
-      /* =====================================================
-         DELIVERY COMPLETE
-      ===================================================== */
-
-      await cargoRef
-        .child(
-          "status"
-        )
-        .set(
-          "DELIVERED"
-        );
-
-
-      /* =====================================================
-         NOTIFY ALL AGENTS
-      ===================================================== */
-
-      const stages =
-        cargo.stages ||
-        {};
-
-
-      for (
-        const key of Object.keys(
-          stages
-        )
-      ) {
-
-        const agent =
-          stages[key];
-
-
-        /*
-          Notification inaenda kwa
-          kila Agent wa mzigo huu.
-        */
-
-        await sendNotificationToRecipient(
-
-          trackingId,
-
-          key,
-
-          "✅ Mzigo umepokelewa",
-
-          `Mzigo ${trackingId} umepokelewa na Boss.`
-
-        );
-
+      if (location) {
+        event.location =
+          location;
       }
 
+      if (
+        !Array.isArray(
+          cargo.boss.history
+        )
+      ) {
+        cargo.boss.history = [];
+      }
+
+      cargo.boss.history.push(
+        event
+      );
+
+      cargo.status =
+        "DELIVERED";
+
+      await cargoRef.set(cargo);
+
+      await notifyCargoAgents(
+        cargo,
+        "✅ Mzigo umepokelewa",
+        `Mzigo ${trackingId} umepokelewa na Boss.`
+      );
 
       return res.json({
-
         ok: true,
-
-        message:
-          "Boss amepokea mzigo na Agents wote wamejulishwa.",
-
-        event
-
+        status: "DELIVERED",
+        location
       });
-
-
-    } catch (err) {
-
+    } catch (error) {
       console.error(
         "BOSS RECEIVE ERROR:",
-        err
+        error
       );
 
       return res.status(500).json({
-
         ok: false,
-
         error:
-          "Imeshindikana kuhifadhi mapokezi ya Boss."
-
+          "Boss receive imeshindikana."
       });
-
     }
-
   }
 );
-
 
 /* =========================================================
    RESET AGENT PIN
@@ -2748,392 +1309,1639 @@ app.post(
   "/api/reset-agent-pin",
   requireAuth,
   async (req, res) => {
-
     try {
-
       const trackingId =
         cleanText(
           req.user.trackingId,
           50
         ).toUpperCase();
 
-
-      const targetStage =
-        Number(
-          req.body.stage
-        );
-
+      const stageNumber =
+        Number(req.body.stage);
 
       if (
         !Number.isInteger(
-          targetStage
+          stageNumber
         ) ||
-        targetStage < 1
+        stageNumber < 2
       ) {
-
         return res.status(400).json({
-
           ok: false,
-
           error:
-            "Agent stage si sahihi."
-
+            "Stage lazima iwe 2 au zaidi."
         });
-
       }
-
-
-      /* =====================================================
-         BOSS AU AGENT 1
-      ===================================================== */
-
-      const allowed =
-        req.user.role ===
-          "boss" ||
-
-        (
-          req.user.role ===
-            "agent" &&
-
-          Number(
-            req.user.stage
-          ) === 1
-        );
-
-
-      if (!allowed) {
-
-        return res.status(403).json({
-
-          ok: false,
-
-          error:
-            "Ni Boss au Agent 1 pekee anaweza kutoa/reset PIN."
-
-        });
-
-      }
-
-
-      /* =====================================================
-         AGENT 1 HAWEZI KUJIRESET
-      ===================================================== */
 
       if (
-        req.user.role ===
-          "agent" &&
-
-        Number(
-          req.user.stage
-        ) === targetStage
+        req.user.role !== "boss" &&
+        !(
+          req.user.role === "agent" &&
+          Number(req.user.stage) === 1
+        )
       ) {
-
         return res.status(403).json({
-
           ok: false,
-
           error:
-            "Agent 1 hawezi kujipa PIN mpya kupitia mfumo huu."
-
+            "Huna ruhusa ya kubadilisha PIN."
         });
-
       }
-
 
       const cargoRef =
         db.ref(
           `cargo/${trackingId}`
         );
 
-
       const snapshot =
-        await cargoRef
-          .once("value");
+        await cargoRef.once("value");
 
-
-      if (
-        !snapshot.exists()
-      ) {
-
+      if (!snapshot.exists()) {
         return res.status(404).json({
-
           ok: false,
-
           error:
             "Mzigo haujapatikana."
-
         });
-
       }
-
 
       const cargo =
         snapshot.val();
 
-
-      /* =====================================================
-         BOSS SECURITY
-      ===================================================== */
-
       if (
-        req.user.role ===
-          "boss" &&
-
+        req.user.role === "boss" &&
         cargo.boss?.uid !==
           req.user.uid
       ) {
-
         return res.status(403).json({
-
           ok: false,
-
           error:
-            "Huna ruhusa ya reset PIN kwenye mzigo huu."
-
+            "Boss account si sahihi."
         });
-
       }
-
-
-      /* =====================================================
-         AGENT 1 SECURITY
-      ===================================================== */
 
       if (
-        req.user.role ===
-          "agent"
+        req.user.role === "agent" &&
+        req.user.stage !== 1
       ) {
-
-        if (
-          cargo.stages?.stage_1?.uid !==
-            req.user.uid
-        ) {
-
-          return res.status(403).json({
-
-            ok: false,
-
-            error:
-              "Huna ruhusa ya reset PIN."
-
-          });
-
-        }
-
+        return res.status(403).json({
+          ok: false,
+          error:
+            "Agent 1 pekee anaweza reset PIN."
+        });
       }
 
+      const stages =
+        Array.isArray(cargo.stages)
+          ? cargo.stages
+          : Object.values(
+              cargo.stages || {}
+            );
 
-      const stageKey =
-        `stage_${targetStage}`;
+      const index =
+        stages.findIndex(
+          stage =>
+            Number(stage.stage) ===
+            stageNumber
+        );
 
+      if (index < 0) {
+        return res.status(404).json({
+          ok: false,
+          error:
+            "Agent huyo hakupatikana."
+        });
+      }
 
       const stage =
-        cargo.stages?.[
-          stageKey
-        ];
-
-
-      if (!stage) {
-
-        return res.status(404).json({
-
-          ok: false,
-
-          error:
-            "Agent huyo hajapatikana."
-
-        });
-
-      }
-
-
-      /* =====================================================
-         NEW PIN
-      ===================================================== */
+        stages[index];
 
       const newPin =
         makePin();
 
-
-      const newPinHash =
+      const pinHash =
         await bcrypt.hash(
           newPin,
           12
         );
 
-
-      await cargoRef
-        .child(
-          `stages/${stageKey}/private/pinHash`
-        )
-        .set(
-          newPinHash
-        );
-
-
-      /* =====================================================
-         DELETE OLD FIREBASE USER
-      ===================================================== */
-
-      if (stage.uid) {
-
-        try {
-
-          await admin.auth()
-            .deleteUser(
-              stage.uid
-            );
-
-        } catch (_) {}
-
-      }
-
-
-      /* =====================================================
-         NEW UID
-      ===================================================== */
+      const oldUid =
+        stage.uid;
 
       const newUid =
-        makeUid();
-
-
-      try {
-
-        await admin.auth()
-          .createUser({
-
-            uid:
-              newUid
-
-          });
-
-      } catch (_) {}
-
-
-      await cargoRef
-        .child(
-          `stages/${stageKey}/uid`
-        )
-        .set(
-          newUid
+        makeUid(
+          `agent${stageNumber}`
         );
 
+      stage.uid = newUid;
+
+      stage.private = {
+        pinHash
+      };
+
+      stages[index] =
+        stage;
+
+      cargo.stages =
+        stages;
+
+      await deleteFirebaseUser(
+        oldUid
+      );
+
+      await createFirebaseUser(
+        newUid,
+        stage.name
+      );
 
       /*
-        Kama Agent huyo alikuwa na
-        device token ya zamani,
-        tunaiondoa ili PIN reset
-        isiendelee kutumia device
-        iliyokuwa imeunganishwa
-        na UID ya zamani.
+        DEVICE TOKENS ziko nje ya cargo.
+        Hii ndiyo path sahihi.
       */
-
-      await cargoRef
-        .child(
-          `deviceTokens/${stageKey}`
+      await db
+        .ref(
+          `deviceTokens/${trackingId}/stage_${stageNumber}`
         )
         .remove();
 
+      await cargoRef.set(cargo);
 
       return res.json({
-
         ok: true,
-
-        message:
-          `PIN mpya ya ${stage.name} imetengenezwa.`,
-
-        stage:
-          targetStage,
-
-        agentName:
-          stage.name,
-
-        pin:
-          newPin
-
+        stage: stageNumber,
+        pin: newPin
       });
-
-
-    } catch (err) {
-
+    } catch (error) {
       console.error(
-        "RESET AGENT PIN ERROR:",
-        err
+        "RESET PIN ERROR:",
+        error
       );
 
       return res.status(500).json({
-
         ok: false,
-
         error:
-          "Imeshindikana kutengeneza PIN mpya."
+          "PIN reset imeshindikana."
+      });
+    }
+  }
+);
 
+/* =========================================================
+   DEVICE REGISTRATION
+========================================================= */
+
+app.post(
+  "/api/register-device",
+  requireAuth,
+  async (req, res) => {
+    try {
+      const token =
+        cleanText(
+          req.body.token,
+          5000
+        );
+
+      if (!token) {
+        return res.status(400).json({
+          ok: false,
+          error:
+            "FCM token haipo."
+        });
+      }
+
+      const trackingId =
+        req.user.trackingId;
+
+      if (!trackingId) {
+        return res.status(403).json({
+          ok: false,
+          error:
+            "Account hii haina cargo tracking."
+        });
+      }
+
+      const cargo =
+        await getCargo(
+          trackingId
+        );
+
+      if (!cargo) {
+        return res.status(404).json({
+          ok: false,
+          error:
+            "Cargo haipo."
+        });
+      }
+
+      let recipientKey;
+
+      if (
+        req.user.role === "boss"
+      ) {
+        if (
+          cargo.boss?.uid !==
+          req.user.uid
+        ) {
+          return res.status(403).json({
+            ok: false,
+            error:
+              "Boss account si sahihi."
+          });
+        }
+
+        recipientKey = "boss";
+      } else if (
+        req.user.role === "agent"
+      ) {
+        const stage =
+          Number(req.user.stage);
+
+        const stages =
+          Array.isArray(cargo.stages)
+            ? cargo.stages
+            : Object.values(
+                cargo.stages || {}
+              );
+
+        const stageData =
+          stages.find(
+            item =>
+              Number(item.stage) ===
+              stage
+          );
+
+        if (
+          !stageData ||
+          stageData.uid !==
+            req.user.uid
+        ) {
+          return res.status(403).json({
+            ok: false,
+            error:
+              "Agent account si sahihi."
+          });
+        }
+
+        recipientKey =
+          `stage_${stage}`;
+      } else {
+        return res.status(403).json({
+          ok: false,
+          error:
+            "Account hii haiwezi kusajili device."
+        });
+      }
+
+      const tokenId =
+        crypto
+          .createHash("sha256")
+          .update(token)
+          .digest("hex");
+
+      await db
+        .ref(
+          `deviceTokens/${trackingId}/${recipientKey}/${tokenId}`
+        )
+        .set({
+          token,
+          uid: req.user.uid,
+          updatedAt: nowISO()
+        });
+
+      return res.json({
+        ok: true
+      });
+    } catch (error) {
+      console.error(
+        "REGISTER DEVICE ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Device registration imeshindikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   PLATFORM REGISTRATION HELPERS
+========================================================= */
+
+async function phoneExists(
+  phone,
+  exceptUid = null
+) {
+  const normalized =
+    normalizePhone(phone);
+
+  const [agentsSnap, transportersSnap] =
+    await Promise.all([
+      db.ref("platformAgents")
+        .once("value"),
+      db.ref("transporters")
+        .once("value")
+    ]);
+
+  let found = false;
+
+  agentsSnap.forEach(child => {
+    const value = child.val();
+
+    if (
+      child.key !== exceptUid &&
+      normalizePhone(value?.phone) ===
+        normalized
+    ) {
+      found = true;
+    }
+  });
+
+  transportersSnap.forEach(child => {
+    const value = child.val();
+
+    if (
+      child.key !== exceptUid &&
+      normalizePhone(value?.phone) ===
+        normalized
+    ) {
+      found = true;
+    }
+  });
+
+  return found;
+}
+
+/* =========================================================
+   PLATFORM AGENT REGISTER
+========================================================= */
+
+app.post(
+  "/api/register-platform-agent",
+  async (req, res) => {
+    try {
+      const name =
+        cleanText(
+          req.body.name,
+          150
+        );
+
+      const phone =
+        normalizePhone(
+          req.body.phone
+        );
+
+      const location =
+        cleanText(
+          req.body.location,
+          150
+        );
+
+      const region =
+        cleanText(
+          req.body.region,
+          150
+        );
+
+      const serviceType =
+        cleanText(
+          req.body.serviceType,
+          150
+        );
+
+      const description =
+        cleanText(
+          req.body.description,
+          500
+        );
+
+      const pin =
+        cleanText(
+          req.body.pin,
+          50
+        );
+
+      if (
+        !name ||
+        !phone ||
+        !pin
+      ) {
+        return res.status(400).json({
+          ok: false,
+          error:
+            "Jina, simu na PIN vinahitajika."
+        });
+      }
+
+      if (
+        await phoneExists(phone)
+      ) {
+        return res.status(409).json({
+          ok: false,
+          error:
+            "Namba hii tayari imesajiliwa."
+        });
+      }
+
+      const uid =
+        makeUid("platformAgent");
+
+      const pinHash =
+        await bcrypt.hash(
+          pin,
+          12
+        );
+
+      const profile = {
+        uid,
+        profileType: "agent",
+        name,
+        phone,
+        location,
+        region,
+        serviceType,
+        description,
+        status: "active",
+        approvedAt: nowISO(),
+        createdAt: nowISO(),
+        private: {
+          pinHash
+        }
+      };
+
+      await db
+        .ref(
+          `platformAgents/${uid}`
+        )
+        .set(profile);
+
+      await createFirebaseUser(
+        uid,
+        name
+      );
+
+      return res.json({
+        ok: true,
+        uid,
+        status: "active",
+        message:
+          "Usajili umefanikiwa. Akaunti yako imekuwa active automatically."
+      });
+    } catch (error) {
+      console.error(
+        "PLATFORM AGENT REGISTER ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Agent registration imeshindikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   TRANSPORTER REGISTER
+========================================================= */
+
+app.post(
+  "/api/register-platform-transporter",
+  async (req, res) => {
+    try {
+      const name =
+        cleanText(
+          req.body.businessName ||
+          req.body.name,
+          180
+        );
+
+      const phone =
+        normalizePhone(
+          req.body.phone
+        );
+
+      const location =
+        cleanText(
+          req.body.location,
+          150
+        );
+
+      const region =
+        cleanText(
+          req.body.region,
+          150
+        );
+
+      const transportType =
+        cleanText(
+          req.body.transportType,
+          150
+        );
+
+      const routes =
+        cleanText(
+          req.body.routes,
+          300
+        );
+
+      const cargoTypes =
+        cleanText(
+          req.body.cargoTypes,
+          300
+        );
+
+      const availability =
+        cleanText(
+          req.body.availability,
+          30
+        ) || "available";
+
+      const description =
+        cleanText(
+          req.body.description,
+          500
+        );
+
+      const pin =
+        cleanText(
+          req.body.pin,
+          50
+        );
+
+      if (
+        !name ||
+        !phone ||
+        !pin
+      ) {
+        return res.status(400).json({
+          ok: false,
+          error:
+            "Jina, simu na PIN vinahitajika."
+        });
+      }
+
+      if (
+        await phoneExists(phone)
+      ) {
+        return res.status(409).json({
+          ok: false,
+          error:
+            "Namba hii tayari imesajiliwa."
+        });
+      }
+
+      const uid =
+        makeUid("transporter");
+
+      const pinHash =
+        await bcrypt.hash(
+          pin,
+          12
+        );
+
+      const profile = {
+        uid,
+        profileType: "transporter",
+        name,
+        businessName: name,
+        phone,
+        location,
+        region,
+        transportType,
+        routes,
+        cargoTypes,
+        availability,
+        description,
+        status: "active",
+        approvedAt: nowISO(),
+        createdAt: nowISO(),
+        private: {
+          pinHash
+        }
+      };
+
+      await db
+        .ref(
+          `transporters/${uid}`
+        )
+        .set(profile);
+
+      await createFirebaseUser(
+        uid,
+        name
+      );
+
+      return res.json({
+        ok: true,
+        uid,
+        status: "active",
+        message:
+          "Usajili umefanikiwa. Transporter wako ameonekana active automatically."
+      });
+    } catch (error) {
+      console.error(
+        "TRANSPORTER REGISTER ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Transporter registration imeshindikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   PLATFORM LOGIN
+========================================================= */
+
+app.post(
+  "/api/platform-login",
+  async (req, res) => {
+    try {
+      const type =
+        cleanText(
+          req.body.type,
+          30
+        );
+
+      const phone =
+        normalizePhone(
+          req.body.phone
+        );
+
+      const pin =
+        cleanText(
+          req.body.pin,
+          50
+        );
+
+      if (
+        !["agent","transporter"]
+          .includes(type)
+      ) {
+        return res.status(400).json({
+          ok: false,
+          error:
+            "Account type si sahihi."
+        });
+      }
+
+      let collection =
+        type === "agent"
+          ? "platformAgents"
+          : "transporters";
+
+      const snapshot =
+        await db
+          .ref(collection)
+          .once("value");
+
+      let profile = null;
+
+      snapshot.forEach(child => {
+        const value =
+          child.val();
+
+        if (
+          normalizePhone(
+            value?.phone
+          ) === phone
+        ) {
+          profile = value;
+        }
       });
 
+      if (!profile) {
+        return res.status(401).json({
+          ok: false,
+          error:
+            "Namba au PIN si sahihi."
+        });
+      }
+
+      if (
+        profile.status !==
+        "active"
+      ) {
+        return res.status(403).json({
+          ok: false,
+          error:
+            "Akaunti hii haiko active."
+        });
+      }
+
+      const valid =
+        await bcrypt.compare(
+          pin,
+          profile.private?.pinHash ||
+            ""
+        );
+
+      if (!valid) {
+        return res.status(401).json({
+          ok: false,
+          error:
+            "Namba au PIN si sahihi."
+        });
+      }
+
+      await createFirebaseUser(
+        profile.uid,
+        profile.name ||
+          profile.businessName
+      );
+
+      const role =
+        type === "agent"
+          ? "platform_agent"
+          : "transporter";
+
+      const token =
+        await admin.auth()
+          .createCustomToken(
+            profile.uid,
+            {
+              role,
+              profileType: type,
+              profileId: profile.uid
+            }
+          );
+
+      return res.json({
+        ok: true,
+        token,
+        role,
+        profileType: type,
+        profileId: profile.uid,
+        name:
+          profile.name ||
+          profile.businessName
+      });
+    } catch (error) {
+      console.error(
+        "PLATFORM LOGIN ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Platform login imeshindikana."
+      });
     }
-
   }
 );
 
+/* =========================================================
+   PUBLIC DIRECTORY
+========================================================= */
+
+function publicAgent(profile) {
+  return {
+    uid: profile.uid,
+    profileType: "agent",
+    name: profile.name,
+    phone: profile.phone,
+    location: profile.location,
+    region: profile.region,
+    serviceType:
+      profile.serviceType,
+    description:
+      profile.description,
+    status: profile.status,
+    createdAt: profile.createdAt
+  };
+}
+
+function publicTransporter(profile) {
+  return {
+    uid: profile.uid,
+    profileType: "transporter",
+    name:
+      profile.name ||
+      profile.businessName,
+    businessName:
+      profile.businessName,
+    phone: profile.phone,
+    location: profile.location,
+    region: profile.region,
+    transportType:
+      profile.transportType,
+    routes:
+      profile.routes,
+    cargoTypes:
+      profile.cargoTypes,
+    availability:
+      profile.availability,
+    description:
+      profile.description,
+    status: profile.status,
+    createdAt: profile.createdAt
+  };
+}
+
+function matchesSearch(
+  profile,
+  query
+) {
+  if (!query) return true;
+
+  const text =
+    [
+      profile.name,
+      profile.businessName,
+      profile.phone,
+      profile.location,
+      profile.region,
+      profile.serviceType,
+      profile.transportType,
+      profile.routes,
+      profile.cargoTypes,
+      profile.description
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+  return text.includes(
+    query.toLowerCase()
+  );
+}
+
+app.get(
+  "/api/agents",
+  async (req, res) => {
+    try {
+      const search =
+        cleanText(
+          req.query.search,
+          150
+        );
+
+      const snapshot =
+        await db
+          .ref("platformAgents")
+          .once("value");
+
+      const agents = [];
+
+      snapshot.forEach(child => {
+        const profile =
+          child.val();
+
+        if (
+          profile?.status !==
+          "active"
+        ) {
+          return;
+        }
+
+        if (
+          !matchesSearch(
+            profile,
+            search
+          )
+        ) {
+          return;
+        }
+
+        agents.push(
+          publicAgent(profile)
+        );
+      });
+
+      agents.sort(
+        (a,b) =>
+          new Date(b.createdAt) -
+          new Date(a.createdAt)
+      );
+
+      return res.json({
+        ok: true,
+        agents
+      });
+    } catch (error) {
+      console.error(
+        "AGENTS LIST ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Imeshindikana kupata Agents."
+      });
+    }
+  }
+);
+
+app.get(
+  "/api/transporters",
+  async (req, res) => {
+    try {
+      const search =
+        cleanText(
+          req.query.search,
+          150
+        );
+
+      const snapshot =
+        await db
+          .ref("transporters")
+          .once("value");
+
+      const transporters = [];
+
+      snapshot.forEach(child => {
+        const profile =
+          child.val();
+
+        if (
+          profile?.status !==
+          "active"
+        ) {
+          return;
+        }
+
+        if (
+          !matchesSearch(
+            profile,
+            search
+          )
+        ) {
+          return;
+        }
+
+        transporters.push(
+          publicTransporter(profile)
+        );
+      });
+
+      transporters.sort(
+        (a,b) =>
+          new Date(b.createdAt) -
+          new Date(a.createdAt)
+      );
+
+      return res.json({
+        ok: true,
+        transporters
+      });
+    } catch (error) {
+      console.error(
+        "TRANSPORTERS LIST ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Imeshindikana kupata Transporters."
+      });
+    }
+  }
+);
 
 /* =========================================================
-   404 API
+   PUBLIC PROFILE
+========================================================= */
+
+app.get(
+  "/api/agents/:uid",
+  async (req, res) => {
+    try {
+      const snapshot =
+        await db
+          .ref(
+            `platformAgents/${req.params.uid}`
+          )
+          .once("value");
+
+      if (!snapshot.exists()) {
+        return res.status(404).json({
+          ok: false,
+          error:
+            "Agent hakupatikana."
+        });
+      }
+
+      const profile =
+        snapshot.val();
+
+      if (
+        profile.status !==
+        "active"
+      ) {
+        return res.status(404).json({
+          ok: false,
+          error:
+            "Agent hayupo active."
+        });
+      }
+
+      return res.json({
+        ok: true,
+        profile:
+          publicAgent(profile)
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Imeshindikana kupata profile."
+      });
+    }
+  }
+);
+
+app.get(
+  "/api/transporters/:uid",
+  async (req, res) => {
+    try {
+      const snapshot =
+        await db
+          .ref(
+            `transporters/${req.params.uid}`
+          )
+          .once("value");
+
+      if (!snapshot.exists()) {
+        return res.status(404).json({
+          ok: false,
+          error:
+            "Transporter hakupatikana."
+        });
+      }
+
+      const profile =
+        snapshot.val();
+
+      if (
+        profile.status !==
+        "active"
+      ) {
+        return res.status(404).json({
+          ok: false,
+          error:
+            "Transporter hayupo active."
+        });
+      }
+
+      return res.json({
+        ok: true,
+        profile:
+          publicTransporter(profile)
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Imeshindikana kupata profile."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN LOGIN
+========================================================= */
+
+async function ensureAdminFirebaseUser() {
+  const username =
+    process.env.ADMIN_USERNAME;
+
+  const uid =
+    "admin_" +
+    crypto
+      .createHash("sha256")
+      .update(
+        username || "makyama-admin"
+      )
+      .digest("hex")
+      .slice(0, 28);
+
+  await createFirebaseUser(
+    uid,
+    "MAKYAMA ADMIN"
+  );
+
+  return uid;
+}
+
+app.post(
+  "/api/admin/login",
+  async (req, res) => {
+    try {
+      const username =
+        cleanText(
+          req.body.username,
+          100
+        );
+
+      const password =
+        String(
+          req.body.password || ""
+        );
+
+      if (
+        !process.env.ADMIN_USERNAME ||
+        !process.env.ADMIN_PASSWORD
+      ) {
+        return res.status(503).json({
+          ok: false,
+          error:
+            "Admin credentials hazijawekwa kwenye Render Environment Variables."
+        });
+      }
+
+      if (
+        username !==
+          process.env.ADMIN_USERNAME ||
+        password !==
+          process.env.ADMIN_PASSWORD
+      ) {
+        return res.status(401).json({
+          ok: false,
+          error:
+            "Admin username au password si sahihi."
+        });
+      }
+
+      const uid =
+        await ensureAdminFirebaseUser();
+
+      const token =
+        await admin.auth()
+          .createCustomToken(
+            uid,
+            {
+              role: "admin",
+              admin: true
+            }
+          );
+
+      return res.json({
+        ok: true,
+        token,
+        role: "admin"
+      });
+    } catch (error) {
+      console.error(
+        "ADMIN LOGIN ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Admin login imeshindikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN STATS
+========================================================= */
+
+app.get(
+  "/api/admin/stats",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const [
+        agents,
+        transporters,
+        cargos
+      ] = await Promise.all([
+        db.ref("platformAgents")
+          .once("value"),
+        db.ref("transporters")
+          .once("value"),
+        db.ref("cargo")
+          .once("value")
+      ]);
+
+      return res.json({
+        ok: true,
+        stats: {
+          agents:
+            agents.numChildren(),
+          transporters:
+            transporters.numChildren(),
+          cargos:
+            cargos.numChildren()
+        }
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Stats hazikupatikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN AGENTS
+========================================================= */
+
+app.get(
+  "/api/admin/agents",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const snapshot =
+        await db
+          .ref("platformAgents")
+          .once("value");
+
+      const agents = [];
+
+      snapshot.forEach(child => {
+        const profile =
+          child.val();
+
+        agents.push(
+          publicAgent(profile)
+        );
+      });
+
+      return res.json({
+        ok: true,
+        agents
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Admin Agents hazikupatikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN TRANSPORTERS
+========================================================= */
+
+app.get(
+  "/api/admin/transporters",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const snapshot =
+        await db
+          .ref("transporters")
+          .once("value");
+
+      const transporters = [];
+
+      snapshot.forEach(child => {
+        transporters.push(
+          publicTransporter(
+            child.val()
+          )
+        );
+      });
+
+      return res.json({
+        ok: true,
+        transporters
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Admin Transporters hazikupatikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN CARGOS
+========================================================= */
+
+app.get(
+  "/api/admin/cargos",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const snapshot =
+        await db
+          .ref("cargo")
+          .once("value");
+
+      const cargos = [];
+
+      snapshot.forEach(child => {
+        cargos.push(
+          makeAdminCargo(
+            child.val()
+          )
+        );
+      });
+
+      return res.json({
+        ok: true,
+        cargos
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Admin cargos hazikupatikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN EDIT AGENT
+========================================================= */
+
+app.patch(
+  "/api/admin/agents/:uid",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const ref =
+        db.ref(
+          `platformAgents/${req.params.uid}`
+        );
+
+      const snapshot =
+        await ref.once("value");
+
+      if (!snapshot.exists()) {
+        return res.status(404).json({
+          ok: false,
+          error:
+            "Agent hakupatikana."
+        });
+      }
+
+      const old =
+        snapshot.val();
+
+      const allowed = [
+        "name",
+        "phone",
+        "location",
+        "region",
+        "serviceType",
+        "description",
+        "status"
+      ];
+
+      const update = {};
+
+      allowed.forEach(key => {
+        if (
+          req.body[key] !==
+          undefined
+        ) {
+          update[key] =
+            cleanText(
+              req.body[key],
+              key === "description"
+                ? 500
+                : 180
+            );
+        }
+      });
+
+      await ref.update(update);
+
+      return res.json({
+        ok: true,
+        profile:
+          publicAgent({
+            ...old,
+            ...update
+          })
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Agent edit imeshindikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN EDIT TRANSPORTER
+========================================================= */
+
+app.patch(
+  "/api/admin/transporters/:uid",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const ref =
+        db.ref(
+          `transporters/${req.params.uid}`
+        );
+
+      const snapshot =
+        await ref.once("value");
+
+      if (!snapshot.exists()) {
+        return res.status(404).json({
+          ok: false,
+          error:
+            "Transporter hakupatikana."
+        });
+      }
+
+      const old =
+        snapshot.val();
+
+      const allowed = [
+        "name",
+        "businessName",
+        "phone",
+        "location",
+        "region",
+        "transportType",
+        "routes",
+        "cargoTypes",
+        "availability",
+        "description",
+        "status"
+      ];
+
+      const update = {};
+
+      allowed.forEach(key => {
+        if (
+          req.body[key] !==
+          undefined
+        ) {
+          update[key] =
+            cleanText(
+              req.body[key],
+              key === "description"
+                ? 500
+                : 300
+            );
+        }
+      });
+
+      await ref.update(update);
+
+      return res.json({
+        ok: true,
+        profile:
+          publicTransporter({
+            ...old,
+            ...update
+          })
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Transporter edit imeshindikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN DELETE AGENT
+========================================================= */
+
+app.delete(
+  "/api/admin/agents/:uid",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const uid =
+        req.params.uid;
+
+      const ref =
+        db.ref(
+          `platformAgents/${uid}`
+        );
+
+      const snapshot =
+        await ref.once("value");
+
+      if (!snapshot.exists()) {
+        return res.status(404).json({
+          ok: false,
+          error:
+            "Agent hakupatikana."
+        });
+      }
+
+      await ref.remove();
+      await deleteFirebaseUser(uid);
+
+      return res.json({
+        ok: true
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Agent delete imeshindikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN DELETE TRANSPORTER
+========================================================= */
+
+app.delete(
+  "/api/admin/transporters/:uid",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const uid =
+        req.params.uid;
+
+      const ref =
+        db.ref(
+          `transporters/${uid}`
+        );
+
+      const snapshot =
+        await ref.once("value");
+
+      if (!snapshot.exists()) {
+        return res.status(404).json({
+          ok: false,
+          error:
+            "Transporter hakupatikana."
+        });
+      }
+
+      await ref.remove();
+      await deleteFirebaseUser(uid);
+
+      return res.json({
+        ok: true
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "Transporter delete imeshindikana."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   404
 ========================================================= */
 
 app.use(
-  "/api",
   (req, res) => {
-
     res.status(404).json({
-
       ok: false,
-
       error:
-        "API endpoint haijapatikana."
-
+        "Endpoint haijapatikana."
     });
-
   }
 );
 
-
 /* =========================================================
-   SERVER ERROR
+   ERROR
 ========================================================= */
 
 app.use(
-  (err, req, res, next) => {
-
+  (error, req, res, next) => {
     console.error(
       "SERVER ERROR:",
-      err
+      error
     );
 
     res.status(500).json({
-
       ok: false,
-
       error:
         "Server error."
-
     });
-
   }
 );
 
-
-/* =========================================================
-   START SERVER
-========================================================= */
-
 app.listen(
   PORT,
-  "0.0.0.0",
   () => {
-
     console.log(
       `🚚 MAKYAMA TRANSPORT server running on ${PORT}`
     );
-
   }
 );
