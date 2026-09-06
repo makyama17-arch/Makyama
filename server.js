@@ -2456,4 +2456,606 @@ app.post(
         null;
 
 
-     
+      const cargoRef =
+        db.ref(
+          `cargo/${trackingId}`
+        );
+
+
+      const snapshot =
+        await cargoRef
+          .once("value");
+
+
+      if (
+        !snapshot.exists()
+      ) {
+
+        return res.status(404).json({
+
+          ok: false,
+
+          error:
+            "Mzigo haujapatikana."
+
+        });
+
+      }
+
+
+      const cargo =
+        snapshot.val();
+
+
+      if (
+        cargo.boss?.uid !==
+        req.user.uid
+      ) {
+
+        return res.status(403).json({
+
+          ok: false,
+
+          error:
+            "Huna ruhusa ya kupokea mzigo huu."
+
+        });
+
+      }
+
+
+      /* =========================
+         BOSS RECEIVE ONLY
+      ========================= */
+
+      if (
+        cargo.status !==
+        "WAITING_FOR_BOSS"
+      ) {
+
+        return res.status(400).json({
+
+          ok: false,
+
+          error:
+            "Mzigo bado haujafika hatua ya kupokelewa na Boss."
+
+        });
+
+      }
+
+
+      /* =====================================================
+         GPS
+      ===================================================== */
+
+      let address = "";
+
+
+      if (
+        validLocation(
+          location
+        )
+      ) {
+
+        address =
+          await reverseGeocode(
+
+            Number(
+              location.lat
+            ),
+
+            Number(
+              location.lng
+            )
+
+          );
+
+      }
+
+
+      /* =====================================================
+         BOSS EVENT
+      ===================================================== */
+
+      const eventId =
+        makeUid();
+
+
+      const event = {
+
+        id:
+          eventId,
+
+        action:
+          "BOSS_RECEIVE",
+
+        stage:
+          "BOSS",
+
+        agentName:
+          cargo.bossName,
+
+        timestamp:
+          nowISO(),
+
+        location:
+          validLocation(
+            location
+          )
+            ? {
+
+                lat:
+                  Number(
+                    location.lat
+                  ),
+
+                lng:
+                  Number(
+                    location.lng
+                  ),
+
+                address:
+                  address || ""
+
+              }
+
+            : null
+
+      };
+
+
+      await cargoRef
+        .child(
+          `boss/history/${eventId}`
+        )
+        .set(
+          event
+        );
+
+
+      /* =====================================================
+         DELIVERY COMPLETE
+      ===================================================== */
+
+      await cargoRef
+        .child(
+          "status"
+        )
+        .set(
+          "DELIVERED"
+        );
+
+
+      /* =====================================================
+         OPTIONAL BOSS CONFIRMATION
+      ===================================================== */
+
+      await sendNotificationToRecipient(
+
+        trackingId,
+
+        "boss",
+
+        "✅ Mzigo umepokelewa",
+
+        `Mzigo ${trackingId} umepokelewa na Boss. Safari imekamilika.`
+
+      );
+
+
+      return res.json({
+
+        ok: true,
+
+        message:
+          "Boss amepokea mzigo.",
+
+        event
+
+      });
+
+
+    } catch (err) {
+
+      console.error(
+        "BOSS RECEIVE ERROR:",
+        err
+      );
+
+      return res.status(500).json({
+
+        ok: false,
+
+        error:
+          "Imeshindikana kuhifadhi mapokezi ya Boss."
+
+      });
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   RESET AGENT PIN
+========================================================= */
+
+app.post(
+  "/api/reset-agent-pin",
+  requireAuth,
+  async (req, res) => {
+
+    try {
+
+      const trackingId =
+        cleanText(
+          req.user.trackingId,
+          50
+        ).toUpperCase();
+
+
+      const targetStage =
+        Number(
+          req.body.stage
+        );
+
+
+      if (
+        !Number.isInteger(
+          targetStage
+        ) ||
+        targetStage < 1
+      ) {
+
+        return res.status(400).json({
+
+          ok: false,
+
+          error:
+            "Agent stage si sahihi."
+
+        });
+
+      }
+
+
+      /* =====================================================
+         BOSS AU AGENT 1
+      ===================================================== */
+
+      const allowed =
+        req.user.role ===
+          "boss" ||
+
+        (
+          req.user.role ===
+            "agent" &&
+
+          Number(
+            req.user.stage
+          ) === 1
+        );
+
+
+      if (!allowed) {
+
+        return res.status(403).json({
+
+          ok: false,
+
+          error:
+            "Ni Boss au Agent 1 pekee anaweza kutoa/reset PIN."
+
+        });
+
+      }
+
+
+      /* =====================================================
+         AGENT 1 HAWEZI KUJIRESET
+      ===================================================== */
+
+      if (
+        req.user.role ===
+          "agent" &&
+
+        Number(
+          req.user.stage
+        ) === targetStage
+      ) {
+
+        return res.status(403).json({
+
+          ok: false,
+
+          error:
+            "Agent 1 hawezi kujipa PIN mpya kupitia mfumo huu."
+
+        });
+
+      }
+
+
+      const cargoRef =
+        db.ref(
+          `cargo/${trackingId}`
+        );
+
+
+      const snapshot =
+        await cargoRef
+          .once("value");
+
+
+      if (
+        !snapshot.exists()
+      ) {
+
+        return res.status(404).json({
+
+          ok: false,
+
+          error:
+            "Mzigo haujapatikana."
+
+        });
+
+      }
+
+
+      const cargo =
+        snapshot.val();
+
+
+      /* =====================================================
+         BOSS SECURITY
+      ===================================================== */
+
+      if (
+        req.user.role ===
+          "boss" &&
+
+        cargo.boss?.uid !==
+          req.user.uid
+      ) {
+
+        return res.status(403).json({
+
+          ok: false,
+
+          error:
+            "Huna ruhusa ya reset PIN kwenye mzigo huu."
+
+        });
+
+      }
+
+
+      /* =====================================================
+         AGENT 1 SECURITY
+      ===================================================== */
+
+      if (
+        req.user.role ===
+          "agent"
+      ) {
+
+        if (
+          cargo.stages?.stage_1?.uid !==
+            req.user.uid
+        ) {
+
+          return res.status(403).json({
+
+            ok: false,
+
+            error:
+              "Huna ruhusa ya reset PIN."
+
+          });
+
+        }
+
+      }
+
+
+      const stageKey =
+        `stage_${targetStage}`;
+
+
+      const stage =
+        cargo.stages?.[
+          stageKey
+        ];
+
+
+      if (!stage) {
+
+        return res.status(404).json({
+
+          ok: false,
+
+          error:
+            "Agent huyo hajapatikana."
+
+        });
+
+      }
+
+
+      /* =====================================================
+         NEW PIN
+      ===================================================== */
+
+      const newPin =
+        makePin();
+
+
+      const newPinHash =
+        await bcrypt.hash(
+          newPin,
+          12
+        );
+
+
+      await cargoRef
+        .child(
+          `stages/${stageKey}/private/pinHash`
+        )
+        .set(
+          newPinHash
+        );
+
+
+      /* =====================================================
+         DELETE OLD FIREBASE USER
+      ===================================================== */
+
+      if (stage.uid) {
+
+        try {
+
+          await admin.auth()
+            .deleteUser(
+              stage.uid
+            );
+
+        } catch (_) {}
+
+      }
+
+
+      /* =====================================================
+         NEW UID
+      ===================================================== */
+
+      const newUid =
+        makeUid();
+
+
+      try {
+
+        await admin.auth()
+          .createUser({
+
+            uid:
+              newUid
+
+          });
+
+      } catch (_) {}
+
+
+      await cargoRef
+        .child(
+          `stages/${stageKey}/uid`
+        )
+        .set(
+          newUid
+        );
+
+
+      return res.json({
+
+        ok: true,
+
+        message:
+          `PIN mpya ya ${stage.name} imetengenezwa.`,
+
+        stage:
+          targetStage,
+
+        agentName:
+          stage.name,
+
+        pin:
+          newPin
+
+      });
+
+
+    } catch (err) {
+
+      console.error(
+        "RESET AGENT PIN ERROR:",
+        err
+      );
+
+      return res.status(500).json({
+
+        ok: false,
+
+        error:
+          "Imeshindikana kutengeneza PIN mpya."
+
+      });
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   404 API
+========================================================= */
+
+app.use(
+  "/api",
+  (req, res) => {
+
+    res.status(404).json({
+
+      ok: false,
+
+      error:
+        "API endpoint haijapatikana."
+
+    });
+
+  }
+);
+
+
+/* =========================================================
+   SERVER ERROR
+========================================================= */
+
+app.use(
+  (err, req, res, next) => {
+
+    console.error(
+      "SERVER ERROR:",
+      err
+    );
+
+    res.status(500).json({
+
+      ok: false,
+
+      error:
+        "Server error."
+
+    });
+
+  }
+);
+
+
+/* =========================================================
+   START SERVER
+========================================================= */
+
+app.listen(
+  PORT,
+  "0.0.0.0",
+  () => {
+
+    console.log(
+      `🚚 MAKYAMA TRANSPORT server running on ${PORT}`
+    );
+
+  }
+);
