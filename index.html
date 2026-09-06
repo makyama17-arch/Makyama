@@ -1,1269 +1,2442 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-  <title>MAKYAMA DAGAA TRACKING</title>
+<title>MAKYAMA DAGAA TRACKING</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
-    body {
-      background: #f4f7fb;
-      color: #172033;
-    }
+<style>
 
-    header {
-      background: #075985;
-      color: white;
-      padding: 18px;
-      text-align: center;
-      box-shadow: 0 2px 8px #0002;
-    }
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial,sans-serif;
+}
 
-    header h1 {
-      font-size: 24px;
-    }
+body{
+background:#eef6f9;
+color:#102a43;
+}
 
-    header p {
-      margin-top: 5px;
-      opacity: .9;
-    }
+header{
+background:#075985;
+color:white;
+padding:20px 15px;
+text-align:center;
+}
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 15px;
-    }
+header h1{
+font-size:25px;
+}
 
-    .card {
-      background: white;
-      padding: 18px;
-      margin-bottom: 15px;
-      border-radius: 14px;
-      box-shadow: 0 2px 10px #0001;
-    }
+header p{
+margin-top:5px;
+opacity:.9;
+}
 
-    h2 {
-      margin-bottom: 15px;
-      color: #075985;
-    }
+.container{
+width:100%;
+max-width:950px;
+margin:auto;
+padding:15px;
+}
 
-    label {
-      display: block;
-      margin-top: 12px;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
+.card{
+background:white;
+border-radius:15px;
+padding:18px;
+margin-bottom:16px;
+box-shadow:0 3px 12px #0002;
+}
 
-    input, select {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #ccd5df;
-      border-radius: 9px;
-      font-size: 16px;
-    }
+h2{
+color:#075985;
+margin-bottom:15px;
+font-size:20px;
+}
 
-    button {
-      width: 100%;
-      padding: 13px;
-      border: 0;
-      border-radius: 9px;
-      margin-top: 14px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      background: #075985;
-      color: white;
-    }
+label{
+display:block;
+font-weight:bold;
+margin-top:12px;
+margin-bottom:6px;
+}
 
-    button:hover {
-      opacity: .9;
-    }
+input{
+width:100%;
+padding:13px;
+border:1px solid #cbd5e1;
+border-radius:9px;
+font-size:16px;
+}
 
-    .green {
-      background: #15803d;
-    }
+button{
+width:100%;
+padding:14px;
+border:0;
+border-radius:9px;
+margin-top:13px;
+font-size:16px;
+font-weight:bold;
+color:white;
+background:#075985;
+cursor:pointer;
+}
 
-    .orange {
-      background: #ea580c;
-    }
+.green{
+background:#15803d;
+}
 
-    .red {
-      background: #dc2626;
-    }
+.orange{
+background:#ea580c;
+}
 
-    .gray {
-      background: #475569;
-    }
+.red{
+background:#dc2626;
+}
 
-    .hidden {
-      display: none;
-    }
+.gray{
+background:#475569;
+}
 
-    .result {
-      background: #ecfeff;
-      border: 1px solid #67e8f9;
-      padding: 15px;
-      border-radius: 10px;
-      margin-top: 15px;
-    }
+.hidden{
+display:none!important;
+}
 
-    .tracking {
-      font-size: 23px;
-      font-weight: bold;
-      color: #075985;
-      letter-spacing: 2px;
-    }
+.result{
+margin-top:15px;
+padding:15px;
+border-radius:10px;
+background:#ecfeff;
+border:1px solid #67e8f9;
+}
 
-    .pin {
-      font-size: 22px;
-      font-weight: bold;
-      color: #15803d;
-      letter-spacing: 4px;
-    }
+.tracking{
+font-size:24px;
+font-weight:bold;
+color:#075985;
+letter-spacing:2px;
+margin-top:5px;
+}
 
-    .info {
-      margin: 8px 0;
-      padding: 9px;
-      background: #f8fafc;
-      border-radius: 7px;
-    }
+.pin{
+font-size:25px;
+font-weight:bold;
+color:#15803d;
+letter-spacing:5px;
+margin-top:5px;
+}
 
-    .history-item {
-      border-left: 4px solid #075985;
-      padding: 10px;
-      margin: 8px 0;
-      background: #f8fafc;
-      border-radius: 6px;
-    }
+.info{
+background:#f8fafc;
+padding:11px;
+margin:7px 0;
+border-radius:8px;
+}
 
-    .status {
-      display: inline-block;
-      padding: 7px 12px;
-      border-radius: 20px;
-      background: #dbeafe;
-      color: #1d4ed8;
-      font-weight: bold;
-    }
+.status{
+display:inline-block;
+padding:7px 12px;
+border-radius:20px;
+background:#dbeafe;
+color:#1d4ed8;
+font-weight:bold;
+}
 
-    .success {
-      color: #15803d;
-      font-weight: bold;
-    }
+.success{
+color:#15803d;
+font-weight:bold;
+}
 
-    .error {
-      color: #dc2626;
-      font-weight: bold;
-    }
+.error{
+color:#dc2626;
+font-weight:bold;
+}
 
-    footer {
-      text-align: center;
-      padding: 25px;
-      color: #64748b;
-    }
-  </style>
+.coords{
+font-size:13px;
+color:#64748b;
+word-break:break-all;
+margin-top:5px;
+}
+
+.locationBox{
+background:#f0fdf4;
+border:1px solid #86efac;
+padding:12px;
+border-radius:10px;
+margin-top:10px;
+}
+
+#map{
+width:100%;
+height:430px;
+border-radius:12px;
+margin-top:12px;
+}
+
+.history-item{
+border-left:4px solid #075985;
+padding:12px;
+margin:9px 0;
+background:#f8fafc;
+border-radius:7px;
+}
+
+.history-item b{
+color:#075985;
+}
+
+.time{
+font-size:12px;
+color:#64748b;
+margin-top:5px;
+}
+
+footer{
+text-align:center;
+padding:25px;
+color:#64748b;
+}
+
+</style>
 </head>
 
 <body>
 
 <header>
-  <h1>🐟 MAKYAMA DAGAA</h1>
-  <p>Dagaa Cargo Tracking System</p>
+
+<h1>🐟 MAKYAMA DAGAA</h1>
+
+<p>Dagaa Cargo Tracking System</p>
+
 </header>
+
 
 <div class="container">
 
-  <!-- REGISTER -->
-  <div class="card">
-    <h2>📦 Sajili Mzigo wa Dagaa</h2>
 
-    <label>Jina la Dagaa / Mzigo</label>
-    <input id="cargoName" placeholder="Mfano: Dagaa wa Mafia">
+<!-- ================= REGISTER ================= -->
 
-    <label>Origin / Unapotoka</label>
-    <input id="origin" placeholder="Mfano: Mafia">
+<div class="card">
 
-    <label>Destination / Unapoenda</label>
-    <input id="destination" placeholder="Mfano: Congo">
+<h2>📦 Sajili Mzigo wa Dagaa</h2>
 
-    <label>Jina la Agent wa Kwanza</label>
-    <input id="agentName" placeholder="Mfano: Mussa">
+<label>Jina la Dagaa / Mzigo</label>
 
-    <label>Simu ya Agent</label>
-    <input id="agentPhone" placeholder="07XXXXXXXX">
-
-    <button onclick="registerCargo()">
-      🐟 SAJILI MZIGO
-    </button>
-
-    <div id="registerResult"></div>
-  </div>
+<input
+id="cargoName"
+placeholder="Mfano: Dagaa wa Mafia"
+/>
 
 
-  <!-- LOGIN -->
-  <div class="card">
-    <h2>🔐 Fungua Mzigo</h2>
+<label>Unapotoka</label>
 
-    <label>Tracking ID</label>
-    <input id="loginTracking" placeholder="Mfano: DAG-ABC123">
-
-    <label>PIN</label>
-    <input id="loginPin" type="password" placeholder="PIN ya mzigo">
-
-    <button onclick="loginCargo()">
-      🔎 FUNGUA MZIGO
-    </button>
-
-    <div id="loginMessage"></div>
-  </div>
+<input
+id="origin"
+placeholder="Mfano: Mafia"
+/>
 
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="hidden">
+<label>Unapoenda</label>
 
-    <div class="card">
-      <h2>📦 Taarifa za Mzigo</h2>
-
-      <div class="info">
-        <b>Dagaa:</b>
-        <span id="viewName"></span>
-      </div>
-
-      <div class="info">
-        <b>Tracking ID:</b>
-        <span id="viewTracking"></span>
-      </div>
-
-      <div class="info">
-        <b>Origin:</b>
-        <span id="viewOrigin"></span>
-      </div>
-
-      <div class="info">
-        <b>Destination:</b>
-        <span id="viewDestination"></span>
-      </div>
-
-      <div class="info">
-        <b>Agent wa Sasa:</b>
-        <span id="viewAgent"></span>
-      </div>
-
-      <div class="info">
-        <b>Status:</b>
-        <span id="viewStatus" class="status"></span>
-      </div>
-    </div>
+<input
+id="destination"
+placeholder="Mfano: Congo"
+/>
 
 
-    <!-- PICKUP -->
-    <div class="card">
-      <h2>🚚 Pickup</h2>
+<label>Jina la Agent wa Kwanza</label>
 
-      <p>
-        Agent akishachukua mzigo, bonyeza hapa kurekodi pickup.
-      </p>
-
-      <button class="green" onclick="pickupCargo()">
-        ✅ NIMECHUKUA MZIGO
-      </button>
-    </div>
+<input
+id="agentName"
+placeholder="Mfano: Juma"
+/>
 
 
-    <!-- HANDOVER -->
-    <div class="card">
-      <h2>🔄 Mkabidhi Agent Mwingine</h2>
+<label>Simu ya Agent</label>
 
-      <label>Jina la Agent Mpya</label>
-      <input id="newAgentName" placeholder="Jina la agent">
-
-      <label>Simu ya Agent Mpya</label>
-      <input id="newAgentPhone" placeholder="07XXXXXXXX">
-
-      <label>Mahali pa Kukabidhiana</label>
-      <input id="handoverLocation" placeholder="Mfano: Dar es Salaam">
-
-      <button class="orange" onclick="handoverCargo()">
-        🔄 KABIDHI MZIGO
-      </button>
-    </div>
+<input
+id="agentPhone"
+placeholder="07XXXXXXXX"
+/>
 
 
-    <!-- RECEIVE -->
-    <div class="card">
-      <h2>🏁 Uthibitisho wa Kupokea</h2>
+<button onclick="registerCargo()">
 
-      <p>
-        Bosi/receiver akishapokea mzigo, bonyeza hapa.
-      </p>
+🐟 SAJILI MZIGO
 
-      <label>Jina la Aliyepokea</label>
-      <input id="receiverName" placeholder="Jina la bosi/receiver">
-
-      <button class="green" onclick="receiveCargo()">
-        ✅ MZIGO UMEEPOKELEWA
-      </button>
-    </div>
+</button>
 
 
-    <!-- HISTORY -->
-    <div class="card">
-      <h2>📜 Historia ya Mzigo</h2>
+<div id="registerResult"></div>
 
-      <div id="history">
-        Hakuna history bado.
-      </div>
-    </div>
+</div>
 
 
-    <!-- LOGOUT -->
-    <button class="red" onclick="logoutCargo()">
-      🚪 Funga Mzigo
-    </button>
 
-  </div>
+<!-- ================= LOGIN ================= -->
+
+<div class="card">
+
+<h2>🔐 Fuatilia Mzigo</h2>
+
+<label>Tracking ID</label>
+
+<input
+id="loginTracking"
+placeholder="DAG-ABC123"
+/>
+
+
+<label>PIN</label>
+
+<input
+id="loginPin"
+type="password"
+placeholder="PIN"
+/>
+
+
+<button onclick="loginCargo()">
+
+🔎 FUNGUA MZIGO
+
+</button>
+
+
+<div id="loginMessage"></div>
+
+</div>
+
+
+
+<!-- ================= DASHBOARD ================= -->
+
+<div id="dashboard" class="hidden">
+
+
+<!-- INFORMATION -->
+
+<div class="card">
+
+<h2>📦 Taarifa za Mzigo</h2>
+
+
+<div class="info">
+<b>🐟 Dagaa:</b>
+<span id="viewName"></span>
+</div>
+
+
+<div class="info">
+<b>🆔 Tracking ID:</b>
+<span id="viewTracking"></span>
+</div>
+
+
+<div class="info">
+<b>📍 Origin:</b>
+<span id="viewOrigin"></span>
+</div>
+
+
+<div class="info">
+<b>🎯 Destination:</b>
+<span id="viewDestination"></span>
+</div>
+
+
+<div class="info">
+<b>👤 Agent wa Sasa:</b>
+<span id="viewAgent"></span>
+</div>
+
+
+<div class="info">
+<b>📞 Simu:</b>
+<span id="viewPhone"></span>
+</div>
+
+
+<div class="info">
+
+<b>📦 Status:</b>
+
+<span
+id="viewStatus"
+class="status"
+></span>
+
+</div>
+
+
+<div class="info">
+<b>🕐 Umesajiliwa:</b>
+<span id="viewCreated"></span>
+</div>
+
+
+<div class="info">
+<b>🚚 Pickup:</b>
+<span id="viewPickup"></span>
+</div>
+
+
+<div class="info">
+<b>🔄 Handover:</b>
+<span id="viewHandover"></span>
+</div>
+
+
+<div class="info">
+<b>📦 Agent alipokea:</b>
+<span id="viewAgentReceived"></span>
+</div>
+
+
+<div class="info">
+<b>🏁 Boss alipokea:</b>
+<span id="viewBoss"></span>
+</div>
+
+</div>
+
+
+
+<!-- ================= GPS ================= -->
+
+<div class="card">
+
+<h2>📍 Location</h2>
+
+<p>
+Tumia GPS ya simu hii kupata location ya mzigo.
+</p>
+
+
+<button
+class="green"
+onclick="getCurrentLocation()"
+>
+
+📍 PATA LOCATION
+
+</button>
+
+
+<button
+class="orange"
+onclick="startLiveLocation()"
+>
+
+🔴 ANZA LIVE LOCATION
+
+</button>
+
+
+<button
+class="gray"
+onclick="stopLiveLocation()"
+>
+
+⏹️ SIMAMISHA LIVE LOCATION
+
+</button>
+
+
+<div id="locationStatus"></div>
+
+
+<div class="locationBox">
+
+<b>📍 Location ya sasa</b>
+
+<div id="currentLocationText">
+
+Haijapatikana.
+
+</div>
+
+
+<div
+id="coordinates"
+class="coords"
+></div>
+
+</div>
+
+</div>
+
+
+
+<!-- ================= MAP ================= -->
+
+<div class="card">
+
+<h2>🗺️ Ramani ya Mzigo</h2>
+
+<p>
+
+Ramani inaonyesha location ya sasa ya mzigo.
+Ikiwa GPS imehifadhiwa, marker itaonekana kwenye ramani.
+
+</p>
+
+
+<div id="map"></div>
+
+</div>
+
+
+
+<!-- ================= PICKUP ================= -->
+
+<div class="card">
+
+<h2>🚚 Pickup</h2>
+
+<p>
+
+Agent akichukua mzigo, mfumo unaweka muda pamoja na GPS.
+
+</p>
+
+
+<button
+class="green"
+onclick="pickupCargo()"
+>
+
+✅ NIMECHUKUA MZIGO
+
+</button>
+
+</div>
+
+
+
+<!-- ================= HANDOVER ================= -->
+
+<div class="card">
+
+<h2>🔄 Handover</h2>
+
+
+<label>Jina la Agent Mpya</label>
+
+<input
+id="newAgentName"
+placeholder="Mfano: Ali"
+/>
+
+
+<label>Simu ya Agent Mpya</label>
+
+<input
+id="newAgentPhone"
+placeholder="07XXXXXXXX"
+/>
+
+
+<label>Mahali pa Kukabidhiana</label>
+
+<input
+id="handoverLocation"
+placeholder="Mfano: Dar es Salaam"
+/>
+
+
+<button
+class="orange"
+onclick="handoverCargo()"
+>
+
+🔄 KABIDHI MZIGO
+
+</button>
+
+</div>
+
+
+
+<!-- ================= AGENT RECEIVE ================= -->
+
+<div class="card">
+
+<h2>📦 Agent Mpya</h2>
+
+<p>
+Agent mpya akishapokea mzigo athibitishe hapa.
+</p>
+
+
+<button
+class="green"
+onclick="agentReceiveCargo()"
+>
+
+✅ AGENT AMEPOKEA
+
+</button>
+
+</div>
+
+
+
+<!-- ================= BOSS ================= -->
+
+<div class="card">
+
+<h2>🏁 Boss / Receiver</h2>
+
+
+<label>Jina la Boss</label>
+
+<input
+id="receiverName"
+placeholder="Mfano: Boss Mussa"
+/>
+
+
+<button
+class="green"
+onclick="receiveCargo()"
+>
+
+✅ BOSS AMEPOKEA
+
+</button>
+
+</div>
+
+
+
+<!-- ================= HISTORY ================= -->
+
+<div class="card">
+
+<h2>📜 Historia ya Safari</h2>
+
+<div id="history">
+
+Hakuna history.
+
+</div>
+
+</div>
+
+
+
+<button
+class="red"
+onclick="logoutCargo()"
+>
+
+🚪 FUNGA MZIGO
+
+</button>
+
+
+</div>
 
 </div>
 
 
 <footer>
-  MAKYAMA DAGAA TRACKING © 2026
+
+MAKYAMA DAGAA TRACKING © 2026
+
 </footer>
 
 
-<!-- FIREBASE -->
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
 <script type="module">
 
-  import {
-    initializeApp
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-  import {
-    getDatabase,
-    ref,
-    set,
-    get,
-    update,
-    push,
-    onValue
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+/* ==================================================
+   FIREBASE
+================================================== */
 
+import {
+initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-  // ==========================
-  // FIREBASE CONFIG
-  // ==========================
 
-  const firebaseConfig = {
+import {
+getDatabase,
+ref,
+set,
+get,
+update,
+push,
+onValue
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-    apiKey:
-      "AIzaSyBe2Qr-75nBWLLE5GDNBvhGFT91FtBbBw",
 
-    authDomain:
-      "makyama-e5e89.firebaseapp.com",
+const firebaseConfig = {
 
-    databaseURL:
-      "https://makyama-e5e89-default-rtdb.firebaseio.com",
+apiKey:
+"AIzaSyBe2Qr-75nBWLLE5GDNBvhGFT91FtBbBw",
 
-    projectId:
-      "makyama-e5e89",
+authDomain:
+"makyama-e5e89.firebaseapp.com",
 
-    storageBucket:
-      "makyama-e5e89.firebasestorage.app",
+databaseURL:
+"https://makyama-e5e89-default-rtdb.firebaseio.com",
 
-    messagingSenderId:
-      "229527204095",
+projectId:
+"makyama-e5e89",
 
-    appId:
-      "1:229527204095:web:2bdfe0589cf42794b3dcca"
-  };
+storageBucket:
+"makyama-e5e89.firebasestorage.app",
 
+messagingSenderId:
+"229527204095",
 
-  const app = initializeApp(firebaseConfig);
+appId:
+"1:229527204095:web:2bdfe0589cf42794b3dcca"
 
-  const db = getDatabase(app);
+};
 
 
-  // Current logged cargo
-  let currentTracking = null;
-  let currentCargo = null;
+const app =
+initializeApp(firebaseConfig);
 
+const db =
+getDatabase(app);
 
-  // ==========================
-  // GENERATE TRACKING ID
-  // ==========================
 
-  function generateTrackingID() {
 
-    const random =
-      Math.random()
-        .toString(36)
-        .substring(2, 8)
-        .toUpperCase();
+/* ==================================================
+   VARIABLES
+================================================== */
 
-    return "DAG-" + random;
-  }
+let currentTracking=null;
 
+let currentCargo=null;
 
-  // ==========================
-  // GENERATE PIN
-  // ==========================
+let liveWatchId=null;
 
-  function generatePIN() {
+let map=null;
 
-    return Math.floor(
-      100000 +
-      Math.random() * 900000
-    ).toString();
+let currentMarker=null;
 
-  }
+let routeLine=null;
 
 
-  // ==========================
-  // TIME
-  // ==========================
 
-  function now() {
+/* ==================================================
+   TIME
+================================================== */
 
-    return new Date().toISOString();
+function now(){
 
-  }
+return new Date().toISOString();
 
+}
 
-  // ==========================
-  // ADD HISTORY
-  // ==========================
 
-  async function addHistory(
-    tracking,
-    action,
-    description
-  ) {
+function formatTime(value){
 
-    const historyRef =
-      ref(
-        db,
-        "cargo/" +
-        tracking +
-        "/history"
-      );
+if(!value)
+return "Bado";
 
-    const newHistory =
-      push(historyRef);
+return new Date(value)
+.toLocaleString(
+"sw-TZ",
+{
+dateStyle:"medium",
+timeStyle:"medium"
+}
+);
 
-    await set(
-      newHistory,
-      {
-        action: action,
-        description: description,
-        time: now()
-      }
-    );
-  }
+}
 
 
-  // ==========================
-  // REGISTER CARGO
-  // ==========================
 
-  window.registerCargo =
-    async function () {
+/* ==================================================
+   TRACKING
+================================================== */
 
-      const name =
-        document
-          .getElementById("cargoName")
-          .value.trim();
+function generateTrackingID(){
 
-      const origin =
-        document
-          .getElementById("origin")
-          .value.trim();
+return "DAG-"+
+Math.random()
+.toString(36)
+.substring(2,8)
+.toUpperCase();
 
-      const destination =
-        document
-          .getElementById("destination")
-          .value.trim();
+}
 
-      const agent =
-        document
-          .getElementById("agentName")
-          .value.trim();
 
-      const phone =
-        document
-          .getElementById("agentPhone")
-          .value.trim();
+/* ==================================================
+   PIN
+================================================== */
 
+function generatePIN(){
 
-      if (
-        !name ||
-        !origin ||
-        !destination ||
-        !agent
-      ) {
+return Math.floor(
+100000+
+Math.random()*900000
+).toString();
 
-        alert(
-          "Jaza taarifa zote muhimu."
-        );
+}
 
-        return;
-      }
 
 
-      const tracking =
-        generateTrackingID();
+/* ==================================================
+   HISTORY
+================================================== */
 
-      const pin =
-        generatePIN();
+async function addHistory(
+tracking,
+action,
+description,
+location=null
+){
 
+const historyRef=
+ref(
+db,
+"cargo/"+
+tracking+
+"/history"
+);
 
-      const cargoRef =
-        ref(
-          db,
-          "cargo/" +
-          tracking
-        );
+const item=
+push(historyRef);
 
+await set(
+item,
+{
+action:action,
+description:description,
+location:location,
+time:now()
+}
+);
 
-      const cargo = {
+}
 
-        name: name,
 
-        origin: origin,
 
-        destination: destination,
+/* ==================================================
+   REGISTER
+================================================== */
 
-        currentAgent: agent,
+window.registerCargo=
+async function(){
 
-        currentAgentPhone: phone,
+const name=
+document
+.getElementById("cargoName")
+.value.trim();
 
-        status: "REGISTERED",
+const origin=
+document
+.getElementById("origin")
+.value.trim();
 
-        pin: pin,
+const destination=
+document
+.getElementById("destination")
+.value.trim();
 
-        createdAt: now(),
+const agent=
+document
+.getElementById("agentName")
+.value.trim();
 
-        updatedAt: now()
+const phone=
+document
+.getElementById("agentPhone")
+.value.trim();
 
-      };
 
+if(
+!name||
+!origin||
+!destination||
+!agent
+){
 
-      try {
+alert(
+"Jaza taarifa zote muhimu."
+);
 
-        await set(
-          cargoRef,
-          cargo
-        );
+return;
 
+}
 
-        await addHistory(
-          tracking,
-          "REGISTERED",
-          "Mzigo umesajiliwa kutoka " +
-          origin +
-          " kwenda " +
-          destination
-        );
 
+const tracking=
+generateTrackingID();
 
-        document
-          .getElementById(
-            "registerResult"
-          )
-          .innerHTML = `
+const pin=
+generatePIN();
 
-          <div class="result">
 
-            <p>✅ Mzigo umesajiliwa!</p>
+const cargo={
 
-            <p>Tracking ID:</p>
+name:name,
 
-            <div class="tracking">
-              ${tracking}
-            </div>
+origin:origin,
 
-            <br>
+destination:destination,
 
-            <p>PIN:</p>
+currentAgent:agent,
 
-            <div class="pin">
-              ${pin}
-            </div>
+currentAgentPhone:phone,
 
-            <br>
+status:"REGISTERED",
 
-            <p>
-              ⚠️ Hifadhi Tracking ID na PIN.
-            </p>
+pin:pin,
 
-          </div>
+createdAt:now(),
 
-        `;
+updatedAt:now(),
 
+pickupTime:null,
 
-        document
-          .getElementById(
-            "cargoName"
-          ).value = "";
+pickupLocation:null,
 
-        document
-          .getElementById(
-            "origin"
-          ).value = "";
+lastHandoverTime:null,
 
-        document
-          .getElementById(
-            "destination"
-          ).value = "";
+lastHandoverLocation:null,
 
-        document
-          .getElementById(
-            "agentName"
-          ).value = "";
+lastAgentReceivedTime:null,
 
-        document
-          .getElementById(
-            "agentPhone"
-          ).value = "";
+lastAgentReceivedLocation:null,
 
+receiver:null,
 
-      } catch (error) {
+bossReceivedTime:null,
 
-        console.error(error);
+bossReceivedLocation:null,
 
-        alert(
-          "Firebase error: " +
-          error.message
-        );
+currentLocation:null
 
-      }
+};
 
-    };
 
+try{
 
-  // ==========================
-  // LOGIN
-  // ==========================
+await set(
+ref(
+db,
+"cargo/"+tracking
+),
+cargo
+);
 
-  window.loginCargo =
-    async function () {
 
-      const tracking =
-        document
-          .getElementById(
-            "loginTracking"
-          )
-          .value
-          .trim()
-          .toUpperCase();
+await addHistory(
+tracking,
+"REGISTERED",
 
-      const pin =
-        document
-          .getElementById(
-            "loginPin"
-          )
-          .value
-          .trim();
+"Mzigo umesajiliwa kutoka "+
+origin+
+" kwenda "+
+destination
+);
 
 
-      if (!tracking || !pin) {
+document
+.getElementById(
+"registerResult"
+)
+.innerHTML=`
 
-        alert(
-          "Weka Tracking ID na PIN."
-        );
+<div class="result">
 
-        return;
-      }
+<p class="success">
+✅ Mzigo umefanikiwa kusajiliwa.
+</p>
 
+<br>
 
-      try {
+<p>🆔 Tracking ID</p>
 
-        const cargoRef =
-          ref(
-            db,
-            "cargo/" +
-            tracking
-          );
+<div class="tracking">
+${tracking}
+</div>
 
+<br>
 
-        const snapshot =
-          await get(
-            cargoRef
-          );
+<p>🔐 PIN</p>
 
+<div class="pin">
+${pin}
+</div>
 
-        if (!snapshot.exists()) {
+<br>
 
-          document
-            .getElementById(
-              "loginMessage"
-            )
-            .innerHTML =
+<p>
+Hifadhi hizi taarifa.
+</p>
 
-            `<p class="error">
-              ❌ Mzigo haujapatikana.
-            </p>`;
+</div>
 
-          return;
-        }
+`;
 
 
-        const cargo =
-          snapshot.val();
+}catch(error){
 
+console.error(error);
 
-        if (
-          cargo.pin !== pin
-        ) {
+alert(
+"Firebase error: "+
+error.message
+);
 
-          document
-            .getElementById(
-              "loginMessage"
-            )
-            .innerHTML =
+}
 
-            `<p class="error">
-              ❌ PIN sio sahihi.
-            </p>`;
+};
 
-          return;
-        }
 
 
-        currentTracking =
-          tracking;
+/* ==================================================
+   LOGIN
+================================================== */
 
-        currentCargo =
-          cargo;
+window.loginCargo=
+async function(){
 
+const tracking=
+document
+.getElementById(
+"loginTracking"
+)
+.value
+.trim()
+.toUpperCase();
 
-        showDashboard();
 
+const pin=
+document
+.getElementById(
+"loginPin"
+)
+.value
+.trim();
 
-        listenToCargo();
 
+if(!tracking||!pin){
 
-      } catch (error) {
+alert(
+"Weka Tracking ID na PIN."
+);
 
-        console.error(error);
+return;
 
-        alert(
-          "Firebase error: " +
-          error.message
-        );
+}
 
-      }
 
-    };
+try{
 
+const snapshot=
+await get(
+ref(
+db,
+"cargo/"+tracking
+)
+);
 
-  // ==========================
-  // SHOW DASHBOARD
-  // ==========================
 
-  function showDashboard() {
+if(!snapshot.exists()){
 
-    document
-      .getElementById(
-        "dashboard"
-      )
-      .classList
-      .remove("hidden");
+document
+.getElementById(
+"loginMessage"
+)
+.innerHTML=
+`
+<p class="error">
+❌ Mzigo haujapatikana.
+</p>
+`;
 
+return;
 
-    document
-      .getElementById(
-        "viewName"
-      )
-      .textContent =
-      currentCargo.name;
+}
 
 
-    document
-      .getElementById(
-        "viewTracking"
-      )
-      .textContent =
-      currentTracking;
+const cargo=
+snapshot.val();
 
 
-    document
-      .getElementById(
-        "viewOrigin"
-      )
-      .textContent =
-      currentCargo.origin;
+if(cargo.pin!==pin){
 
+document
+.getElementById(
+"loginMessage"
+)
+.innerHTML=
+`
+<p class="error">
+❌ PIN sio sahihi.
+</p>
+`;
 
-    document
-      .getElementById(
-        "viewDestination"
-      )
-      .textContent =
-      currentCargo.destination;
+return;
 
+}
 
-    document
-      .getElementById(
-        "viewAgent"
-      )
-      .textContent =
-      currentCargo.currentAgent;
 
+currentTracking=tracking;
 
-    document
-      .getElementById(
-        "viewStatus"
-      )
-      .textContent =
-      currentCargo.status;
+currentCargo=cargo;
 
 
-    window.scrollTo({
-      top: document
-        .getElementById(
-          "dashboard"
-        )
-        .offsetTop,
+document
+.getElementById(
+"dashboard"
+)
+.classList
+.remove("hidden");
 
-      behavior: "smooth"
-    });
 
-  }
+showDashboard();
 
+listenToCargo();
 
-  // ==========================
-  // REALTIME LISTENER
-  // ==========================
+setTimeout(
+()=>{
+initMap();
+},
+300
+);
 
-  function listenToCargo() {
 
-    const cargoRef =
-      ref(
-        db,
-        "cargo/" +
-        currentTracking
-      );
+window.scrollTo({
+top:
+document
+.getElementById(
+"dashboard"
+).offsetTop,
+behavior:"smooth"
+});
 
 
-    onValue(
-      cargoRef,
-      (snapshot) => {
+}catch(error){
 
-        if (!snapshot.exists())
-          return;
+console.error(error);
 
+alert(
+"Firebase error: "+
+error.message
+);
 
-        currentCargo =
-          snapshot.val();
+}
 
+};
 
-        showDashboard();
 
-        showHistory(
-          currentCargo.history
-        );
 
-      }
-    );
+/* ==================================================
+   DASHBOARD
+================================================== */
 
-  }
+function showDashboard(){
 
+if(!currentCargo)
+return;
 
-  // ==========================
-  // PICKUP
-  // ==========================
 
-  window.pickupCargo =
-    async function () {
+document
+.getElementById("viewName")
+.textContent=
+currentCargo.name||"-";
 
-      if (!currentTracking)
-        return;
 
+document
+.getElementById("viewTracking")
+.textContent=
+currentTracking;
 
-      const cargoRef =
-        ref(
-          db,
-          "cargo/" +
-          currentTracking
-        );
 
+document
+.getElementById("viewOrigin")
+.textContent=
+currentCargo.origin||"-";
 
-      try {
 
-        await update(
-          cargoRef,
-          {
-            status: "IN_TRANSIT",
-            updatedAt: now()
-          }
-        );
+document
+.getElementById("viewDestination")
+.textContent=
+currentCargo.destination||"-";
 
 
-        await addHistory(
-          currentTracking,
-          "PICKUP",
-          "Agent amechukua mzigo na kuanza safari."
-        );
+document
+.getElementById("viewAgent")
+.textContent=
+currentCargo.currentAgent||"-";
 
 
-        alert(
-          "✅ Pickup imerekodiwa."
-        );
+document
+.getElementById("viewPhone")
+.textContent=
+currentCargo.currentAgentPhone||"-";
 
 
-      } catch (error) {
+document
+.getElementById("viewStatus")
+.textContent=
+currentCargo.status||"-";
 
-        alert(
-          "Error: " +
-          error.message
-        );
 
-      }
+document
+.getElementById("viewCreated")
+.textContent=
+formatTime(
+currentCargo.createdAt
+);
 
-    };
 
+document
+.getElementById("viewPickup")
+.textContent=
+formatTime(
+currentCargo.pickupTime
+);
 
-  // ==========================
-  // HANDOVER
-  // ==========================
 
-  window.handoverCargo =
-    async function () {
+document
+.getElementById("viewHandover")
+.textContent=
+formatTime(
+currentCargo.lastHandoverTime
+);
 
-      if (!currentTracking)
-        return;
 
+document
+.getElementById("viewAgentReceived")
+.textContent=
+formatTime(
+currentCargo.lastAgentReceivedTime
+);
 
-      const newAgent =
-        document
-          .getElementById(
-            "newAgentName"
-          )
-          .value.trim();
 
+document
+.getElementById("viewBoss")
+.textContent=
+formatTime(
+currentCargo.bossReceivedTime
+);
 
-      const newPhone =
-        document
-          .getElementById(
-            "newAgentPhone"
-          )
-          .value.trim();
 
+updateLocationDisplay();
 
-      const location =
-        document
-          .getElementById(
-            "handoverLocation"
-          )
-          .value.trim();
+}
 
 
-      if (!newAgent) {
 
-        alert(
-          "Weka jina la Agent mpya."
-        );
+/* ==================================================
+   REALTIME
+================================================== */
 
-        return;
-      }
+function listenToCargo(){
 
+const cargoRef=
+ref(
+db,
+"cargo/"+currentTracking
+);
 
-      const oldAgent =
-        currentCargo.currentAgent;
 
+onValue(
+cargoRef,
+snapshot=>{
 
-      const cargoRef =
-        ref(
-          db,
-          "cargo/" +
-          currentTracking
-        );
+if(!snapshot.exists())
+return;
 
 
-      try {
+currentCargo=
+snapshot.val();
 
-        await update(
-          cargoRef,
-          {
 
-            currentAgent:
-              newAgent,
+showDashboard();
 
-            currentAgentPhone:
-              newPhone,
+showHistory(
+currentCargo.history
+);
 
-            status:
-              "HANDED_OVER",
+updateMap();
 
-            updatedAt:
-              now(),
+}
+);
 
-            lastHandoverLocation:
-              location
+}
 
-          }
-        );
 
 
-        await addHistory(
-          currentTracking,
-          "HANDOVER",
+/* ==================================================
+   GPS
+================================================== */
 
-          oldAgent +
-          " amemkabidhi mzigo " +
-          newAgent +
-          (
-            location
-              ? " huko " + location
-              : ""
-          )
-        );
+function getGPS(){
 
+return new Promise(
+(resolve,reject)=>{
 
-        document
-          .getElementById(
-            "newAgentName"
-          ).value = "";
+if(!navigator.geolocation){
 
-        document
-          .getElementById(
-            "newAgentPhone"
-          ).value = "";
+reject(
+new Error(
+"GPS haipatikani."
+)
+);
 
-        document
-          .getElementById(
-            "handoverLocation"
-          ).value = "";
+return;
 
+}
 
-        alert(
-          "✅ Mzigo umekabidhiwa."
-        );
 
+navigator.geolocation.getCurrentPosition(
 
-      } catch (error) {
+position=>{
 
-        alert(
-          "Error: " +
-          error.message
-        );
+resolve({
 
-      }
+lat:
+position.coords.latitude,
 
-    };
+lng:
+position.coords.longitude,
 
+accuracy:
+position.coords.accuracy,
 
-  // ==========================
-  // RECEIVE CARGO
-  // ==========================
+time:
+now()
 
-  window.receiveCargo =
-    async function () {
+});
 
-      if (!currentTracking)
-        return;
+},
 
+error=>{
 
-      const receiver =
-        document
-          .getElementById(
-            "receiverName"
-          )
-          .value.trim();
+reject(error);
 
+},
 
-      if (!receiver) {
+{
 
-        alert(
-          "Weka jina la aliyepokea."
-        );
+enableHighAccuracy:true,
 
-        return;
-      }
+timeout:15000,
 
+maximumAge:0
 
-      const cargoRef =
-        ref(
-          db,
-          "cargo/" +
-          currentTracking
-        );
+}
 
+);
 
-      try {
+}
 
-        await update(
-          cargoRef,
-          {
+);
 
-            status:
-              "RECEIVED",
+}
 
-            receiver:
-              receiver,
 
-            receivedAt:
-              now(),
 
-            updatedAt:
-              now()
+/* ==================================================
+   CURRENT LOCATION
+================================================== */
 
-          }
-        );
+window.getCurrentLocation=
+async function(){
 
+if(!currentTracking){
 
-        await addHistory(
-          currentTracking,
-          "RECEIVED",
+alert(
+"Fungua mzigo kwanza."
+);
 
-          "Mzigo umepokelewa na " +
-          receiver
-        );
+return;
 
+}
 
-        alert(
-          "✅ Mzigo umehakikiwa kuwa umepokelewa."
-        );
 
+document
+.getElementById(
+"locationStatus"
+)
+.innerHTML=
+"<p>📍 Inatafuta GPS...</p>";
 
-      } catch (error) {
 
-        alert(
-          "Error: " +
-          error.message
-        );
+try{
 
-      }
+const location=
+await getGPS();
 
-    };
 
+await update(
 
-  // ==========================
-  // SHOW HISTORY
-  // ==========================
+ref(
+db,
+"cargo/"+currentTracking
+),
 
-  function showHistory(history) {
+{
 
-    const box =
-      document
-        .getElementById(
-          "history"
-        );
+currentLocation:location,
 
+updatedAt:now()
 
-    if (!history) {
+}
 
-      box.innerHTML =
-        "Hakuna history bado.";
+);
 
-      return;
-    }
 
+document
+.getElementById(
+"locationStatus"
+)
+.innerHTML=
+`
+<p class="success">
+✅ Location imehifadhiwa.
+</p>
+`;
 
-    const entries =
-      Object.values(history)
-        .sort(
-          (a, b) =>
-            new Date(a.time) -
-            new Date(b.time)
-        );
 
+}catch(error){
 
-    box.innerHTML = "";
+document
+.getElementById(
+"locationStatus"
+)
+.innerHTML=
+`
+<p class="error">
+❌ GPS haikupatikana.
+<br>
+${error.message}
+</p>
+`;
 
+}
 
-    entries.forEach(
-      item => {
+};
 
-        const date =
-          new Date(
-            item.time
-          );
 
 
-        const div =
-          document.createElement(
-            "div"
-          );
+/* ==================================================
+   LIVE LOCATION
+================================================== */
 
+window.startLiveLocation=
+function(){
 
-        div.className =
-          "history-item";
+if(!currentTracking){
 
+alert(
+"Fungua mzigo kwanza."
+);
 
-        div.innerHTML = `
+return;
 
-          <b>
-            ${item.action}
-          </b>
+}
 
-          <br>
 
-          ${item.description}
+if(!navigator.geolocation){
 
-          <br>
+alert(
+"GPS haipatikani."
+);
 
-          <small>
-            ${date.toLocaleString()}
-          </small>
+return;
 
-        `;
+}
 
 
-        box.appendChild(div);
+if(liveWatchId!==null){
 
-      }
-    );
+alert(
+"Live Location tayari imewashwa."
+);
 
-  }
+return;
 
+}
 
-  // ==========================
-  // LOGOUT
-  // ==========================
 
-  window.logoutCargo =
-    function () {
+document
+.getElementById(
+"locationStatus"
+)
+.innerHTML=
+`
+<p class="success">
+🔴 Live Location imeanza.
+</p>
+`;
 
-      currentTracking = null;
 
-      currentCargo = null;
+liveWatchId=
+navigator.geolocation.watchPosition(
 
+async position=>{
 
-      document
-        .getElementById(
-          "dashboard"
-        )
-        .classList
-        .add("hidden");
+const location={
 
+lat:
+position.coords.latitude,
 
-      document
-        .getElementById(
-          "loginTracking"
-        ).value = "";
+lng:
+position.coords.longitude,
 
-      document
-        .getElementById(
-          "loginPin"
-        ).value = "";
+accuracy:
+position.coords.accuracy,
 
+time:
+now()
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+};
 
-    };
+
+try{
+
+await update(
+
+ref(
+db,
+"cargo/"+currentTracking
+),
+
+{
+
+currentLocation:
+location,
+
+updatedAt:
+now()
+
+}
+
+);
+
+}catch(error){
+
+console.error(error);
+
+}
+
+},
+
+error=>{
+
+document
+.getElementById(
+"locationStatus"
+)
+.innerHTML=
+`
+<p class="error">
+❌ ${error.message}
+</p>
+`;
+
+},
+
+{
+
+enableHighAccuracy:true,
+
+maximumAge:5000,
+
+timeout:15000
+
+}
+
+);
+
+};
+
+
+
+/* ==================================================
+   STOP LIVE LOCATION
+================================================== */
+
+window.stopLiveLocation=
+function(){
+
+if(liveWatchId!==null){
+
+navigator
+.geolocation
+.clearWatch(
+liveWatchId
+);
+
+liveWatchId=null;
+
+
+document
+.getElementById(
+"locationStatus"
+)
+.innerHTML=
+`
+<p>
+⏹️ Live Location imesimamishwa.
+</p>
+`;
+
+}
+
+};
+
+
+
+/* ==================================================
+   UPDATE LOCATION DISPLAY
+================================================== */
+
+function updateLocationDisplay(){
+
+const location=
+currentCargo.currentLocation;
+
+
+if(!location){
+
+document
+.getElementById(
+"currentLocationText"
+)
+.textContent=
+"Haijapatikana.";
+
+
+document
+.getElementById(
+"coordinates"
+)
+.textContent="";
+
+return;
+
+}
+
+
+document
+.getElementById(
+"currentLocationText"
+)
+.textContent=
+"📍 GPS inapatikana";
+
+
+document
+.getElementById(
+"coordinates"
+)
+.textContent=
+
+"Latitude: "+
+location.lat+
+" | Longitude: "+
+location.lng+
+" | Accuracy: "+
+Math.round(
+location.accuracy||0
+)+
+"m";
+
+}
+
+
+
+/* ==================================================
+   PICKUP
+================================================== */
+
+window.pickupCargo=
+async function(){
+
+if(!currentTracking)
+return;
+
+
+const time=
+now();
+
+let location=null;
+
+
+try{
+
+location=
+await getGPS();
+
+}catch(error){
+
+console.log(
+"GPS haikupatikana."
+);
+
+}
+
+
+try{
+
+await update(
+
+ref(
+db,
+"cargo/"+currentTracking
+),
+
+{
+
+status:"IN_TRANSIT",
+
+pickupTime:time,
+
+pickupLocation:location,
+
+currentLocation:location,
+
+updatedAt:time
+
+}
+
+);
+
+
+await addHistory(
+
+currentTracking,
+
+"PICKUP",
+
+"Agent "+
+currentCargo.currentAgent+
+" amechukua mzigo.",
+
+location
+
+);
+
+
+alert(
+"✅ Pickup imehifadhiwa."
+);
+
+
+}catch(error){
+
+alert(
+"Error: "+
+error.message
+);
+
+}
+
+};
+
+
+
+/* ==================================================
+   HANDOVER
+================================================== */
+
+window.handoverCargo=
+async function(){
+
+if(!currentTracking)
+return;
+
+
+const newAgent=
+document
+.getElementById(
+"newAgentName"
+)
+.value
+.trim();
+
+
+const newPhone=
+document
+.getElementById(
+"newAgentPhone"
+)
+.value
+.trim();
+
+
+const locationName=
+document
+.getElementById(
+"handoverLocation"
+)
+.value
+.trim();
+
+
+if(!newAgent){
+
+alert(
+"Weka jina la Agent mpya."
+);
+
+return;
+
+}
+
+
+const oldAgent=
+currentCargo.currentAgent;
+
+const time=
+now();
+
+let gps=null;
+
+
+try{
+
+gps=
+await getGPS();
+
+}catch(error){
+
+console.log(
+"GPS haikupatikana."
+);
+
+}
+
+
+try{
+
+await update(
+
+ref(
+db,
+"cargo/"+currentTracking
+),
+
+{
+
+currentAgent:newAgent,
+
+currentAgentPhone:newPhone,
+
+status:"HANDED_OVER",
+
+lastHandoverTime:time,
+
+lastHandoverLocation:{
+
+name:locationName,
+
+gps:gps
+
+},
+
+currentLocation:gps,
+
+updatedAt:time
+
+}
+
+);
+
+
+await addHistory(
+
+currentTracking,
+
+"HANDOVER",
+
+oldAgent+
+" amemkabidhi mzigo "+
+newAgent+
+(
+locationName
+?
+" huko "+locationName
+:""
+),
+
+gps
+
+);
+
+
+document
+.getElementById(
+"newAgentName"
+)
+.value="";
+
+
+document
+.getElementById(
+"newAgentPhone"
+)
+.value="";
+
+
+document
+.getElementById(
+"handoverLocation"
+)
+.value="";
+
+
+alert(
+"✅ Mzigo umekabidhiwa."
+);
+
+
+}catch(error){
+
+alert(
+"Error: "+
+error.message
+);
+
+}
+
+};
+
+
+
+/* ==================================================
+   AGENT RECEIVE
+================================================== */
+
+window.agentReceiveCargo=
+async function(){
+
+if(!currentTracking)
+return;
+
+
+const time=
+now();
+
+let location=null;
+
+
+try{
+
+location=
+await getGPS();
+
+}catch(error){
+
+console.log(
+"GPS haikupatikana."
+);
+
+}
+
+
+try{
+
+await update(
+
+ref(
+db,
+"cargo/"+currentTracking
+),
+
+{
+
+status:"IN_TRANSIT",
+
+lastAgentReceivedTime:time,
+
+lastAgentReceivedLocation:location,
+
+currentLocation:location,
+
+updatedAt:time
+
+}
+
+);
+
+
+await addHistory(
+
+currentTracking,
+
+"AGENT_RECEIVED",
+
+"Agent "+
+currentCargo.currentAgent+
+" amethibitisha kupokea mzigo.",
+
+location
+
+);
+
+
+alert(
+"✅ Agent amethibitisha kupokea."
+);
+
+
+}catch(error){
+
+alert(
+"Error: "+
+error.message
+);
+
+}
+
+};
+
+
+
+/* ==================================================
+   BOSS RECEIVE
+================================================== */
+
+window.receiveCargo=
+async function(){
+
+if(!currentTracking)
+return;
+
+
+const receiver=
+document
+.getElementById(
+"receiverName"
+)
+.value
+.trim();
+
+
+if(!receiver){
+
+alert(
+"Weka jina la Boss."
+);
+
+return;
+
+}
+
+
+const time=
+now();
+
+let location=null;
+
+
+try{
+
+location=
+await getGPS();
+
+}catch(error){
+
+console.log(
+"GPS haikupatikana."
+);
+
+}
+
+
+try{
+
+await update(
+
+ref(
+db,
+"cargo/"+currentTracking
+),
+
+{
+
+status:"RECEIVED",
+
+receiver:receiver,
+
+bossReceivedTime:time,
+
+bossReceivedLocation:location,
+
+currentLocation:location,
+
+updatedAt:time
+
+}
+
+);
+
+
+await addHistory(
+
+currentTracking,
+
+"BOSS_RECEIVED",
+
+"Boss "+
+receiver+
+" amepokea mzigo.",
+
+location
+
+);
+
+
+alert(
+"✅ Boss amepokea mzigo."
+);
+
+
+}catch(error){
+
+alert(
+"Error: "+
+error.message
+);
+
+}
+
+};
+
+
+
+/* ==================================================
+   HISTORY
+================================================== */
+
+function showHistory(history){
+
+const box=
+document
+.getElementById(
+"history"
+);
+
+
+if(!history){
+
+box.innerHTML=
+"Hakuna history.";
+
+return;
+
+}
+
+
+const entries=
+Object
+.values(history)
+.sort(
+(a,b)=>
+new Date(a.time)-
+new Date(b.time)
+);
+
+
+box.innerHTML="";
+
+
+entries.forEach(item=>{
+
+const div=
+document
+.createElement("div");
+
+
+div.className=
+"history-item";
+
+
+let gps="";
+
+
+if(
+item.location &&
+item.location.lat
+){
+
+gps=
+`
+<div class="coords">
+
+📍 GPS:
+${item.location.lat},
+${item.location.lng}
+
+</div>
+`;
+
+}
+
+
+div.innerHTML=
+
+`
+
+<b>${item.action}</b>
+
+<br>
+
+${item.description}
+
+<div class="time">
+
+🕐 ${formatTime(item.time)}
+
+</div>
+
+${gps}
+
+`;
+
+
+box.appendChild(div);
+
+});
+
+}
+
+
+
+/* ==================================================
+   MAP
+================================================== */
+
+function initMap(){
+
+if(map)
+return;
+
+
+map=
+L.map("map")
+.setView(
+[-6.16,39.20],
+6
+);
+
+
+L.tileLayer(
+
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+{
+
+maxZoom:19,
+
+attribution:
+"© OpenStreetMap contributors"
+
+}
+
+).addTo(map);
+
+
+updateMap();
+
+}
+
+
+function updateMap(){
+
+if(!map||!currentCargo)
+return;
+
+
+/* remove old marker */
+
+if(currentMarker){
+
+map.removeLayer(
+currentMarker
+);
+
+currentMarker=null;
+
+}
+
+
+/* remove old route */
+
+if(routeLine){
+
+map.removeLayer(
+routeLine
+);
+
+routeLine=null;
+
+}
+
+
+/* current GPS */
+
+const location=
+currentCargo.currentLocation;
+
+
+if(location){
+
+currentMarker=
+L.marker(
+[
+location.lat,
+location.lng
+]
+)
+.addTo(map)
+.bindPopup(
+"📍 Location ya sasa ya mzigo"
+)
+.openPopup();
+
+map.setView(
+[
+location.lat,
+location.lng
+],
+10
+);
+
+}
+
+
+/* pickup location */
+
+const pickup=
+currentCargo.pickupLocation;
+
+
+/* route points */
+
+const points=[];
+
+
+if(
+pickup &&
+pickup.lat
+){
+
+points.push([
+pickup.lat,
+pickup.lng
+]);
+
+}
+
+
+if(
+location &&
+location.lat
+){
+
+points.push([
+location.lat,
+location.lng
+]);
+
+}
+
+
+/* draw route */
+
+if(points.length>=2){
+
+routeLine=
+L.polyline(
+points,
+{
+weight:5
+}
+)
+.addTo(map);
+
+map.fitBounds(
+routeLine.getBounds(),
+{
+padding:[30,30]
+}
+);
+
+}
+
+}
+
+
+
+/* ==================================================
+   LOGOUT
+================================================== */
+
+window.logoutCargo=
+function(){
+
+stopLiveLocation();
+
+currentTracking=null;
+
+currentCargo=null;
+
+
+document
+.getElementById(
+"dashboard"
+)
+.classList
+.add("hidden");
+
+
+document
+.getElementById(
+"loginTracking"
+)
+.value="";
+
+
+document
+.getElementById(
+"loginPin"
+)
+.value="";
+
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+};
 
 </script>
 
 </body>
-</html>
+  </html>
