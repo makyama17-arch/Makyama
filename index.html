@@ -60,6 +60,7 @@
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
+      align-items: center;
     }
 
     button {
@@ -91,6 +92,18 @@
 
     .dark {
       background: #253746;
+    }
+
+    .language-select {
+      width: auto;
+      min-width: 130px;
+      padding: 10px 12px;
+      background: #071923;
+      color: white;
+      border: 1px solid #315466;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     .container {
@@ -323,14 +336,6 @@
       margin-top: 15px;
     }
 
-    .notification-box {
-      margin-top: 15px;
-      padding: 15px;
-      border-radius: 10px;
-      background: rgba(0,123,255,.10);
-      border: 1px solid rgba(0,217,255,.25);
-    }
-
     footer {
       text-align: center;
       padding: 30px 15px;
@@ -361,6 +366,10 @@
         flex: 1;
       }
 
+      .language-select {
+        width: 100%;
+      }
+
       #map,
       #bossMap {
         height: 320px;
@@ -385,26 +394,41 @@
 
     <div class="nav-buttons">
 
-      <button onclick="showPage('home')">
+      <button onclick="showPage('home')" data-i18n="home">
         Nyumbani
       </button>
 
-      <button onclick="showPage('register')">
+      <button onclick="showPage('register')" data-i18n="register">
         Sajili Mzigo
       </button>
 
-      <button onclick="showPage('login')">
+      <button onclick="showPage('login')" data-i18n="login">
         Ingia
       </button>
 
-      <button onclick="showPage('tracking')">
+      <button onclick="showPage('tracking')" data-i18n="tracking">
         Fuatilia
       </button>
+
+      <select
+        id="languageSelect"
+        class="language-select"
+        onchange="changeLanguage(this.value)"
+      >
+        <option value="sw">🇹🇿 Kiswahili</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="ar">🇸🇦 العربية</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="es">🇪🇸 Español</option>
+      </select>
 
       <button
         id="logoutBtn"
         class="danger hidden"
-        onclick="logout()">
+        onclick="logout()"
+        data-i18n="logout"
+      >
         Toka
       </button>
 
@@ -413,6 +437,7 @@
   </div>
 
 </header>
+
 
 <div class="container">
 
@@ -424,7 +449,7 @@
       MAKYAMA TRANSPORT
     </h1>
 
-    <p>
+    <p data-i18n="heroDescription">
       Mfumo wa kisasa wa kusajili, kufuatilia na
       kusimamia usafirishaji wa mizigo kutoka kwa
       Agent mmoja kwenda mwingine mpaka mzigo
@@ -433,13 +458,15 @@
 
     <br>
 
-    <button onclick="showPage('register')">
+    <button onclick="showPage('register')" data-i18n="registerCargo">
       🚚 Sajili Mzigo
     </button>
 
     <button
       class="dark"
-      onclick="showPage('tracking')">
+      onclick="showPage('tracking')"
+      data-i18n="trackCargo"
+    >
       🔎 Fuatilia Mzigo
     </button>
 
@@ -449,9 +476,11 @@
 
     <div class="card center">
 
-      <h3>📦 Usajili</h3>
+      <h3 data-i18n="registrationTitle">
+        📦 Usajili
+      </h3>
 
-      <p class="info">
+      <p class="info" data-i18n="registrationText">
         Tengeneza Tracking ID ya kipekee
         kwa kila mzigo.
       </p>
@@ -460,9 +489,11 @@
 
     <div class="card center">
 
-      <h3>📍 GPS</h3>
+      <h3 data-i18n="gpsTitle">
+        📍 GPS
+      </h3>
 
-      <p class="info">
+      <p class="info" data-i18n="gpsText">
         Mfumo unaweza kurekodi location
         ya Agent wakati wa hatua ya mzigo.
       </p>
@@ -471,9 +502,11 @@
 
     <div class="card center">
 
-      <h3>🕐 Historia</h3>
+      <h3 data-i18n="historyTitle">
+        🕐 Historia
+      </h3>
 
-      <p class="info">
+      <p class="info" data-i18n="historyText">
         Kila hatua ina muda na historia yake.
       </p>
 
@@ -488,41 +521,55 @@
 
   <div class="card">
 
-    <h2>📦 Sajili Mzigo</h2>
+    <h2 data-i18n="registerHeading">
+      📦 Sajili Mzigo
+    </h2>
 
-    <label>Jina la Mzigo</label>
+    <label data-i18n="cargoNameLabel">
+      Jina la Mzigo
+    </label>
 
     <input
       id="cargoName"
       placeholder="Mfano: Sanduku 10 za bidhaa"
+      data-i18n-placeholder="cargoNamePlaceholder"
     >
 
-    <label>Mahali pa Kuanzia</label>
+    <label data-i18n="originLabel">
+      Mahali pa Kuanzia
+    </label>
 
     <input
       id="origin"
       placeholder="Mfano: Pemba"
+      data-i18n-placeholder="originPlaceholder"
     >
 
-    <label>Mahali pa Kwenda</label>
+    <label data-i18n="destinationLabel">
+      Mahali pa Kwenda
+    </label>
 
     <input
       id="destination"
       placeholder="Mfano: Zanzibar"
+      data-i18n-placeholder="destinationPlaceholder"
     >
 
-    <label>Jina la Boss</label>
+    <label data-i18n="bossNameLabel">
+      Jina la Boss
+    </label>
 
     <input
       id="bossName"
       placeholder="Jina la Boss"
+      data-i18n-placeholder="bossNamePlaceholder"
     >
 
-    <label>Idadi ya Agents</label>
+    <label data-i18n="agentCountLabel">
+      Idadi ya Agents
+    </label>
 
-    <select
-      id="agentCount"
-      onchange="buildAgents()">
+    <select id="agentCount" onchange="buildAgents()">
 
       <option value="1">Agent 1</option>
       <option value="2">Agents 2</option>
@@ -543,10 +590,10 @@
 
     <button
       class="success"
-      onclick="createCargo()">
-
+      onclick="createCargo()"
+      data-i18n="registerButton"
+    >
       🚚 Sajili Mzigo
-
     </button>
 
     <div id="registerResult"></div>
@@ -560,27 +607,35 @@
 
   <div class="card">
 
-    <h2>🔐 Ingia</h2>
+    <h2 data-i18n="loginHeading">
+      🔐 Ingia
+    </h2>
 
-    <label>Tracking ID</label>
+    <label data-i18n="trackingIdLabel">
+      Tracking ID
+    </label>
 
     <input
       id="loginTracking"
-      placeholder="Mfano: TRN-561407"
+      placeholder="Mfano: MKT-561407"
+      data-i18n-placeholder="trackingPlaceholder"
     >
 
-    <label>PIN</label>
+    <label data-i18n="pinLabel">
+      PIN
+    </label>
 
     <input
       id="loginPin"
       type="password"
       maxlength="20"
       placeholder="Weka PIN"
+      data-i18n-placeholder="pinPlaceholder"
     >
 
     <br><br>
 
-    <button onclick="login()">
+    <button onclick="login()" data-i18n="loginButton">
       🔑 Ingia
     </button>
 
@@ -595,18 +650,23 @@
 
   <div class="card">
 
-    <h2>🔎 Fuatilia Mzigo</h2>
+    <h2 data-i18n="trackingHeading">
+      🔎 Fuatilia Mzigo
+    </h2>
 
-    <label>Tracking ID</label>
+    <label data-i18n="trackingIdLabel">
+      Tracking ID
+    </label>
 
     <input
       id="trackingInput"
       placeholder="Weka Tracking ID"
+      data-i18n-placeholder="trackingInputPlaceholder"
     >
 
     <br><br>
 
-    <button onclick="trackCargo()">
+    <button onclick="trackCargo()" data-i18n="searchButton">
       🔍 Tafuta
     </button>
 
@@ -624,6 +684,7 @@
 </section>
 
 </div>
+
 
 <footer>
   © 2026 MAKYAMA TRANSPORT — Cargo Transport & Tracking System
@@ -672,15 +733,11 @@ const firebaseConfig = {
 
 };
 
-firebase.initializeApp(
-  firebaseConfig
-);
+firebase.initializeApp(firebaseConfig);
 
-const auth =
-  firebase.auth();
+const auth = firebase.auth();
 
-const database =
-  firebase.database();
+const database = firebase.database();
 
 
 /* =========================================================
@@ -691,8 +748,7 @@ let messaging = null;
 
 try {
 
-  messaging =
-    firebase.messaging();
+  messaging = firebase.messaging();
 
 } catch (error) {
 
@@ -727,6 +783,712 @@ let bossMap = null;
 
 let publicMarkers = [];
 let bossMarkers = [];
+
+
+/* =========================================================
+   LANGUAGE SYSTEM
+========================================================= */
+
+const translations = {
+
+  sw: {
+
+    home: "Nyumbani",
+    register: "Sajili Mzigo",
+    login: "Ingia",
+    tracking: "Fuatilia",
+    logout: "Toka",
+
+    heroDescription:
+      "Mfumo wa kisasa wa kusajili, kufuatilia na kusimamia usafirishaji wa mizigo kutoka kwa Agent mmoja kwenda mwingine mpaka mzigo unapomfikia Boss.",
+
+    registerCargo:
+      "🚚 Sajili Mzigo",
+
+    trackCargo:
+      "🔎 Fuatilia Mzigo",
+
+    registrationTitle:
+      "📦 Usajili",
+
+    registrationText:
+      "Tengeneza Tracking ID ya kipekee kwa kila mzigo.",
+
+    gpsTitle:
+      "📍 GPS",
+
+    gpsText:
+      "Mfumo unaweza kurekodi location ya Agent wakati wa hatua ya mzigo.",
+
+    historyTitle:
+      "🕐 Historia",
+
+    historyText:
+      "Kila hatua ina muda na historia yake.",
+
+    registerHeading:
+      "📦 Sajili Mzigo",
+
+    cargoNameLabel:
+      "Jina la Mzigo",
+
+    cargoNamePlaceholder:
+      "Mfano: Sanduku 10 za bidhaa",
+
+    originLabel:
+      "Mahali pa Kuanzia",
+
+    originPlaceholder:
+      "Mfano: Pemba",
+
+    destinationLabel:
+      "Mahali pa Kwenda",
+
+    destinationPlaceholder:
+      "Mfano: Zanzibar",
+
+    bossNameLabel:
+      "Jina la Boss",
+
+    bossNamePlaceholder:
+      "Jina la Boss",
+
+    agentCountLabel:
+      "Idadi ya Agents",
+
+    registerButton:
+      "🚚 Sajili Mzigo",
+
+    loginHeading:
+      "🔐 Ingia",
+
+    trackingIdLabel:
+      "Tracking ID",
+
+    trackingPlaceholder:
+      "Mfano: MKT-561407",
+
+    pinLabel:
+      "PIN",
+
+    pinPlaceholder:
+      "Weka PIN",
+
+    loginButton:
+      "🔑 Ingia",
+
+    trackingHeading:
+      "🔎 Fuatilia Mzigo",
+
+    trackingInputPlaceholder:
+      "Weka Tracking ID",
+
+    searchButton:
+      "🔍 Tafuta"
+
+  },
+
+
+  en: {
+
+    home: "Home",
+    register: "Register Cargo",
+    login: "Login",
+    tracking: "Track",
+    logout: "Logout",
+
+    heroDescription:
+      "A modern system for registering, tracking and managing cargo transportation from one Agent to another until the cargo reaches the Boss.",
+
+    registerCargo:
+      "🚚 Register Cargo",
+
+    trackCargo:
+      "🔎 Track Cargo",
+
+    registrationTitle:
+      "📦 Registration",
+
+    registrationText:
+      "Create a unique Tracking ID for every cargo shipment.",
+
+    gpsTitle:
+      "📍 GPS",
+
+    gpsText:
+      "The system can record the Agent's location during cargo operations.",
+
+    historyTitle:
+      "🕐 History",
+
+    historyText:
+      "Every cargo operation has its own time and history.",
+
+    registerHeading:
+      "📦 Register Cargo",
+
+    cargoNameLabel:
+      "Cargo Name",
+
+    cargoNamePlaceholder:
+      "Example: 10 boxes of products",
+
+    originLabel:
+      "Origin",
+
+    originPlaceholder:
+      "Example: Pemba",
+
+    destinationLabel:
+      "Destination",
+
+    destinationPlaceholder:
+      "Example: Zanzibar",
+
+    bossNameLabel:
+      "Boss Name",
+
+    bossNamePlaceholder:
+      "Boss name",
+
+    agentCountLabel:
+      "Number of Agents",
+
+    registerButton:
+      "🚚 Register Cargo",
+
+    loginHeading:
+      "🔐 Login",
+
+    trackingIdLabel:
+      "Tracking ID",
+
+    trackingPlaceholder:
+      "Example: MKT-561407",
+
+    pinLabel:
+      "PIN",
+
+    pinPlaceholder:
+      "Enter PIN",
+
+    loginButton:
+      "🔑 Login",
+
+    trackingHeading:
+      "🔎 Track Cargo",
+
+    trackingInputPlaceholder:
+      "Enter Tracking ID",
+
+    searchButton:
+      "🔍 Search"
+
+  },
+
+
+  fr: {
+
+    home: "Accueil",
+    register: "Enregistrer",
+    login: "Connexion",
+    tracking: "Suivre",
+    logout: "Déconnexion",
+
+    heroDescription:
+      "Un système moderne pour enregistrer, suivre et gérer le transport des marchandises d'un Agent à un autre jusqu'au Boss.",
+
+    registerCargo:
+      "🚚 Enregistrer une marchandise",
+
+    trackCargo:
+      "🔎 Suivre la marchandise",
+
+    registrationTitle:
+      "📦 Enregistrement",
+
+    registrationText:
+      "Créez un identifiant de suivi unique pour chaque marchandise.",
+
+    gpsTitle:
+      "📍 GPS",
+
+    gpsText:
+      "Le système peut enregistrer la position de l'Agent pendant les opérations.",
+
+    historyTitle:
+      "🕐 Historique",
+
+    historyText:
+      "Chaque étape possède son heure et son historique.",
+
+    registerHeading:
+      "📦 Enregistrer une marchandise",
+
+    cargoNameLabel:
+      "Nom de la marchandise",
+
+    cargoNamePlaceholder:
+      "Exemple : 10 cartons de produits",
+
+    originLabel:
+      "Lieu de départ",
+
+    originPlaceholder:
+      "Exemple : Pemba",
+
+    destinationLabel:
+      "Destination",
+
+    destinationPlaceholder:
+      "Exemple : Zanzibar",
+
+    bossNameLabel:
+      "Nom du Boss",
+
+    bossNamePlaceholder:
+      "Nom du Boss",
+
+    agentCountLabel:
+      "Nombre d'Agents",
+
+    registerButton:
+      "🚚 Enregistrer",
+
+    loginHeading:
+      "🔐 Connexion",
+
+    trackingIdLabel:
+      "Identifiant de suivi",
+
+    trackingPlaceholder:
+      "Exemple : MKT-561407",
+
+    pinLabel:
+      "PIN",
+
+    pinPlaceholder:
+      "Entrez le PIN",
+
+    loginButton:
+      "🔑 Connexion",
+
+    trackingHeading:
+      "🔎 Suivre la marchandise",
+
+    trackingInputPlaceholder:
+      "Entrez l'identifiant",
+
+    searchButton:
+      "🔍 Rechercher"
+
+  },
+
+
+  ar: {
+
+    home: "الرئيسية",
+    register: "تسجيل الشحنة",
+    login: "تسجيل الدخول",
+    tracking: "تتبع",
+    logout: "تسجيل الخروج",
+
+    heroDescription:
+      "نظام حديث لتسجيل وتتبع وإدارة نقل البضائع من وكيل إلى وكيل حتى تصل الشحنة إلى المسؤول.",
+
+    registerCargo:
+      "🚚 تسجيل الشحنة",
+
+    trackCargo:
+      "🔎 تتبع الشحنة",
+
+    registrationTitle:
+      "📦 التسجيل",
+
+    registrationText:
+      "أنشئ رقم تتبع فريد لكل شحنة.",
+
+    gpsTitle:
+      "📍 GPS",
+
+    gpsText:
+      "يمكن للنظام تسجيل موقع الوكيل أثناء عمليات الشحنة.",
+
+    historyTitle:
+      "🕐 السجل",
+
+    historyText:
+      "لكل خطوة وقت وسجل خاص بها.",
+
+    registerHeading:
+      "📦 تسجيل الشحنة",
+
+    cargoNameLabel:
+      "اسم الشحنة",
+
+    cargoNamePlaceholder:
+      "مثال: 10 صناديق من المنتجات",
+
+    originLabel:
+      "مكان الانطلاق",
+
+    originPlaceholder:
+      "مثال: بيمبا",
+
+    destinationLabel:
+      "الوجهة",
+
+    destinationPlaceholder:
+      "مثال: زنجبار",
+
+    bossNameLabel:
+      "اسم المسؤول",
+
+    bossNamePlaceholder:
+      "اسم المسؤول",
+
+    agentCountLabel:
+      "عدد الوكلاء",
+
+    registerButton:
+      "🚚 تسجيل الشحنة",
+
+    loginHeading:
+      "🔐 تسجيل الدخول",
+
+    trackingIdLabel:
+      "رقم التتبع",
+
+    trackingPlaceholder:
+      "مثال: MKT-561407",
+
+    pinLabel:
+      "PIN",
+
+    pinPlaceholder:
+      "أدخل PIN",
+
+    loginButton:
+      "🔑 دخول",
+
+    trackingHeading:
+      "🔎 تتبع الشحنة",
+
+    trackingInputPlaceholder:
+      "أدخل رقم التتبع",
+
+    searchButton:
+      "🔍 بحث"
+
+  },
+
+
+  pt: {
+
+    home: "Início",
+    register: "Registar Carga",
+    login: "Entrar",
+    tracking: "Rastrear",
+    logout: "Sair",
+
+    heroDescription:
+      "Um sistema moderno para registar, rastrear e gerir o transporte de cargas de um Agente para outro até chegar ao Boss.",
+
+    registerCargo:
+      "🚚 Registar Carga",
+
+    trackCargo:
+      "🔎 Rastrear Carga",
+
+    registrationTitle:
+      "📦 Registo",
+
+    registrationText:
+      "Crie um Tracking ID único para cada carga.",
+
+    gpsTitle:
+      "📍 GPS",
+
+    gpsText:
+      "O sistema pode registar a localização do Agente durante as operações.",
+
+    historyTitle:
+      "🕐 Histórico",
+
+    historyText:
+      "Cada etapa possui a sua hora e histórico.",
+
+    registerHeading:
+      "📦 Registar Carga",
+
+    cargoNameLabel:
+      "Nome da Carga",
+
+    cargoNamePlaceholder:
+      "Exemplo: 10 caixas de produtos",
+
+    originLabel:
+      "Origem",
+
+    originPlaceholder:
+      "Exemplo: Pemba",
+
+    destinationLabel:
+      "Destino",
+
+    destinationPlaceholder:
+      "Exemplo: Zanzibar",
+
+    bossNameLabel:
+      "Nome do Boss",
+
+    bossNamePlaceholder:
+      "Nome do Boss",
+
+    agentCountLabel:
+      "Número de Agentes",
+
+    registerButton:
+      "🚚 Registar Carga",
+
+    loginHeading:
+      "🔐 Entrar",
+
+    trackingIdLabel:
+      "Tracking ID",
+
+    trackingPlaceholder:
+      "Exemplo: MKT-561407",
+
+    pinLabel:
+      "PIN",
+
+    pinPlaceholder:
+      "Digite o PIN",
+
+    loginButton:
+      "🔑 Entrar",
+
+    trackingHeading:
+      "🔎 Rastrear Carga",
+
+    trackingInputPlaceholder:
+      "Digite o Tracking ID",
+
+    searchButton:
+      "🔍 Pesquisar"
+
+  },
+
+
+  es: {
+
+    home: "Inicio",
+    register: "Registrar carga",
+    login: "Iniciar sesión",
+    tracking: "Seguimiento",
+    logout: "Salir",
+
+    heroDescription:
+      "Un sistema moderno para registrar, rastrear y gestionar el transporte de mercancías de un Agente a otro hasta llegar al Boss.",
+
+    registerCargo:
+      "🚚 Registrar carga",
+
+    trackCargo:
+      "🔎 Rastrear carga",
+
+    registrationTitle:
+      "📦 Registro",
+
+    registrationText:
+      "Crea un Tracking ID único para cada carga.",
+
+    gpsTitle:
+      "📍 GPS",
+
+    gpsText:
+      "El sistema puede registrar la ubicación del Agente durante las operaciones.",
+
+    historyTitle:
+      "🕐 Historial",
+
+    historyText:
+      "Cada etapa tiene su hora e historial.",
+
+    registerHeading:
+      "📦 Registrar carga",
+
+    cargoNameLabel:
+      "Nombre de la carga",
+
+    cargoNamePlaceholder:
+      "Ejemplo: 10 cajas de productos",
+
+    originLabel:
+      "Origen",
+
+    originPlaceholder:
+      "Ejemplo: Pemba",
+
+    destinationLabel:
+      "Destino",
+
+    destinationPlaceholder:
+      "Ejemplo: Zanzíbar",
+
+    bossNameLabel:
+      "Nombre del Boss",
+
+    bossNamePlaceholder:
+      "Nombre del Boss",
+
+    agentCountLabel:
+      "Número de Agentes",
+
+    registerButton:
+      "🚚 Registrar carga",
+
+    loginHeading:
+      "🔐 Iniciar sesión",
+
+    trackingIdLabel:
+      "Tracking ID",
+
+    trackingPlaceholder:
+      "Ejemplo: MKT-561407",
+
+    pinLabel:
+      "PIN",
+
+    pinPlaceholder:
+      "Introduce el PIN",
+
+    loginButton:
+      "🔑 Entrar",
+
+    trackingHeading:
+      "🔎 Rastrear carga",
+
+    trackingInputPlaceholder:
+      "Introduce el Tracking ID",
+
+    searchButton:
+      "🔍 Buscar"
+
+  }
+
+};
+
+
+let currentLanguage =
+  localStorage.getItem(
+    "makyamaLanguage"
+  ) || "sw";
+
+
+function changeLanguage(language) {
+
+  if (!translations[language]) {
+
+    language = "sw";
+
+  }
+
+  currentLanguage =
+    language;
+
+  localStorage.setItem(
+    "makyamaLanguage",
+    language
+  );
+
+  document.documentElement.lang =
+    language;
+
+  if (language === "ar") {
+
+    document.body.dir = "rtl";
+
+  } else {
+
+    document.body.dir = "ltr";
+
+  }
+
+  const dictionary =
+    translations[language];
+
+  document
+    .querySelectorAll("[data-i18n]")
+    .forEach(element => {
+
+      const key =
+        element.getAttribute(
+          "data-i18n"
+        );
+
+      if (
+        dictionary[key]
+      ) {
+
+        element.textContent =
+          dictionary[key];
+
+      }
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-i18n-placeholder]"
+    )
+    .forEach(element => {
+
+      const key =
+        element.getAttribute(
+          "data-i18n-placeholder"
+        );
+
+      if (
+        dictionary[key]
+      ) {
+
+        element.placeholder =
+          dictionary[key];
+
+      }
+
+    });
+
+
+  const languageSelect =
+    document.getElementById(
+      "languageSelect"
+    );
+
+  if (languageSelect) {
+
+    languageSelect.value =
+      language;
+
+  }
+
+  buildAgents();
+
+}
+
+
+function t(key) {
+
+  return (
+    translations[currentLanguage]?.[key] ||
+    translations.sw[key] ||
+    key
+  );
+
+}
 
 
 /* =========================================================
@@ -766,17 +1528,22 @@ function showPage(page) {
 
 function buildAgents() {
 
-  const count =
-    Number(
-      document.getElementById(
-        "agentCount"
-      ).value
+  const select =
+    document.getElementById(
+      "agentCount"
     );
+
+  if (!select) return;
+
+  const count =
+    Number(select.value);
 
   const container =
     document.getElementById(
       "agentsContainer"
     );
+
+  if (!container) return;
 
   container.innerHTML = "";
 
@@ -798,13 +1565,13 @@ function buildAgents() {
       </h3>
 
       <label>
-        Jina la Agent ${i}
+        ${getAgentNameLabel(i)}
       </label>
 
       <input
         class="agentName"
         data-stage="${i}"
-        placeholder="Jina la Agent ${i}"
+        placeholder="${getAgentPlaceholder(i)}"
       >
 
     `;
@@ -812,6 +1579,70 @@ function buildAgents() {
     container.appendChild(div);
 
   }
+
+}
+
+
+function getAgentNameLabel(stage) {
+
+  const labels = {
+
+    sw:
+      `Jina la Agent ${stage}`,
+
+    en:
+      `Agent ${stage} Name`,
+
+    fr:
+      `Nom de l'Agent ${stage}`,
+
+    ar:
+      `اسم الوكيل ${stage}`,
+
+    pt:
+      `Nome do Agente ${stage}`,
+
+    es:
+      `Nombre del Agente ${stage}`
+
+  };
+
+  return (
+    labels[currentLanguage] ||
+    labels.sw
+  );
+
+}
+
+
+function getAgentPlaceholder(stage) {
+
+  const labels = {
+
+    sw:
+      `Jina la Agent ${stage}`,
+
+    en:
+      `Agent ${stage} name`,
+
+    fr:
+      `Nom de l'Agent ${stage}`,
+
+    ar:
+      `اسم الوكيل ${stage}`,
+
+    pt:
+      `Nome do Agente ${stage}`,
+
+    es:
+      `Nombre del Agente ${stage}`
+
+  };
+
+  return (
+    labels[currentLanguage] ||
+    labels.sw
+  );
 
 }
 
@@ -875,7 +1706,7 @@ async function createCargo() {
     result.innerHTML = `
 
       <div class="notice error">
-        ❌ Tafadhali jaza taarifa zote.
+        ❌ ${t("fillAll") || "Tafadhali jaza taarifa zote."}
       </div>
 
     `;
@@ -889,7 +1720,7 @@ async function createCargo() {
     result.innerHTML = `
 
       <div class="notice">
-        ⏳ Inasajili mzigo...
+        ⏳ ${t("registering") || "Inasajili mzigo..."}
       </div>
 
     `;
@@ -998,7 +1829,7 @@ async function createCargo() {
                       <button
                         class="copy-btn"
                         onclick="copyText('${escapeHtml(pin)}')">
-                        📋 Copy PIN
+                        📋 ${getCopyText()}
                       </button>
                     `
                     : ""
@@ -1030,7 +1861,7 @@ async function createCargo() {
       <div class="success-box">
 
         <h3>
-          ✅ Mzigo Umesajiliwa
+          ✅ ${getRegisteredText()}
         </h3>
 
         <div class="credential-box">
@@ -1051,7 +1882,7 @@ async function createCargo() {
               data.trackingId || ""
             )}')">
 
-            📋 Copy Tracking ID
+            📋 ${getCopyTrackingText()}
 
           </button>
 
@@ -1079,7 +1910,7 @@ async function createCargo() {
                     bossPin
                   )}')">
 
-                  📋 Copy Boss PIN
+                  📋 ${getCopyBossPinText()}
 
                 </button>
               `
@@ -1091,7 +1922,7 @@ async function createCargo() {
         <br>
 
         <h3>
-          👥 PIN za Agents
+          👥 ${getAgentPinsText()}
         </h3>
 
         <div class="grid">
@@ -1100,8 +1931,7 @@ async function createCargo() {
 
         <div class="warning-box">
 
-          ⚠️ Hifadhi Tracking ID, Boss PIN
-          na PIN za Agents mahali salama.
+          ⚠️ ${getSaveCredentialsText()}
 
         </div>
 
@@ -1132,6 +1962,129 @@ async function createCargo() {
 
 
 /* =========================================================
+   LANGUAGE HELPERS
+========================================================= */
+
+function getCopyText() {
+
+  const x = {
+
+    sw: "Copy PIN",
+    en: "Copy PIN",
+    fr: "Copier le PIN",
+    ar: "نسخ PIN",
+    pt: "Copiar PIN",
+    es: "Copiar PIN"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getCopyTrackingText() {
+
+  const x = {
+
+    sw: "Copy Tracking ID",
+    en: "Copy Tracking ID",
+    fr: "Copier l'identifiant",
+    ar: "نسخ رقم التتبع",
+    pt: "Copiar Tracking ID",
+    es: "Copiar Tracking ID"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getCopyBossPinText() {
+
+  const x = {
+
+    sw: "Copy Boss PIN",
+    en: "Copy Boss PIN",
+    fr: "Copier le PIN du Boss",
+    ar: "نسخ PIN المسؤول",
+    pt: "Copiar PIN do Boss",
+    es: "Copiar PIN del Boss"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getRegisteredText() {
+
+  const x = {
+
+    sw: "Mzigo Umesajiliwa",
+    en: "Cargo Registered",
+    fr: "Marchandise enregistrée",
+    ar: "تم تسجيل الشحنة",
+    pt: "Carga registada",
+    es: "Carga registrada"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getAgentPinsText() {
+
+  const x = {
+
+    sw: "PIN za Agents",
+    en: "Agent PINs",
+    fr: "PIN des Agents",
+    ar: "أرقام PIN للوكلاء",
+    pt: "PIN dos Agentes",
+    es: "PIN de los Agentes"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getSaveCredentialsText() {
+
+  const x = {
+
+    sw:
+      "Hifadhi Tracking ID, Boss PIN na PIN za Agents mahali salama.",
+
+    en:
+      "Keep the Tracking ID, Boss PIN and Agent PINs in a safe place.",
+
+    fr:
+      "Conservez l'identifiant, le PIN du Boss et les PIN des Agents dans un endroit sûr.",
+
+    ar:
+      "احتفظ برقم التتبع وأرقام PIN في مكان آمن.",
+
+    pt:
+      "Guarde o Tracking ID e os PINs num local seguro.",
+
+    es:
+      "Guarda el Tracking ID y los PIN en un lugar seguro."
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+/* =========================================================
    COPY
 ========================================================= */
 
@@ -1149,11 +2102,9 @@ async function copyText(text) {
 
   try {
 
-    await navigator
-      .clipboard
-      .writeText(
-        String(text)
-      );
+    await navigator.clipboard.writeText(
+      String(text)
+    );
 
     alert(
       "✅ Ime-copywa."
@@ -1162,9 +2113,7 @@ async function copyText(text) {
   } catch (error) {
 
     const textarea =
-      document.createElement(
-        "textarea"
-      );
+      document.createElement("textarea");
 
     textarea.value =
       String(text);
@@ -1175,9 +2124,7 @@ async function copyText(text) {
 
     textarea.select();
 
-    document.execCommand(
-      "copy"
-    );
+    document.execCommand("copy");
 
     textarea.remove();
 
@@ -1198,18 +2145,14 @@ async function login() {
 
   const trackingId =
     document
-      .getElementById(
-        "loginTracking"
-      )
+      .getElementById("loginTracking")
       .value
       .trim()
       .toUpperCase();
 
   const pin =
     document
-      .getElementById(
-        "loginPin"
-      )
+      .getElementById("loginPin")
       .value
       .trim();
 
@@ -1226,7 +2169,7 @@ async function login() {
     result.innerHTML = `
 
       <div class="notice error">
-        ❌ Weka Tracking ID na PIN.
+        ❌ ${getLoginRequiredText()}
       </div>
 
     `;
@@ -1240,7 +2183,7 @@ async function login() {
     result.innerHTML = `
 
       <div class="notice">
-        ⏳ Inaingia...
+        ⏳ ${getLoggingInText()}
       </div>
 
     `;
@@ -1285,33 +2228,26 @@ async function login() {
 
     }
 
-
     currentSession =
       data;
-
 
     await auth.signInWithCustomToken(
       data.token
     );
 
-
     currentUser =
       auth.currentUser;
 
-
     document
-      .getElementById(
-        "logoutBtn"
-      )
+      .getElementById("logoutBtn")
       .classList
       .remove("hidden");
-
 
     result.innerHTML = `
 
       <div class="success-box">
 
-        ✅ Umeingia kama
+        ✅ ${getLoggedInAsText()}
 
         <strong>
 
@@ -1326,6 +2262,14 @@ async function login() {
       </div>
 
     `;
+
+
+    /*
+      Notifications automatically baada ya login.
+      Hakuna button.
+    */
+
+    registerNotificationsAutomatically();
 
 
     setTimeout(() => {
@@ -1362,17 +2306,75 @@ async function login() {
 
 
 /* =========================================================
-   NOTIFICATIONS
+   LOGIN LANGUAGE
 ========================================================= */
 
-async function enableNotifications() {
+function getLoginRequiredText() {
+
+  const x = {
+
+    sw: "Weka Tracking ID na PIN.",
+    en: "Enter Tracking ID and PIN.",
+    fr: "Entrez l'identifiant et le PIN.",
+    ar: "أدخل رقم التتبع وPIN.",
+    pt: "Digite o Tracking ID e o PIN.",
+    es: "Introduce el Tracking ID y el PIN."
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getLoggingInText() {
+
+  const x = {
+
+    sw: "Inaingia...",
+    en: "Logging in...",
+    fr: "Connexion...",
+    ar: "جار تسجيل الدخول...",
+    pt: "A entrar...",
+    es: "Iniciando sesión..."
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getLoggedInAsText() {
+
+  const x = {
+
+    sw: "Umeingia kama",
+    en: "Logged in as",
+    fr: "Connecté en tant que",
+    ar: "تم تسجيل الدخول كـ",
+    pt: "Sessão iniciada como",
+    es: "Sesión iniciada como"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+/* =========================================================
+   AUTOMATIC NOTIFICATIONS
+========================================================= */
+
+async function registerNotificationsAutomatically() {
 
   try {
 
     if (!("Notification" in window)) {
 
-      alert(
-        "❌ Browser yako hai-support notifications."
+      console.log(
+        "Browser haina support notifications."
       );
 
       return;
@@ -1381,43 +2383,52 @@ async function enableNotifications() {
 
     if (!currentSession) {
 
-      alert(
-        "❌ Ingia kwanza kabla ya kuwasha notifications."
-      );
-
-      showPage("login");
-
       return;
 
     }
 
     if (!messaging) {
 
-      throw new Error(
-        "Firebase Messaging haijapatikana kwenye browser."
+      console.log(
+        "Firebase Messaging haijapatikana."
       );
 
+      return;
+
     }
+
+    if (!("serviceWorker" in navigator)) {
+
+      console.log(
+        "Service Worker haisupportwi."
+      );
+
+      return;
+
+    }
+
+    /*
+      Browser itaomba permission mara ya kwanza.
+    */
+
+    let permission =
+      Notification.permission;
 
     if (
-      !("serviceWorker" in navigator)
+      permission === "default"
     ) {
 
-      throw new Error(
-        "Browser yako haisupport Service Worker."
-      );
+      permission =
+        await Notification.requestPermission();
 
     }
-
-    const permission =
-      await Notification.requestPermission();
 
     if (
       permission !== "granted"
     ) {
 
-      alert(
-        "❌ Notification permission haijaruhusiwa."
+      console.log(
+        "Notification permission haijaruhusiwa."
       );
 
       return;
@@ -1444,9 +2455,11 @@ async function enableNotifications() {
 
     if (!token) {
 
-      throw new Error(
-        "Imeshindikana kupata notification token."
+      console.log(
+        "FCM token haikupatikana."
       );
+
+      return;
 
     }
 
@@ -1455,9 +2468,7 @@ async function enableNotifications() {
 
     if (!authUser) {
 
-      throw new Error(
-        "Hujaingia Firebase."
-      );
+      return;
 
     }
 
@@ -1483,12 +2494,11 @@ async function enableNotifications() {
 
           },
 
-          body:
-            JSON.stringify({
+          body: JSON.stringify({
 
-              token
+            token
 
-            })
+          })
 
         }
       );
@@ -1513,20 +2523,19 @@ async function enableNotifications() {
       "enabled"
     );
 
-    alert(
-      "🔔 Notifications zimewashwa!"
+    console.log(
+      "🔔 Automatic notifications registered."
     );
 
   } catch (error) {
 
-    console.error(
-      "NOTIFICATION ERROR:",
-      error
-    );
+    /*
+      Notification error haitazuia login/dashboard.
+    */
 
-    alert(
-      "❌ " +
-      error.message
+    console.error(
+      "AUTOMATIC NOTIFICATION ERROR:",
+      error
     );
 
   }
@@ -1647,9 +2656,7 @@ async function logout() {
   currentSession = null;
 
   document
-    .getElementById(
-      "logoutBtn"
-    )
+    .getElementById("logoutBtn")
     .classList
     .add("hidden");
 
@@ -1666,9 +2673,7 @@ async function trackCargo() {
 
   const trackingId =
     document
-      .getElementById(
-        "trackingInput"
-      )
+      .getElementById("trackingInput")
       .value
       .trim()
       .toUpperCase();
@@ -1683,7 +2688,7 @@ async function trackCargo() {
     result.innerHTML = `
 
       <div class="notice error">
-        ❌ Weka Tracking ID.
+        ❌ ${getTrackingRequiredText()}
       </div>
 
     `;
@@ -1697,7 +2702,7 @@ async function trackCargo() {
     result.innerHTML = `
 
       <div class="notice">
-        ⏳ Inatafuta mzigo...
+        ⏳ ${getSearchingText()}
       </div>
 
     `;
@@ -1755,6 +2760,42 @@ async function trackCargo() {
 }
 
 
+function getTrackingRequiredText() {
+
+  const x = {
+
+    sw: "Weka Tracking ID.",
+    en: "Enter Tracking ID.",
+    fr: "Entrez l'identifiant de suivi.",
+    ar: "أدخل رقم التتبع.",
+    pt: "Digite o Tracking ID.",
+    es: "Introduce el Tracking ID."
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getSearchingText() {
+
+  const x = {
+
+    sw: "Inatafuta mzigo...",
+    en: "Searching for cargo...",
+    fr: "Recherche de la marchandise...",
+    ar: "جار البحث عن الشحنة...",
+    pt: "A procurar a carga...",
+    es: "Buscando la carga..."
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
 /* =========================================================
    PUBLIC DISPLAY
 ========================================================= */
@@ -1771,7 +2812,7 @@ function renderTracking(cargo) {
     <div class="card">
 
       <h2>
-        📦 Taarifa za Mzigo
+        📦 ${getCargoInfoText()}
       </h2>
 
       <p class="info">
@@ -1793,7 +2834,7 @@ function renderTracking(cargo) {
       <p class="info">
 
         <strong>
-          Jina la Mzigo:
+          ${getCargoNameText()}
         </strong>
 
         <br>
@@ -1807,7 +2848,7 @@ function renderTracking(cargo) {
       <p class="info">
 
         <strong>
-          Kuanzia:
+          ${getOriginText()}
         </strong>
 
         <br>
@@ -1821,7 +2862,7 @@ function renderTracking(cargo) {
       <p class="info">
 
         <strong>
-          Kwenda:
+          ${getDestinationText()}
         </strong>
 
         <br>
@@ -1835,7 +2876,7 @@ function renderTracking(cargo) {
       <p class="info">
 
         <strong>
-          Status:
+          ${getStatusText()}
         </strong>
 
         <br>
@@ -1852,14 +2893,13 @@ function renderTracking(cargo) {
 
       <div class="public-safe">
 
-        🔒 <strong>Taarifa Zilizolindwa</strong>
+        🔒 <strong>
+          ${getProtectedInfoText()}
+        </strong>
 
         <p class="small">
 
-          Taarifa za Agents, Boss, GPS,
-          maeneo ya vituo na historia ya
-          safari zinaonekana kwa watumiaji
-          wenye ruhusa pekee.
+          ${getProtectedDescription()}
 
         </p>
 
@@ -1868,6 +2908,143 @@ function renderTracking(cargo) {
     </div>
 
   `;
+
+}
+
+
+function getCargoInfoText() {
+
+  const x = {
+
+    sw: "Taarifa za Mzigo",
+    en: "Cargo Information",
+    fr: "Informations sur la marchandise",
+    ar: "معلومات الشحنة",
+    pt: "Informações da carga",
+    es: "Información de la carga"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getCargoNameText() {
+
+  const x = {
+
+    sw: "Jina la Mzigo:",
+    en: "Cargo Name:",
+    fr: "Nom de la marchandise:",
+    ar: "اسم الشحنة:",
+    pt: "Nome da carga:",
+    es: "Nombre de la carga:"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getOriginText() {
+
+  const x = {
+
+    sw: "Kuanzia:",
+    en: "From:",
+    fr: "Départ:",
+    ar: "من:",
+    pt: "Origem:",
+    es: "Origen:"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getDestinationText() {
+
+  const x = {
+
+    sw: "Kwenda:",
+    en: "To:",
+    fr: "Destination:",
+    ar: "الوجهة:",
+    pt: "Destino:",
+    es: "Destino:"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getStatusText() {
+
+  const x = {
+
+    sw: "Status:",
+    en: "Status:",
+    fr: "Statut:",
+    ar: "الحالة:",
+    pt: "Estado:",
+    es: "Estado:"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getProtectedInfoText() {
+
+  const x = {
+
+    sw: "Taarifa Zilizolindwa",
+    en: "Protected Information",
+    fr: "Informations protégées",
+    ar: "المعلومات المحمية",
+    pt: "Informações protegidas",
+    es: "Información protegida"
+
+  };
+
+  return x[currentLanguage] || x.sw;
+
+}
+
+
+function getProtectedDescription() {
+
+  const x = {
+
+    sw:
+      "Taarifa za Agents, Boss, GPS, maeneo ya vituo na historia ya safari zinaonekana kwa watumiaji wenye ruhusa pekee.",
+
+    en:
+      "Agent, Boss, GPS, station locations and journey history are only visible to authorized users.",
+
+    fr:
+      "Les informations des Agents, du Boss, GPS et l'historique sont visibles uniquement aux utilisateurs autorisés.",
+
+    ar:
+      "معلومات الوكلاء والمسؤول وGPS وسجل الرحلة متاحة فقط للمستخدمين المصرح لهم.",
+
+    pt:
+      "As informações dos Agentes, Boss, GPS e histórico estão disponíveis apenas para utilizadores autorizados.",
+
+    es:
+      "La información de los Agentes, Boss, GPS e historial solo está disponible para usuarios autorizados."
+
+  };
+
+  return x[currentLanguage] || x.sw;
 
 }
 
@@ -1916,7 +3093,7 @@ function formatPublicStatus(status) {
 
 
 /* =========================================================
-   NORMALIZE STAGES
+   NORMALIZE
 ========================================================= */
 
 function normalizeStages(stages) {
@@ -1945,10 +3122,6 @@ function normalizeStages(stages) {
 
 }
 
-
-/* =========================================================
-   NORMALIZE HISTORY
-========================================================= */
 
 function normalizeHistory(history) {
 
@@ -2309,37 +3482,6 @@ function renderAgentDashboard(cargo) {
         <br>
 
         ${actionButton}
-
-      </div>
-
-
-      <div class="card notification-box">
-
-        <h2>
-          🔔 Notifications
-        </h2>
-
-        <p class="small">
-
-          Washa notifications ili upate ujumbe
-          mzigo unapofika kwenye hatua yako.
-
-        </p>
-
-        <br>
-
-        <button
-          class="success"
-          onclick="enableNotifications()">
-
-          🔔 Washa Notifications
-
-        </button>
-
-        <div
-          id="notificationStatus"
-          class="notice hidden">
-        </div>
 
       </div>
 
@@ -2880,33 +4022,8 @@ function renderBossDashboard(cargo) {
       </div>
 
 
-      <div class="card notification-box">
-
-        <h2>
-          🔔 Notifications
-        </h2>
-
-        <p class="small">
-
-          Washa notifications ili Boss apate
-          taarifa mzigo unapofika hatua ya mwisho.
-
-        </p>
-
-        <br>
-
-        <button
-          class="success"
-          onclick="enableNotifications()">
-
-          🔔 Washa Notifications
-
-        </button>
-
-      </div>
-
-
       ${bossButton}
+
 
       <div class="card">
 
@@ -2929,6 +4046,7 @@ function renderBossDashboard(cargo) {
 
       </div>
 
+
       <div class="card">
 
         <h2>
@@ -2938,6 +4056,7 @@ function renderBossDashboard(cargo) {
         <div id="bossMap"></div>
 
       </div>
+
 
       <div class="card">
 
@@ -3802,6 +4921,17 @@ auth.onAuthStateChanged(
 
 buildAgents();
 
+/*
+  Muhimu:
+  Kiswahili ndiyo default.
+  Kama user amewahi kuchagua lugha nyingine,
+  preference yake itahifadhiwa.
+*/
+
+changeLanguage(
+  currentLanguage
+);
+
 console.log(
   "🚚 MAKYAMA TRANSPORT SYSTEM READY"
 );
@@ -3809,4 +4939,4 @@ console.log(
 </script>
 
 </body>
-      </html>
+        </html>
