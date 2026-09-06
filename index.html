@@ -1,10 +1,17 @@
-<!DOCTYPE html><html lang="sw">
+<!DOCTYPE html>
+<html lang="sw">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>MAKYAMA DAGAA</title>  <link
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>MAKYAMA DAGAA</title>
+
+  <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  >  <style>
+  >
+
+  <style>
     * {
       box-sizing: border-box;
       margin: 0;
@@ -24,7 +31,7 @@
     }
 
     header {
-      background: rgba(0, 15, 25, .94);
+      background: rgba(0,15,25,.94);
       padding: 15px;
       position: sticky;
       top: 0;
@@ -106,7 +113,7 @@
     }
 
     .hero h1 {
-      font-size: clamp(32px, 7vw, 65px);
+      font-size: clamp(32px,7vw,65px);
       color: #00d9ff;
       margin-bottom: 15px;
     }
@@ -119,7 +126,7 @@
     }
 
     .card {
-      background: rgba(5, 25, 38, .92);
+      background: rgba(5,25,38,.92);
       border: 1px solid rgba(0,217,255,.18);
       border-radius: 14px;
       padding: 20px;
@@ -158,12 +165,15 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(250px,1fr)
+      );
       gap: 15px;
     }
 
     .agent-box {
-      background: rgba(0, 20, 32, .9);
+      background: rgba(0,20,32,.9);
       border: 1px solid #21495c;
       border-radius: 12px;
       padding: 15px;
@@ -245,7 +255,7 @@
       border-left: 3px solid #00d9ff;
       padding: 10px 15px;
       margin: 10px 0;
-      background: rgba(0, 20, 30, .65);
+      background: rgba(0,20,30,.65);
       border-radius: 5px;
     }
 
@@ -271,7 +281,7 @@
       padding: 12px;
       border-radius: 8px;
       margin: 10px 0;
-      background: rgba(0, 123, 255, .15);
+      background: rgba(0,123,255,.15);
       border: 1px solid rgba(0,123,255,.35);
     }
 
@@ -292,7 +302,7 @@
       margin-top: 12px;
       padding: 15px;
       border-radius: 10px;
-      background: rgba(0, 20, 32, .8);
+      background: rgba(0,20,32,.8);
       border: 1px solid rgba(0,217,255,.2);
     }
 
@@ -305,6 +315,14 @@
       color: #ffe08a;
     }
 
+    .public-safe {
+      border: 1px solid rgba(0,217,255,.25);
+      background: rgba(0,217,255,.07);
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
     footer {
       text-align: center;
       padding: 30px 15px;
@@ -313,6 +331,7 @@
     }
 
     @media(max-width:600px) {
+
       .nav {
         justify-content: center;
       }
@@ -343,299 +362,347 @@
         font-size: 22px;
       }
     }
-  </style></head><body><header>
-  <div class="nav"><div class="logo">
-  MAKYAMA DAGAA
-</div>
+  </style>
+</head>
 
-<div class="nav-buttons">
+<body>
 
-  <button onclick="showPage('home')">
-    Nyumbani
-  </button>
+<header>
 
-  <button onclick="showPage('register')">
-    Sajili Mzigo
-  </button>
+  <div class="nav">
 
-  <button onclick="showPage('login')">
-    Ingia
-  </button>
+    <div class="logo">
+      MAKYAMA DAGAA
+    </div>
 
-  <button onclick="showPage('tracking')">
-    Fuatilia
-  </button>
+    <div class="nav-buttons">
 
-  <button
-    id="logoutBtn"
-    class="danger hidden"
-    onclick="logout()">
-    Toka
-  </button>
+      <button onclick="showPage('home')">
+        Nyumbani
+      </button>
 
-</div>
+      <button onclick="showPage('register')">
+        Sajili Mzigo
+      </button>
+
+      <button onclick="showPage('login')">
+        Ingia
+      </button>
+
+      <button onclick="showPage('tracking')">
+        Fuatilia
+      </button>
+
+      <button
+        id="logoutBtn"
+        class="danger hidden"
+        onclick="logout()">
+        Toka
+      </button>
+
+    </div>
 
   </div>
-</header><div class="container">  <!-- HOME -->  <section id="home" class="page active"><div class="hero">
 
-  <h1>
-    MAKYAMA DAGAA
-  </h1>
+</header>
 
-  <p>
-    Mfumo wa kusajili, kufuatilia na kusimamia
-    usafirishaji wa dagaa kutoka kwa Agent mmoja
-    kwenda mwingine mpaka mzigo unapomfikia Boss.
-  </p>
+<div class="container">
 
-  <br>
+<!-- HOME -->
 
-  <button onclick="showPage('register')">
-    🚚 Sajili Mzigo
-  </button>
+<section id="home" class="page active">
 
-  <button
-    class="dark"
-    onclick="showPage('tracking')">
-    🔎 Fuatilia Mzigo
-  </button>
+  <div class="hero">
 
-</div>
+    <h1>
+      MAKYAMA DAGAA
+    </h1>
 
-
-<div class="grid">
-
-  <div class="card center">
-
-    <h3>
-      📦 Usajili
-    </h3>
-
-    <p class="info">
-      Tengeneza Tracking ID ya kipekee
-      kwa kila mzigo.
+    <p>
+      Mfumo wa kusajili, kufuatilia na kusimamia
+      usafirishaji wa dagaa kutoka kwa Agent mmoja
+      kwenda mwingine mpaka mzigo unapomfikia Boss.
     </p>
 
-  </div>
+    <br>
 
+    <button onclick="showPage('register')">
+      🚚 Sajili Mzigo
+    </button>
 
-  <div class="card center">
-
-    <h3>
-      📍 GPS
-    </h3>
-
-    <p class="info">
-      Mfumo unaweza kurekodi location
-      ya Agent wakati wa hatua ya mzigo.
-    </p>
+    <button
+      class="dark"
+      onclick="showPage('tracking')">
+      🔎 Fuatilia Mzigo
+    </button>
 
   </div>
 
+  <div class="grid">
 
-  <div class="card center">
+    <div class="card center">
 
-    <h3>
-      🕐 Historia
-    </h3>
+      <h3>
+        📦 Usajili
+      </h3>
 
-    <p class="info">
-      Kila hatua ina muda na historia yake.
-    </p>
+      <p class="info">
+        Tengeneza Tracking ID ya kipekee
+        kwa kila mzigo.
+      </p>
+
+    </div>
+
+    <div class="card center">
+
+      <h3>
+        📍 GPS
+      </h3>
+
+      <p class="info">
+        Mfumo unaweza kurekodi location
+        ya Agent wakati wa hatua ya mzigo.
+      </p>
+
+    </div>
+
+    <div class="card center">
+
+      <h3>
+        🕐 Historia
+      </h3>
+
+      <p class="info">
+        Kila hatua ina muda na historia yake.
+      </p>
+
+    </div>
 
   </div>
 
+</section>
+
+
+<!-- REGISTER -->
+
+<section id="register" class="page">
+
+  <div class="card">
+
+    <h2>
+      📦 Sajili Mzigo
+    </h2>
+
+    <label>
+      Jina la Mzigo
+    </label>
+
+    <input
+      id="cargoName"
+      placeholder="Mfano: Dagaa wa kilo 50"
+    >
+
+    <label>
+      Mahali pa Kuanzia
+    </label>
+
+    <input
+      id="origin"
+      placeholder="Mfano: Pemba"
+    >
+
+    <label>
+      Mahali pa Kwenda
+    </label>
+
+    <input
+      id="destination"
+      placeholder="Mfano: Zanzibar"
+    >
+
+    <label>
+      Jina la Boss
+    </label>
+
+    <input
+      id="bossName"
+      placeholder="Jina la Boss"
+    >
+
+    <label>
+      Idadi ya Agents
+    </label>
+
+    <select
+      id="agentCount"
+      onchange="buildAgents()">
+
+      <option value="1">
+        Agent 1
+      </option>
+
+      <option value="2">
+        Agents 2
+      </option>
+
+      <option value="3">
+        Agents 3
+      </option>
+
+      <option value="4">
+        Agents 4
+      </option>
+
+      <option value="5">
+        Agents 5
+      </option>
+
+      <option value="6">
+        Agents 6
+      </option>
+
+      <option value="7">
+        Agents 7
+      </option>
+
+      <option value="8">
+        Agents 8
+      </option>
+
+      <option value="9">
+        Agents 9
+      </option>
+
+      <option value="10">
+        Agents 10
+      </option>
+
+    </select>
+
+    <div id="agentsContainer"></div>
+
+    <br>
+
+    <button
+      class="success"
+      onclick="createCargo()">
+
+      🚚 Sajili Mzigo
+
+    </button>
+
+    <div id="registerResult"></div>
+
+  </div>
+
+</section>
+
+
+<!-- LOGIN -->
+
+<section id="login" class="page">
+
+  <div class="card">
+
+    <h2>
+      🔐 Ingia
+    </h2>
+
+    <label>
+      Tracking ID
+    </label>
+
+    <input
+      id="loginTracking"
+      placeholder="Mfano: DAG-561407"
+    >
+
+    <label>
+      PIN
+    </label>
+
+    <input
+      id="loginPin"
+      type="password"
+      maxlength="20"
+      placeholder="Weka PIN"
+    >
+
+    <br><br>
+
+    <button onclick="login()">
+      🔑 Ingia
+    </button>
+
+    <div id="loginResult"></div>
+
+  </div>
+
+</section>
+
+
+<!-- TRACKING -->
+
+<section id="tracking" class="page">
+
+  <div class="card">
+
+    <h2>
+      🔎 Fuatilia Mzigo
+    </h2>
+
+    <label>
+      Tracking ID
+    </label>
+
+    <input
+      id="trackingInput"
+      placeholder="Weka Tracking ID"
+    >
+
+    <br><br>
+
+    <button onclick="trackCargo()">
+      🔍 Tafuta
+    </button>
+
+  </div>
+
+  <div id="trackingResult"></div>
+
+</section>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="page">
+
+  <div id="dashboardContent"></div>
+
+</section>
+
 </div>
 
-  </section>  <!-- REGISTER -->  <section id="register" class="page"><div class="card">
-
-  <h2>
-    📦 Sajili Mzigo
-  </h2>
-
-
-  <label>
-    Jina la Mzigo
-  </label>
-
-  <input
-    id="cargoName"
-    placeholder="Mfano: Dagaa wa kilo 50"
-  >
-
-
-  <label>
-    Mahali pa Kuanzia
-  </label>
-
-  <input
-    id="origin"
-    placeholder="Mfano: Pemba"
-  >
-
-
-  <label>
-    Mahali pa Kwenda
-  </label>
-
-  <input
-    id="destination"
-    placeholder="Mfano: Zanzibar"
-  >
-
-
-  <label>
-    Jina la Boss
-  </label>
-
-  <input
-    id="bossName"
-    placeholder="Jina la Boss"
-  >
-
-
-  <label>
-    Idadi ya Agents
-  </label>
-
-  <select
-    id="agentCount"
-    onchange="buildAgents()">
-
-    <option value="1">
-      Agent 1
-    </option>
-
-    <option value="2">
-      Agents 2
-    </option>
-
-    <option value="3">
-      Agents 3
-    </option>
-
-    <option value="4">
-      Agents 4
-    </option>
-
-    <option value="5">
-      Agents 5
-    </option>
-
-    <option value="6">
-      Agents 6
-    </option>
-
-    <option value="7">
-      Agents 7
-    </option>
-
-    <option value="8">
-      Agents 8
-    </option>
-
-    <option value="9">
-      Agents 9
-    </option>
-
-    <option value="10">
-      Agents 10
-    </option>
-
-  </select>
-
-
-  <div id="agentsContainer"></div>
-
-
-  <br>
-
-  <button
-    class="success"
-    onclick="createCargo()">
-
-    🚚 Sajili Mzigo
-
-  </button>
-
-
-  <div id="registerResult"></div>
-
-</div>
-
-  </section>  <!-- LOGIN -->  <section id="login" class="page"><div class="card">
-
-  <h2>
-    🔐 Ingia
-  </h2>
-
-
-  <label>
-    Tracking ID
-  </label>
-
-  <input
-    id="loginTracking"
-    placeholder="Mfano: DAG-561407"
-  >
-
-
-  <label>
-    PIN
-  </label>
-
-  <input
-    id="loginPin"
-    type="password"
-    maxlength="20"
-    placeholder="Weka PIN"
-  >
-
-
-  <br><br>
-
-  <button onclick="login()">
-    🔑 Ingia
-  </button>
-
-
-  <div id="loginResult"></div>
-
-</div>
-
-  </section>  <!-- TRACKING -->  <section id="tracking" class="page"><div class="card">
-
-  <h2>
-    🔎 Fuatilia Mzigo
-  </h2>
-
-
-  <label>
-    Tracking ID
-  </label>
-
-  <input
-    id="trackingInput"
-    placeholder="Weka Tracking ID"
-  >
-
-
-  <br><br>
-
-  <button onclick="trackCargo()">
-    🔍 Tafuta
-  </button>
-
-</div>
-
-
-<div id="trackingResult"></div>
-
-  </section>  <!-- DASHBOARD -->  <section id="dashboard" class="page"><div id="dashboardContent"></div>
-
-  </section></div><footer>
+<footer>
   © 2026 MAKYAMA DAGAA — Cargo Transport & Tracking System
-</footer><!-- LEAFLET --><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><!-- FIREBASE --><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script><script>
+</footer>
+
+
+<!-- LEAFLET -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
+
+<script>
 
 /* =========================================================
    FIREBASE CONFIG
@@ -666,21 +733,13 @@ const firebaseConfig = {
 
 };
 
-
 firebase.initializeApp(firebaseConfig);
-
 
 const auth =
   firebase.auth();
 
-
 const database =
   firebase.database();
-
-
-console.log(
-  "✅ Firebase imeunganishwa"
-);
 
 
 /* =========================================================
@@ -695,23 +754,17 @@ const SERVER =
    GLOBAL VARIABLES
 ========================================================= */
 
-let currentUser =
-  null;
+let currentUser = null;
 
-let currentSession =
-  null;
+let currentSession = null;
 
-let publicMap =
-  null;
+let publicMap = null;
 
-let bossMap =
-  null;
+let bossMap = null;
 
-let publicMarkers =
-  [];
+let publicMarkers = [];
 
-let bossMarkers =
-  [];
+let bossMarkers = [];
 
 
 /* =========================================================
@@ -728,17 +781,14 @@ function showPage(page) {
 
     });
 
-
   const target =
     document.getElementById(page);
-
 
   if (target) {
 
     target.classList.add("active");
 
   }
-
 
   window.scrollTo({
     top: 0,
@@ -761,15 +811,12 @@ function buildAgents() {
       ).value
     );
 
-
   const container =
     document.getElementById(
       "agentsContainer"
     );
 
-
   container.innerHTML = "";
-
 
   for (
     let i = 1;
@@ -782,10 +829,7 @@ function buildAgents() {
         "div"
       );
 
-
-    div.className =
-      "card";
-
+    div.className = "card";
 
     div.innerHTML = `
 
@@ -804,7 +848,6 @@ function buildAgents() {
       >
 
     `;
-
 
     container.appendChild(div);
 
@@ -825,13 +868,11 @@ async function createCargo() {
       .value
       .trim();
 
-
   const origin =
     document
       .getElementById("origin")
       .value
       .trim();
-
 
   const destination =
     document
@@ -839,13 +880,11 @@ async function createCargo() {
       .value
       .trim();
 
-
   const bossName =
     document
       .getElementById("bossName")
       .value
       .trim();
-
 
   const names =
     [
@@ -854,10 +893,9 @@ async function createCargo() {
       )
     ];
 
-
   const agents =
     names.map(
-      (input, index) => ({
+      (input,index) => ({
 
         name:
           input.value.trim() ||
@@ -866,12 +904,10 @@ async function createCargo() {
       })
     );
 
-
   const result =
     document.getElementById(
       "registerResult"
     );
-
 
   if (
     !cargoName ||
@@ -894,7 +930,6 @@ async function createCargo() {
 
   }
 
-
   try {
 
     result.innerHTML = `
@@ -907,7 +942,6 @@ async function createCargo() {
 
     `;
 
-
     const response =
       await fetch(
         SERVER +
@@ -917,10 +951,8 @@ async function createCargo() {
           method: "POST",
 
           headers: {
-
             "Content-Type":
               "application/json"
-
           },
 
           body: JSON.stringify({
@@ -936,16 +968,8 @@ async function createCargo() {
         }
       );
 
-
     const data =
       await response.json();
-
-
-    console.log(
-      "CREATE CARGO RESPONSE:",
-      data
-    );
-
 
     if (
       !response.ok ||
@@ -959,34 +983,18 @@ async function createCargo() {
 
     }
 
-
-    /* =====================================================
-       BOSS PIN
-       SERVER RETURNS:
-       data.boss.pin
-    ===================================================== */
-
     const bossPin =
       data.boss &&
       data.boss.pin
         ? String(data.boss.pin)
         : "";
 
-
-    /* =====================================================
-       AGENTS
-       SERVER RETURNS:
-       data.agents
-    ===================================================== */
-
     const returnedAgents =
       Array.isArray(data.agents)
         ? data.agents
         : [];
 
-
     let agentPinsHTML = "";
-
 
     if (
       returnedAgents.length > 0
@@ -997,20 +1005,17 @@ async function createCargo() {
           .map(agent => {
 
             const stage =
-              agent.stage ||
-              "";
+              agent.stage || "";
 
             const name =
               agent.name ||
               `Agent ${stage}`;
-
 
             const pin =
               agent.pin !== undefined &&
               agent.pin !== null
                 ? String(agent.pin)
                 : "";
-
 
             return `
 
@@ -1030,10 +1035,12 @@ async function createCargo() {
                 </p>
 
                 <div class="pin">
+
                   ${
                     escapeHtml(pin) ||
                     "PIN haipo"
                   }
+
                 </div>
 
                 ${
@@ -1061,7 +1068,6 @@ async function createCargo() {
 
     }
 
-
     if (
       !agentPinsHTML
     ) {
@@ -1078,11 +1084,6 @@ async function createCargo() {
 
     }
 
-
-    /* =====================================================
-       DISPLAY
-    ===================================================== */
-
     result.innerHTML = `
 
       <div class="success-box">
@@ -1090,9 +1091,6 @@ async function createCargo() {
         <h3>
           ✅ Mzigo Umesajiliwa
         </h3>
-
-
-        <!-- TRACKING ID -->
 
         <div class="credential-box">
 
@@ -1108,7 +1106,6 @@ async function createCargo() {
 
           </div>
 
-
           <button
             class="copy-btn"
             onclick="copyText('${escapeHtml(
@@ -1121,15 +1118,11 @@ async function createCargo() {
 
         </div>
 
-
-        <!-- BOSS PIN -->
-
         <div class="credential-box">
 
           <p class="pin-title">
             🔐 Boss PIN
           </p>
-
 
           <div class="pin">
 
@@ -1139,7 +1132,6 @@ async function createCargo() {
             }
 
           </div>
-
 
           ${
             bossPin
@@ -1161,15 +1153,11 @@ async function createCargo() {
 
         </div>
 
-
-        <!-- AGENTS -->
-
         <br>
 
         <h3>
           👥 PIN za Agents
         </h3>
-
 
         <div class="grid">
 
@@ -1177,12 +1165,10 @@ async function createCargo() {
 
         </div>
 
-
         <div class="warning-box">
 
           ⚠️ Hifadhi Tracking ID, Boss PIN
           na PIN za Agents mahali salama.
-          PIN zinaonyeshwa wakati wa usajili.
 
         </div>
 
@@ -1190,31 +1176,12 @@ async function createCargo() {
 
     `;
 
-
-    console.log(
-      "✅ Tracking ID:",
-      data.trackingId
-    );
-
-
-    console.log(
-      "🔐 Boss PIN:",
-      bossPin
-    );
-
-
-    console.log(
-      "👥 Agents:",
-      returnedAgents
-    );
-
   } catch (error) {
 
     console.error(
       "CREATE CARGO ERROR:",
       error
     );
-
 
     result.innerHTML = `
 
@@ -1249,7 +1216,6 @@ async function copyText(text) {
 
   }
 
-
   try {
 
     await navigator
@@ -1257,7 +1223,6 @@ async function copyText(text) {
       .writeText(
         String(text)
       );
-
 
     alert(
       "✅ Ime-copywa."
@@ -1270,26 +1235,20 @@ async function copyText(text) {
         "textarea"
       );
 
-
     textarea.value =
       String(text);
-
 
     document.body.appendChild(
       textarea
     );
 
-
     textarea.select();
-
 
     document.execCommand(
       "copy"
     );
 
-
     textarea.remove();
-
 
     alert(
       "✅ Ime-copywa."
@@ -1315,7 +1274,6 @@ async function login() {
       .trim()
       .toUpperCase();
 
-
   const pin =
     document
       .getElementById(
@@ -1324,12 +1282,10 @@ async function login() {
       .value
       .trim();
 
-
   const result =
     document.getElementById(
       "loginResult"
     );
-
 
   if (
     !trackingId ||
@@ -1350,7 +1306,6 @@ async function login() {
 
   }
 
-
   try {
 
     result.innerHTML = `
@@ -1362,7 +1317,6 @@ async function login() {
       </div>
 
     `;
-
 
     const response =
       await fetch(
@@ -1389,16 +1343,8 @@ async function login() {
         }
       );
 
-
     const data =
       await response.json();
-
-
-    console.log(
-      "LOGIN RESPONSE:",
-      data
-    );
-
 
     if (
       !response.ok ||
@@ -1412,19 +1358,15 @@ async function login() {
 
     }
 
-
     currentSession =
       data;
-
 
     await auth.signInWithCustomToken(
       data.token
     );
 
-
     currentUser =
       auth.currentUser;
-
 
     document
       .getElementById(
@@ -1433,7 +1375,6 @@ async function login() {
       .classList
       .remove("hidden");
 
-
     result.innerHTML = `
 
       <div class="success-box">
@@ -1441,28 +1382,26 @@ async function login() {
         ✅ Umeingia kama
 
         <strong>
+
           ${
             data.role === "boss"
               ? "BOSS"
               : "AGENT " + data.stage
           }
+
         </strong>
 
       </div>
 
     `;
 
-
     setTimeout(() => {
 
-      showPage(
-        "dashboard"
-      );
-
+      showPage("dashboard");
 
       loadDashboard();
 
-    }, 500);
+    },500);
 
   } catch (error) {
 
@@ -1470,7 +1409,6 @@ async function login() {
       "LOGIN ERROR:",
       error
     );
-
 
     result.innerHTML = `
 
@@ -1503,7 +1441,6 @@ async function getToken() {
 
   }
 
-
   return await auth
     .currentUser
     .getIdToken(true);
@@ -1527,13 +1464,9 @@ async function logout() {
 
   }
 
+  currentUser = null;
 
-  currentUser =
-    null;
-
-  currentSession =
-    null;
-
+  currentSession = null;
 
   document
     .getElementById(
@@ -1542,16 +1475,14 @@ async function logout() {
     .classList
     .add("hidden");
 
-
-  showPage(
-    "home"
-  );
+  showPage("home");
 
 }
 
 
 /* =========================================================
-   TRACK CARGO
+   PUBLIC TRACKING
+   SAFE VERSION
 ========================================================= */
 
 async function trackCargo() {
@@ -1565,12 +1496,10 @@ async function trackCargo() {
       .trim()
       .toUpperCase();
 
-
   const result =
     document.getElementById(
       "trackingResult"
     );
-
 
   if (!trackingId) {
 
@@ -1588,7 +1517,6 @@ async function trackCargo() {
 
   }
 
-
   try {
 
     result.innerHTML = `
@@ -1601,7 +1529,6 @@ async function trackCargo() {
 
     `;
 
-
     const response =
       await fetch(
         SERVER +
@@ -1611,14 +1538,13 @@ async function trackCargo() {
         )
       );
 
-
     const data =
       await response.json();
 
-
     if (
       !response.ok ||
-      !data.ok
+      !data.ok ||
+      !data.cargo
     ) {
 
       throw new Error(
@@ -1628,15 +1554,16 @@ async function trackCargo() {
 
     }
 
-
     renderTracking(
       data.cargo
     );
 
   } catch (error) {
 
-    console.error(error);
-
+    console.error(
+      "PUBLIC TRACKING ERROR:",
+      error
+    );
 
     result.innerHTML = `
 
@@ -1656,98 +1583,23 @@ async function trackCargo() {
 
 
 /* =========================================================
-   NORMALIZE STAGES
+   PUBLIC TRACKING DISPLAY
 ========================================================= */
 
-function normalizeStages(
-  stages
-) {
-
-  if (
-    !stages
-  ) {
-
-    return [];
-
-  }
-
-
-  if (
-    Array.isArray(stages)
-  ) {
-
-    return stages;
-
-  }
-
-
-  return Object
-    .values(stages)
-    .sort(
-      (a, b) =>
-        Number(a.stage) -
-        Number(b.stage)
-    );
-
-}
-
-
-/* =========================================================
-   NORMALIZE HISTORY
-========================================================= */
-
-function normalizeHistory(
-  history
-) {
-
-  if (
-    !history
-  ) {
-
-    return [];
-
-  }
-
-
-  if (
-    Array.isArray(history)
-  ) {
-
-    return history;
-
-  }
-
-
-  return Object
-    .values(history);
-
-}
-
-
-/* =========================================================
-   RENDER TRACKING
-========================================================= */
-
-function renderTracking(
-  cargo
-) {
+function renderTracking(cargo) {
 
   const result =
     document.getElementById(
       "trackingResult"
     );
 
-
   result.innerHTML = `
 
     <div class="card">
 
       <h2>
-        📦 ${escapeHtml(
-          cargo.cargoName
-        )}
+        📦 Taarifa za Mzigo
       </h2>
-
 
       <p class="info">
 
@@ -1760,13 +1612,26 @@ function renderTracking(
         <span class="tracking-id">
 
           ${escapeHtml(
-            cargo.trackingId
+            cargo.trackingId || ""
           )}
 
         </span>
 
       </p>
 
+      <p class="info">
+
+        <strong>
+          Jina la Mzigo:
+        </strong>
+
+        <br>
+
+        ${escapeHtml(
+          cargo.cargoName || ""
+        )}
+
+      </p>
 
       <p class="info">
 
@@ -1774,12 +1639,13 @@ function renderTracking(
           Kuanzia:
         </strong>
 
+        <br>
+
         ${escapeHtml(
-          cargo.origin
+          cargo.origin || ""
         )}
 
       </p>
-
 
       <p class="info">
 
@@ -1787,268 +1653,152 @@ function renderTracking(
           Kwenda:
         </strong>
 
+        <br>
+
         ${escapeHtml(
-          cargo.destination
+          cargo.destination || ""
         )}
 
       </p>
-
 
       <p class="info">
-
-        <strong>
-          Boss:
-        </strong>
-
-        ${escapeHtml(
-          cargo.bossName
-        )}
-
-      </p>
-
-
-      <p>
 
         <strong>
           Status:
         </strong>
 
+        <br>
+
         <span class="status">
 
           ${escapeHtml(
-            cargo.status ||
-            "UNKNOWN"
+            formatPublicStatus(
+              cargo.status
+            )
           )}
 
         </span>
 
       </p>
 
-    </div>
+      <div class="public-safe">
 
+        🔒 <strong>Taarifa Zilizolindwa</strong>
 
-    <div class="card">
+        <p class="small">
 
-      <h2>
-        🗺️ Ramani ya Mzigo
-      </h2>
+          Taarifa za Agents, Boss, GPS,
+          maeneo ya vituo na historia ya
+          safari zinaonekana kwa watumiaji
+          wenye ruhusa pekee.
 
-      <div id="map"></div>
+        </p>
 
-    </div>
-
-
-    <div class="card">
-
-      <h2>
-        🕐 Historia ya Mzigo
-      </h2>
-
-      <div id="trackingHistory"></div>
+      </div>
 
     </div>
 
   `;
 
-
-  setTimeout(() => {
-
-    renderPublicMap(
-      cargo
-    );
+}
 
 
-    renderHistory(
-      cargo,
-      document.getElementById(
-        "trackingHistory"
-      )
-    );
+/* =========================================================
+   PUBLIC STATUS
+========================================================= */
 
-  }, 100);
+function formatPublicStatus(status) {
+
+  const statuses = {
+
+    WAITING_FOR_AGENT:
+      "⏳ Inasubiri Agent",
+
+    WAITING_FOR_RECEIVE:
+      "📦 Inasubiri kupokelewa",
+
+    WAITING_FOR_RELEASE:
+      "📦 Inasubiri kutolewa",
+
+    WAITING_FOR_RELEASE_AFTER_RECEIVE:
+      "📦 Imechukuliwa — inasubiri kutolewa",
+
+    IN_TRANSIT:
+      "🚚 Iko njiani",
+
+    WAITING_FOR_BOSS:
+      "📍 Imefika kwa Boss",
+
+    DELIVERED:
+      "✅ Imepokelewa na Boss",
+
+    COMPLETED:
+      "✅ Imekamilika"
+
+  };
+
+  return (
+    statuses[status] ||
+    status ||
+    "Haijulikani"
+  );
 
 }
 
 
 /* =========================================================
-   PUBLIC MAP
+   NORMALIZE STAGES
 ========================================================= */
 
-function renderPublicMap(
-  cargo
-) {
+function normalizeStages(stages) {
 
-  const mapElement =
-    document.getElementById(
-      "map"
-    );
+  if (!stages) {
 
-
-  if (!mapElement) return;
-
-
-  if (publicMap) {
-
-    publicMap.remove();
-
-    publicMap =
-      null;
+    return [];
 
   }
-
-
-  publicMap =
-    L.map("map")
-      .setView(
-        [-6.1659, 39.2026],
-        7
-      );
-
-
-  L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-
-      attribution:
-        "&copy; OpenStreetMap contributors"
-
-    }
-  ).addTo(
-    publicMap
-  );
-
-
-  publicMarkers =
-    [];
-
-
-  const events =
-    collectEvents(
-      cargo
-    );
-
-
-  const points =
-    [];
-
-
-  events.forEach(
-    event => {
-
-      if (
-        event.location &&
-        Number.isFinite(
-          Number(
-            event.location.lat
-          )
-        ) &&
-        Number.isFinite(
-          Number(
-            event.location.lng
-          )
-        )
-      ) {
-
-        const lat =
-          Number(
-            event.location.lat
-          );
-
-
-        const lng =
-          Number(
-            event.location.lng
-          );
-
-
-        const marker =
-          L.marker([
-            lat,
-            lng
-          ])
-          .addTo(
-            publicMap
-          );
-
-
-        marker.bindPopup(`
-
-          <strong>
-
-            ${escapeHtml(
-              event.title ||
-              "Event"
-            )}
-
-          </strong>
-
-          <br>
-
-          ${escapeHtml(
-            event.name ||
-            ""
-          )}
-
-          <br>
-
-          🕐 ${formatTime(
-            event.timestamp
-          )}
-
-          <br>
-
-          📍 ${escapeHtml(
-            event.location.address ||
-            ""
-          )}
-
-        `);
-
-
-        publicMarkers.push(
-          marker
-        );
-
-
-        points.push([
-          lat,
-          lng
-        ]);
-
-      }
-
-    }
-  );
-
 
   if (
-    points.length > 0
+    Array.isArray(stages)
   ) {
 
-    publicMap.fitBounds(
-      points,
-      {
-        padding: [
-          30,
-          30
-        ]
-      }
-    );
-
-
-    if (
-      points.length > 1
-    ) {
-
-      L.polyline(
-        points
-      ).addTo(
-        publicMap
-      );
-
-    }
+    return stages;
 
   }
+
+  return Object
+    .values(stages)
+    .sort(
+      (a,b) =>
+        Number(a.stage) -
+        Number(b.stage)
+    );
+
+}
+
+
+/* =========================================================
+   NORMALIZE HISTORY
+========================================================= */
+
+function normalizeHistory(history) {
+
+  if (!history) {
+
+    return [];
+
+  }
+
+  if (
+    Array.isArray(history)
+  ) {
+
+    return history;
+
+  }
+
+  return Object
+    .values(history);
 
 }
 
@@ -2061,14 +1811,11 @@ async function loadDashboard() {
 
   if (!currentSession) {
 
-    showPage(
-      "login"
-    );
+    showPage("login");
 
     return;
 
   }
-
 
   try {
 
@@ -2081,10 +1828,8 @@ async function loadDashboard() {
         )
       );
 
-
     const data =
       await response.json();
-
 
     if (
       !response.ok ||
@@ -2098,10 +1843,8 @@ async function loadDashboard() {
 
     }
 
-
     const cargo =
       data.cargo;
-
 
     if (
       currentSession.role === "boss"
@@ -2134,7 +1877,6 @@ async function loadDashboard() {
       error
     );
 
-
     document
       .getElementById(
         "dashboardContent"
@@ -2164,21 +1906,17 @@ async function loadDashboard() {
    AGENT DASHBOARD
 ========================================================= */
 
-function renderAgentDashboard(
-  cargo
-) {
+function renderAgentDashboard(cargo) {
 
   const stageNumber =
     Number(
       currentSession.stage
     );
 
-
   const stages =
     normalizeStages(
       cargo.stages
     );
-
 
   const agent =
     stages.find(
@@ -2186,7 +1924,6 @@ function renderAgentDashboard(
         Number(s.stage) ===
         stageNumber
     );
-
 
   if (!agent) {
 
@@ -2212,14 +1949,7 @@ function renderAgentDashboard(
 
   }
 
-
-  let actionButton =
-    "";
-
-
-  /* =====================================================
-     AGENT 1
-  ===================================================== */
+  let actionButton = "";
 
   if (
     stageNumber === 1
@@ -2256,14 +1986,7 @@ function renderAgentDashboard(
 
     }
 
-  }
-
-
-  /* =====================================================
-     AGENT 2+
-  ===================================================== */
-
-  else {
+  } else {
 
     if (
       agent.status ===
@@ -2315,7 +2038,6 @@ function renderAgentDashboard(
 
   }
 
-
   document
     .getElementById(
       "dashboardContent"
@@ -2332,7 +2054,6 @@ function renderAgentDashboard(
 
         </h2>
 
-
         <p class="info">
 
           <strong>
@@ -2340,12 +2061,10 @@ function renderAgentDashboard(
           </strong>
 
           ${escapeHtml(
-            agent.name ||
-            ""
+            agent.name || ""
           )}
 
         </p>
-
 
         <p class="info">
 
@@ -2358,7 +2077,6 @@ function renderAgentDashboard(
           )}
 
         </p>
-
 
         <p class="info">
 
@@ -2378,7 +2096,6 @@ function renderAgentDashboard(
 
         </p>
 
-
         <p>
 
           <strong>
@@ -2388,14 +2105,12 @@ function renderAgentDashboard(
           <span class="status">
 
             ${escapeHtml(
-              agent.status ||
-              ""
+              agent.status || ""
             )}
 
           </span>
 
         </p>
-
 
         <br>
 
@@ -2403,13 +2118,11 @@ function renderAgentDashboard(
 
       </div>
 
-
       <div class="card">
 
         <h2>
           📍 Location
         </h2>
-
 
         <p class="small">
 
@@ -2417,7 +2130,6 @@ function renderAgentDashboard(
           wakati wa kupokea au kutoa mzigo.
 
         </p>
-
 
         <div
           id="agentLocationStatus"
@@ -2429,13 +2141,11 @@ function renderAgentDashboard(
 
       </div>
 
-
       <div class="card">
 
         <h2>
           🕐 Historia
         </h2>
-
 
         <div id="agentHistory"></div>
 
@@ -2443,6 +2153,11 @@ function renderAgentDashboard(
 
     `;
 
+  /*
+    Kwa sasa tunaacha history kama ilivyokuwa
+    kwa sababu server ndiyo itatakiwa kuchuja
+    taarifa kulingana na Agent stage.
+  */
 
   renderHistory(
     cargo,
@@ -2450,7 +2165,6 @@ function renderAgentDashboard(
       "agentHistory"
     )
   );
-
 
   if (
     stageNumber === 1
@@ -2469,15 +2183,12 @@ function renderAgentDashboard(
    AGENT ACTION
 ========================================================= */
 
-async function agentAction(
-  action
-) {
+async function agentAction(action) {
 
   const statusBox =
     document.getElementById(
       "agentLocationStatus"
     );
-
 
   if (statusBox) {
 
@@ -2493,12 +2204,10 @@ async function agentAction(
 
   }
 
-
   try {
 
     const location =
       await getLocation();
-
 
     if (statusBox) {
 
@@ -2517,10 +2226,8 @@ async function agentAction(
 
     }
 
-
     const token =
       await getToken();
-
 
     const response =
       await fetch(
@@ -2555,10 +2262,8 @@ async function agentAction(
         }
       );
 
-
     const data =
       await response.json();
-
 
     if (
       !response.ok ||
@@ -2572,13 +2277,11 @@ async function agentAction(
 
     }
 
-
     alert(
       "✅ " +
       action +
       " imefanikiwa."
     );
-
 
     await loadDashboard();
 
@@ -2588,7 +2291,6 @@ async function agentAction(
       "AGENT ACTION ERROR:",
       error
     );
-
 
     if (statusBox) {
 
@@ -2625,7 +2327,7 @@ async function agentAction(
 function getLocation() {
 
   return new Promise(
-    (resolve, reject) => {
+    (resolve,reject) => {
 
       if (
         !navigator.geolocation
@@ -2640,7 +2342,6 @@ function getLocation() {
         return;
 
       }
-
 
       navigator.geolocation.getCurrentPosition(
 
@@ -2658,12 +2359,10 @@ function getLocation() {
 
         },
 
-
         error => {
 
           let message =
             "Imeshindikana kupata location.";
-
 
           if (
             error.code === 1
@@ -2674,7 +2373,6 @@ function getLocation() {
 
           }
 
-
           if (
             error.code === 2
           ) {
@@ -2683,7 +2381,6 @@ function getLocation() {
               "Location haipatikani. Washa GPS.";
 
           }
-
 
           if (
             error.code === 3
@@ -2694,7 +2391,6 @@ function getLocation() {
 
           }
 
-
           reject(
             new Error(
               message
@@ -2702,7 +2398,6 @@ function getLocation() {
           );
 
         },
-
 
         {
 
@@ -2729,19 +2424,14 @@ function getLocation() {
    BOSS DASHBOARD
 ========================================================= */
 
-function renderBossDashboard(
-  cargo
-) {
+function renderBossDashboard(cargo) {
 
   const stages =
     normalizeStages(
       cargo.stages
     );
 
-
-  let agentsHTML =
-    "";
-
+  let agentsHTML = "";
 
   stages.forEach(
     stage => {
@@ -2759,30 +2449,25 @@ function renderBossDashboard(
 
           </h4>
 
-
           <p>
 
             ${escapeHtml(
-              stage.name ||
-              ""
+              stage.name || ""
             )}
 
           </p>
-
 
           <p>
 
             <span class="status">
 
               ${escapeHtml(
-                stage.status ||
-                ""
+                stage.status || ""
               )}
 
             </span>
 
           </p>
-
 
           ${
             Number(stage.stage) >= 2
@@ -2811,10 +2496,7 @@ function renderBossDashboard(
     }
   );
 
-
-  let bossButton =
-    "";
-
+  let bossButton = "";
 
   if (
     cargo.status ===
@@ -2826,11 +2508,8 @@ function renderBossDashboard(
       <div class="card">
 
         <h2>
-
           📦 Mzigo Umefika kwa Boss
-
         </h2>
-
 
         <p class="info">
 
@@ -2839,9 +2518,7 @@ function renderBossDashboard(
 
         </p>
 
-
         <br>
-
 
         <button
           class="success"
@@ -2850,7 +2527,6 @@ function renderBossDashboard(
           📥 NIMEPOKEA MZIGO
 
         </button>
-
 
         <div
           id="bossLocationStatus">
@@ -2875,7 +2551,6 @@ function renderBossDashboard(
 
         </h3>
 
-
         <p>
 
           Usafirishaji umekamilika.
@@ -2887,7 +2562,6 @@ function renderBossDashboard(
     `;
 
   }
-
 
   document
     .getElementById(
@@ -2901,7 +2575,6 @@ function renderBossDashboard(
           👑 Boss Dashboard
         </h2>
 
-
         <p class="info">
 
           <strong>
@@ -2914,7 +2587,6 @@ function renderBossDashboard(
 
         </p>
 
-
         <p class="info">
 
           <strong>
@@ -2926,7 +2598,6 @@ function renderBossDashboard(
           )}
 
         </p>
-
 
         <p class="info">
 
@@ -2946,7 +2617,6 @@ function renderBossDashboard(
 
         </p>
 
-
         <p class="info">
 
           <strong>
@@ -2959,7 +2629,6 @@ function renderBossDashboard(
 
         </p>
 
-
         <p class="info">
 
           <strong>
@@ -2971,7 +2640,6 @@ function renderBossDashboard(
           )}
 
         </p>
-
 
         <p>
 
@@ -2991,16 +2659,13 @@ function renderBossDashboard(
 
       </div>
 
-
       ${bossButton}
-
 
       <div class="card">
 
         <h2>
           👥 Agents
         </h2>
-
 
         <div class="grid">
 
@@ -3017,18 +2682,15 @@ function renderBossDashboard(
 
       </div>
 
-
       <div class="card">
 
         <h2>
           🗺️ Ramani
         </h2>
 
-
         <div id="bossMap"></div>
 
       </div>
-
 
       <div class="card">
 
@@ -3036,20 +2698,17 @@ function renderBossDashboard(
           🕐 Historia ya Mzigo
         </h2>
 
-
         <div id="bossHistory"></div>
 
       </div>
 
     `;
 
-
   setTimeout(() => {
 
     renderBossMap(
       cargo
     );
-
 
     renderHistory(
       cargo,
@@ -3058,7 +2717,7 @@ function renderBossDashboard(
       )
     );
 
-  }, 100);
+  },100);
 
 }
 
@@ -3067,13 +2726,9 @@ function renderBossDashboard(
    RESET AGENT PIN
 ========================================================= */
 
-async function resetAgentPin(
-  stage
-) {
+async function resetAgentPin(stage) {
 
-  if (
-    !currentSession
-  ) {
+  if (!currentSession) {
 
     alert(
       "Hujaingia."
@@ -3082,7 +2737,6 @@ async function resetAgentPin(
     return;
 
   }
-
 
   if (
     Number(stage) === 1
@@ -3096,7 +2750,6 @@ async function resetAgentPin(
 
   }
 
-
   const confirmReset =
     confirm(
       "Una uhakika unataka kutengeneza PIN mpya kwa Agent " +
@@ -3104,17 +2757,12 @@ async function resetAgentPin(
       "?"
     );
 
-
-  if (
-    !confirmReset
-  ) return;
-
+  if (!confirmReset) return;
 
   try {
 
     const token =
       await getToken();
-
 
     const response =
       await fetch(
@@ -3147,10 +2795,8 @@ async function resetAgentPin(
         }
       );
 
-
     const data =
       await response.json();
-
 
     if (
       !response.ok ||
@@ -3164,19 +2810,15 @@ async function resetAgentPin(
 
     }
 
-
     alert(
 
       "🔑 PIN mpya ya Agent " +
       stage +
       " ni:\n\n" +
-
       data.pin +
-
       "\n\nHifadhi PIN hii."
 
     );
-
 
     await loadDashboard();
 
@@ -3186,7 +2828,6 @@ async function resetAgentPin(
       "RESET PIN ERROR:",
       error
     );
-
 
     alert(
       "❌ " +
@@ -3209,7 +2850,6 @@ async function bossReceive() {
       "bossLocationStatus"
     );
 
-
   if (statusBox) {
 
     statusBox.innerHTML = `
@@ -3224,16 +2864,13 @@ async function bossReceive() {
 
   }
 
-
   try {
 
     const location =
       await getLocation();
 
-
     const token =
       await getToken();
-
 
     const response =
       await fetch(
@@ -3266,10 +2903,8 @@ async function bossReceive() {
         }
       );
 
-
     const data =
       await response.json();
-
 
     if (
       !response.ok ||
@@ -3283,11 +2918,9 @@ async function bossReceive() {
 
     }
 
-
     alert(
       "✅ Mzigo umepokelewa na Boss."
     );
-
 
     await loadDashboard();
 
@@ -3297,7 +2930,6 @@ async function bossReceive() {
       "BOSS RECEIVE ERROR:",
       error
     );
-
 
     if (statusBox) {
 
@@ -3331,36 +2963,29 @@ async function bossReceive() {
    BOSS MAP
 ========================================================= */
 
-function renderBossMap(
-  cargo
-) {
+function renderBossMap(cargo) {
 
   const mapElement =
     document.getElementById(
       "bossMap"
     );
 
-
   if (!mapElement) return;
-
 
   if (bossMap) {
 
     bossMap.remove();
 
-    bossMap =
-      null;
+    bossMap = null;
 
   }
-
 
   bossMap =
     L.map("bossMap")
       .setView(
-        [-6.1659, 39.2026],
+        [-6.1659,39.2026],
         7
       );
-
 
   L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -3374,20 +2999,14 @@ function renderBossMap(
     bossMap
   );
 
-
-  bossMarkers =
-    [];
-
+  bossMarkers = [];
 
   const events =
     collectEvents(
       cargo
     );
 
-
-  const points =
-    [];
-
+  const points = [];
 
   events.forEach(
     event => {
@@ -3411,12 +3030,10 @@ function renderBossMap(
             event.location.lat
           );
 
-
         const lng =
           Number(
             event.location.lng
           );
-
 
         const marker =
           L.marker([
@@ -3426,7 +3043,6 @@ function renderBossMap(
           .addTo(
             bossMap
           );
-
 
         marker.bindPopup(`
 
@@ -3442,8 +3058,7 @@ function renderBossMap(
           <br>
 
           ${escapeHtml(
-            event.name ||
-            ""
+            event.name || ""
           )}
 
           <br>
@@ -3461,11 +3076,9 @@ function renderBossMap(
 
         `);
 
-
         bossMarkers.push(
           marker
         );
-
 
         points.push([
           lat,
@@ -3477,7 +3090,6 @@ function renderBossMap(
     }
   );
 
-
   if (
     points.length > 0
   ) {
@@ -3485,13 +3097,12 @@ function renderBossMap(
     bossMap.fitBounds(
       points,
       {
-        padding: [
+        padding:[
           30,
           30
         ]
       }
     );
-
 
     if (
       points.length > 1
@@ -3521,12 +3132,10 @@ function renderHistory(
 
   if (!element) return;
 
-
   const events =
     collectEvents(
       cargo
     );
-
 
   if (
     !events.length
@@ -3546,9 +3155,8 @@ function renderHistory(
 
   }
 
-
   events.sort(
-    (a, b) =>
+    (a,b) =>
       new Date(
         a.timestamp
       ) -
@@ -3556,7 +3164,6 @@ function renderHistory(
         b.timestamp
       )
   );
-
 
   element.innerHTML =
     events
@@ -3577,8 +3184,7 @@ function renderHistory(
             <br>
 
             👤 ${escapeHtml(
-              event.name ||
-              ""
+              event.name || ""
             )}
 
             <br>
@@ -3619,19 +3225,14 @@ function renderHistory(
    COLLECT EVENTS
 ========================================================= */
 
-function collectEvents(
-  cargo
-) {
+function collectEvents(cargo) {
 
-  const events =
-    [];
-
+  const events = [];
 
   const stages =
     normalizeStages(
       cargo.stages
     );
-
 
   stages.forEach(
     stage => {
@@ -3640,7 +3241,6 @@ function collectEvents(
         normalizeHistory(
           stage.history
         );
-
 
       history.forEach(
         item => {
@@ -3676,12 +3276,10 @@ function collectEvents(
     }
   );
 
-
   const bossHistory =
     normalizeHistory(
       cargo.boss?.history
     );
-
 
   bossHistory.forEach(
     item => {
@@ -3709,7 +3307,6 @@ function collectEvents(
     }
   );
 
-
   return events;
 
 }
@@ -3719,9 +3316,7 @@ function collectEvents(
    FORMAT TIME
 ========================================================= */
 
-function formatTime(
-  timestamp
-) {
+function formatTime(timestamp) {
 
   if (!timestamp) {
 
@@ -3729,12 +3324,10 @@ function formatTime(
 
   }
 
-
   const date =
     new Date(
       timestamp
     );
-
 
   if (
     isNaN(
@@ -3745,7 +3338,6 @@ function formatTime(
     return "Muda haujulikani";
 
   }
-
 
   return date.toLocaleString(
     "sw-TZ",
@@ -3767,31 +3359,25 @@ function formatTime(
    AGENT 1 RESET UI
 ========================================================= */
 
-function renderAgentResetButtons(
-  cargo
-) {
+function renderAgentResetButtons(cargo) {
 
   const dashboard =
     document.getElementById(
       "dashboardContent"
     );
 
-
   if (!dashboard) return;
-
 
   const stages =
     normalizeStages(
       cargo.stages
     );
 
-
   const others =
     stages.filter(
       stage =>
         Number(stage.stage) >= 2
     );
-
 
   if (
     !others.length
@@ -3801,23 +3387,19 @@ function renderAgentResetButtons(
 
   }
 
-
   const box =
     document.createElement(
       "div"
     );
 
-
   box.className =
     "card";
-
 
   box.innerHTML = `
 
     <h2>
       🔑 Usimamizi wa PIN
     </h2>
-
 
     <p class="small">
 
@@ -3826,9 +3408,7 @@ function renderAgentResetButtons(
 
     </p>
 
-
     <br>
-
 
     <div class="grid">
 
@@ -3848,19 +3428,15 @@ function renderAgentResetButtons(
 
                 </h4>
 
-
                 <p>
 
                   ${escapeHtml(
-                    stage.name ||
-                    ""
+                    stage.name || ""
                   )}
 
                 </p>
 
-
                 <br>
-
 
                 <button
                   class="warning"
@@ -3883,7 +3459,6 @@ function renderAgentResetButtons(
 
   `;
 
-
   dashboard.appendChild(
     box
   );
@@ -3895,9 +3470,7 @@ function renderAgentResetButtons(
    ESCAPE HTML
 ========================================================= */
 
-function escapeHtml(
-  value
-) {
+function escapeHtml(value) {
 
   if (
     value === null ||
@@ -3907,7 +3480,6 @@ function escapeHtml(
     return "";
 
   }
-
 
   return String(value)
 
@@ -3949,7 +3521,6 @@ auth.onAuthStateChanged(
     currentUser =
       user;
 
-
     if (user) {
 
       document
@@ -3984,10 +3555,11 @@ auth.onAuthStateChanged(
 
 buildAgents();
 
-
 console.log(
   "🚚 MAKYAMA DAGAA SYSTEM READY"
 );
 
-</script></body>
+</script>
+
+</body>
   </html>
