@@ -12,6 +12,7 @@ app.use(cors());
 app.use(express.json({ limit: "2mb" }));
 app.use(express.static(__dirname));
 
+
 /* =========================================================
    FIREBASE
 ========================================================= */
@@ -551,7 +552,7 @@ async function sendNotificationToRecipient(
 
 
         console.log(
-          `🔔 Notification imetumwa -> ${recipientKey}`
+          `🔔 Notification imetumwa -> ${trackingId}/${recipientKey}`
         );
 
       } catch (error) {
@@ -589,7 +590,6 @@ async function sendNotificationToRecipient(
   } catch (error) {
 
     /*
-      Muhimu:
       Notification ikishindwa,
       action ya mzigo isianguke.
     */
@@ -840,7 +840,7 @@ app.post(
         ok: true,
 
         message:
-          "Notifications zimewashwa."
+          "Device ya notifications imesajiliwa."
       });
 
 
@@ -2212,9 +2212,9 @@ app.post(
 
             "stage_2",
 
-            "🚚 Mzigo umetumwa kwako",
+            "🚚 Mzigo umetolewa",
 
-            `Mzigo ${trackingId} umetolewa na Agent 1. Uko tayari kuupokea.`
+            `Mzigo ${trackingId} umetolewa na Agent 1.`
 
           );
 
@@ -2229,9 +2229,26 @@ app.post(
             );
 
 
-          /* =========================
-             NOTIFY BOSS
-          ========================= */
+          /*
+            Kama kuna Agent 1 tu,
+            Agent 1 ndiye agent wa mwisho.
+
+            Notification inaenda kwa:
+            Agent 1 + Boss
+          */
+
+          await sendNotificationToRecipient(
+
+            trackingId,
+
+            "stage_1",
+
+            "🚚 Mzigo umetolewa",
+
+            `Mzigo ${trackingId} umetolewa na Agent wa mwisho.`
+
+          );
+
 
           await sendNotificationToRecipient(
 
@@ -2239,9 +2256,9 @@ app.post(
 
             "boss",
 
-            "📦 Mzigo unasubiri Boss",
+            "🚚 Mzigo umetolewa",
 
-            `Mzigo ${trackingId} umetolewa na Agent wa mwisho na unasubiri kupokelewa na Boss.`
+            `Mzigo ${trackingId} umetolewa na Agent wa mwisho.`
 
           );
 
@@ -2337,17 +2354,23 @@ app.post(
 
             `stage_${nextStageNumber}`,
 
-            "🚚 Mzigo unakuja kwako",
+            "🚚 Mzigo umetolewa",
 
-            `Mzigo ${trackingId} umetumwa na Agent ${stageNumber}. Uko tayari kuupokea.`
+            `Mzigo ${trackingId} umetolewa na Agent ${stageNumber}.`
 
           );
 
         } else {
 
           /*
-            Agent wa mwisho amemaliza.
-            Boss ndiye anayesubiriwa.
+            HUYU NDIYE AGENT WA MWISHO.
+
+            Notification lazima iende:
+            1. Agent 1
+            2. Boss
+
+            Hakuna "unasubiri kupokelewa"
+            kwenye notification.
           */
 
           await cargoRef
@@ -2360,6 +2383,23 @@ app.post(
 
 
           /* =========================
+             NOTIFY AGENT 1
+          ========================= */
+
+          await sendNotificationToRecipient(
+
+            trackingId,
+
+            "stage_1",
+
+            "🚚 Mzigo umetolewa",
+
+            `Mzigo ${trackingId} umetolewa na Agent wa mwisho.`
+
+          );
+
+
+          /* =========================
              NOTIFY BOSS
           ========================= */
 
@@ -2369,9 +2409,9 @@ app.post(
 
             "boss",
 
-            "📦 Mzigo umefika hatua ya mwisho",
+            "🚚 Mzigo umetolewa",
 
-            `Mzigo ${trackingId} umetolewa na Agent wa mwisho na unasubiri kupokelewa na Boss.`
+            `Mzigo ${trackingId} umetolewa na Agent wa mwisho.`
 
           );
 
@@ -2628,20 +2668,42 @@ app.post(
 
 
       /* =====================================================
-         OPTIONAL BOSS CONFIRMATION
+         NOTIFY ALL AGENTS
       ===================================================== */
 
-      await sendNotificationToRecipient(
+      const stages =
+        cargo.stages ||
+        {};
 
-        trackingId,
 
-        "boss",
+      for (
+        const key of Object.keys(
+          stages
+        )
+      ) {
 
-        "✅ Mzigo umepokelewa",
+        const agent =
+          stages[key];
 
-        `Mzigo ${trackingId} umepokelewa na Boss. Safari imekamilika.`
 
-      );
+        /*
+          Notification inaenda kwa
+          kila Agent wa mzigo huu.
+        */
+
+        await sendNotificationToRecipient(
+
+          trackingId,
+
+          key,
+
+          "✅ Mzigo umepokelewa",
+
+          `Mzigo ${trackingId} umepokelewa na Boss.`
+
+        );
+
+      }
 
 
       return res.json({
@@ -2649,7 +2711,7 @@ app.post(
         ok: true,
 
         message:
-          "Boss amepokea mzigo.",
+          "Boss amepokea mzigo na Agents wote wamejulishwa.",
 
         event
 
@@ -2955,6 +3017,22 @@ app.post(
         .set(
           newUid
         );
+
+
+      /*
+        Kama Agent huyo alikuwa na
+        device token ya zamani,
+        tunaiondoa ili PIN reset
+        isiendelee kutumia device
+        iliyokuwa imeunganishwa
+        na UID ya zamani.
+      */
+
+      await cargoRef
+        .child(
+          `deviceTokens/${stageKey}`
+        )
+        .remove();
 
 
       return res.json({
