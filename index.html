@@ -1,581 +1,331 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sw">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="description"
-    content="MAKYAMA Global - Jobs, Education and News from around the world."
-  >
-
-  <title>MAKYAMA GLOBAL</title>
+  <title>MAKYAMA DAGAA TRACKING</title>
 
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: Arial, sans-serif;
     }
 
     body {
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-      background: #f5f7fb;
+      background: #f4f7fb;
       color: #172033;
     }
 
-    /* =========================
-       HEADER
-    ========================= */
-
     header {
-      background:
-        linear-gradient(
-          135deg,
-          #07111f,
-          #102b4c
-        );
-
+      background: #075985;
       color: white;
-      padding: 18px 5%;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-
-      box-shadow:
-        0 4px 20px rgba(0,0,0,.18);
-    }
-
-    .header-inner {
-      max-width: 1200px;
-      margin: auto;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: 900;
-      letter-spacing: 1px;
-    }
-
-    .logo span {
-      color: #28a9ff;
-    }
-
-    nav {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    nav button {
-      border: 0;
-      background: transparent;
-      color: #dce8f5;
-
-      padding: 10px 15px;
-      border-radius: 9px;
-
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    nav button:hover,
-    nav button.active {
-      background: #168cf0;
-      color: white;
-    }
-
-    /* =========================
-       HERO
-    ========================= */
-
-    .hero {
-      background:
-        linear-gradient(
-          135deg,
-          #0a1830,
-          #123d68
-        );
-
-      color: white;
-      padding: 55px 5%;
-    }
-
-    .hero-inner {
-      max-width: 1200px;
-      margin: auto;
+      padding: 18px;
       text-align: center;
+      box-shadow: 0 2px 8px #0002;
     }
 
-    .hero h1 {
-      font-size: clamp(32px, 6vw, 58px);
-      margin-bottom: 15px;
+    header h1 {
+      font-size: 24px;
     }
 
-    .hero h1 span {
-      color: #36b4ff;
-    }
-
-    .hero p {
-      color: #d4e3f2;
-      max-width: 700px;
-      margin: auto;
-      line-height: 1.7;
-      font-size: 17px;
-    }
-
-    /* =========================
-       SEARCH
-    ========================= */
-
-    .search-area {
-      max-width: 850px;
-      margin: -25px auto 35px;
-      padding: 0 20px;
-      position: relative;
-      z-index: 5;
-    }
-
-    .search-box {
-      background: white;
-      padding: 12px;
-
-      border-radius: 15px;
-
-      display: flex;
-      gap: 10px;
-
-      box-shadow:
-        0 10px 35px rgba(0,0,0,.12);
-    }
-
-    .search-box input {
-      flex: 1;
-
-      border: 0;
-      outline: 0;
-
-      font-size: 16px;
-      padding: 13px;
-    }
-
-    .search-box button {
-      border: 0;
-      background: #168cf0;
-      color: white;
-
-      padding: 0 22px;
-      border-radius: 10px;
-
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    /* =========================
-       MAIN
-    ========================= */
-
-    main {
-      max-width: 1200px;
-      margin: auto;
-      padding: 0 20px 50px;
-    }
-
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .section-header h2 {
-      font-size: 27px;
-    }
-
-    .section-header p {
-      color: #6c7687;
+    header p {
       margin-top: 5px;
+      opacity: .9;
     }
 
-    /* =========================
-       COUNTRY
-    ========================= */
-
-    .country-bar {
-      background: white;
+    .container {
+      max-width: 900px;
+      margin: auto;
       padding: 15px;
-
-      border-radius: 14px;
-      margin-bottom: 25px;
-
-      box-shadow:
-        0 5px 20px rgba(0,0,0,.06);
-
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .country-bar label {
-      font-weight: 700;
-    }
-
-    .country-bar select {
-      border: 1px solid #dbe2ea;
-      background: white;
-
-      padding: 11px 14px;
-      border-radius: 9px;
-
-      min-width: 220px;
-      outline: none;
-    }
-
-    /* =========================
-       CARDS
-    ========================= */
-
-    .cards {
-      display: grid;
-
-      grid-template-columns:
-        repeat(
-          auto-fit,
-          minmax(270px, 1fr)
-        );
-
-      gap: 18px;
     }
 
     .card {
       background: white;
-
-      border-radius: 15px;
-      padding: 20px;
-
-      border: 1px solid #e8edf3;
-
-      box-shadow:
-        0 5px 18px rgba(0,0,0,.05);
-
-      transition:
-        transform .2s,
-        box-shadow .2s;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-
-      box-shadow:
-        0 12px 28px rgba(0,0,0,.10);
-    }
-
-    .card-type {
-      display: inline-block;
-
-      font-size: 12px;
-      font-weight: 800;
-
-      padding: 6px 10px;
-      border-radius: 20px;
-
-      background: #e9f5ff;
-      color: #0876c9;
-
-      margin-bottom: 12px;
-    }
-
-    .card h3 {
-      font-size: 18px;
-      line-height: 1.4;
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      color: #687386;
-      line-height: 1.6;
-      font-size: 14px;
-
+      padding: 18px;
       margin-bottom: 15px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px #0001;
     }
 
-    .card-meta {
-      font-size: 13px;
-      color: #788496;
-
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-
+    h2 {
       margin-bottom: 15px;
+      color: #075985;
     }
 
-    .card a {
-      display: inline-block;
-
-      background: #168cf0;
-      color: white;
-
-      text-decoration: none;
-
-      padding: 10px 15px;
-
-      border-radius: 8px;
-
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .card a:hover {
-      background: #0876d1;
-    }
-
-    /* =========================
-       EMPTY
-    ========================= */
-
-    .empty {
-      background: white;
-
-      padding: 45px 20px;
-
-      text-align: center;
-
-      border-radius: 15px;
-
-      color: #718096;
-    }
-
-    .empty strong {
+    label {
       display: block;
-      font-size: 20px;
-      color: #273449;
-      margin-bottom: 8px;
+      margin-top: 12px;
+      margin-bottom: 5px;
+      font-weight: bold;
     }
 
-    /* =========================
-       LOADING
-    ========================= */
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #687386;
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ccd5df;
+      border-radius: 9px;
+      font-size: 16px;
     }
 
-    .spinner {
-      width: 35px;
-      height: 35px;
-
-      border:
-        4px solid #e4eaf1;
-
-      border-top-color:
-        #168cf0;
-
-      border-radius: 50%;
-
-      margin:
-        0 auto 15px;
-
-      animation:
-        spin 1s linear infinite;
+    button {
+      width: 100%;
+      padding: 13px;
+      border: 0;
+      border-radius: 9px;
+      margin-top: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #075985;
+      color: white;
     }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+    button:hover {
+      opacity: .9;
     }
 
-    /* =========================
-       FOOTER
-    ========================= */
+    .green {
+      background: #15803d;
+    }
+
+    .orange {
+      background: #ea580c;
+    }
+
+    .red {
+      background: #dc2626;
+    }
+
+    .gray {
+      background: #475569;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .result {
+      background: #ecfeff;
+      border: 1px solid #67e8f9;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    .tracking {
+      font-size: 23px;
+      font-weight: bold;
+      color: #075985;
+      letter-spacing: 2px;
+    }
+
+    .pin {
+      font-size: 22px;
+      font-weight: bold;
+      color: #15803d;
+      letter-spacing: 4px;
+    }
+
+    .info {
+      margin: 8px 0;
+      padding: 9px;
+      background: #f8fafc;
+      border-radius: 7px;
+    }
+
+    .history-item {
+      border-left: 4px solid #075985;
+      padding: 10px;
+      margin: 8px 0;
+      background: #f8fafc;
+      border-radius: 6px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 20px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: bold;
+    }
+
+    .success {
+      color: #15803d;
+      font-weight: bold;
+    }
+
+    .error {
+      color: #dc2626;
+      font-weight: bold;
+    }
 
     footer {
-      background: #07111f;
-      color: #b8c7d8;
-
-      padding: 35px 20px;
-
       text-align: center;
-
-      margin-top: 30px;
-    }
-
-    footer strong {
-      color: white;
-    }
-
-    footer p {
-      margin-top: 8px;
-      font-size: 14px;
-    }
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 700px) {
-
-      header {
-        padding: 14px;
-      }
-
-      .header-inner {
-        flex-direction: column;
-      }
-
-      nav {
-        width: 100%;
-        justify-content: center;
-      }
-
-      nav button {
-        padding: 8px 10px;
-        font-size: 13px;
-      }
-
-      .hero {
-        padding: 40px 20px;
-      }
-
-      .hero p {
-        font-size: 15px;
-      }
-
-      .search-box {
-        flex-direction: column;
-      }
-
-      .search-box button {
-        padding: 13px;
-      }
-
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .country-bar {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .country-bar select {
-        width: 100%;
-      }
+      padding: 25px;
+      color: #64748b;
     }
   </style>
 </head>
 
 <body>
 
-<!-- =========================
-     HEADER
-========================= -->
-
 <header>
-
-  <div class="header-inner">
-
-    <div class="logo">
-      MAKYAMA<span>GLOBAL</span>
-    </div>
-
-    <nav>
-
-      <button
-        class="active"
-        onclick="showSection('jobs', this)"
-      >
-        💼 Jobs
-      </button>
-
-      <button
-        onclick="showSection('education', this)"
-      >
-        🎓 Education
-      </button>
-
-      <button
-        onclick="showSection('news', this)"
-      >
-        📰 News
-      </button>
-
-    </nav>
-
-  </div>
-
+  <h1>🐟 MAKYAMA DAGAA</h1>
+  <p>Dagaa Cargo Tracking System</p>
 </header>
 
+<div class="container">
 
-<!-- =========================
-     HERO
-========================= -->
+  <!-- REGISTER -->
+  <div class="card">
+    <h2>📦 Sajili Mzigo wa Dagaa</h2>
 
-<section class="hero">
+    <label>Jina la Dagaa / Mzigo</label>
+    <input id="cargoName" placeholder="Mfano: Dagaa wa Mafia">
 
-  <div class="hero-inner">
+    <label>Origin / Unapotoka</label>
+    <input id="origin" placeholder="Mfano: Mafia">
 
-    <h1>
-      MAKYAMA <span>GLOBAL</span>
-    </h1>
+    <label>Destination / Unapoenda</label>
+    <input id="destination" placeholder="Mfano: Congo">
 
-    <p>
-      Discover verified jobs, education opportunities
-      and trusted news from countries around the world.
-    </p>
+    <label>Jina la Agent wa Kwanza</label>
+    <input id="agentName" placeholder="Mfano: Mussa">
 
+    <label>Simu ya Agent</label>
+    <input id="agentPhone" placeholder="07XXXXXXXX">
+
+    <button onclick="registerCargo()">
+      🐟 SAJILI MZIGO
+    </button>
+
+    <div id="registerResult"></div>
   </div>
 
-</section>
+
+  <!-- LOGIN -->
+  <div class="card">
+    <h2>🔐 Fungua Mzigo</h2>
+
+    <label>Tracking ID</label>
+    <input id="loginTracking" placeholder="Mfano: DAG-ABC123">
+
+    <label>PIN</label>
+    <input id="loginPin" type="password" placeholder="PIN ya mzigo">
+
+    <button onclick="loginCargo()">
+      🔎 FUNGUA MZIGO
+    </button>
+
+    <div id="loginMessage"></div>
+  </div>
 
 
-<!-- =========================
-     SEARCH
-========================= -->
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden">
 
-<div class="search-area">
+    <div class="card">
+      <h2>📦 Taarifa za Mzigo</h2>
 
-  <div class="search-box">
+      <div class="info">
+        <b>Dagaa:</b>
+        <span id="viewName"></span>
+      </div>
 
-    <input
-      id="searchInput"
-      type="search"
-      placeholder="Search jobs, education or news..."
-      oninput="searchItems()"
-    >
+      <div class="info">
+        <b>Tracking ID:</b>
+        <span id="viewTracking"></span>
+      </div>
 
-    <button
-      onclick="searchItems()"
-    >
-      Search
+      <div class="info">
+        <b>Origin:</b>
+        <span id="viewOrigin"></span>
+      </div>
+
+      <div class="info">
+        <b>Destination:</b>
+        <span id="viewDestination"></span>
+      </div>
+
+      <div class="info">
+        <b>Agent wa Sasa:</b>
+        <span id="viewAgent"></span>
+      </div>
+
+      <div class="info">
+        <b>Status:</b>
+        <span id="viewStatus" class="status"></span>
+      </div>
+    </div>
+
+
+    <!-- PICKUP -->
+    <div class="card">
+      <h2>🚚 Pickup</h2>
+
+      <p>
+        Agent akishachukua mzigo, bonyeza hapa kurekodi pickup.
+      </p>
+
+      <button class="green" onclick="pickupCargo()">
+        ✅ NIMECHUKUA MZIGO
+      </button>
+    </div>
+
+
+    <!-- HANDOVER -->
+    <div class="card">
+      <h2>🔄 Mkabidhi Agent Mwingine</h2>
+
+      <label>Jina la Agent Mpya</label>
+      <input id="newAgentName" placeholder="Jina la agent">
+
+      <label>Simu ya Agent Mpya</label>
+      <input id="newAgentPhone" placeholder="07XXXXXXXX">
+
+      <label>Mahali pa Kukabidhiana</label>
+      <input id="handoverLocation" placeholder="Mfano: Dar es Salaam">
+
+      <button class="orange" onclick="handoverCargo()">
+        🔄 KABIDHI MZIGO
+      </button>
+    </div>
+
+
+    <!-- RECEIVE -->
+    <div class="card">
+      <h2>🏁 Uthibitisho wa Kupokea</h2>
+
+      <p>
+        Bosi/receiver akishapokea mzigo, bonyeza hapa.
+      </p>
+
+      <label>Jina la Aliyepokea</label>
+      <input id="receiverName" placeholder="Jina la bosi/receiver">
+
+      <button class="green" onclick="receiveCargo()">
+        ✅ MZIGO UMEEPOKELEWA
+      </button>
+    </div>
+
+
+    <!-- HISTORY -->
+    <div class="card">
+      <h2>📜 Historia ya Mzigo</h2>
+
+      <div id="history">
+        Hakuna history bado.
+      </div>
+    </div>
+
+
+    <!-- LOGOUT -->
+    <button class="red" onclick="logoutCargo()">
+      🚪 Funga Mzigo
     </button>
 
   </div>
@@ -583,735 +333,937 @@
 </div>
 
 
-<!-- =========================
-     MAIN
-========================= -->
-
-<main>
-
-  <!-- COUNTRY -->
-
-  <div class="country-bar">
-
-    <label for="countrySelect">
-      🌍 Country
-    </label>
-
-    <select
-      id="countrySelect"
-      onchange="loadData()"
-    >
-
-      <option value="all">
-        All Countries
-      </option>
-
-    </select>
-
-  </div>
-
-
-  <!-- =====================
-       JOBS
-  ====================== -->
-
-  <section
-    id="jobs"
-    class="section active"
-  >
-
-    <div class="section-header">
-
-      <div>
-        <h2>💼 Jobs</h2>
-
-        <p>
-          Find job opportunities from verified sources.
-        </p>
-      </div>
-
-    </div>
-
-    <div
-      id="jobsContainer"
-      class="cards"
-    >
-
-      <div class="loading">
-        <div class="spinner"></div>
-        Loading jobs...
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================
-       EDUCATION
-  ====================== -->
-
-  <section
-    id="education"
-    class="section"
-  >
-
-    <div class="section-header">
-
-      <div>
-
-        <h2>🎓 Education</h2>
-
-        <p>
-          Discover education opportunities and updates.
-        </p>
-
-      </div>
-
-    </div>
-
-    <div
-      id="educationContainer"
-      class="cards"
-    >
-
-      <div class="loading">
-        <div class="spinner"></div>
-        Loading education...
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================
-       NEWS
-  ====================== -->
-
-  <section
-    id="news"
-    class="section"
-  >
-
-    <div class="section-header">
-
-      <div>
-
-        <h2>📰 News</h2>
-
-        <p>
-          Latest trusted news from verified sources.
-        </p>
-
-      </div>
-
-    </div>
-
-    <div
-      id="newsContainer"
-      class="cards"
-    >
-
-      <div class="loading">
-        <div class="spinner"></div>
-        Loading news...
-      </div>
-
-    </div>
-
-  </section>
-
-</main>
-
-
-<!-- =========================
-     FOOTER
-========================= -->
-
 <footer>
-
-  <strong>
-    MAKYAMA GLOBAL
-  </strong>
-
-  <p>
-    Jobs • Education • News
-  </p>
-
-  <p>
-    © 2026 MAKYAMA. All rights reserved.
-  </p>
-
+  MAKYAMA DAGAA TRACKING © 2026
 </footer>
 
 
-<script>
+<!-- FIREBASE -->
+<script type="module">
 
-  /*
-  ============================================================
-  CONFIGURATION
-  ============================================================
-  */
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-  const API_URL =
-    "https://makyama-bot-v2.onrender.com";
-
-
-  /*
-  ============================================================
-  STATE
-  ============================================================
-  */
-
-  let allItems = [];
-
-  let currentSection =
-    "jobs";
+  import {
+    getDatabase,
+    ref,
+    set,
+    get,
+    update,
+    push,
+    onValue
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
 
-  /*
-  ============================================================
-  SECTION SWITCH
-  ============================================================
-  */
+  // ==========================
+  // FIREBASE CONFIG
+  // ==========================
 
-  function showSection(
-    section,
-    button
+  const firebaseConfig = {
+
+    apiKey:
+      "AIzaSyBe2Qr-75nBWLLE5GDNBvhGFT91FtBbBw",
+
+    authDomain:
+      "makyama-e5e89.firebaseapp.com",
+
+    databaseURL:
+      "https://makyama-e5e89-default-rtdb.firebaseio.com",
+
+    projectId:
+      "makyama-e5e89",
+
+    storageBucket:
+      "makyama-e5e89.firebasestorage.app",
+
+    messagingSenderId:
+      "229527204095",
+
+    appId:
+      "1:229527204095:web:2bdfe0589cf42794b3dcca"
+  };
+
+
+  const app = initializeApp(firebaseConfig);
+
+  const db = getDatabase(app);
+
+
+  // Current logged cargo
+  let currentTracking = null;
+  let currentCargo = null;
+
+
+  // ==========================
+  // GENERATE TRACKING ID
+  // ==========================
+
+  function generateTrackingID() {
+
+    const random =
+      Math.random()
+        .toString(36)
+        .substring(2, 8)
+        .toUpperCase();
+
+    return "DAG-" + random;
+  }
+
+
+  // ==========================
+  // GENERATE PIN
+  // ==========================
+
+  function generatePIN() {
+
+    return Math.floor(
+      100000 +
+      Math.random() * 900000
+    ).toString();
+
+  }
+
+
+  // ==========================
+  // TIME
+  // ==========================
+
+  function now() {
+
+    return new Date().toISOString();
+
+  }
+
+
+  // ==========================
+  // ADD HISTORY
+  // ==========================
+
+  async function addHistory(
+    tracking,
+    action,
+    description
   ) {
 
-    currentSection =
-      section;
-
-    document
-      .querySelectorAll(".section")
-      .forEach(
-        element => {
-          element.classList.remove(
-            "active"
-          );
-        }
+    const historyRef =
+      ref(
+        db,
+        "cargo/" +
+        tracking +
+        "/history"
       );
 
-    document
-      .getElementById(section)
-      .classList.add(
-        "active"
-      );
+    const newHistory =
+      push(historyRef);
 
-    document
-      .querySelectorAll("nav button")
-      .forEach(
-        btn => {
-          btn.classList.remove(
-            "active"
-          );
-        }
-      );
-
-    button.classList.add(
-      "active"
+    await set(
+      newHistory,
+      {
+        action: action,
+        description: description,
+        time: now()
+      }
     );
-
-    renderItems();
   }
 
 
-  /*
-  ============================================================
-  LOAD DATA
-  ============================================================
-  */
+  // ==========================
+  // REGISTER CARGO
+  // ==========================
 
-  async function loadData() {
+  window.registerCargo =
+    async function () {
 
-    try {
+      const name =
+        document
+          .getElementById("cargoName")
+          .value.trim();
 
-      /*
-       * If your backend later exposes:
-       *
-       * /api/opportunities
-       *
-       * this frontend will use it.
-       */
+      const origin =
+        document
+          .getElementById("origin")
+          .value.trim();
 
-      const response =
-        await fetch(
-          `${API_URL}/api/opportunities`
+      const destination =
+        document
+          .getElementById("destination")
+          .value.trim();
+
+      const agent =
+        document
+          .getElementById("agentName")
+          .value.trim();
+
+      const phone =
+        document
+          .getElementById("agentPhone")
+          .value.trim();
+
+
+      if (
+        !name ||
+        !origin ||
+        !destination ||
+        !agent
+      ) {
+
+        alert(
+          "Jaza taarifa zote muhimu."
         );
 
-      if (!response.ok) {
-        throw new Error(
-          "API unavailable"
-        );
+        return;
       }
 
-      const data =
-        await response.json();
 
-      allItems =
-        Array.isArray(data)
-          ? data
-          : (
-              data.items ||
-              data.opportunities ||
-              []
-            );
+      const tracking =
+        generateTrackingID();
 
-      buildCountries();
-
-      renderItems();
-
-    } catch (error) {
-
-      console.log(
-        "API error:",
-        error.message
-      );
-
-      /*
-       * Do not crash the page.
-       */
-
-      renderEmpty(
-        currentSection,
-        "No data available yet."
-      );
-    }
-  }
+      const pin =
+        generatePIN();
 
 
-  /*
-  ============================================================
-  COUNTRY LIST
-  ============================================================
-  */
+      const cargoRef =
+        ref(
+          db,
+          "cargo/" +
+          tracking
+        );
 
-  function buildCountries() {
 
-    const select =
-      document.getElementById(
-        "countrySelect"
-      );
+      const cargo = {
 
-    const countries =
-      [
-        ...new Set(
-          allItems
-            .map(
-              item =>
-                item.country
+        name: name,
+
+        origin: origin,
+
+        destination: destination,
+
+        currentAgent: agent,
+
+        currentAgentPhone: phone,
+
+        status: "REGISTERED",
+
+        pin: pin,
+
+        createdAt: now(),
+
+        updatedAt: now()
+
+      };
+
+
+      try {
+
+        await set(
+          cargoRef,
+          cargo
+        );
+
+
+        await addHistory(
+          tracking,
+          "REGISTERED",
+          "Mzigo umesajiliwa kutoka " +
+          origin +
+          " kwenda " +
+          destination
+        );
+
+
+        document
+          .getElementById(
+            "registerResult"
+          )
+          .innerHTML = `
+
+          <div class="result">
+
+            <p>✅ Mzigo umesajiliwa!</p>
+
+            <p>Tracking ID:</p>
+
+            <div class="tracking">
+              ${tracking}
+            </div>
+
+            <br>
+
+            <p>PIN:</p>
+
+            <div class="pin">
+              ${pin}
+            </div>
+
+            <br>
+
+            <p>
+              ⚠️ Hifadhi Tracking ID na PIN.
+            </p>
+
+          </div>
+
+        `;
+
+
+        document
+          .getElementById(
+            "cargoName"
+          ).value = "";
+
+        document
+          .getElementById(
+            "origin"
+          ).value = "";
+
+        document
+          .getElementById(
+            "destination"
+          ).value = "";
+
+        document
+          .getElementById(
+            "agentName"
+          ).value = "";
+
+        document
+          .getElementById(
+            "agentPhone"
+          ).value = "";
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Firebase error: " +
+          error.message
+        );
+
+      }
+
+    };
+
+
+  // ==========================
+  // LOGIN
+  // ==========================
+
+  window.loginCargo =
+    async function () {
+
+      const tracking =
+        document
+          .getElementById(
+            "loginTracking"
+          )
+          .value
+          .trim()
+          .toUpperCase();
+
+      const pin =
+        document
+          .getElementById(
+            "loginPin"
+          )
+          .value
+          .trim();
+
+
+      if (!tracking || !pin) {
+
+        alert(
+          "Weka Tracking ID na PIN."
+        );
+
+        return;
+      }
+
+
+      try {
+
+        const cargoRef =
+          ref(
+            db,
+            "cargo/" +
+            tracking
+          );
+
+
+        const snapshot =
+          await get(
+            cargoRef
+          );
+
+
+        if (!snapshot.exists()) {
+
+          document
+            .getElementById(
+              "loginMessage"
             )
-            .filter(Boolean)
-        )
-      ]
-      .sort();
+            .innerHTML =
 
-    select.innerHTML = `
-      <option value="all">
-        All Countries
-      </option>
-    `;
+            `<p class="error">
+              ❌ Mzigo haujapatikana.
+            </p>`;
 
-    countries.forEach(
-      country => {
+          return;
+        }
 
-        const option =
-          document.createElement(
-            "option"
-          );
 
-        option.value =
-          country;
+        const cargo =
+          snapshot.val();
 
-        option.textContent =
-          country;
 
-        select.appendChild(
-          option
+        if (
+          cargo.pin !== pin
+        ) {
+
+          document
+            .getElementById(
+              "loginMessage"
+            )
+            .innerHTML =
+
+            `<p class="error">
+              ❌ PIN sio sahihi.
+            </p>`;
+
+          return;
+        }
+
+
+        currentTracking =
+          tracking;
+
+        currentCargo =
+          cargo;
+
+
+        showDashboard();
+
+
+        listenToCargo();
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Firebase error: " +
+          error.message
         );
+
       }
-    );
+
+    };
+
+
+  // ==========================
+  // SHOW DASHBOARD
+  // ==========================
+
+  function showDashboard() {
+
+    document
+      .getElementById(
+        "dashboard"
+      )
+      .classList
+      .remove("hidden");
+
+
+    document
+      .getElementById(
+        "viewName"
+      )
+      .textContent =
+      currentCargo.name;
+
+
+    document
+      .getElementById(
+        "viewTracking"
+      )
+      .textContent =
+      currentTracking;
+
+
+    document
+      .getElementById(
+        "viewOrigin"
+      )
+      .textContent =
+      currentCargo.origin;
+
+
+    document
+      .getElementById(
+        "viewDestination"
+      )
+      .textContent =
+      currentCargo.destination;
+
+
+    document
+      .getElementById(
+        "viewAgent"
+      )
+      .textContent =
+      currentCargo.currentAgent;
+
+
+    document
+      .getElementById(
+        "viewStatus"
+      )
+      .textContent =
+      currentCargo.status;
+
+
+    window.scrollTo({
+      top: document
+        .getElementById(
+          "dashboard"
+        )
+        .offsetTop,
+
+      behavior: "smooth"
+    });
+
   }
 
 
-  /*
-  ============================================================
-  FILTER
-  ============================================================
-  */
+  // ==========================
+  // REALTIME LISTENER
+  // ==========================
 
-  function getFilteredItems() {
+  function listenToCargo() {
 
-    const country =
+    const cargoRef =
+      ref(
+        db,
+        "cargo/" +
+        currentTracking
+      );
+
+
+    onValue(
+      cargoRef,
+      (snapshot) => {
+
+        if (!snapshot.exists())
+          return;
+
+
+        currentCargo =
+          snapshot.val();
+
+
+        showDashboard();
+
+        showHistory(
+          currentCargo.history
+        );
+
+      }
+    );
+
+  }
+
+
+  // ==========================
+  // PICKUP
+  // ==========================
+
+  window.pickupCargo =
+    async function () {
+
+      if (!currentTracking)
+        return;
+
+
+      const cargoRef =
+        ref(
+          db,
+          "cargo/" +
+          currentTracking
+        );
+
+
+      try {
+
+        await update(
+          cargoRef,
+          {
+            status: "IN_TRANSIT",
+            updatedAt: now()
+          }
+        );
+
+
+        await addHistory(
+          currentTracking,
+          "PICKUP",
+          "Agent amechukua mzigo na kuanza safari."
+        );
+
+
+        alert(
+          "✅ Pickup imerekodiwa."
+        );
+
+
+      } catch (error) {
+
+        alert(
+          "Error: " +
+          error.message
+        );
+
+      }
+
+    };
+
+
+  // ==========================
+  // HANDOVER
+  // ==========================
+
+  window.handoverCargo =
+    async function () {
+
+      if (!currentTracking)
+        return;
+
+
+      const newAgent =
+        document
+          .getElementById(
+            "newAgentName"
+          )
+          .value.trim();
+
+
+      const newPhone =
+        document
+          .getElementById(
+            "newAgentPhone"
+          )
+          .value.trim();
+
+
+      const location =
+        document
+          .getElementById(
+            "handoverLocation"
+          )
+          .value.trim();
+
+
+      if (!newAgent) {
+
+        alert(
+          "Weka jina la Agent mpya."
+        );
+
+        return;
+      }
+
+
+      const oldAgent =
+        currentCargo.currentAgent;
+
+
+      const cargoRef =
+        ref(
+          db,
+          "cargo/" +
+          currentTracking
+        );
+
+
+      try {
+
+        await update(
+          cargoRef,
+          {
+
+            currentAgent:
+              newAgent,
+
+            currentAgentPhone:
+              newPhone,
+
+            status:
+              "HANDED_OVER",
+
+            updatedAt:
+              now(),
+
+            lastHandoverLocation:
+              location
+
+          }
+        );
+
+
+        await addHistory(
+          currentTracking,
+          "HANDOVER",
+
+          oldAgent +
+          " amemkabidhi mzigo " +
+          newAgent +
+          (
+            location
+              ? " huko " + location
+              : ""
+          )
+        );
+
+
+        document
+          .getElementById(
+            "newAgentName"
+          ).value = "";
+
+        document
+          .getElementById(
+            "newAgentPhone"
+          ).value = "";
+
+        document
+          .getElementById(
+            "handoverLocation"
+          ).value = "";
+
+
+        alert(
+          "✅ Mzigo umekabidhiwa."
+        );
+
+
+      } catch (error) {
+
+        alert(
+          "Error: " +
+          error.message
+        );
+
+      }
+
+    };
+
+
+  // ==========================
+  // RECEIVE CARGO
+  // ==========================
+
+  window.receiveCargo =
+    async function () {
+
+      if (!currentTracking)
+        return;
+
+
+      const receiver =
+        document
+          .getElementById(
+            "receiverName"
+          )
+          .value.trim();
+
+
+      if (!receiver) {
+
+        alert(
+          "Weka jina la aliyepokea."
+        );
+
+        return;
+      }
+
+
+      const cargoRef =
+        ref(
+          db,
+          "cargo/" +
+          currentTracking
+        );
+
+
+      try {
+
+        await update(
+          cargoRef,
+          {
+
+            status:
+              "RECEIVED",
+
+            receiver:
+              receiver,
+
+            receivedAt:
+              now(),
+
+            updatedAt:
+              now()
+
+          }
+        );
+
+
+        await addHistory(
+          currentTracking,
+          "RECEIVED",
+
+          "Mzigo umepokelewa na " +
+          receiver
+        );
+
+
+        alert(
+          "✅ Mzigo umehakikiwa kuwa umepokelewa."
+        );
+
+
+      } catch (error) {
+
+        alert(
+          "Error: " +
+          error.message
+        );
+
+      }
+
+    };
+
+
+  // ==========================
+  // SHOW HISTORY
+  // ==========================
+
+  function showHistory(history) {
+
+    const box =
       document
         .getElementById(
-          "countrySelect"
-        )
-        .value;
+          "history"
+        );
 
-    const search =
-      document
-        .getElementById(
-          "searchInput"
-        )
-        .value
-        .toLowerCase()
-        .trim();
 
-    return allItems.filter(
+    if (!history) {
+
+      box.innerHTML =
+        "Hakuna history bado.";
+
+      return;
+    }
+
+
+    const entries =
+      Object.values(history)
+        .sort(
+          (a, b) =>
+            new Date(a.time) -
+            new Date(b.time)
+        );
+
+
+    box.innerHTML = "";
+
+
+    entries.forEach(
       item => {
 
-        const category =
-          String(
-            item.category ||
-            ""
-          ).toLowerCase();
-
-        const title =
-          String(
-            item.title ||
-            ""
-          ).toLowerCase();
-
-        const description =
-          String(
-            item.description ||
-            ""
-          ).toLowerCase();
-
-        const itemCountry =
-          String(
-            item.country ||
-            ""
+        const date =
+          new Date(
+            item.time
           );
 
-        /*
-         * Only these 3 categories.
-         */
 
-        const validCategory =
-          (
-            category.includes("job") ||
-            category.includes("education") ||
-            category.includes("news")
+        const div =
+          document.createElement(
+            "div"
           );
 
-        if (!validCategory) {
-          return false;
-        }
 
-        /*
-         * Current section.
-         */
+        div.className =
+          "history-item";
 
-        if (
-          currentSection === "jobs" &&
-          !category.includes("job")
-        ) {
-          return false;
-        }
 
-        if (
-          currentSection === "education" &&
-          !category.includes("education")
-        ) {
-          return false;
-        }
+        div.innerHTML = `
 
-        if (
-          currentSection === "news" &&
-          !category.includes("news")
-        ) {
-          return false;
-        }
+          <b>
+            ${item.action}
+          </b>
 
-        /*
-         * Country.
-         */
+          <br>
 
-        if (
-          country !== "all" &&
-          itemCountry !== country
-        ) {
-          return false;
-        }
+          ${item.description}
 
-        /*
-         * Search.
-         */
+          <br>
 
-        if (
-          search &&
-          !title.includes(search) &&
-          !description.includes(search) &&
-          !itemCountry
-            .toLowerCase()
-            .includes(search)
-        ) {
-          return false;
-        }
+          <small>
+            ${date.toLocaleString()}
+          </small>
 
-        return true;
+        `;
+
+
+        box.appendChild(div);
+
       }
     );
+
   }
 
 
-  /*
-  ============================================================
-  RENDER
-  ============================================================
-  */
+  // ==========================
+  // LOGOUT
+  // ==========================
 
-  function renderItems() {
+  window.logoutCargo =
+    function () {
 
-    const items =
-      getFilteredItems();
+      currentTracking = null;
 
-    const container =
-      document.getElementById(
-        `${currentSection}Container`
-      );
+      currentCargo = null;
 
-    if (!items.length) {
 
-      container.innerHTML = `
-        <div class="empty">
-          <strong>
-            No ${currentSection} found
-          </strong>
-
-          <span>
-            Try another country or search term.
-          </span>
-        </div>
-      `;
-
-      return;
-    }
-
-    container.innerHTML =
-      items
-        .slice(0, 100)
-        .map(
-          createCard
+      document
+        .getElementById(
+          "dashboard"
         )
-        .join("");
-  }
+        .classList
+        .add("hidden");
 
 
-  /*
-  ============================================================
-  CARD
-  ============================================================
-  */
+      document
+        .getElementById(
+          "loginTracking"
+        ).value = "";
 
-  function createCard(item) {
-
-    const title =
-      escapeHtml(
-        item.title ||
-        "Untitled"
-      );
-
-    const description =
-      escapeHtml(
-        item.description ||
-        "No description available."
-      );
-
-    const organization =
-      escapeHtml(
-        item.organization ||
-        item.source ||
-        "Verified source"
-      );
-
-    const country =
-      escapeHtml(
-        item.country ||
-        "International"
-      );
-
-    const source =
-      escapeHtml(
-        item.source ||
-        "Verified source"
-      );
-
-    const url =
-      item.applicationUrl ||
-      item.sourceUrl ||
-      "#";
-
-    let label =
-      "Opportunity";
-
-    if (
-      currentSection === "jobs"
-    ) {
-      label = "JOB";
-    }
-
-    if (
-      currentSection === "education"
-    ) {
-      label = "EDUCATION";
-    }
-
-    if (
-      currentSection === "news"
-    ) {
-      label = "NEWS";
-    }
-
-    return `
-      <article class="card">
-
-        <span class="card-type">
-          ${label}
-        </span>
-
-        <h3>
-          ${title}
-        </h3>
-
-        <p>
-          ${description.substring(0, 240)}
-          ${description.length > 240 ? "..." : ""}
-        </p>
-
-        <div class="card-meta">
-
-          <span>
-            🏢 ${organization}
-          </span>
-
-          <span>
-            🌍 ${country}
-          </span>
-
-          <span>
-            🔗 ${source}
-          </span>
-
-        </div>
-
-        <a
-          href="${escapeAttribute(url)}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View Source →
-        </a>
-
-      </article>
-    `;
-  }
+      document
+        .getElementById(
+          "loginPin"
+        ).value = "";
 
 
-  /*
-  ============================================================
-  SEARCH
-  ============================================================
-  */
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
 
-  function searchItems() {
-    renderItems();
-  }
-
-
-  /*
-  ============================================================
-  EMPTY
-  ============================================================
-  */
-
-  function renderEmpty(
-    section,
-    message
-  ) {
-
-    const container =
-      document.getElementById(
-        `${section}Container`
-      );
-
-    if (!container) {
-      return;
-    }
-
-    container.innerHTML = `
-      <div class="empty">
-
-        <strong>
-          ${section.toUpperCase()}
-        </strong>
-
-        <span>
-          ${message}
-        </span>
-
-      </div>
-    `;
-  }
-
-
-  /*
-  ============================================================
-  SECURITY
-  ============================================================
-  */
-
-  function escapeHtml(
-    value
-  ) {
-
-    return String(value)
-      .replace(
-        /&/g,
-        "&amp;"
-      )
-      .replace(
-        /</g,
-        "&lt;"
-      )
-      .replace(
-        />/g,
-        "&gt;"
-      )
-      .replace(
-        /"/g,
-        "&quot;"
-      )
-      .replace(
-        /'/g,
-        "&#039;"
-      );
-  }
-
-
-  function escapeAttribute(
-    value
-  ) {
-
-    return escapeHtml(
-      value
-    );
-  }
-
-
-  /*
-  ============================================================
-  START
-  ============================================================
-  */
-
-  loadData();
+    };
 
 </script>
 
 </body>
-  </html>
+</html>
