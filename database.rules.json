@@ -1,0 +1,71 @@
+{
+  "rules": {
+    "cargo": {
+
+      "$trackingId": {
+
+        "public": {
+          ".read":
+            "auth != null &&
+             auth.token.trackingId === $trackingId",
+
+          ".write": false
+        },
+
+        "supervisor": {
+          ".read":
+            "auth != null &&
+             auth.token.trackingId === $trackingId &&
+             auth.token.supervisor === true",
+
+          ".write": false
+        },
+
+        "stages": {
+
+          "$stageId": {
+
+            "public": {
+              ".read":
+                "auth != null &&
+                 auth.token.trackingId === $trackingId &&
+                 (
+                   auth.token.supervisor === true ||
+                   (
+                     auth.token.role === 'agent' &&
+                     ('stage_' + auth.token.stage) === $stageId
+                   )
+                 )",
+
+              ".write": false
+            },
+
+            "private": {
+              ".read":
+                "auth != null &&
+                 auth.token.trackingId === $trackingId &&
+                 (
+                   auth.token.supervisor === true ||
+                   (
+                     auth.token.role === 'agent' &&
+                     ('stage_' + auth.token.stage) === $stageId
+                   )
+                 )",
+
+              ".write": false
+            }
+          }
+        },
+
+        "history": {
+          ".read":
+            "auth != null &&
+             auth.token.trackingId === $trackingId &&
+             auth.token.supervisor === true",
+
+          ".write": false
+        }
+      }
+    }
+  }
+}
