@@ -1,751 +1,6892 @@
 <!DOCTYPE html>
 <html lang="sw">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0b1220">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
 <title>MAKYAMA TRANSPORT</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
 <style>
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.navbar{position:sticky;top:0;z-index:1000;background:#0b1220;color:#fff;padding:12px 4%;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 2px 12px #0002}
-.brand{font-size:21px;font-weight:800;margin-right:auto;letter-spacing:.5px}
-.nav-btn,.lang{border:0;border-radius:9px;padding:9px 12px;background:#1b2942;color:#fff}
-.nav-btn:hover{background:#2b3d5f}
-.lang{background:#fff;color:#111}
-.page{display:none;max-width:1150px;margin:auto;padding:30px 16px}
-.page.active{display:block}
-.hero{background:linear-gradient(135deg,#0b1220,#17365d);color:#fff;border-radius:20px;padding:45px 25px;margin-bottom:22px}
-.hero h1{font-size:clamp(30px,6vw,58px);margin:0 0 10px}
-.hero p{font-size:18px;opacity:.9;max-width:700px}
-.card{background:#fff;border-radius:16px;padding:22px;margin:15px 0;box-shadow:0 5px 20px #14213d12}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-label{display:block;font-weight:700;margin-bottom:6px}
-input,select,textarea{width:100%;padding:12px;border:1px solid #d6dce7;border-radius:10px;background:#fff;outline:none}
-input:focus,select:focus,textarea:focus{border-color:#2878ff;box-shadow:0 0 0 3px #2878ff18}
-textarea{min-height:120px;resize:vertical}
-.primary{background:#1769e0;color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:700}
-.success{background:#168a52;color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:700}
-.danger{background:#d73545;color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:700}
-.secondary{background:#e9eef6;color:#162033;border:0;border-radius:10px;padding:12px 18px;font-weight:700}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
-.status{padding:10px 13px;border-radius:10px;background:#eef4ff;margin:10px 0}
-.status.ok{background:#e9f8ef;color:#126b3e}
-.status.err{background:#fff0f0;color:#9d1c28}
-.status.warn{background:#fff7df;color:#805900}
-.hidden{display:none!important}
-.small{font-size:13px;color:#687386}
-.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#edf2fa;font-size:12px;font-weight:700}
-.result{border:1px solid #e0e5ed;border-radius:12px;padding:15px;margin-top:10px}
-#publicMap,#bossMap{height:390px;border-radius:14px;overflow:hidden}
-.timeline{border-left:3px solid #2878ff;padding-left:16px}
-.timeline-item{position:relative;margin:0 0 17px}
-.timeline-item:before{content:"";position:absolute;left:-24px;top:4px;width:11px;height:11px;background:#2878ff;border-radius:50%}
-.kpi{padding:18px;border-radius:14px;background:#f7f9fc;border:1px solid #e5eaf2}
-.kpi strong{display:block;font-size:28px}
-footer{text-align:center;padding:30px;color:#687386}
-[dir="rtl"] .timeline{border-left:0;border-right:3px solid #2878ff;padding-left:0;padding-right:16px}
-[dir="rtl"] .timeline-item:before{left:auto;right:-24px}
-@media(max-width:700px){
- .navbar{padding:10px}
- .brand{width:100%;margin-bottom:3px}
- .nav-btn,.lang{flex:1;min-width:100px}
- .page{padding:18px 10px}
- .hero{padding:30px 18px}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
+body {
+  font-family: Arial, sans-serif;
+
+  background:
+    linear-gradient(
+      rgba(0,20,35,.88),
+      rgba(0,10,20,.96)
+    ),
+    url("https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1600&q=80");
+
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  color: white;
+  min-height: 100vh;
+}
+
+header {
+  background: rgba(0,15,25,.94);
+  padding: 15px;
+
+  position: sticky;
+  top: 0;
+
+  z-index: 999;
+
+  border-bottom:
+    1px solid rgba(0,200,255,.25);
+}
+
+.nav {
+  max-width: 1200px;
+  margin: auto;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 900;
+
+  color: #00d9ff;
+
+  letter-spacing: 1px;
+}
+
+.nav-buttons {
+  display: flex;
+
+  gap: 8px;
+  flex-wrap: wrap;
+
+  align-items: center;
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+
+  padding: 11px 15px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+
+  color: white;
+  background: #007bff;
+}
+
+button:hover {
+  opacity: .88;
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.danger {
+  background: #dc3545;
+}
+
+.success {
+  background: #198754;
+}
+
+.warning {
+  background: #f0ad00;
+  color: #111;
+}
+
+.dark {
+  background: #253746;
+}
+
+.info-btn {
+  background: #0dcaf0;
+  color: #071923;
+}
+
+.purple {
+  background: #6f42c1;
+}
+
+.language-select {
+  width: auto;
+  min-width: 130px;
+
+  padding: 10px 12px;
+
+  background: #071923;
+  color: white;
+
+  border:
+    1px solid #315466;
+
+  border-radius: 8px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.container {
+  width: 94%;
+  max-width: 1200px;
+
+  margin: 25px auto;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.hero {
+  text-align: center;
+
+  padding: 45px 15px;
+}
+
+.hero h1 {
+  font-size:
+    clamp(32px,7vw,65px);
+
+  color: #00d9ff;
+
+  margin-bottom: 15px;
+}
+
+.hero p {
+  max-width: 750px;
+
+  margin: auto;
+
+  line-height: 1.7;
+
+  color: #d8edf5;
+}
+
+.card {
+  background:
+    rgba(5,25,38,.92);
+
+  border:
+    1px solid rgba(0,217,255,.18);
+
+  border-radius: 14px;
+
+  padding: 20px;
+
+  margin-bottom: 18px;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.25);
+}
+
+h2,
+h3 {
+  margin-bottom: 15px;
+
+  color: #00d9ff;
+}
+
+h4 {
+  margin-bottom: 8px;
+}
+
+label {
+  display: block;
+
+  margin: 12px 0 6px;
+
+  color: #bfeaf5;
+
+  font-weight: bold;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+
+  padding: 13px;
+
+  border-radius: 8px;
+
+  border:
+    1px solid #315466;
+
+  background: #071923;
+
+  color: white;
+
+  outline: none;
+
+  font-family: inherit;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #00d9ff;
+}
+
+.grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(250px,1fr)
+    );
+
+  gap: 15px;
+}
+
+.agent-box {
+  background:
+    rgba(0,20,32,.9);
+
+  border:
+    1px solid #21495c;
+
+  border-radius: 12px;
+
+  padding: 15px;
+}
+
+.agent-box h4 {
+  color: #00d9ff;
+}
+
+.status {
+  display: inline-block;
+
+  padding: 6px 10px;
+
+  border-radius: 20px;
+
+  background: #263f4c;
+
+  margin: 5px 0;
+
+  font-size: 13px;
+}
+
+.status.success {
+  background: #146c43;
+  color: white;
+}
+
+.status.warning {
+  background: #856404;
+  color: white;
+}
+
+.status.danger {
+  background: #842029;
+  color: white;
+}
+
+.info {
+  line-height: 1.8;
+
+  color: #d9edf5;
+}
+
+.pin {
+  font-size: 25px;
+
+  font-weight: bold;
+
+  color: #00ff9d;
+
+  letter-spacing: 3px;
+
+  word-break: break-all;
+
+  margin: 8px 0;
+}
+
+.tracking-id {
+  font-size: 23px;
+
+  font-weight: bold;
+
+  color: #ffd43b;
+
+  letter-spacing: 1px;
+
+  word-break: break-all;
+}
+
+.pin-title {
+  color: #bfeaf5;
+
+  font-weight: bold;
+
+  margin-bottom: 8px;
+}
+
+.copy-btn {
+  margin-top: 10px;
+
+  background: #253746;
+
+  font-size: 12px;
+
+  padding: 8px 12px;
+}
+
+#map,
+#bossMap {
+  width: 100%;
+  height: 400px;
+
+  border-radius: 12px;
+
+  overflow: hidden;
+}
+
+.history-item {
+  border-left:
+    3px solid #00d9ff;
+
+  padding: 10px 15px;
+
+  margin: 10px 0;
+
+  background:
+    rgba(0,20,30,.65);
+
+  border-radius: 5px;
+}
+
+.history-item strong {
+  color: #00d9ff;
+}
+
+.small {
+  font-size: 13px;
+
+  color: #a9c7d2;
+
+  line-height: 1.6;
+}
+
+.center {
+  text-align: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.notice {
+  padding: 12px;
+
+  border-radius: 8px;
+
+  margin: 10px 0;
+
+  background:
+    rgba(0,123,255,.15);
+
+  border:
+    1px solid rgba(0,123,255,.35);
+}
+
+.error {
+  background:
+    rgba(220,53,69,.15);
+
+  border-color:
+    rgba(220,53,69,.5);
+}
+
+.success-box {
+  background:
+    rgba(25,135,84,.15);
+
+  border:
+    1px solid rgba(25,135,84,.5);
+
+  padding: 15px;
+
+  border-radius: 10px;
+
+  margin-top: 15px;
+}
+
+.credential-box {
+  margin-top: 12px;
+
+  padding: 15px;
+
+  border-radius: 10px;
+
+  background:
+    rgba(0,20,32,.8);
+
+  border:
+    1px solid rgba(0,217,255,.2);
+}
+
+.warning-box {
+  margin-top: 15px;
+
+  padding: 12px;
+
+  border-radius: 8px;
+
+  background:
+    rgba(240,173,0,.12);
+
+  border:
+    1px solid rgba(240,173,0,.4);
+
+  color: #ffe08a;
+}
+
+.public-safe {
+  border:
+    1px solid rgba(0,217,255,.25);
+
+  background:
+    rgba(0,217,255,.07);
+
+  padding: 15px;
+
+  border-radius: 10px;
+
+  margin-top: 15px;
+}
+
+.profile-card {
+  transition: .2s;
+}
+
+.profile-card:hover {
+  transform: translateY(-2px);
+  border-color: #00d9ff;
+}
+
+.avatar {
+  width: 65px;
+  height: 65px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #007bff,
+      #00d9ff
+    );
+
+  font-size: 28px;
+
+  margin-bottom: 12px;
+}
+
+.badge {
+  display: inline-block;
+
+  padding: 5px 9px;
+
+  border-radius: 15px;
+
+  background: #253746;
+
+  font-size: 12px;
+
+  margin: 3px;
+}
+
+.search-row {
+  display: grid;
+
+  grid-template-columns:
+    1fr auto;
+
+  gap: 10px;
+
+  align-items: end;
+}
+
+.stat {
+  text-align: center;
+
+  padding: 20px;
+
+  border:
+    1px solid #21495c;
+
+  border-radius: 12px;
+
+  background:
+    rgba(0,20,32,.8);
+}
+
+.stat-number {
+  display: block;
+
+  font-size: 32px;
+
+  font-weight: bold;
+
+  color: #00d9ff;
+
+  margin-bottom: 5px;
+}
+
+.contact-item {
+  display: flex;
+
+  gap: 12px;
+
+  align-items: center;
+
+  padding: 15px;
+
+  margin-bottom: 10px;
+
+  border-radius: 10px;
+
+  background:
+    rgba(0,20,32,.7);
+}
+
+.contact-icon {
+  font-size: 28px;
+}
+
+.admin-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  margin-top: 15px;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 10px;
+
+  border-bottom:
+    1px solid #21495c;
+
+  text-align: left;
+}
+
+.admin-table th {
+  color: #00d9ff;
+}
+
+.loading {
+  text-align: center;
+
+  padding: 25px;
+
+  color: #a9c7d2;
+}
+
+.empty {
+  text-align: center;
+
+  padding: 30px;
+
+  color: #a9c7d2;
+}
+
+footer {
+  text-align: center;
+
+  padding: 30px 15px;
+
+  color: #8caab5;
+
+  font-size: 13px;
+}
+
+@media(max-width:700px) {
+
+  .search-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+}
+
+@media(max-width:600px) {
+
+  .nav {
+    justify-content: center;
+  }
+
+  .logo {
+    width: 100%;
+
+    text-align: center;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  .nav-buttons {
+    width: 100%;
+  }
+
+  .nav-buttons button {
+    flex: 1;
+  }
+
+  .language-select {
+    width: 100%;
+  }
+
+  #map,
+  #bossMap {
+    height: 320px;
+  }
+
+  .pin {
+    font-size: 22px;
+  }
+
+}
+
 </style>
+
 </head>
 
 <body>
-<nav class="navbar">
-  <div class="brand">🚚 MAKYAMA TRANSPORT</div>
-  <button class="nav-btn" onclick="showPage('home')" data-i18n="home">Nyumbani</button>
-  <button class="nav-btn" onclick="showPage('register')" data-i18n="registerCargo">Sajili Mzigo</button>
-  <button class="nav-btn" onclick="showPage('agentRegister')" data-i18n="agentRegistration">Agent</button>
-  <button class="nav-btn" onclick="showPage('transporterRegister')" data-i18n="transporterRegistration">Transporter</button>
-  <button class="nav-btn" onclick="showPage('directory')" data-i18n="directory">Directory</button>
-  <button class="nav-btn" onclick="showPage('login')" data-i18n="login">Ingia</button>
-  <button class="nav-btn" onclick="showPage('tracking')" data-i18n="track">Fuatilia</button>
-  <button class="nav-btn" onclick="showPage('contact')" data-i18n="contact">Wasiliana</button>
-  <button class="nav-btn" onclick="showPage('admin')" data-i18n="admin">Admin</button>
-  <select class="lang" id="languageSelect" onchange="changeLanguage(this.value)">
-    <option value="sw">Kiswahili</option>
-    <option value="en">English</option>
-    <option value="fr">Français</option>
-    <option value="ar">العربية</option>
-    <option value="pt">Português</option>
-    <option value="es">Español</option>
-  </select>
-  <button id="logoutBtn" class="nav-btn hidden" onclick="logout()" data-i18n="logout">Toka</button>
-</nav>
 
-<section id="home" class="page active">
-  <div class="hero">
-    <h1>MAKYAMA TRANSPORT</h1>
-    <p data-i18n="heroText">Mfumo wa usafirishaji na ufuatiliaji wa mizigo kwa Agent, Transporter, Boss na mteja.</p>
-    <div class="actions">
-      <button class="primary" onclick="showPage('register')" data-i18n="registerCargo">Sajili Mzigo</button>
-      <button class="secondary" onclick="showPage('tracking')" data-i18n="track">Fuatilia Mzigo</button>
-    </div>
-  </div>
-  <div class="grid">
-    <div class="card"><h3>📦</h3><h3 data-i18n="cargoTracking">Cargo Tracking</h3><p data-i18n="cargoText">Fuatilia hatua ya mzigo kwa Tracking ID.</p></div>
-    <div class="card"><h3>📍</h3><h3>GPS</h3><p data-i18n="gpsText">Matukio ya usafirishaji yanaweza kuhifadhi eneo la GPS.</p></div>
-    <div class="card"><h3>🔔</h3><h3 data-i18n="notifications">Notifications</h3><p data-i18n="notificationText">Pokea taarifa za hatua muhimu za mzigo.</p></div>
-    <div class="card"><h3>🌍</h3><h3 data-i18n="languages">Lugha 6</h3><p>Swahili • English • Français • العربية • Português • Español</p></div>
-  </div>
+<header>
+
+<div class="nav">
+
+<div class="logo">
+MAKYAMA TRANSPORT
+</div>
+
+<div class="nav-buttons">
+
+<button
+  onclick="showPage('home')"
+  data-i18n="home">
+Nyumbani
+</button>
+
+<button
+  onclick="showPage('register')"
+  data-i18n="register">
+Sajili Mzigo
+</button>
+
+<button
+  onclick="showPage('agentRegister')"
+  data-i18n="agentRegistration">
+👤 Sajili Agent
+</button>
+
+<button
+  onclick="showPage('transporterRegister')"
+  data-i18n="transporterRegistration">
+🚚 Sajili Transporter
+</button>
+
+<button
+  onclick="showPage('directory')"
+  data-i18n="directory">
+🔎 Directory
+</button>
+
+<button
+  onclick="showPage('login')"
+  data-i18n="login">
+Ingia
+</button>
+
+<button
+  onclick="showPage('tracking')"
+  data-i18n="tracking">
+Fuatilia
+</button>
+
+<button
+  onclick="showPage('contact')"
+  data-i18n="contact">
+📞 Contact
+</button>
+
+<button
+  id="adminNavBtn"
+  class="purple hidden"
+  onclick="showPage('admin')">
+👑 Admin
+</button>
+
+<select
+  id="languageSelect"
+  class="language-select"
+  onchange="changeLanguage(this.value)"
+>
+
+<option value="sw">
+🇹🇿 Kiswahili
+</option>
+
+<option value="en">
+🇬🇧 English
+</option>
+
+<option value="fr">
+🇫🇷 Français
+</option>
+
+<option value="ar">
+🇸🇦 العربية
+</option>
+
+<option value="pt">
+🇵🇹 Português
+</option>
+
+<option value="es">
+🇪🇸 Español
+</option>
+
+</select>
+
+<button
+  id="logoutBtn"
+  class="danger hidden"
+  onclick="logout()"
+  data-i18n="logout">
+Toka
+</button>
+
+</div>
+
+</div>
+
+</header>
+
+<div class="container">
+
+<!-- HOME -->
+
+<section
+  id="home"
+  class="page active">
+
+<div class="hero">
+
+<h1>
+MAKYAMA TRANSPORT
+</h1>
+
+<p data-i18n="heroDescription">
+
+Mfumo wa kisasa wa kusajili,
+kufuatilia na kusimamia
+usafirishaji wa mizigo kutoka
+kwa Agent mmoja kwenda mwingine
+mpaka mzigo unapomfikia Boss.
+
+</p>
+
+<br>
+
+<button
+  onclick="showPage('register')"
+  data-i18n="registerCargo">
+🚚 Sajili Mzigo
+</button>
+
+<button
+  class="dark"
+  onclick="showPage('tracking')"
+  data-i18n="trackCargo">
+🔎 Fuatilia Mzigo
+</button>
+
+</div>
+
+<div class="grid">
+
+<div class="card center">
+
+<h3>
+👤 Agent
+</h3>
+
+<p class="info"
+   data-i18n="agentRegistrationText">
+
+Sajili Agent kwenye directory
+ya MAKYAMA TRANSPORT.
+
+</p>
+
+<br>
+
+<button
+  onclick="showPage('agentRegister')">
+👤 Sajili Agent
+</button>
+
+</div>
+
+<div class="card center">
+
+<h3>
+🚚 Transporter
+</h3>
+
+<p class="info"
+   data-i18n="transporterRegistrationText">
+
+Sajili kampuni au Transporter
+anayehusika na usafirishaji.
+
+</p>
+
+<br>
+
+<button
+  onclick="showPage('transporterRegister')">
+🚚 Sajili Transporter
+</button>
+
+</div>
+
+<div class="card center">
+
+<h3>
+🔎 Directory
+</h3>
+
+<p class="info">
+
+Tafuta Agent au Transporter
+kwa jina, eneo au huduma.
+
+</p>
+
+<br>
+
+<button
+  class="info-btn"
+  onclick="showPage('directory')">
+🔎 Tafuta
+</button>
+
+</div>
+
+<div class="card center">
+
+<h3>
+📦 Usajili
+</h3>
+
+<p class="info">
+
+Tengeneza Tracking ID ya kipekee
+kwa kila mzigo.
+
+</p>
+
+</div>
+
+<div class="card center">
+
+<h3>
+📍 GPS
+</h3>
+
+<p class="info">
+
+Mfumo unaweza kurekodi location
+ya Agent wakati wa hatua ya mzigo.
+
+</p>
+
+</div>
+
+<div class="card center">
+
+<h3>
+🔔 Notifications
+</h3>
+
+<p class="info">
+
+Pata taarifa kuhusu hatua mpya
+za mzigo.
+
+</p>
+
+</div>
+
+</div>
+
 </section>
 
-<section id="register" class="page">
-  <div class="card">
-    <h2 data-i18n="registerCargo">Sajili Mzigo</h2>
-    <div id="cargoRegisterStatus"></div>
-    <div class="form-grid">
-      <div><label data-i18n="cargoName">Jina la Mzigo</label><input id="cargoName"></div>
-      <div><label data-i18n="origin">Mwanzo</label><input id="origin"></div>
-      <div><label data-i18n="destination">Destination</label><input id="destination"></div>
-      <div><label data-i18n="bossName">Jina la Boss</label><input id="bossName"></div>
-      <div><label data-i18n="agentCount">Idadi ya Agents</label><input id="agentCount" type="number" min="1" max="20" value="2" onchange="buildAgents()"></div>
-    </div>
-    <div id="agentInputs" class="form-grid" style="margin-top:15px"></div>
-    <div class="actions"><button class="primary" onclick="registerCargo()" data-i18n="submit">Sajili</button></div>
-  </div>
+
+<!-- CARGO REGISTER -->
+
+<section
+  id="register"
+  class="page">
+
+<div class="card">
+
+<h2 data-i18n="registerHeading">
+📦 Sajili Mzigo
+</h2>
+
+<label data-i18n="cargoNameLabel">
+Jina la Mzigo
+</label>
+
+<input
+  id="cargoName"
+  placeholder="Mfano: Sanduku 10 za bidhaa"
+  data-i18n-placeholder="cargoNamePlaceholder">
+
+<label data-i18n="originLabel">
+Mahali pa Kuanzia
+</label>
+
+<input
+  id="origin"
+  placeholder="Mfano: Pemba"
+  data-i18n-placeholder="originPlaceholder">
+
+<label data-i18n="destinationLabel">
+Mahali pa Kwenda
+</label>
+
+<input
+  id="destination"
+  placeholder="Mfano: Zanzibar"
+  data-i18n-placeholder="destinationPlaceholder">
+
+<label data-i18n="bossNameLabel">
+Jina la Boss
+</label>
+
+<input
+  id="bossName"
+  placeholder="Jina la Boss"
+  data-i18n-placeholder="bossNamePlaceholder">
+
+<label data-i18n="agentCountLabel">
+Idadi ya Agents
+</label>
+
+<select
+  id="agentCount"
+  onchange="buildAgents()">
+
+<option value="1">
+Agent 1
+</option>
+
+<option value="2">
+Agents 2
+</option>
+
+<option value="3">
+Agents 3
+</option>
+
+<option value="4">
+Agents 4
+</option>
+
+<option value="5">
+Agents 5
+</option>
+
+<option value="6">
+Agents 6
+</option>
+
+<option value="7">
+Agents 7
+</option>
+
+<option value="8">
+Agents 8
+</option>
+
+<option value="9">
+Agents 9
+</option>
+
+<option value="10">
+Agents 10
+</option>
+
+</select>
+
+<div id="agentsContainer"></div>
+
+<br>
+
+<button
+  class="success"
+  onclick="createCargo()"
+  data-i18n="registerButton">
+🚚 Sajili Mzigo
+</button>
+
+<div id="registerResult"></div>
+
+</div>
+
 </section>
 
-<section id="agentRegister" class="page">
-  <div class="card">
-    <h2 data-i18n="agentRegistration">Usajili wa Agent</h2>
-    <div id="agentRegisterStatus"></div>
-    <div class="form-grid">
-      <div><label data-i18n="fullName">Jina Kamili</label><input id="agentFullName"></div>
-      <div><label data-i18n="phone">Simu</label><input id="agentPhone" type="tel"></div>
-      <div><label data-i18n="email">Email</label><input id="agentEmail" type="email"></div>
-      <div><label data-i18n="location">Eneo</label><input id="agentLocation"></div>
-      <div><label data-i18n="idNumber">ID / Namba ya Utambulisho</label><input id="agentId"></div>
-    </div>
-    <button class="primary" onclick="registerAgent()" data-i18n="submit">Jisajili</button>
-  </div>
+
+<!-- AGENT REGISTRATION -->
+
+<section
+  id="agentRegister"
+  class="page">
+
+<div class="card">
+
+<h2>
+👤 <span data-i18n="agentRegistration">
+Sajili Agent
+</span>
+</h2>
+
+<p class="small">
+Jaza taarifa zako ili kuonekana kwenye
+MAKYAMA TRANSPORT Directory.
+</p>
+
+<label>
+Jina Kamili
+</label>
+
+<input
+  id="agentFullName"
+  placeholder="Jina kamili">
+
+<label>
+Namba ya Simu
+</label>
+
+<input
+  id="agentPhone"
+  type="tel"
+  placeholder="+255...">
+
+<label>
+Email
+</label>
+
+<input
+  id="agentEmail"
+  type="email"
+  placeholder="example@email.com">
+
+<label>
+Eneo / Mkoa
+</label>
+
+<input
+  id="agentLocation"
+  placeholder="Mfano: Zanzibar">
+
+<label>
+Huduma
+</label>
+
+<input
+  id="agentService"
+  placeholder="Mfano: Cargo / Logistics">
+
+<label>
+Maelezo
+</label>
+
+<textarea
+  id="agentDescription"
+  placeholder="Eleza huduma zako"></textarea>
+
+<br>
+
+<button
+  class="success"
+  onclick="registerAgent()">
+👤 Sajili Agent
+</button>
+
+<div id="agentRegisterResult"></div>
+
+</div>
+
 </section>
 
-<section id="transporterRegister" class="page">
-  <div class="card">
-    <h2 data-i18n="transporterRegistration">Usajili wa Transporter</h2>
-    <div id="transporterRegisterStatus"></div>
-    <div class="form-grid">
-      <div><label data-i18n="companyName">Jina la Kampuni/Mtoa Huduma</label><input id="transporterName"></div>
-      <div><label data-i18n="phone">Simu</label><input id="transporterPhone" type="tel"></div>
-      <div><label data-i18n="email">Email</label><input id="transporterEmail" type="email"></div>
-      <div><label data-i18n="vehicle">Aina ya Gari</label><input id="vehicleType"></div>
-      <div><label data-i18n="plate">Namba ya Gari</label><input id="vehiclePlate"></div>
-      <div><label data-i18n="capacity">Capacity</label><input id="vehicleCapacity"></div>
-      <div><label data-i18n="operatingArea">Eneo la Huduma</label><input id="operatingArea"></div>
-    </div>
-    <button class="primary" onclick="registerTransporter()" data-i18n="submit">Jisajili</button>
-  </div>
+
+<!-- TRANSPORTER REGISTRATION -->
+
+<section
+  id="transporterRegister"
+  class="page">
+
+<div class="card">
+
+<h2>
+🚚 Sajili Transporter
+</h2>
+
+<p class="small">
+Sajili kampuni au mtu anayetoa
+huduma za usafirishaji.
+</p>
+
+<label>
+Jina la Transporter / Kampuni
+</label>
+
+<input
+  id="transporterName"
+  placeholder="Jina la kampuni">
+
+<label>
+Namba ya Simu
+</label>
+
+<input
+  id="transporterPhone"
+  type="tel"
+  placeholder="+255...">
+
+<label>
+Email
+</label>
+
+<input
+  id="transporterEmail"
+  type="email"
+  placeholder="example@email.com">
+
+<label>
+Eneo
+</label>
+
+<input
+  id="transporterLocation"
+  placeholder="Mfano: Dar es Salaam">
+
+<label>
+Aina ya Usafiri
+</label>
+
+<select id="transporterType">
+
+<option value="truck">
+🚛 Truck
+</option>
+
+<option value="van">
+🚐 Van
+</option>
+
+<option value="pickup">
+🛻 Pickup
+</option>
+
+<option value="boat">
+🚢 Boat
+</option>
+
+<option value="motorcycle">
+🏍️ Motorcycle
+</option>
+
+<option value="other">
+🚚 Other
+</option>
+
+</select>
+
+<label>
+Huduma
+</label>
+
+<input
+  id="transporterService"
+  placeholder="Mfano: Cargo transportation">
+
+<label>
+Maelezo
+</label>
+
+<textarea
+  id="transporterDescription"
+  placeholder="Eleza huduma zako"></textarea>
+
+<br>
+
+<button
+  class="success"
+  onclick="registerTransporter()">
+🚚 Sajili Transporter
+</button>
+
+<div id="transporterRegisterResult"></div>
+
+</div>
+
 </section>
 
-<section id="directory" class="page">
-  <div class="card">
-    <h2 data-i18n="directory">Directory / Tafuta Huduma</h2>
-    <div class="form-grid">
-      <div><label data-i18n="search">Tafuta</label><input id="directorySearch" oninput="filterDirectory()"></div>
-      <div><label data-i18n="type">Aina</label>
-        <select id="directoryType" onchange="filterDirectory()">
-          <option value="all">All</option><option value="agents">Agents</option><option value="transporters">Transporters</option>
-        </select>
-      </div>
-    </div>
-    <div class="actions"><button class="secondary" onclick="loadDirectory()" data-i18n="refresh">Refresh</button></div>
-    <div id="directoryStatus"></div>
-    <div id="directoryResults"></div>
-  </div>
+
+<!-- DIRECTORY -->
+
+<section
+  id="directory"
+  class="page">
+
+<div class="card">
+
+<h2>
+🔎 Directory / Search
+</h2>
+
+<p class="small">
+Tafuta Agents na Transporters
+wanaopatikana kwenye mfumo.
+</p>
+
+<label>
+Aina
+</label>
+
+<select id="directoryType">
+
+<option value="all">
+Wote
+</option>
+
+<option value="agent">
+👤 Agents
+</option>
+
+<option value="transporter">
+🚚 Transporters
+</option>
+
+</select>
+
+<label>
+Tafuta
+</label>
+
+<div class="search-row">
+
+<input
+  id="directorySearch"
+  placeholder="Jina, eneo, huduma..."
+  onkeydown="
+    if(event.key==='Enter')
+      searchDirectory()
+  ">
+
+<button
+  onclick="searchDirectory()">
+🔎 Tafuta
+</button>
+
+</div>
+
+<br>
+
+<button
+  class="dark"
+  onclick="loadDirectory()">
+↻ Onyesha Wote
+</button>
+
+</div>
+
+<div id="directoryResult">
+
+<div class="card empty">
+🔎 Andika unachotafuta kisha bonyeza Tafuta.
+</div>
+
+</div>
+
 </section>
 
-<section id="login" class="page">
-  <div class="card">
-    <h2>🔐 <span data-i18n="login">Ingia</span></h2>
-    <div id="loginStatus"></div>
-    <div class="form-grid">
-      <div><label data-i18n="trackingId">Tracking ID</label><input id="loginTracking" placeholder="TRK-XXXXXX"></div>
-      <div><label data-i18n="pin">PIN</label><input id="loginPin" type="password"></div>
-    </div>
-    <button class="primary" onclick="login()" data-i18n="login">Ingia</button>
-  </div>
+
+<!-- LOGIN -->
+
+<section
+  id="login"
+  class="page">
+
+<div class="card">
+
+<h2 data-i18n="loginHeading">
+🔐 Ingia
+</h2>
+
+<label data-i18n="trackingIdLabel">
+Tracking ID
+</label>
+
+<input
+  id="loginTracking"
+  placeholder="Mfano: MKT-561407"
+  data-i18n-placeholder="trackingPlaceholder">
+
+<label data-i18n="pinLabel">
+PIN
+</label>
+
+<input
+  id="loginPin"
+  type="password"
+  maxlength="20"
+  placeholder="Weka PIN"
+  data-i18n-placeholder="pinPlaceholder">
+
+<br><br>
+
+<button
+  onclick="login()"
+  data-i18n="loginButton">
+🔑 Ingia
+</button>
+
+<div id="loginResult"></div>
+
+</div>
+
 </section>
 
-<section id="tracking" class="page">
-  <div class="card">
-    <h2>🔎 <span data-i18n="track">Fuatilia Mzigo</span></h2>
-    <div class="form-grid">
-      <div><label data-i18n="trackingId">Tracking ID</label><input id="publicTracking" placeholder="TRK-XXXXXX"></div>
-    </div>
-    <div class="actions"><button class="primary" onclick="trackCargo()" data-i18n="track">Fuatilia</button></div>
-    <div id="trackingResult"></div>
-  </div>
-  <div class="card">
-    <h3>📍 GPS</h3>
-    <div id="publicMap"></div>
-  </div>
+
+<!-- TRACKING -->
+
+<section
+  id="tracking"
+  class="page">
+
+<div class="card">
+
+<h2 data-i18n="trackingHeading">
+🔎 Fuatilia Mzigo
+</h2>
+
+<label data-i18n="trackingIdLabel">
+Tracking ID
+</label>
+
+<input
+  id="trackingInput"
+  placeholder="Weka Tracking ID"
+  data-i18n-placeholder="trackingInputPlaceholder">
+
+<br><br>
+
+<button
+  onclick="trackCargo()"
+  data-i18n="searchButton">
+🔍 Tafuta
+</button>
+
+</div>
+
+<div id="trackingResult"></div>
+
 </section>
 
-<section id="dashboard" class="page">
-  <div class="card">
-    <h2 id="dashboardTitle">Dashboard</h2>
-    <div id="dashboardContent"></div>
-  </div>
-  <div class="card">
-    <h3>📍 GPS / History</h3>
-    <div id="bossMap"></div>
-    <div id="history" style="margin-top:20px"></div>
-  </div>
+
+<!-- CONTACT -->
+
+<section
+  id="contact"
+  class="page">
+
+<div class="card">
+
+<h2>
+📞 Contact MAKYAMA TRANSPORT
+</h2>
+
+<p class="small">
+Wasiliana nasi kwa taarifa,
+msaada au maswali kuhusu mfumo.
+</p>
+
+<div class="contact-item">
+
+<div class="contact-icon">
+📞
+</div>
+
+<div>
+
+<strong>Simu</strong>
+
+<br>
+
+<a
+  id="contactPhoneLink"
+  href="tel:+255000000000"
+  style="color:#00d9ff">
++255 000 000 000
+</a>
+
+</div>
+
+</div>
+
+<div class="contact-item">
+
+<div class="contact-icon">
+💬
+</div>
+
+<div>
+
+<strong>WhatsApp</strong>
+
+<br>
+
+<a
+  id="contactWhatsAppLink"
+  href="https://wa.me/255000000000"
+  style="color:#00d9ff"
+  target="_blank">
+WhatsApp MAKYAMA
+</a>
+
+</div>
+
+</div>
+
+<div class="contact-item">
+
+<div class="contact-icon">
+✉️
+</div>
+
+<div>
+
+<strong>Email</strong>
+
+<br>
+
+<a
+  href="mailto:info@makyamatransport.com"
+  style="color:#00d9ff">
+info@makyamatransport.com
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+✉️ Tuma Ujumbe
+</h2>
+
+<label>
+Jina
+</label>
+
+<input
+  id="contactName"
+  placeholder="Jina lako">
+
+<label>
+Email / Simu
+</label>
+
+<input
+  id="contactReply"
+  placeholder="Email au namba ya simu">
+
+<label>
+Ujumbe
+</label>
+
+<textarea
+  id="contactMessage"
+  placeholder="Andika ujumbe wako"></textarea>
+
+<br>
+
+<button
+  onclick="sendContactMessage()"
+  class="success">
+📨 Tuma Ujumbe
+</button>
+
+<div id="contactResult"></div>
+
+</div>
+
 </section>
 
-<section id="contact" class="page">
-  <div class="card">
-    <h2 data-i18n="contact">Wasiliana</h2>
-    <p data-i18n="contactText">Tuma ujumbe kwa timu ya MAKYAMA TRANSPORT.</p>
-    <div id="contactStatus"></div>
-    <div class="form-grid">
-      <div><label data-i18n="fullName">Jina</label><input id="contactName"></div>
-      <div><label data-i18n="email">Email/Simu</label><input id="contactEmail"></div>
-    </div>
-    <label data-i18n="message">Ujumbe</label>
-    <textarea id="contactMessage"></textarea>
-    <button class="primary" onclick="sendContact()" data-i18n="send">Tuma</button>
-  </div>
+
+<!-- DASHBOARD -->
+
+<section
+  id="dashboard"
+  class="page">
+
+<div id="dashboardContent"></div>
+
 </section>
 
-<section id="admin" class="page">
-  <div id="adminLoginBox" class="card">
-    <h2>👑 Admin</h2>
-    <p class="small" data-i18n="adminSecurity">Kwa usalama, admin authentication inapaswa kuthibitishwa upande wa server.</p>
-    <div id="adminStatus"></div>
-    <div class="form-grid">
-      <div><label>Username</label><input id="adminUsername" autocomplete="username"></div>
-      <div><label>Password</label><input id="adminPassword" type="password" autocomplete="current-password"></div>
-    </div>
-    <button class="primary" onclick="adminLogin()">Ingia Admin</button>
-  </div>
-  <div id="adminPanel" class="card hidden">
-    <h2>👑 Admin Dashboard</h2>
-    <div class="grid">
-      <div class="kpi"><span>Agents</span><strong id="agentCountStat">0</strong></div>
-      <div class="kpi"><span>Transporters</span><strong id="transporterCountStat">0</strong></div>
-      <div class="kpi"><span>Messages</span><strong id="messageCountStat">0</strong></div>
-    </div>
-    <div class="actions">
-      <button class="secondary" onclick="loadAdminData()">Refresh Data</button>
-      <button class="danger" onclick="adminLogout()">Admin Logout</button>
-    </div>
-    <div id="adminData"></div>
-  </div>
+
+<!-- ADMIN -->
+
+<section
+  id="admin"
+  class="page">
+
+<div class="card">
+
+<h2>
+👑 Admin Dashboard
+</h2>
+
+<p class="small">
+Usimamizi wa Agents, Transporters
+na Cargo za mfumo.
+</p>
+
+</div>
+
+<div
+  id="adminStats"
+  class="grid">
+
+<div class="stat">
+
+<span
+  id="adminAgentCount"
+  class="stat-number">
+0
+</span>
+
+Agents
+
+</div>
+
+<div class="stat">
+
+<span
+  id="adminTransporterCount"
+  class="stat-number">
+0
+</span>
+
+Transporters
+
+</div>
+
+<div class="stat">
+
+<span
+  id="adminCargoCount"
+  class="stat-number">
+0
+</span>
+
+Cargo
+
+</div>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h3>
+👤 Agents
+</h3>
+
+<div id="adminAgents">
+<div class="loading">
+Inapakia...
+</div>
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>
+🚚 Transporters
+</h3>
+
+<div id="adminTransporters">
+<div class="loading">
+Inapakia...
+</div>
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>
+📦 Cargo
+</h3>
+
+<div id="adminCargo">
+<div class="loading">
+Inapakia...
+</div>
+</div>
+
+</div>
+
 </section>
 
-<footer>© 2026 MAKYAMA TRANSPORT — Cargo Transport & Tracking System</footer>
+</div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<footer>
+
+© 2026 MAKYAMA TRANSPORT —
+Cargo Transport & Tracking System
+
+</footer>
+
+
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+<script
+  src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js">
+</script>
+
+<script
+  src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js">
+</script>
+
+<script
+  src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js">
+</script>
+
+<script
+  src="https://www.gstatic.com/firebasejs/10.12.5/firebase-messaging-compat.js">
+</script>
+
 
 <script>
-const firebaseConfig={
-  apiKey:"AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
-  authDomain:"makyama-e5e89.firebaseapp.com",
-  databaseURL:"https://makyama-e5e89-default-rtdb.firebaseio.com",
-  projectId:"makyama-e5e89",
-  storageBucket:"makyama-e5e89.firebasestorage.app",
-  messagingSenderId:"229527204095",
-  appId:"1:229527204095:web:2bdfe0589cf42794b3dcca"
+
+/* =========================================================
+FIREBASE
+========================================================= */
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyBe2kQr-75nBWLLE5GDNBvhGFT91FtBbBw",
+
+authDomain:
+"makyama-e5e89.firebaseapp.com",
+
+databaseURL:
+"https://makyama-e5e89-default-rtdb.firebaseio.com",
+
+projectId:
+"makyama-e5e89",
+
+storageBucket:
+"makyama-e5e89.firebasestorage.app",
+
+messagingSenderId:
+"229527204095",
+
+appId:
+"1:229527204095:web:2bdfe0589cf42794b3dcca"
+
 };
-const VAPID_KEY="BCs6hwdO9D94ZamQcDk1YdhvC1M13x52igURFUqDmLDn4heYn25BYBsE8hlv1GjukFXchcUUwbRGENo7FJiZHFs";
-const SERVER="https://makyama-dagaa.onrender.com";
 
-firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const database=firebase.database();
-let messaging=null;
-try{messaging=firebase.messaging()}catch(e){console.warn("FCM unavailable",e)}
+firebase.initializeApp(
+firebaseConfig
+);
 
-let currentUser=null,currentSession=null,publicMap=null,bossMap=null;
-let publicMarkers=[],bossMarkers=[],directoryCache={agents:[],transporters:[]};
-let adminLoggedIn=false;
+const auth =
+firebase.auth();
 
-const T={
-sw:{
-home:"Nyumbani",registerCargo:"Sajili Mzigo",agentRegistration:"Usajili wa Agent",
-transporterRegistration:"Usajili wa Transporter",directory:"Directory",login:"Ingia",track:"Fuatilia",
-contact:"Wasiliana",admin:"Admin",logout:"Toka",heroText:"Mfumo wa usafirishaji na ufuatiliaji wa mizigo kwa Agent, Transporter, Boss na mteja.",
-cargoTracking:"Cargo Tracking",cargoText:"Fuatilia hatua ya mzigo kwa Tracking ID.",gpsText:"Matukio ya usafirishaji yanaweza kuhifadhi eneo la GPS.",
-notifications:"Notifications",notificationText:"Pokea taarifa za hatua muhimu za mzigo.",languages:"Lugha 6",
-cargoName:"Jina la Mzigo",origin:"Mwanzo",destination:"Destination",bossName:"Jina la Boss",agentCount:"Idadi ya Agents",
-submit:"Sajili",fullName:"Jina Kamili",phone:"Simu",email:"Email",location:"Eneo",idNumber:"ID / Namba ya Utambulisho",
-companyName:"Jina la Kampuni/Mtoa Huduma",vehicle:"Aina ya Gari",plate:"Namba ya Gari",capacity:"Capacity",
-operatingArea:"Eneo la Huduma",search:"Tafuta",type:"Aina",refresh:"Refresh",trackingId:"Tracking ID",pin:"PIN",
-contactText:"Tuma ujumbe kwa timu ya MAKYAMA TRANSPORT.",message:"Ujumbe",send:"Tuma",
-adminSecurity:"Kwa usalama, admin authentication inapaswa kuthibitishwa upande wa server."
+const database =
+firebase.database();
+
+
+/* =========================================================
+MESSAGING
+========================================================= */
+
+let messaging = null;
+
+try {
+
+messaging =
+firebase.messaging();
+
+} catch(error) {
+
+console.error(
+"Firebase Messaging error:",
+error
+);
+
+}
+
+const VAPID_KEY =
+"BCs6hwdO9D94ZamQcDk1YdhvC1M13x52igURFUqDmLDn4heYn25BYBsE8hlv1GjukFXchcUUwbRGENo7FJiZHFs";
+
+
+/* =========================================================
+SERVER
+========================================================= */
+
+const SERVER =
+"https://makyama-dagaa.onrender.com";
+
+
+/* =========================================================
+GLOBAL
+========================================================= */
+
+let currentUser = null;
+
+let currentSession = null;
+
+let publicMap = null;
+
+let bossMap = null;
+
+let publicMarkers = [];
+
+let bossMarkers = [];
+
+
+/* =========================================================
+LANGUAGES
+========================================================= */
+
+const translations = {
+
+sw: {
+
+home:"Nyumbani",
+register:"Sajili Mzigo",
+login:"Ingia",
+tracking:"Fuatilia",
+logout:"Toka",
+
+agentRegistration:
+"Sajili Agent",
+
+transporterRegistration:
+"Sajili Transporter",
+
+directory:
+"Directory",
+
+contact:
+"Contact",
+
+heroDescription:
+"Mfumo wa kisasa wa kusajili, kufuatilia na kusimamia usafirishaji wa mizigo kutoka kwa Agent mmoja kwenda mwingine mpaka mzigo unapomfikia Boss.",
+
+registerCargo:
+"🚚 Sajili Mzigo",
+
+trackCargo:
+"🔎 Fuatilia Mzigo",
+
+agentRegistrationText:
+"Sajili Agent kwenye directory ya MAKYAMA TRANSPORT.",
+
+transporterRegistrationText:
+"Sajili Transporter anayehusika na usafirishaji.",
+
+registrationTitle:
+"📦 Usajili",
+
+registrationText:
+"Tengeneza Tracking ID ya kipekee kwa kila mzigo.",
+
+gpsTitle:
+"📍 GPS",
+
+gpsText:
+"Mfumo unaweza kurekodi location ya Agent wakati wa hatua ya mzigo.",
+
+historyTitle:
+"🕐 Historia",
+
+historyText:
+"Kila hatua ina muda na historia yake.",
+
+registerHeading:
+"📦 Sajili Mzigo",
+
+cargoNameLabel:
+"Jina la Mzigo",
+
+cargoNamePlaceholder:
+"Mfano: Sanduku 10 za bidhaa",
+
+originLabel:
+"Mahali pa Kuanzia",
+
+originPlaceholder:
+"Mfano: Pemba",
+
+destinationLabel:
+"Mahali pa Kwenda",
+
+destinationPlaceholder:
+"Mfano: Zanzibar",
+
+bossNameLabel:
+"Jina la Boss",
+
+bossNamePlaceholder:
+"Jina la Boss",
+
+agentCountLabel:
+"Idadi ya Agents",
+
+registerButton:
+"🚚 Sajili Mzigo",
+
+loginHeading:
+"🔐 Ingia",
+
+trackingIdLabel:
+"Tracking ID",
+
+trackingPlaceholder:
+"Mfano: MKT-561407",
+
+pinLabel:
+"PIN",
+
+pinPlaceholder:
+"Weka PIN",
+
+loginButton:
+"🔑 Ingia",
+
+trackingHeading:
+"🔎 Fuatilia Mzigo",
+
+trackingInputPlaceholder:
+"Weka Tracking ID",
+
+searchButton:
+"🔍 Tafuta"
+
 },
-en:{
-home:"Home",registerCargo:"Register Cargo",agentRegistration:"Agent Registration",transporterRegistration:"Transporter Registration",
-directory:"Directory",login:"Login",track:"Track",contact:"Contact",admin:"Admin",logout:"Logout",
-heroText:"Cargo transportation and tracking system for Agents, Transporters, Bosses and customers.",
-cargoTracking:"Cargo Tracking",cargoText:"Track cargo progress using a Tracking ID.",gpsText:"Transport events can store GPS location.",
-notifications:"Notifications",notificationText:"Receive updates about important cargo stages.",languages:"6 Languages",
-cargoName:"Cargo Name",origin:"Origin",destination:"Destination",bossName:"Boss Name",agentCount:"Number of Agents",
-submit:"Register",fullName:"Full Name",phone:"Phone",email:"Email",location:"Location",idNumber:"ID / Identification Number",
-companyName:"Company/Provider Name",vehicle:"Vehicle Type",plate:"Vehicle Plate",capacity:"Capacity",
-operatingArea:"Operating Area",search:"Search",type:"Type",refresh:"Refresh",trackingId:"Tracking ID",pin:"PIN",
-contactText:"Send a message to the MAKYAMA TRANSPORT team.",message:"Message",send:"Send",
-adminSecurity:"For security, admin authentication should be verified on the server."
-},
-fr:{
-home:"Accueil",registerCargo:"Enregistrer un colis",agentRegistration:"Inscription Agent",transporterRegistration:"Inscription Transporteur",
-directory:"Annuaire",login:"Connexion",track:"Suivre",contact:"Contact",admin:"Admin",logout:"Déconnexion",
-heroText:"Système de transport et de suivi des marchandises pour agents, transporteurs, responsables et clients.",
-cargoTracking:"Suivi du colis",cargoText:"Suivez le colis avec l'identifiant de suivi.",gpsText:"Les événements peuvent enregistrer la position GPS.",
-notifications:"Notifications",notificationText:"Recevez les mises à jour importantes.",languages:"6 langues",
-cargoName:"Nom du colis",origin:"Origine",destination:"Destination",bossName:"Nom du responsable",agentCount:"Nombre d'agents",
-submit:"Enregistrer",fullName:"Nom complet",phone:"Téléphone",email:"Email",location:"Lieu",idNumber:"N° d'identification",
-companyName:"Nom de l'entreprise/prestataire",vehicle:"Type de véhicule",plate:"Plaque",capacity:"Capacité",
-operatingArea:"Zone de service",search:"Rechercher",type:"Type",refresh:"Actualiser",trackingId:"Identifiant de suivi",pin:"PIN",
-contactText:"Envoyez un message à l'équipe MAKYAMA TRANSPORT.",message:"Message",send:"Envoyer",
-adminSecurity:"Pour la sécurité, l'authentification admin doit être vérifiée côté serveur."
-},
-ar:{
-home:"الرئيسية",registerCargo:"تسجيل شحنة",agentRegistration:"تسجيل وكيل",transporterRegistration:"تسجيل ناقل",
-directory:"الدليل",login:"دخول",track:"تتبع",contact:"اتصل بنا",admin:"المشرف",logout:"خروج",
-heroText:"نظام نقل وتتبع الشحنات للوكلاء والناقلين والمديرين والعملاء.",
-cargoTracking:"تتبع الشحنة",cargoText:"تتبع حالة الشحنة باستخدام رقم التتبع.",gpsText:"يمكن حفظ موقع GPS مع أحداث النقل.",
-notifications:"الإشعارات",notificationText:"استقبل تحديثات مراحل الشحنة المهمة.",languages:"6 لغات",
-cargoName:"اسم الشحنة",origin:"المصدر",destination:"الوجهة",bossName:"اسم المدير",agentCount:"عدد الوكلاء",
-submit:"تسجيل",fullName:"الاسم الكامل",phone:"الهاتف",email:"البريد الإلكتروني",location:"الموقع",idNumber:"رقم الهوية",
-companyName:"اسم الشركة/مقدم الخدمة",vehicle:"نوع المركبة",plate:"رقم المركبة",capacity:"السعة",
-operatingArea:"منطقة الخدمة",search:"بحث",type:"النوع",refresh:"تحديث",trackingId:"رقم التتبع",pin:"الرقم السري",
-contactText:"أرسل رسالة إلى فريق MAKYAMA TRANSPORT.",message:"الرسالة",send:"إرسال",
-adminSecurity:"لأسباب أمنية يجب التحقق من مصادقة المشرف على الخادم."
-},
-pt:{
-home:"Início",registerCargo:"Registar carga",agentRegistration:"Registo de agente",transporterRegistration:"Registo de transportador",
-directory:"Diretório",login:"Entrar",track:"Rastrear",contact:"Contacto",admin:"Admin",logout:"Sair",
-heroText:"Sistema de transporte e rastreamento de cargas para agentes, transportadores, responsáveis e clientes.",
-cargoTracking:"Rastreamento",cargoText:"Acompanhe a carga usando o ID de rastreamento.",gpsText:"Os eventos podem guardar localização GPS.",
-notifications:"Notificações",notificationText:"Receba atualizações importantes.",languages:"6 idiomas",
-cargoName:"Nome da carga",origin:"Origem",destination:"Destino",bossName:"Nome do responsável",agentCount:"Número de agentes",
-submit:"Registar",fullName:"Nome completo",phone:"Telefone",email:"Email",location:"Localização",idNumber:"Número de identificação",
-companyName:"Nome da empresa/prestador",vehicle:"Tipo de veículo",plate:"Matrícula",capacity:"Capacidade",
-operatingArea:"Área de operação",search:"Pesquisar",type:"Tipo",refresh:"Atualizar",trackingId:"ID de rastreamento",pin:"PIN",
-contactText:"Envie uma mensagem à equipa MAKYAMA TRANSPORT.",message:"Mensagem",send:"Enviar",
-adminSecurity:"Por segurança, a autenticação do administrador deve ser verificada no servidor."
-},
-es:{
-home:"Inicio",registerCargo:"Registrar carga",agentRegistration:"Registro de agente",transporterRegistration:"Registro de transportista",
-directory:"Directorio",login:"Iniciar sesión",track:"Rastrear",contact:"Contacto",admin:"Admin",logout:"Salir",
-heroText:"Sistema de transporte y seguimiento de cargas para agentes, transportistas, responsables y clientes.",
-cargoTracking:"Seguimiento de carga",cargoText:"Sigue la carga mediante el ID de seguimiento.",gpsText:"Los eventos pueden guardar ubicación GPS.",
-notifications:"Notificaciones",notificationText:"Recibe actualizaciones importantes.",languages:"6 idiomas",
-cargoName:"Nombre de carga",origin:"Origen",destination:"Destino",bossName:"Nombre del responsable",agentCount:"Número de agentes",
-submit:"Registrar",fullName:"Nombre completo",phone:"Teléfono",email:"Email",location:"Ubicación",idNumber:"Número de identificación",
-companyName:"Empresa/proveedor",vehicle:"Tipo de vehículo",plate:"Matrícula",capacity:"Capacidad",
-operatingArea:"Área de operación",search:"Buscar",type:"Tipo",refresh:"Actualizar",trackingId:"ID de seguimiento",pin:"PIN",
-contactText:"Envía un mensaje al equipo de MAKYAMA TRANSPORT.",message:"Mensaje",send:"Enviar",
-adminSecurity:"Por seguridad, la autenticación del administrador debe verificarse en el servidor."
-}};
 
-function escapeHtml(value){
- if(value===null||value===undefined)return "";
- return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
-}
-function setStatus(id,msg,type=""){
- const el=document.getElementById(id);
- if(el)el.innerHTML=msg?`<div class="status ${type}">${msg}</div>`:"";
-}
-function showPage(page){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- const el=document.getElementById(page);
- if(el)el.classList.add("active");
- window.scrollTo({top:0,behavior:"smooth"});
- if(page==="directory")loadDirectory();
-}
-function changeLanguage(lang){
- if(!T[lang])lang="sw";
- localStorage.setItem("makyamaLanguage",lang);
- document.getElementById("languageSelect").value=lang;
- document.documentElement.lang=lang;
- document.body.dir=lang==="ar"?"rtl":"ltr";
- document.querySelectorAll("[data-i18n]").forEach(el=>{
-   const key=el.getAttribute("data-i18n");
-   if(T[lang][key])el.textContent=T[lang][key];
- });
-}
-function t(key){
- const lang=localStorage.getItem("makyamaLanguage")||"sw";
- return (T[lang]&&T[lang][key])||T.sw[key]||key;
-}
-function buildAgents(){
- const n=Math.max(1,Math.min(20,parseInt(document.getElementById("agentCount")?.value||1)));
- const box=document.getElementById("agentInputs");
- if(!box)return;
- box.innerHTML="";
- for(let i=1;i<=n;i++){
-   box.innerHTML+=`<div><label>Agent ${i}</label><input class="agentName" data-stage="${i}" placeholder="Jina la Agent ${i}"></div>`;
- }
-}
-async function api(path,options={}){
- const res=await fetch(SERVER+path,options);
- let data={};
- try{data=await res.json()}catch(e){}
- if(!res.ok)throw new Error(data.message||data.error||`HTTP ${res.status}`);
- return data;
-}
-async function registerCargo(){
- const cargoName=document.getElementById("cargoName").value.trim();
- const origin=document.getElementById("origin").value.trim();
- const destination=document.getElementById("destination").value.trim();
- const bossName=document.getElementById("bossName").value.trim();
- const names=[...document.querySelectorAll(".agentName")].map(x=>x.value.trim()).filter(Boolean);
- if(!cargoName||!origin||!destination||!bossName||!names.length){
-   setStatus("cargoRegisterStatus","Jaza taarifa zote muhimu.","err");return;
- }
- try{
-   setStatus("cargoRegisterStatus","Inasajili...","warn");
-   const data=await api("/api/create-cargo",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({cargoName,origin,destination,bossName,agents:names})});
-   let html=`<div class="status ok"><b>Usajili umefanikiwa.</b><br>Tracking ID: <strong>${escapeHtml(data.trackingId||"")}</strong>`;
-   if(data.boss?.pin)html+=`<br>Boss PIN: <strong>${escapeHtml(data.boss.pin)}</strong>`;
-   if(Array.isArray(data.agents))data.agents.forEach(a=>{html+=`<br>Agent ${escapeHtml(a.stage)} PIN: <strong>${escapeHtml(a.pin)}</strong>`});
-   html+="</div>";
-   document.getElementById("cargoRegisterStatus").innerHTML=html;
- }catch(e){setStatus("cargoRegisterStatus","Imeshindikana: "+escapeHtml(e.message),"err")}
-}
-async function login(){
- const trackingId=document.getElementById("loginTracking").value.trim();
- const pin=document.getElementById("loginPin").value.trim();
- if(!trackingId||!pin){setStatus("loginStatus","Weka Tracking ID na PIN.","err");return}
- try{
-   setStatus("loginStatus","Inaingia...","warn");
-   const data=await api("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({trackingId,pin})});
-   if(!data.ok||!data.token)throw new Error(data.message||"Login haikufanikiwa");
-   await auth.signInWithCustomToken(data.token);
-   currentUser=auth.currentUser;currentSession=data;
-   document.getElementById("logoutBtn").classList.remove("hidden");
-   setStatus("loginStatus","Umeingia kikamilifu.","ok");
-   showPage("dashboard");await loadDashboard();
-   registerNotifications().catch(console.warn);
- }catch(e){setStatus("loginStatus","Login imeshindikana: "+escapeHtml(e.message),"err")}
-}
-async function logout(){
- try{await auth.signOut()}catch(e){}
- currentUser=null;currentSession=null;
- document.getElementById("logoutBtn").classList.add("hidden");
- showPage("home");
-}
-async function trackCargo(){
- const id=document.getElementById("publicTracking").value.trim();
- if(!id){document.getElementById("trackingResult").innerHTML='<div class="status err">Weka Tracking ID.</div>';return}
- try{
-   const data=await api("/api/cargo/"+encodeURIComponent(id));
-   if(!data.ok||!data.cargo)throw new Error("Mzigo haujapatikana");
-   const c=data.cargo;
-   document.getElementById("trackingResult").innerHTML=renderPublicCargo(c);
-   renderPublicMap(c);
- }catch(e){document.getElementById("trackingResult").innerHTML=`<div class="status err">${escapeHtml(e.message)}</div>`}
-}
-function formatPublicStatus(s){
- const map={
- WAITING_FOR_AGENT:"Inasubiri Agent",WAITING_FOR_RECEIVE:"Inasubiri kupokelewa",
- WAITING_FOR_RELEASE:"Inasubiri kuachiliwa",WAITING_FOR_RELEASE_AFTER_RECEIVE:"Inasubiri kuachiliwa baada ya kupokelewa",
- IN_TRANSIT:"Ipo njiani",WAITING_FOR_BOSS:"Inasubiri Boss",DELIVERED:"Imefika",COMPLETED:"Imekamilika"
- };
- return map[s]||s||"Unknown";
-}
-function normalizeStages(c){return Array.isArray(c.stages)?c.stages:Object.values(c.stages||{});}
-function normalizeHistory(c){return Array.isArray(c.history)?c.history:Object.values(c.history||{});}
-function renderPublicCargo(c){
- const stages=normalizeStages(c);
- let h=`<div class="result"><h3>📦 ${escapeHtml(c.cargoName||"Cargo")}</h3>
- <p><b>Tracking ID:</b> ${escapeHtml(c.trackingId||"")}</p>
- <p><b>Route:</b> ${escapeHtml(c.origin||"")} → ${escapeHtml(c.destination||"")}</p>
- <p><b>Status:</b> <span class="badge">${escapeHtml(formatPublicStatus(c.status))}</span></p></div>`;
- if(stages.length){
-   h+=`<div class="card"><h3>Stages</h3>`;
-   stages.forEach((s,i)=>{h+=`<div class="result"><b>Agent ${escapeHtml(s.stage||i+1)}</b> — ${escapeHtml(s.name||"")}<br>Status: ${escapeHtml(formatPublicStatus(s.status||""))}</div>`});
-   h+="</div>";
- }
- return h;
-}
-function getLocationFromEvent(e){
- return e?.location||e?.gps||e?.coordinates||null;
-}
-function renderPublicMap(c){
- if(!publicMap)publicMap=L.map("publicMap").setView([-6.1659,39.2026],7);
- publicMarkers.forEach(m=>publicMap.removeLayer(m));publicMarkers=[];
- const points=[];
- const events=collectEvents(c);
- events.forEach(e=>{
-   const loc=getLocationFromEvent(e);
-   if(!loc)return;
-   const lat=parseFloat(loc.lat??loc.latitude),lng=parseFloat(loc.lng??loc.longitude);
-   if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
-   points.push([lat,lng]);
-   const m=L.marker([lat,lng]).addTo(publicMap).bindPopup(escapeHtml(e.label||e.action||"Event"));
-   publicMarkers.push(m);
- });
- if(points.length)publicMap.fitBounds(points,{padding:[20,20]});
-}
-function collectEvents(c){
- const out=[];
- normalizeHistory(c).forEach(e=>out.push({...e,label:e.label||e.action||"History"}));
- normalizeStages(c).forEach(s=>{
-   normalizeHistory(s).forEach(e=>out.push({...e,label:e.label||e.action||`Agent ${s.stage}`}));
-   if(s.location)out.push({location:s.location,label:`Agent ${s.stage}`});
- });
- if(c.bossHistory)Object.values(c.bossHistory||{}).forEach(e=>out.push({...e,label:e.label||e.action||"Boss"}));
- return out;
-}
-function formatTime(v){if(!v)return"";try{return new Date(v).toLocaleString()}catch(e){return String(v)}}
-function renderHistory(c){
- const events=collectEvents(c);
- if(!events.length)return"<p class='small'>Hakuna history iliyopatikana.</p>";
- return `<div class="timeline">${events.map(e=>`<div class="timeline-item"><b>${escapeHtml(e.label||e.action||"Event")}</b><br><span class="small">${escapeHtml(formatTime(e.timestamp||e.createdAt||e.time))}</span></div>`).join("")}</div>`;
-}
-async function loadDashboard(){
- if(!currentSession)return;
- try{
-   const id=currentSession.trackingId;
-   const token=await auth.currentUser.getIdToken();
-   const data=await api("/api/cargo/"+encodeURIComponent(id),{headers:{Authorization:"Bearer "+token}});
-   const c=data.cargo;
-   const role=currentSession.role;
-   document.getElementById("dashboardTitle").textContent=role==="boss"?"Boss Dashboard":`Agent ${currentSession.stage} Dashboard`;
-   if(role==="boss")renderBossDashboard(c);else renderAgentDashboard(c);
-   renderBossMap(c);
- }catch(e){document.getElementById("dashboardContent").innerHTML=`<div class="status err">${escapeHtml(e.message)}</div>`}
-}
-function renderAgentDashboard(c){
- const stage=normalizeStages(c).find(s=>String(s.stage)===String(currentSession.stage))||{};
- let html=`<div class="grid"><div class="kpi"><span>Tracking ID</span><strong style="font-size:20px">${escapeHtml(c.trackingId)}</strong></div>
- <div class="kpi"><span>Status</span><strong style="font-size:18px">${escapeHtml(formatPublicStatus(stage.status||c.status))}</strong></div></div>`;
- if(String(currentSession.stage)==="1" && stage.status==="WAITING_FOR_RELEASE")html+=`<div class="actions"><button class="success" onclick="agentAction('RELEASE')">🚚 Release</button></div>`;
- if(Number(currentSession.stage)>=2){
-   if(stage.status==="WAITING_FOR_RECEIVE")html+=`<div class="actions"><button class="primary" onclick="agentAction('RECEIVE')">📦 Receive</button></div>`;
-   if(stage.status==="WAITING_FOR_RELEASE_AFTER_RECEIVE")html+=`<div class="actions"><button class="success" onclick="agentAction('RELEASE')">🚚 Release</button></div>`;
- }
- html+=`<div class="actions"><button class="secondary" onclick="agentGPS()">📍 Tuma GPS</button></div>`;
- document.getElementById("dashboardContent").innerHTML=html;
-}
-function renderBossDashboard(c){
- let html=`<div class="grid"><div class="kpi"><span>Tracking ID</span><strong style="font-size:20px">${escapeHtml(c.trackingId)}</strong></div>
- <div class="kpi"><span>Status</span><strong style="font-size:18px">${escapeHtml(formatPublicStatus(c.status))}</strong></div>
- <div class="kpi"><span>Boss</span><strong style="font-size:18px">${escapeHtml(c.bossName||"")}</strong></div></div>`;
- if(c.status==="WAITING_FOR_BOSS")html+=`<div class="actions"><button class="success" onclick="bossReceive()">📦 Boss Receive</button></div>`;
- const stages=normalizeStages(c);
- html+=`<h3>Agents</h3>`;
- stages.forEach(s=>{
-   html+=`<div class="result"><b>Agent ${escapeHtml(s.stage)}</b>: ${escapeHtml(s.name||"")} — ${escapeHtml(formatPublicStatus(s.status||""))}`;
-   if(Number(s.stage)>=2)html+=` <button class="secondary" onclick="resetAgentPin(${Number(s.stage)})">Reset PIN</button>`;
-   html+="</div>";
- });
- document.getElementById("dashboardContent").innerHTML=html;
-}
-async function authFetch(path,body){
- const token=await auth.currentUser.getIdToken();
- return api(path,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:JSON.stringify(body)});
-}
-function getGPS(){
- return new Promise((resolve,reject)=>{
-   if(!navigator.geolocation)return reject(new Error("GPS haipatikani kwenye kifaa hiki."));
-   navigator.geolocation.getCurrentPosition(p=>resolve({lat:p.coords.latitude,lng:p.coords.longitude,accuracy:p.coords.accuracy}),e=>reject(e),{enableHighAccuracy:true,timeout:15000,maximumAge:0});
- });
-}
-async function agentGPS(){
- try{
-   const location=await getGPS();
-   await authFetch("/api/agent-action",{trackingId:currentSession.trackingId,action:"GPS",location});
-   alert("GPS imetumwa.");
-   loadDashboard();
- }catch(e){alert("GPS: "+e.message)}
-}
-async function agentAction(action){
- try{
-   const location=await getGPS().catch(()=>null);
-   await authFetch("/api/agent-action",{trackingId:currentSession.trackingId,action,location});
-   await loadDashboard();
- }catch(e){alert(e.message)}
-}
-async function bossReceive(){
- try{
-   const location=await getGPS().catch(()=>null);
-   await authFetch("/api/boss-receive",{trackingId:currentSession.trackingId,location});
-   await loadDashboard();
- }catch(e){alert(e.message)}
-}
-async function resetAgentPin(stage){
- try{
-   const data=await authFetch("/api/reset-agent-pin",{trackingId:currentSession.trackingId,stage});
-   alert("PIN mpya: "+(data.pin||data.newPin||"Angalia response ya server."));
-   loadDashboard();
- }catch(e){alert(e.message)}
-}
-function renderBossMap(c){
- if(!bossMap)bossMap=L.map("bossMap").setView([-6.1659,39.2026],7);
- bossMarkers.forEach(m=>bossMap.removeLayer(m));bossMarkers=[];
- const points=[];
- collectEvents(c).forEach(e=>{
-   const loc=getLocationFromEvent(e);if(!loc)return;
-   const lat=parseFloat(loc.lat??loc.latitude),lng=parseFloat(loc.lng??loc.longitude);
-   if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
-   points.push([lat,lng]);
-   bossMarkers.push(L.marker([lat,lng]).addTo(bossMap).bindPopup(escapeHtml(e.label||"Event")));
- });
- if(points.length)bossMap.fitBounds(points,{padding:[20,20]});
- document.getElementById("history").innerHTML=renderHistory(c);
-}
-async function registerNotifications(){
- if(!messaging||!("Notification" in window))return;
- const permission=await Notification.requestPermission();
- if(permission!=="granted")return;
- try{
-   const registration=await navigator.serviceWorker.register("/firebase-messaging-sw.js");
-   const token=await messaging.getToken({vapidKey:VAPID_KEY,serviceWorkerRegistration:registration});
-   if(!token||!auth.currentUser)return;
-   const idToken=await auth.currentUser.getIdToken();
-   await fetch(SERVER+"/api/register-device",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+idToken},body:JSON.stringify({token})});
-   messaging.onMessage(payload=>{if(Notification.permission==="granted")new Notification(payload.notification?.title||"MAKYAMA TRANSPORT",{body:payload.notification?.body||"Taarifa mpya"})});
- }catch(e){console.warn("Notification setup failed",e)}
+en: {
+
+home:"Home",
+register:"Register Cargo",
+login:"Login",
+tracking:"Track",
+logout:"Logout",
+
+agentRegistration:
+"Register Agent",
+
+transporterRegistration:
+"Register Transporter",
+
+directory:
+"Directory",
+
+contact:
+"Contact",
+
+heroDescription:
+"A modern system for registering, tracking and managing cargo transportation from one Agent to another until the cargo reaches the Boss.",
+
+registerCargo:
+"🚚 Register Cargo",
+
+trackCargo:
+"🔎 Track Cargo",
+
+agentRegistrationText:
+"Register an Agent in the MAKYAMA TRANSPORT directory.",
+
+transporterRegistrationText:
+"Register a transporter responsible for cargo transportation.",
+
+registrationTitle:
+"📦 Registration",
+
+registrationText:
+"Create a unique Tracking ID for every cargo shipment.",
+
+gpsTitle:
+"📍 GPS",
+
+gpsText:
+"The system can record the Agent's location during cargo operations.",
+
+historyTitle:
+"🕐 History",
+
+historyText:
+"Every cargo operation has its own time and history.",
+
+registerHeading:
+"📦 Register Cargo",
+
+cargoNameLabel:
+"Cargo Name",
+
+cargoNamePlaceholder:
+"Example: 10 boxes of products",
+
+originLabel:
+"Origin",
+
+originPlaceholder:
+"Example: Pemba",
+
+destinationLabel:
+"Destination",
+
+destinationPlaceholder:
+"Example: Zanzibar",
+
+bossNameLabel:
+"Boss Name",
+
+bossNamePlaceholder:
+"Boss name",
+
+agentCountLabel:
+"Number of Agents",
+
+registerButton:
+"🚚 Register Cargo",
+
+loginHeading:
+"🔐 Login",
+
+trackingIdLabel:
+"Tracking ID",
+
+trackingPlaceholder:
+"Example: MKT-561407",
+
+pinLabel:
+"PIN",
+
+pinPlaceholder:
+"Enter PIN",
+
+loginButton:
+"🔑 Login",
+
+trackingHeading:
+"🔎 Track Cargo",
+
+trackingInputPlaceholder:
+"Enter Tracking ID",
+
+searchButton:
+"🔍 Search"
+
+},
+
+fr: {
+
+home:"Accueil",
+register:"Enregistrer",
+login:"Connexion",
+tracking:"Suivre",
+logout:"Déconnexion",
+
+agentRegistration:
+"Enregistrer un Agent",
+
+transporterRegistration:
+"Enregistrer un Transporteur",
+
+directory:
+"Annuaire",
+
+contact:
+"Contact",
+
+heroDescription:
+"Un système moderne pour enregistrer, suivre et gérer le transport des marchandises d'un Agent à un autre jusqu'au Boss.",
+
+registerCargo:
+"🚚 Enregistrer une marchandise",
+
+trackCargo:
+"🔎 Suivre la marchandise",
+
+agentRegistrationText:
+"Enregistrez un Agent dans l'annuaire MAKYAMA TRANSPORT.",
+
+transporterRegistrationText:
+"Enregistrez un transporteur.",
+
+registrationTitle:
+"📦 Enregistrement",
+
+registrationText:
+"Créez un identifiant de suivi unique pour chaque marchandise.",
+
+gpsTitle:
+"📍 GPS",
+
+gpsText:
+"Le système peut enregistrer la position de l'Agent.",
+
+historyTitle:
+"🕐 Historique",
+
+historyText:
+"Chaque étape possède son heure et son historique.",
+
+registerHeading:
+"📦 Enregistrer une marchandise",
+
+cargoNameLabel:
+"Nom de la marchandise",
+
+cargoNamePlaceholder:
+"Exemple : 10 cartons de produits",
+
+originLabel:
+"Lieu de départ",
+
+originPlaceholder:
+"Exemple : Pemba",
+
+destinationLabel:
+"Destination",
+
+destinationPlaceholder:
+"Exemple : Zanzibar",
+
+bossNameLabel:
+"Nom du Boss",
+
+bossNamePlaceholder:
+"Nom du Boss",
+
+agentCountLabel:
+"Nombre d'Agents",
+
+registerButton:
+"🚚 Enregistrer",
+
+loginHeading:
+"🔐 Connexion",
+
+trackingIdLabel:
+"Identifiant de suivi",
+
+trackingPlaceholder:
+"Exemple : MKT-561407",
+
+pinLabel:
+"PIN",
+
+pinPlaceholder:
+"Entrez le PIN",
+
+loginButton:
+"🔑 Connexion",
+
+trackingHeading:
+"🔎 Suivre la marchandise",
+
+trackingInputPlaceholder:
+"Entrez l'identifiant",
+
+searchButton:
+"🔍 Rechercher"
+
+},
+
+ar: {
+
+home:"الرئيسية",
+register:"تسجيل الشحنة",
+login:"تسجيل الدخول",
+tracking:"تتبع",
+logout:"تسجيل الخروج",
+
+agentRegistration:
+"تسجيل وكيل",
+
+transporterRegistration:
+"تسجيل ناقل",
+
+directory:
+"الدليل",
+
+contact:
+"اتصل بنا",
+
+heroDescription:
+"نظام حديث لتسجيل وتتبع وإدارة نقل البضائع من وكيل إلى وكيل حتى تصل الشحنة إلى المسؤول.",
+
+registerCargo:
+"🚚 تسجيل الشحنة",
+
+trackCargo:
+"🔎 تتبع الشحنة",
+
+agentRegistrationText:
+"سجل وكيلاً في دليل MAKYAMA TRANSPORT.",
+
+transporterRegistrationText:
+"سجل ناقلاً لخدمات نقل البضائع.",
+
+registrationTitle:
+"📦 التسجيل",
+
+registrationText:
+"أنشئ رقم تتبع فريد لكل شحنة.",
+
+gpsTitle:
+"📍 GPS",
+
+gpsText:
+"يمكن للنظام تسجيل موقع الوكيل أثناء العمليات.",
+
+historyTitle:
+"🕐 السجل",
+
+historyText:
+"لكل خطوة وقت وسجل خاص بها.",
+
+registerHeading:
+"📦 تسجيل الشحنة",
+
+cargoNameLabel:
+"اسم الشحنة",
+
+cargoNamePlaceholder:
+"مثال: 10 صناديق من المنتجات",
+
+originLabel:
+"مكان الانطلاق",
+
+originPlaceholder:
+"مثال: بيمبا",
+
+destinationLabel:
+"الوجهة",
+
+destinationPlaceholder:
+"مثال: زنجبار",
+
+bossNameLabel:
+"اسم المسؤول",
+
+bossNamePlaceholder:
+"اسم المسؤول",
+
+agentCountLabel:
+"عدد الوكلاء",
+
+registerButton:
+"🚚 تسجيل الشحنة",
+
+loginHeading:
+"🔐 تسجيل الدخول",
+
+trackingIdLabel:
+"رقم التتبع",
+
+trackingPlaceholder:
+"مثال: MKT-561407",
+
+pinLabel:
+"PIN",
+
+pinPlaceholder:
+"أدخل PIN",
+
+loginButton:
+"🔑 دخول",
+
+trackingHeading:
+"🔎 تتبع الشحنة",
+
+trackingInputPlaceholder:
+"أدخل رقم التتبع",
+
+searchButton:
+"🔍 بحث"
+
+},
+
+pt: {
+
+home:"Início",
+register:"Registar Carga",
+login:"Entrar",
+tracking:"Rastrear",
+logout:"Sair",
+
+agentRegistration:
+"Registar Agente",
+
+transporterRegistration:
+"Registar Transportador",
+
+directory:
+"Diretório",
+
+contact:
+"Contacto",
+
+heroDescription:
+"Um sistema moderno para registar, rastrear e gerir o transporte de cargas de um Agente para outro até chegar ao Boss.",
+
+registerCargo:
+"🚚 Registar Carga",
+
+trackCargo:
+"🔎 Rastrear Carga",
+
+agentRegistrationText:
+"Registe um Agente no diretório MAKYAMA TRANSPORT.",
+
+transporterRegistrationText:
+"Registe um transportador.",
+
+registrationTitle:
+"📦 Registo",
+
+registrationText:
+"Crie um Tracking ID único para cada carga.",
+
+gpsTitle:
+"📍 GPS",
+
+gpsText:
+"O sistema pode registar a localização do Agente.",
+
+historyTitle:
+"🕐 Histórico",
+
+historyText:
+"Cada etapa possui a sua hora e histórico.",
+
+registerHeading:
+"📦 Registar Carga",
+
+cargoNameLabel:
+"Nome da Carga",
+
+cargoNamePlaceholder:
+"Exemplo: 10 caixas de produtos",
+
+originLabel:
+"Origem",
+
+originPlaceholder:
+"Exemplo: Pemba",
+
+destinationLabel:
+"Destino",
+
+destinationPlaceholder:
+"Exemplo: Zanzibar",
+
+bossNameLabel:
+"Nome do Boss",
+
+bossNamePlaceholder:
+"Nome do Boss",
+
+agentCountLabel:
+"Número de Agentes",
+
+registerButton:
+"🚚 Registar Carga",
+
+loginHeading:
+"🔐 Entrar",
+
+trackingIdLabel:
+"Tracking ID",
+
+trackingPlaceholder:
+"Exemplo: MKT-561407",
+
+pinLabel:
+"PIN",
+
+pinPlaceholder:
+"Digite o PIN",
+
+loginButton:
+"🔑 Entrar",
+
+trackingHeading:
+"🔎 Rastrear Carga",
+
+trackingInputPlaceholder:
+"Digite o Tracking ID",
+
+searchButton:
+"🔍 Pesquisar"
+
+},
+
+es: {
+
+home:"Inicio",
+register:"Registrar carga",
+login:"Iniciar sesión",
+tracking:"Seguimiento",
+logout:"Salir",
+
+agentRegistration:
+"Registrar Agente",
+
+transporterRegistration:
+"Registrar Transportista",
+
+directory:
+"Directorio",
+
+contact:
+"Contacto",
+
+heroDescription:
+"Un sistema moderno para registrar, rastrear y gestionar el transporte de mercancías de un Agente a otro hasta llegar al Boss.",
+
+registerCargo:
+"🚚 Registrar carga",
+
+trackCargo:
+"🔎 Rastrear carga",
+
+agentRegistrationText:
+"Registra un Agente en el directorio de MAKYAMA TRANSPORT.",
+
+transporterRegistrationText:
+"Registra un transportista.",
+
+registrationTitle:
+"📦 Registro",
+
+registrationText:
+"Crea un Tracking ID único para cada carga.",
+
+gpsTitle:
+"📍 GPS",
+
+gpsText:
+"El sistema puede registrar la ubicación del Agente.",
+
+historyTitle:
+"🕐 Historial",
+
+historyText:
+"Cada etapa tiene su hora e historial.",
+
+registerHeading:
+"📦 Registrar carga",
+
+cargoNameLabel:
+"Nombre de la carga",
+
+cargoNamePlaceholder:
+"Ejemplo: 10 cajas de productos",
+
+originLabel:
+"Origen",
+
+originPlaceholder:
+"Ejemplo: Pemba",
+
+destinationLabel:
+"Destino",
+
+destinationPlaceholder:
+"Ejemplo: Zanzíbar",
+
+bossNameLabel:
+"Nombre del Boss",
+
+bossNamePlaceholder:
+"Nombre del Boss",
+
+agentCountLabel:
+"Número de Agentes",
+
+registerButton:
+"🚚 Registrar carga",
+
+loginHeading:
+"🔐 Iniciar sesión",
+
+trackingIdLabel:
+"Tracking ID",
+
+trackingPlaceholder:
+"Ejemplo: MKT-561407",
+
+pinLabel:
+"PIN",
+
+pinPlaceholder:
+"Introduce el PIN",
+
+loginButton:
+"🔑 Entrar",
+
+trackingHeading:
+"🔎 Rastrear carga",
+
+trackingInputPlaceholder:
+"Introduce el Tracking ID",
+
+searchButton:
+"🔍 Buscar"
+
 }
 
-/* New Agent/Transporter registration */
-async function registerAgent(){
- const obj={
-  fullName:document.getElementById("agentFullName").value.trim(),
-  phone:document.getElementById("agentPhone").value.trim(),
-  email:document.getElementById("agentEmail").value.trim(),
-  location:document.getElementById("agentLocation").value.trim(),
-  idNumber:document.getElementById("agentId").value.trim(),
-  createdAt:firebase.database.ServerValue.TIMESTAMP
- };
- if(!obj.fullName||!obj.phone){setStatus("agentRegisterStatus","Jina na simu ni lazima.","err");return}
- try{
-   const ref=database.ref("agents").push();obj.id=ref.key;
-   await ref.set(obj);
-   setStatus("agentRegisterStatus","Agent amesajiliwa kikamilifu.","ok");
-   ["agentFullName","agentPhone","agentEmail","agentLocation","agentId"].forEach(id=>document.getElementById(id).value="");
- }catch(e){setStatus("agentRegisterStatus","Usajili umeshindikana: "+escapeHtml(e.message),"err")}
-}
-async function registerTransporter(){
- const obj={
-  name:document.getElementById("transporterName").value.trim(),
-  phone:document.getElementById("transporterPhone").value.trim(),
-  email:document.getElementById("transporterEmail").value.trim(),
-  vehicleType:document.getElementById("vehicleType").value.trim(),
-  plate:document.getElementById("vehiclePlate").value.trim(),
-  capacity:document.getElementById("vehicleCapacity").value.trim(),
-  operatingArea:document.getElementById("operatingArea").value.trim(),
-  createdAt:firebase.database.ServerValue.TIMESTAMP
- };
- if(!obj.name||!obj.phone){setStatus("transporterRegisterStatus","Jina na simu ni lazima.","err");return}
- try{
-   const ref=database.ref("transporters").push();obj.id=ref.key;
-   await ref.set(obj);
-   setStatus("transporterRegisterStatus","Transporter amesajiliwa kikamilifu.","ok");
-   ["transporterName","transporterPhone","transporterEmail","vehicleType","vehiclePlate","vehicleCapacity","operatingArea"].forEach(id=>document.getElementById(id).value="");
- }catch(e){setStatus("transporterRegisterStatus","Usajili umeshindikana: "+escapeHtml(e.message),"err")}
-}
-async function loadDirectory(){
- try{
-   setStatus("directoryStatus","Inapakia...","warn");
-   const [a,t]=await Promise.all([database.ref("agents").once("value"),database.ref("transporters").once("value")]);
-   directoryCache.agents=Object.values(a.val()||{});
-   directoryCache.transporters=Object.values(t.val()||{});
-   setStatus("directoryStatus",`Agents: ${directoryCache.agents.length} | Transporters: ${directoryCache.transporters.length}`,"ok");
-   filterDirectory();
- }catch(e){setStatus("directoryStatus","Directory haijapatikana: "+escapeHtml(e.message),"err")}
-}
-function filterDirectory(){
- const q=(document.getElementById("directorySearch")?.value||"").toLowerCase();
- const type=document.getElementById("directoryType")?.value||"all";
- let arr=[];
- if(type==="all"||type==="agents")arr=arr.concat(directoryCache.agents.map(x=>({...x,_type:"Agent"})));
- if(type==="all"||type==="transporters")arr=arr.concat(directoryCache.transporters.map(x=>({...x,_type:"Transporter"})));
- arr=arr.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
- document.getElementById("directoryResults").innerHTML=arr.length?arr.map(x=>`
- <div class="result"><span class="badge">${escapeHtml(x._type)}</span>
- <h3>${escapeHtml(x.fullName||x.name||"")}</h3>
- <p>📞 ${escapeHtml(x.phone||"")}</p>
- <p>📧 ${escapeHtml(x.email||"")}</p>
- <p>📍 ${escapeHtml(x.location||x.operatingArea||"")}</p>
- ${x.vehicleType?`<p>🚚 ${escapeHtml(x.vehicleType)} — ${escapeHtml(x.plate||"")}</p>`:""}
- </div>`).join(""):"<p class='small'>Hakuna matokeo.</p>";
-}
-async function sendContact(){
- const name=document.getElementById("contactName").value.trim();
- const email=document.getElementById("contactEmail").value.trim();
- const message=document.getElementById("contactMessage").value.trim();
- if(!name||!message){setStatus("contactStatus","Jina na ujumbe ni lazima.","err");return}
- try{
-   await database.ref("contactMessages").push({name,email,message,createdAt:firebase.database.ServerValue.TIMESTAMP,status:"new"});
-   setStatus("contactStatus","Ujumbe umetumwa kikamilifu.","ok");
-   ["contactName","contactEmail","contactMessage"].forEach(id=>document.getElementById(id).value="");
- }catch(e){setStatus("contactStatus","Ujumbe haujatumwa: "+escapeHtml(e.message),"err")}
+};
+
+
+let currentLanguage =
+localStorage.getItem(
+"makyamaLanguage"
+) || "sw";
+
+
+function changeLanguage(language) {
+
+if (!translations[language]) {
+
+language = "sw";
+
 }
 
-/*
- Admin:
- Frontend does NOT hard-code an admin password. It asks the existing backend
- for /api/admin/login. If your backend does not yet expose this endpoint,
- the admin panel will report that it is unavailable rather than pretending
- that a browser-only password is secure.
-*/
-async function adminLogin(){
- const username=document.getElementById("adminUsername").value.trim();
- const password=document.getElementById("adminPassword").value;
- if(!username||!password){setStatus("adminStatus","Weka username na password.","err");return}
- try{
-   setStatus("adminStatus","Inaingia...","warn");
-   const data=await api("/api/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
-   if(!data.ok)throw new Error(data.message||"Admin login imekataliwa");
-   adminLoggedIn=true;
-   sessionStorage.setItem("makyamaAdminToken",data.token||"");
-   document.getElementById("adminLoginBox").classList.add("hidden");
-   document.getElementById("adminPanel").classList.remove("hidden");
-   loadAdminData();
- }catch(e){setStatus("adminStatus","Admin login: "+escapeHtml(e.message),"err")}
+currentLanguage =
+language;
+
+localStorage.setItem(
+"makyamaLanguage",
+language
+);
+
+document.documentElement.lang =
+language;
+
+document.body.dir =
+language === "ar"
+  ? "rtl"
+  : "ltr";
+
+const dictionary =
+translations[language];
+
+document
+.querySelectorAll("[data-i18n]")
+.forEach(element => {
+
+const key =
+element.getAttribute(
+"data-i18n"
+);
+
+if(dictionary[key]) {
+
+element.textContent =
+dictionary[key];
+
 }
-async function loadAdminData(){
- if(!adminLoggedIn)return;
- try{
-   const [a,t,m]=await Promise.all([database.ref("agents").once("value"),database.ref("transporters").once("value"),database.ref("contactMessages").once("value")]);
-   const agents=Object.values(a.val()||{}),transporters=Object.values(t.val()||{}),messages=Object.values(m.val()||{});
-   document.getElementById("agentCountStat").textContent=agents.length;
-   document.getElementById("transporterCountStat").textContent=transporters.length;
-   document.getElementById("messageCountStat").textContent=messages.length;
-   document.getElementById("adminData").innerHTML=`
-   <h3>Contact Messages</h3>${messages.slice(-30).reverse().map(x=>`<div class="result"><b>${escapeHtml(x.name||"")}</b> — ${escapeHtml(x.email||"")}<br>${escapeHtml(x.message||"")}<br><span class="small">${escapeHtml(formatTime(x.createdAt))}</span></div>`).join("")||"<p class='small'>Hakuna messages.</p>"}`;
- }catch(e){document.getElementById("adminData").innerHTML=`<div class="status err">${escapeHtml(e.message)}</div>`}
-}
-function adminLogout(){
- adminLoggedIn=false;sessionStorage.removeItem("makyamaAdminToken");
- document.getElementById("adminPanel").classList.add("hidden");
- document.getElementById("adminLoginBox").classList.remove("hidden");
-}
-auth.onAuthStateChanged(user=>{
- currentUser=user;
- if(!user){document.getElementById("logoutBtn").classList.add("hidden");}
- else document.getElementById("logoutBtn").classList.remove("hidden");
+
 });
 
-document.addEventListener("DOMContentLoaded",()=>{
- buildAgents();
- changeLanguage(localStorage.getItem("makyamaLanguage")||"sw");
+document
+.querySelectorAll(
+"[data-i18n-placeholder]"
+)
+.forEach(element => {
+
+const key =
+element.getAttribute(
+"data-i18n-placeholder"
+);
+
+if(dictionary[key]) {
+
+element.placeholder =
+dictionary[key];
+
+}
+
 });
+
+const select =
+document.getElementById(
+"languageSelect"
+);
+
+if(select) {
+
+select.value =
+language;
+
+}
+
+buildAgents();
+
+}
+
+
+function t(key) {
+
+return (
+translations[currentLanguage]?.[key] ||
+translations.sw[key] ||
+key
+);
+
+}
+
+
+/* =========================================================
+PAGE
+========================================================= */
+
+function showPage(page) {
+
+document
+.querySelectorAll(".page")
+.forEach(p => {
+
+p.classList.remove("active");
+
+});
+
+const target =
+document.getElementById(page);
+
+if(target) {
+
+target.classList.add("active");
+
+}
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+if(page === "directory") {
+
+loadDirectory();
+
+}
+
+if(page === "admin") {
+
+loadAdminDashboard();
+
+}
+
+}
+
+
+/* =========================================================
+AGENTS
+========================================================= */
+
+function buildAgents() {
+
+const select =
+document.getElementById(
+"agentCount"
+);
+
+if(!select) return;
+
+const count =
+Number(select.value);
+
+const container =
+document.getElementById(
+"agentsContainer"
+);
+
+if(!container) return;
+
+container.innerHTML = "";
+
+for(
+let i = 1;
+i <= count;
+i++
+) {
+
+const div =
+document.createElement(
+"div"
+);
+
+div.className =
+"card";
+
+div.innerHTML = `
+
+<h3>
+👤 Agent ${i}
+</h3>
+
+<label>
+${escapeHtml(
+getAgentNameLabel(i)
+)}
+</label>
+
+<input
+class="agentName"
+data-stage="${i}"
+placeholder="${escapeHtml(
+getAgentPlaceholder(i)
+)}">
+
+`;
+
+container.appendChild(
+div
+);
+
+}
+
+}
+
+
+function getAgentNameLabel(stage) {
+
+const labels = {
+
+sw:
+`Jina la Agent ${stage}`,
+
+en:
+`Agent ${stage} Name`,
+
+fr:
+`Nom de l'Agent ${stage}`,
+
+ar:
+`اسم الوكيل ${stage}`,
+
+pt:
+`Nome do Agente ${stage}`,
+
+es:
+`Nombre del Agente ${stage}`
+
+};
+
+return (
+labels[currentLanguage] ||
+labels.sw
+);
+
+}
+
+
+function getAgentPlaceholder(stage) {
+
+const labels = {
+
+sw:
+`Jina la Agent ${stage}`,
+
+en:
+`Agent ${stage} name`,
+
+fr:
+`Nom de l'Agent ${stage}`,
+
+ar:
+`اسم الوكيل ${stage}`,
+
+pt:
+`Nome do Agente ${stage}`,
+
+es:
+`Nombre del Agente ${stage}`
+
+};
+
+return (
+labels[currentLanguage] ||
+labels.sw
+);
+
+}
+
+
+/* =========================================================
+CREATE CARGO
+========================================================= */
+
+async function createCargo() {
+
+const cargoName =
+document
+.getElementById("cargoName")
+.value
+.trim();
+
+const origin =
+document
+.getElementById("origin")
+.value
+.trim();
+
+const destination =
+document
+.getElementById("destination")
+.value
+.trim();
+
+const bossName =
+document
+.getElementById("bossName")
+.value
+.trim();
+
+const names =
+[
+...document.querySelectorAll(
+".agentName"
+)
+];
+
+const agents =
+names.map(
+(input,index) => ({
+
+name:
+input.value.trim() ||
+`Agent ${index + 1}`
+
+})
+);
+
+const result =
+document.getElementById(
+"registerResult"
+);
+
+if(
+!cargoName ||
+!origin ||
+!destination ||
+!bossName
+) {
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ Tafadhali jaza taarifa zote.
+
+</div>
+
+`;
+
+return;
+
+}
+
+try {
+
+result.innerHTML = `
+
+<div class="notice">
+⏳ Inasajili mzigo...
+</div>
+
+`;
+
+const response =
+await fetch(
+SERVER +
+"/api/create-cargo",
+{
+
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:
+JSON.stringify({
+
+cargoName,
+origin,
+destination,
+bossName,
+agents
+
+})
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Usajili umeshindikana."
+);
+
+}
+
+const bossPin =
+data.boss &&
+data.boss.pin
+? String(data.boss.pin)
+: "";
+
+const returnedAgents =
+Array.isArray(data.agents)
+? data.agents
+: [];
+
+let agentPinsHTML = "";
+
+if(
+returnedAgents.length
+) {
+
+agentPinsHTML =
+returnedAgents
+.map(agent => {
+
+const stage =
+agent.stage || "";
+
+const name =
+agent.name ||
+`Agent ${stage}`;
+
+const pin =
+agent.pin !== undefined &&
+agent.pin !== null
+? String(agent.pin)
+: "";
+
+return `
+
+<div class="agent-box">
+
+<h4>
+👤 Agent
+${escapeHtml(stage)}
+</h4>
+
+<p class="small">
+${escapeHtml(name)}
+</p>
+
+<p class="pin-title">
+Agent ${escapeHtml(stage)} PIN
+</p>
+
+<div class="pin">
+${escapeHtml(pin) || "PIN haipo"}
+</div>
+
+${
+pin
+? `
+
+<button
+class="copy-btn"
+onclick="copyText(${JSON.stringify(pin)})">
+
+📋 Copy PIN
+
+</button>
+
+`
+: ""
+}
+
+</div>
+
+`;
+
+})
+.join("");
+
+}
+
+if(!agentPinsHTML) {
+
+agentPinsHTML = `
+
+<div class="notice error">
+⚠️ Server haijarudisha PIN za Agents.
+</div>
+
+`;
+
+}
+
+result.innerHTML = `
+
+<div class="success-box">
+
+<h3>
+✅ Mzigo Umesajiliwa
+</h3>
+
+<div class="credential-box">
+
+<p class="pin-title">
+🆔 Tracking ID
+</p>
+
+<div class="tracking-id">
+${escapeHtml(
+data.trackingId || ""
+)}
+</div>
+
+<button
+class="copy-btn"
+onclick="copyText(${JSON.stringify(
+data.trackingId || ""
+)})">
+
+📋 Copy Tracking ID
+
+</button>
+
+</div>
+
+<div class="credential-box">
+
+<p class="pin-title">
+🔐 Boss PIN
+</p>
+
+<div class="pin">
+${escapeHtml(bossPin) ||
+"Boss PIN haipo"}
+</div>
+
+${
+bossPin
+? `
+
+<button
+class="copy-btn"
+onclick="copyText(${JSON.stringify(
+bossPin
+)})">
+
+📋 Copy Boss PIN
+
+</button>
+
+`
+: ""
+}
+
+</div>
+
+<br>
+
+<h3>
+👥 PIN za Agents
+</h3>
+
+<div class="grid">
+
+${agentPinsHTML}
+
+</div>
+
+<div class="warning-box">
+
+⚠️ Hifadhi Tracking ID,
+Boss PIN na PIN za Agents
+mahali salama.
+
+</div>
+
+</div>
+
+`;
+
+} catch(error) {
+
+console.error(
+"CREATE CARGO ERROR:",
+error
+);
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ ${escapeHtml(
+error.message
+)}
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================================================
+AGENT REGISTRATION
+========================================================= */
+
+async function registerAgent() {
+
+const result =
+document.getElementById(
+"agentRegisterResult"
+);
+
+const payload = {
+
+name:
+document
+.getElementById("agentFullName")
+.value
+.trim(),
+
+phone:
+document
+.getElementById("agentPhone")
+.value
+.trim(),
+
+email:
+document
+.getElementById("agentEmail")
+.value
+.trim(),
+
+location:
+document
+.getElementById("agentLocation")
+.value
+.trim(),
+
+service:
+document
+.getElementById("agentService")
+.value
+.trim(),
+
+description:
+document
+.getElementById("agentDescription")
+.value
+.trim()
+
+};
+
+if(
+!payload.name ||
+!payload.phone ||
+!payload.location
+) {
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ Jaza jina, simu na eneo.
+
+</div>
+
+`;
+
+return;
+
+}
+
+try {
+
+result.innerHTML = `
+
+<div class="notice">
+⏳ Inasajili Agent...
+</div>
+
+`;
+
+const response =
+await fetch(
+SERVER +
+"/api/register-agent",
+{
+
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:
+JSON.stringify(payload)
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Usajili wa Agent umeshindikana."
+);
+
+}
+
+result.innerHTML = `
+
+<div class="success-box">
+
+<h3>
+✅ Agent amesajiliwa
+</h3>
+
+<p class="info">
+
+Jina:
+<strong>
+${escapeHtml(
+data.agent?.name ||
+payload.name
+)}
+</strong>
+
+<br>
+
+Location:
+<strong>
+${escapeHtml(
+data.agent?.location ||
+payload.location
+)}
+</strong>
+
+</p>
+
+</div>
+
+`;
+
+document
+.getElementById("agentFullName")
+.value = "";
+
+document
+.getElementById("agentPhone")
+.value = "";
+
+document
+.getElementById("agentEmail")
+.value = "";
+
+document
+.getElementById("agentLocation")
+.value = "";
+
+document
+.getElementById("agentService")
+.value = "";
+
+document
+.getElementById("agentDescription")
+.value = "";
+
+} catch(error) {
+
+console.error(
+"AGENT REGISTER ERROR:",
+error
+);
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ ${escapeHtml(
+error.message
+)}
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================================================
+TRANSPORTER REGISTRATION
+========================================================= */
+
+async function registerTransporter() {
+
+const result =
+document.getElementById(
+"transporterRegisterResult"
+);
+
+const payload = {
+
+name:
+document
+.getElementById("transporterName")
+.value
+.trim(),
+
+phone:
+document
+.getElementById("transporterPhone")
+.value
+.trim(),
+
+email:
+document
+.getElementById("transporterEmail")
+.value
+.trim(),
+
+location:
+document
+.getElementById("transporterLocation")
+.value
+.trim(),
+
+type:
+document
+.getElementById("transporterType")
+.value,
+
+service:
+document
+.getElementById("transporterService")
+.value
+.trim(),
+
+description:
+document
+.getElementById("transporterDescription")
+.value
+.trim()
+
+};
+
+if(
+!payload.name ||
+!payload.phone ||
+!payload.location
+) {
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ Jaza jina, simu na eneo.
+
+</div>
+
+`;
+
+return;
+
+}
+
+try {
+
+result.innerHTML = `
+
+<div class="notice">
+⏳ Inasajili Transporter...
+</div>
+
+`;
+
+const response =
+await fetch(
+SERVER +
+"/api/register-transporter",
+{
+
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:
+JSON.stringify(payload)
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Usajili wa Transporter umeshindikana."
+);
+
+}
+
+result.innerHTML = `
+
+<div class="success-box">
+
+<h3>
+✅ Transporter amesajiliwa
+</h3>
+
+<p class="info">
+
+Jina:
+<strong>
+${escapeHtml(
+data.transporter?.name ||
+payload.name
+)}
+</strong>
+
+<br>
+
+Location:
+<strong>
+${escapeHtml(
+data.transporter?.location ||
+payload.location
+)}
+</strong>
+
+</p>
+
+</div>
+
+`;
+
+} catch(error) {
+
+console.error(
+"TRANSPORTER REGISTER ERROR:",
+error
+);
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ ${escapeHtml(
+error.message
+)}
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================================================
+DIRECTORY
+========================================================= */
+
+async function searchDirectory() {
+
+const query =
+document
+.getElementById(
+"directorySearch"
+)
+.value
+.trim();
+
+const type =
+document
+.getElementById(
+"directoryType"
+)
+.value;
+
+if(!query) {
+
+loadDirectory();
+
+return;
+
+}
+
+await fetchDirectory(
+query,
+type
+);
+
+}
+
+
+async function loadDirectory() {
+
+const type =
+document
+.getElementById(
+"directoryType"
+)
+.value;
+
+await fetchDirectory(
+"",
+type
+);
+
+}
+
+
+async function fetchDirectory(
+query,
+type
+) {
+
+const result =
+document.getElementById(
+"directoryResult"
+);
+
+result.innerHTML = `
+
+<div class="card loading">
+
+⏳ Inatafuta...
+
+</div>
+
+`;
+
+try {
+
+const params =
+new URLSearchParams();
+
+if(query)
+params.set(
+"search",
+query
+);
+
+if(type !== "all")
+params.set(
+"type",
+type
+);
+
+const response =
+await fetch(
+SERVER +
+"/api/directory?" +
+params.toString()
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Directory haipatikani."
+);
+
+}
+
+const items =
+Array.isArray(data.results)
+? data.results
+: Array.isArray(data.directory)
+? data.directory
+: [];
+
+if(!items.length) {
+
+result.innerHTML = `
+
+<div class="card empty">
+
+🔎 Hakuna matokeo.
+
+</div>
+
+`;
+
+return;
+
+}
+
+result.innerHTML = `
+
+<div class="grid">
+
+${
+items
+.map(
+person =>
+renderDirectoryCard(person)
+)
+.join("")
+}
+
+</div>
+
+`;
+
+} catch(error) {
+
+console.error(
+"DIRECTORY ERROR:",
+error
+);
+
+result.innerHTML = `
+
+<div class="card">
+
+<div class="notice error">
+
+❌ ${escapeHtml(
+error.message
+)}
+
+</div>
+
+<p class="small">
+
+Hakikisha backend ina endpoint:
+<strong>
+/api/directory
+</strong>
+
+</p>
+
+</div>
+
+`;
+
+}
+
+}
+
+
+function renderDirectoryCard(
+person
+) {
+
+const type =
+person.type ||
+person.role ||
+"agent";
+
+const isTransporter =
+type === "transporter";
+
+const name =
+person.name ||
+person.fullName ||
+"Unknown";
+
+const phone =
+person.phone ||
+"";
+
+const location =
+person.location ||
+person.area ||
+"";
+
+const service =
+person.service ||
+"";
+
+const description =
+person.description ||
+"";
+
+const whatsapp =
+phone
+? phone
+    .replace(
+      /[^0-9]/g,
+      ""
+    )
+: "";
+
+return `
+
+<div class="card profile-card">
+
+<div class="avatar">
+
+${isTransporter ? "🚚" : "👤"}
+
+</div>
+
+<h3>
+
+${escapeHtml(name)}
+
+</h3>
+
+<span class="badge">
+
+${isTransporter
+? "Transporter"
+: "Agent"}
+
+</span>
+
+${
+location
+? `
+
+<span class="badge">
+
+📍 ${escapeHtml(location)}
+
+</span>
+
+`
+: ""
+}
+
+${
+service
+? `
+
+<p class="info">
+
+<strong>
+Huduma:
+</strong>
+
+<br>
+
+${escapeHtml(service)}
+
+</p>
+
+`
+: ""
+}
+
+${
+description
+? `
+
+<p class="small">
+
+${escapeHtml(description)}
+
+</p>
+
+`
+: ""
+}
+
+<br>
+
+${
+phone
+? `
+
+<a
+href="tel:${escapeHtml(phone)}"
+style="text-decoration:none">
+
+<button>
+📞 Piga Simu
+</button>
+
+</a>
+
+`
+: ""
+}
+
+${
+whatsapp
+? `
+
+<a
+href="https://wa.me/${escapeHtml(whatsapp)}"
+target="_blank"
+style="text-decoration:none">
+
+<button
+class="success">
+
+💬 WhatsApp
+
+</button>
+
+</a>
+
+`
+: ""
+}
+
+</div>
+
+`;
+
+}
+
+
+/* =========================================================
+CONTACT
+========================================================= */
+
+async function sendContactMessage() {
+
+const result =
+document.getElementById(
+"contactResult"
+);
+
+const payload = {
+
+name:
+document
+.getElementById("contactName")
+.value
+.trim(),
+
+contact:
+document
+.getElementById("contactReply")
+.value
+.trim(),
+
+message:
+document
+.getElementById("contactMessage")
+.value
+.trim()
+
+};
+
+if(
+!payload.name ||
+!payload.contact ||
+!payload.message
+) {
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ Jaza taarifa zote.
+
+</div>
+
+`;
+
+return;
+
+}
+
+try {
+
+result.innerHTML = `
+
+<div class="notice">
+
+⏳ Inatuma ujumbe...
+
+</div>
+
+`;
+
+const response =
+await fetch(
+SERVER +
+"/api/contact",
+{
+
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:
+JSON.stringify(payload)
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Ujumbe haukutumwa."
+);
+
+}
+
+result.innerHTML = `
+
+<div class="success-box">
+
+<h3>
+✅ Ujumbe umetumwa
+</h3>
+
+<p>
+Tutashughulikia ujumbe wako.
+</p>
+
+</div>
+
+`;
+
+document
+.getElementById("contactName")
+.value = "";
+
+document
+.getElementById("contactReply")
+.value = "";
+
+document
+.getElementById("contactMessage")
+.value = "";
+
+} catch(error) {
+
+console.error(
+"CONTACT ERROR:",
+error
+);
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ ${escapeHtml(
+error.message
+)}
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================================================
+LOGIN
+========================================================= */
+
+async function login() {
+
+const trackingId =
+document
+.getElementById("loginTracking")
+.value
+.trim()
+.toUpperCase();
+
+const pin =
+document
+.getElementById("loginPin")
+.value
+.trim();
+
+const result =
+document.getElementById(
+"loginResult"
+);
+
+if(
+!trackingId ||
+!pin
+) {
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ Weka Tracking ID na PIN.
+
+</div>
+
+`;
+
+return;
+
+}
+
+try {
+
+result.innerHTML = `
+
+<div class="notice">
+
+⏳ Inaingia...
+
+</div>
+
+`;
+
+const response =
+await fetch(
+SERVER +
+"/api/login",
+{
+
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:
+JSON.stringify({
+trackingId,
+pin
+})
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Login imeshindikana."
+);
+
+}
+
+currentSession =
+data;
+
+await auth.signInWithCustomToken(
+data.token
+);
+
+currentUser =
+auth.currentUser;
+
+document
+.getElementById("logoutBtn")
+.classList
+.remove("hidden");
+
+if(
+data.role === "admin" ||
+data.role === "ADMIN"
+) {
+
+document
+.getElementById("adminNavBtn")
+.classList
+.remove("hidden");
+
+}
+
+result.innerHTML = `
+
+<div class="success-box">
+
+✅ Umeingia kama
+
+<strong>
+
+${
+data.role === "boss"
+? "BOSS"
+: data.role === "agent"
+? "AGENT " + data.stage
+: "ADMIN"
+}
+
+</strong>
+
+</div>
+
+`;
+
+registerNotificationsAutomatically();
+
+setTimeout(
+() => {
+
+showPage("dashboard");
+
+loadDashboard();
+
+},
+500
+);
+
+} catch(error) {
+
+console.error(
+"LOGIN ERROR:",
+error
+);
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ ${escapeHtml(
+error.message
+)}
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================================================
+NOTIFICATIONS
+========================================================= */
+
+async function
+registerNotificationsAutomatically() {
+
+try {
+
+if(
+!("Notification" in window)
+) return;
+
+if(!currentSession)
+return;
+
+if(!messaging)
+return;
+
+if(
+!("serviceWorker" in navigator)
+) return;
+
+let permission =
+Notification.permission;
+
+if(
+permission === "default"
+) {
+
+permission =
+await Notification
+.requestPermission();
+
+}
+
+if(
+permission !== "granted"
+) return;
+
+const registration =
+await navigator
+.serviceWorker
+.register(
+"/firebase-messaging-sw.js"
+);
+
+await navigator
+.serviceWorker
+.ready;
+
+const token =
+await messaging.getToken({
+
+vapidKey:
+VAPID_KEY,
+
+serviceWorkerRegistration:
+registration
+
+});
+
+if(!token)
+return;
+
+const authUser =
+firebase.auth()
+.currentUser;
+
+if(!authUser)
+return;
+
+const idToken =
+await authUser
+.getIdToken(true);
+
+const response =
+await fetch(
+SERVER +
+"/api/register-device",
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+"application/json",
+
+"Authorization":
+"Bearer " +
+idToken
+
+},
+
+body:
+JSON.stringify({
+token
+})
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Notification registration failed."
+);
+
+}
+
+localStorage.setItem(
+"makyamaNotifications",
+"enabled"
+);
+
+} catch(error) {
+
+console.error(
+"NOTIFICATION ERROR:",
+error
+);
+
+}
+
+}
+
+
+function setupForegroundNotifications() {
+
+if(!messaging)
+return;
+
+try {
+
+messaging.onMessage(
+payload => {
+
+const title =
+payload
+.notification
+?.title ||
+"MAKYAMA TRANSPORT";
+
+const body =
+payload
+.notification
+?.body ||
+"Una taarifa mpya kuhusu mzigo wako.";
+
+if(
+Notification.permission ===
+"granted"
+) {
+
+try {
+
+new Notification(
+title,
+{
+body,
+icon:
+"/favicon.ico"
+}
+);
+
+} catch(error) {
+
+console.error(error);
+
+}
+
+}
+
+}
+);
+
+} catch(error) {
+
+console.error(
+"FOREGROUND FCM ERROR:",
+error
+);
+
+}
+
+}
+
+
+/* =========================================================
+TOKEN
+========================================================= */
+
+async function getToken() {
+
+if(!auth.currentUser) {
+
+throw new Error(
+"Hujaingia."
+);
+
+}
+
+return await auth
+.currentUser
+.getIdToken(true);
+
+}
+
+
+/* =========================================================
+LOGOUT
+========================================================= */
+
+async function logout() {
+
+try {
+
+await auth.signOut();
+
+} catch(error) {
+
+console.error(error);
+
+}
+
+currentUser = null;
+
+currentSession = null;
+
+document
+.getElementById(
+"logoutBtn"
+)
+.classList
+.add("hidden");
+
+document
+.getElementById(
+"adminNavBtn"
+)
+.classList
+.add("hidden");
+
+showPage("home");
+
+}
+
+
+/* =========================================================
+PUBLIC TRACKING
+========================================================= */
+
+async function trackCargo() {
+
+const trackingId =
+document
+.getElementById(
+"trackingInput"
+)
+.value
+.trim()
+.toUpperCase();
+
+const result =
+document.getElementById(
+"trackingResult"
+);
+
+if(!trackingId) {
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ Weka Tracking ID.
+
+</div>
+
+`;
+
+return;
+
+}
+
+try {
+
+result.innerHTML = `
+
+<div class="notice">
+
+⏳ Inatafuta mzigo...
+
+</div>
+
+`;
+
+const response =
+await fetch(
+SERVER +
+"/api/cargo/" +
+encodeURIComponent(
+trackingId
+)
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok ||
+!data.cargo
+) {
+
+throw new Error(
+data.error ||
+"Mzigo haujapatikana."
+);
+
+}
+
+renderTracking(
+data.cargo
+);
+
+} catch(error) {
+
+console.error(
+"TRACKING ERROR:",
+error
+);
+
+result.innerHTML = `
+
+<div class="notice error">
+
+❌ ${escapeHtml(
+error.message
+)}
+
+</div>
+
+`;
+
+}
+
+}
+
+
+function renderTracking(cargo) {
+
+const result =
+document.getElementById(
+"trackingResult"
+);
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>
+📦 Taarifa za Mzigo
+</h2>
+
+<p class="info">
+
+<strong>
+Tracking ID:
+</strong>
+
+<br>
+
+<span class="tracking-id">
+
+${escapeHtml(
+cargo.trackingId || ""
+)}
+
+</span>
+
+</p>
+
+<p class="info">
+
+<strong>
+Jina la Mzigo:
+</strong>
+
+<br>
+
+${escapeHtml(
+cargo.cargoName || ""
+)}
+
+</p>
+
+<p class="info">
+
+<strong>
+Kuanzia:
+</strong>
+
+<br>
+
+${escapeHtml(
+cargo.origin || ""
+)}
+
+</p>
+
+<p class="info">
+
+<strong>
+Kwenda:
+</strong>
+
+<br>
+
+${escapeHtml(
+cargo.destination || ""
+)}
+
+</p>
+
+<p class="info">
+
+<strong>
+Status:
+</strong>
+
+<br>
+
+<span class="status">
+
+${escapeHtml(
+formatPublicStatus(
+cargo.status
+)
+)}
+
+</span>
+
+</p>
+
+<div class="public-safe">
+
+🔒
+
+<strong>
+Taarifa Zilizolindwa
+</strong>
+
+<p class="small">
+
+Taarifa za Agents, Boss,
+GPS, maeneo ya vituo na
+historia ya safari zinaonekana
+kwa watumiaji wenye ruhusa pekee.
+
+</p>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+function formatPublicStatus(status) {
+
+const statuses = {
+
+WAITING_FOR_AGENT:
+"⏳ Inasubiri Agent",
+
+WAITING_FOR_RECEIVE:
+"📦 Inasubiri kupokelewa",
+
+WAITING_FOR_RELEASE:
+"📦 Inasubiri kutolewa",
+
+WAITING_FOR_RELEASE_AFTER_RECEIVE:
+"📦 Imechukuliwa — inasubiri kutolewa",
+
+IN_TRANSIT:
+"🚚 Iko njiani",
+
+WAITING_FOR_BOSS:
+"📍 Imefika kwa Boss",
+
+DELIVERED:
+"✅ Imepokelewa na Boss",
+
+COMPLETED:
+"✅ Imekamilika"
+
+};
+
+return (
+statuses[status] ||
+status ||
+"Haijulikani"
+);
+
+}
+
+
+/* =========================================================
+NORMALIZE
+========================================================= */
+
+function normalizeStages(stages) {
+
+if(!stages)
+return [];
+
+if(Array.isArray(stages))
+return stages;
+
+return Object
+.values(stages)
+.sort(
+(a,b) =>
+Number(a.stage) -
+Number(b.stage)
+);
+
+}
+
+
+function normalizeHistory(history) {
+
+if(!history)
+return [];
+
+if(Array.isArray(history))
+return history;
+
+return Object.values(history);
+
+}
+
+
+/* =========================================================
+DASHBOARD
+========================================================= */
+
+async function loadDashboard() {
+
+if(!currentSession) {
+
+showPage("login");
+
+return;
+
+}
+
+try {
+
+const token =
+await getToken();
+
+const response =
+await fetch(
+SERVER +
+"/api/cargo/" +
+encodeURIComponent(
+currentSession.trackingId
+),
+{
+
+headers:{
+
+"Authorization":
+"Bearer " + token
+
+}
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Imeshindikana kupata taarifa."
+);
+
+}
+
+const cargo =
+data.cargo;
+
+if(
+currentSession.role === "boss"
+) {
+
+renderBossDashboard(
+cargo
+);
+
+return;
+
+}
+
+if(
+currentSession.role === "agent"
+) {
+
+renderAgentDashboard(
+cargo
+);
+
+return;
+
+}
+
+if(
+currentSession.role === "admin" ||
+currentSession.role === "ADMIN"
+) {
+
+showPage("admin");
+
+loadAdminDashboard();
+
+return;
+
+}
+
+throw new Error(
+"Role ya login haijulikani."
+);
+
+} catch(error) {
+
+console.error(
+"DASHBOARD ERROR:",
+error
+);
+
+document
+.getElementById(
+"dashboardContent"
+)
+.innerHTML = `
+
+<div class="card">
+
+<div class="notice error">
+
+❌ ${escapeHtml(
+error.message
+)}
+
+</div>
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================================================
+AGENT DASHBOARD
+========================================================= */
+
+function renderAgentDashboard(cargo) {
+
+const stageNumber =
+Number(
+currentSession.stage
+);
+
+const stages =
+normalizeStages(
+cargo.stages
+);
+
+const agent =
+stages.find(
+s =>
+Number(s.stage) ===
+stageNumber
+);
+
+if(!agent) {
+
+document
+.getElementById(
+"dashboardContent"
+)
+.innerHTML = `
+
+<div class="card">
+
+<div class="notice error">
+
+❌ Agent hakupatikana.
+
+</div>
+
+</div>
+
+`;
+
+return;
+
+}
+
+let actionButton = "";
+
+if(stageNumber === 1) {
+
+if(
+agent.status ===
+"WAITING_FOR_RELEASE"
+) {
+
+actionButton = `
+
+<button
+class="success"
+onclick="agentAction('RELEASE')">
+
+📤 NIMETOA MZIGO
+
+</button>
+
+`;
+
+} else {
+
+actionButton = `
+
+<div class="status success">
+
+✅ Umeshatuma mzigo
+
+</div>
+
+`;
+
+}
+
+} else {
+
+if(
+agent.status ===
+"WAITING_FOR_RECEIVE"
+) {
+
+actionButton = `
+
+<button
+class="success"
+onclick="agentAction('RECEIVE')">
+
+📥 NIMEPOKEA MZIGO
+
+</button>
+
+`;
+
+} else if(
+agent.status ===
+"WAITING_FOR_RELEASE_AFTER_RECEIVE"
+) {
+
+actionButton = `
+
+<button
+class="warning"
+onclick="agentAction('RELEASE')">
+
+📤 NIMETOA MZIGO
+
+</button>
+
+`;
+
+} else {
+
+actionButton = `
+
+<div class="status success">
+
+✅ Hatua yako imekamilika
+
+</div>
+
+`;
+
+}
+
+}
+
+document
+.getElementById(
+"dashboardContent"
+)
+.innerHTML = `
+
+<div class="card">
+
+<h2>
+
+👤 Agent
+${stageNumber}
+Dashboard
+
+</h2>
+
+<p class="info">
+
+<strong>
+Jina:
+</strong>
+
+${escapeHtml(
+agent.name || ""
+)}
+
+</p>
+
+<p class="info">
+
+<strong>
+Mzigo:
+</strong>
+
+${escapeHtml(
+cargo.cargoName || ""
+)}
+
+</p>
+
+<p class="info">
+
+<strong>
+Tracking ID:
+</strong>
+
+<br>
+
+<span class="tracking-id">
+
+${escapeHtml(
+cargo.trackingId || ""
+)}
+
+</span>
+
+</p>
+
+<p>
+
+<strong>
+Status:
+</strong>
+
+<span class="status">
+
+${escapeHtml(
+agent.status || ""
+)}
+
+</span>
+
+</p>
+
+<br>
+
+${actionButton}
+
+</div>
+
+<div class="card">
+
+<h2>
+📍 Location
+</h2>
+
+<p class="small">
+
+Mfumo utatumia GPS ya simu yako
+wakati wa kupokea au kutoa mzigo.
+
+</p>
+
+<div
+id="agentLocationStatus"
+class="notice">
+
+GPS haijachukuliwa bado.
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+🕐 Historia
+</h2>
+
+<div id="agentHistory"></div>
+
+</div>
+
+`;
+
+renderHistory(
+cargo,
+document.getElementById(
+"agentHistory"
+)
+);
+
+if(stageNumber === 1) {
+
+renderAgentResetButtons(
+cargo
+);
+
+}
+
+}
+
+
+/* =========================================================
+AGENT ACTION
+========================================================= */
+
+async function agentAction(action) {
+
+const statusBox =
+document.getElementById(
+"agentLocationStatus"
+);
+
+if(statusBox) {
+
+statusBox.innerHTML = `
+
+<div class="notice">
+
+📍 Inatafuta GPS...
+
+</div>
+
+`;
+
+}
+
+try {
+
+const location =
+await getLocation();
+
+if(statusBox) {
+
+statusBox.innerHTML = `
+
+<div class="notice">
+
+✅ GPS imepatikana:
+
+${location.lat.toFixed(6)},
+${location.lng.toFixed(6)}
+
+</div>
+
+`;
+
+}
+
+const token =
+await getToken();
+
+const response =
+await fetch(
+SERVER +
+"/api/agent-action",
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+"application/json",
+
+"Authorization":
+"Bearer " + token
+
+},
+
+body:
+JSON.stringify({
+
+trackingId:
+currentSession.trackingId,
+
+action,
+
+location
+
+})
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Action imeshindikana."
+);
+
+}
+
+alert(
+"✅ " +
+action +
+" imefanikiwa."
+);
+
+await loadDashboard();
+
+} catch(error) {
+
+console.error(
+"AGENT ACTION ERROR:",
+error
+);
+
+if(statusBox) {
+
+statusBox.innerHTML = `
+
+<div class="notice error">
+
+❌ ${escapeHtml(
+error.message
+)}
+
+</div>
+
+`;
+
+}
+
+}
+
+}
+
+
+/* =========================================================
+GPS
+========================================================= */
+
+function getLocation() {
+
+return new Promise(
+(resolve,reject) => {
+
+if(
+!navigator.geolocation
+) {
+
+reject(
+new Error(
+"Simu/browser yako haisapoti GPS."
+)
+);
+
+return;
+
+}
+
+navigator.geolocation
+.getCurrentPosition(
+
+position => {
+
+resolve({
+
+lat:
+position.coords.latitude,
+
+lng:
+position.coords.longitude
+
+});
+
+},
+
+error => {
+
+let message =
+"Imeshindikana kupata location.";
+
+if(error.code === 1) {
+
+message =
+"Ruhusu browser kutumia Location/GPS.";
+
+}
+
+if(error.code === 2) {
+
+message =
+"Location haipatikani. Washa GPS.";
+
+}
+
+if(error.code === 3) {
+
+message =
+"GPS imechukua muda mrefu. Jaribu tena.";
+
+}
+
+reject(
+new Error(message)
+);
+
+},
+
+{
+
+enableHighAccuracy:true,
+
+timeout:20000,
+
+maximumAge:0
+
+}
+
+);
+
+}
+
+);
+
+
+/* =========================================================
+BOSS DASHBOARD
+========================================================= */
+
+function renderBossDashboard(cargo) {
+
+const stages =
+normalizeStages(
+cargo.stages
+);
+
+let agentsHTML = "";
+
+stages.forEach(
+stage => {
+
+agentsHTML += `
+
+<div class="agent-box">
+
+<h4>
+
+👤 Agent
+${escapeHtml(
+stage.stage
+)}
+
+</h4>
+
+<p>
+
+${escapeHtml(
+stage.name || ""
+)}
+
+</p>
+
+<p>
+
+<span class="status">
+
+${escapeHtml(
+stage.status || ""
+)}
+
+</span>
+
+</p>
+
+${
+Number(stage.stage) >= 2
+? `
+
+<br>
+
+<button
+class="warning"
+onclick="resetAgentPin(
+${Number(stage.stage)}
+)">
+
+🔑 RESET PIN
+
+</button>
+
+`
+: ""
+}
+
+</div>
+
+`;
+
+}
+);
+
+let bossButton = "";
+
+if(
+cargo.status ===
+"WAITING_FOR_BOSS"
+) {
+
+bossButton = `
+
+<div class="card">
+
+<h2>
+📦 Mzigo Umefika kwa Boss
+</h2>
+
+<p class="info">
+
+Bonyeza hapa kuthibitisha
+kuwa umeupokea mzigo.
+
+</p>
+
+<br>
+
+<button
+class="success"
+onclick="bossReceive()">
+
+📥 NIMEPOKEA MZIGO
+
+</button>
+
+<div
+id="bossLocationStatus">
+</div>
+
+</div>
+
+`;
+
+} else if(
+cargo.status ===
+"DELIVERED"
+) {
+
+bossButton = `
+
+<div class="success-box">
+
+<h3>
+✅ Mzigo Umepokelewa na Boss
+</h3>
+
+<p>
+Usafirishaji umekamilika.
+</p>
+
+</div>
+
+`;
+
+}
+
+document
+.getElementById(
+"dashboardContent"
+)
+.innerHTML = `
+
+<div class="card">
+
+<h2>
+👑 Boss Dashboard
+</h2>
+
+<p class="info">
+
+<strong>
+Boss:
+</strong>
+
+${escapeHtml(
+cargo.bossName || ""
+)}
+
+</p>
+
+<p class="info">
+
+<strong>
+Mzigo:
+</strong>
+
+${escapeHtml(
+cargo.cargoName || ""
+)}
+
+</p>
+
+<p class="info">
+
+<strong>
+Tracking ID:
+</strong>
+
+<br>
+
+<span class="tracking-id">
+
+${escapeHtml(
+cargo.trackingId || ""
+)}
+
+</span>
+
+</p>
+
+<p class="info">
+
+<strong>
+Origin:
+</strong>
+
+${escapeHtml(
+cargo.origin || ""
+)}
+
+</p>
+
+<p class="info">
+
+<strong>
+Destination:
+</strong>
+
+${escapeHtml(
+cargo.destination || ""
+)}
+
+</p>
+
+<p>
+
+<strong>
+Status:
+</strong>
+
+<span class="status">
+
+${escapeHtml(
+cargo.status || ""
+)}
+
+</span>
+
+</p>
+
+</div>
+
+${bossButton}
+
+<div class="card">
+
+<h2>
+👥 Agents
+</h2>
+
+<div class="grid">
+
+${
+agentsHTML ||
+`<div class="notice">
+Hakuna Agents.
+</div>`
+}
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+🗺️ Ramani
+</h2>
+
+<div id="bossMap"></div>
+
+</div>
+
+<div class="card">
+
+<h2>
+🕐 Historia ya Mzigo
+</h2>
+
+<div id="bossHistory"></div>
+
+</div>
+
+`;
+
+setTimeout(
+() => {
+
+renderBossMap(
+cargo
+);
+
+renderHistory(
+cargo,
+document.getElementById(
+"bossHistory"
+)
+);
+
+},
+100
+);
+
+}
+
+
+/* =========================================================
+RESET AGENT PIN
+========================================================= */
+
+async function resetAgentPin(stage) {
+
+if(!currentSession) {
+
+alert("Hujaingia.");
+
+return;
+
+}
+
+if(Number(stage) === 1) {
+
+alert(
+"Agent 1 hawezi kujire-set PIN yake."
+);
+
+return;
+
+}
+
+if(
+!confirm(
+"Una uhakika unataka kutengeneza PIN mpya kwa Agent " +
+stage +
+"?"
+)
+) return;
+
+try {
+
+const token =
+await getToken();
+
+const response =
+await fetch(
+SERVER +
+"/api/reset-agent-pin",
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+"application/json",
+
+"Authorization":
+"Bearer " + token
+
+},
+
+body:
+JSON.stringify({
+
+trackingId:
+currentSession.trackingId,
+
+stage
+
+})
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"PIN reset imeshindikana."
+);
+
+}
+
+alert(
+"🔑 PIN mpya ya Agent " +
+stage +
+" ni:\n\n" +
+data.pin +
+"\n\nHifadhi PIN hii."
+);
+
+await loadDashboard();
+
+} catch(error) {
+
+alert(
+"❌ " +
+error.message
+);
+
+}
+
+}
+
+
+/* =========================================================
+BOSS RECEIVE
+========================================================= */
+
+async function bossReceive() {
+
+const statusBox =
+document.getElementById(
+"bossLocationStatus"
+);
+
+if(statusBox) {
+
+statusBox.innerHTML = `
+
+<div class="notice">
+
+📍 Inatafuta GPS...
+
+</div>
+
+`;
+
+}
+
+try {
+
+const location =
+await getLocation();
+
+const token =
+await getToken();
+
+const response =
+await fetch(
+SERVER +
+"/api/boss-receive",
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+"application/json",
+
+"Authorization":
+"Bearer " + token
+
+},
+
+body:
+JSON.stringify({
+
+trackingId:
+currentSession.trackingId,
+
+location
+
+})
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Boss receive imeshindikana."
+);
+
+}
+
+alert(
+"✅ Mzigo umepokelewa na Boss."
+);
+
+await loadDashboard();
+
+} catch(error) {
+
+if(statusBox) {
+
+statusBox.innerHTML = `
+
+<div class="notice error">
+
+❌ ${escapeHtml(
+error.message
+)}
+
+</div>
+
+`;
+
+}
+
+}
+
+}
+
+
+/* =========================================================
+MAP
+========================================================= */
+
+function renderBossMap(cargo) {
+
+const mapElement =
+document.getElementById(
+"bossMap"
+);
+
+if(!mapElement)
+return;
+
+if(bossMap) {
+
+bossMap.remove();
+
+bossMap = null;
+
+}
+
+bossMap =
+L.map("bossMap")
+.setView(
+[-6.1659,39.2026],
+7
+);
+
+L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
+
+attribution:
+"© OpenStreetMap contributors"
+
+}
+).addTo(
+bossMap
+);
+
+bossMarkers = [];
+
+const events =
+collectEvents(cargo);
+
+const points = [];
+
+events.forEach(
+event => {
+
+if(
+event.location &&
+Number.isFinite(
+Number(event.location.lat)
+) &&
+Number.isFinite(
+Number(event.location.lng)
+)
+) {
+
+const lat =
+Number(
+event.location.lat
+);
+
+const lng =
+Number(
+event.location.lng
+);
+
+const marker =
+L.marker(
+[lat,lng]
+)
+.addTo(
+bossMap
+);
+
+marker.bindPopup(`
+
+<strong>
+${escapeHtml(
+event.title || "Event"
+)}
+</strong>
+
+<br>
+
+${escapeHtml(
+event.name || ""
+)}
+
+<br>
+
+🕐 ${formatTime(
+event.timestamp
+)}
+
+`);
+
+bossMarkers.push(
+marker
+);
+
+points.push(
+[lat,lng]
+);
+
+}
+
+}
+);
+
+if(points.length) {
+
+bossMap.fitBounds(
+points,
+{
+padding:[30,30]
+}
+);
+
+if(points.length > 1) {
+
+L.polyline(
+points
+).addTo(
+bossMap
+);
+
+}
+
+}
+
+}
+
+
+/* =========================================================
+HISTORY
+========================================================= */
+
+function renderHistory(
+cargo,
+element
+) {
+
+if(!element)
+return;
+
+const events =
+collectEvents(cargo);
+
+if(!events.length) {
+
+element.innerHTML = `
+
+<p class="small">
+
+Hakuna historia bado.
+
+</p>
+
+`;
+
+return;
+
+}
+
+events.sort(
+(a,b) =>
+new Date(
+a.timestamp
+) -
+new Date(
+b.timestamp
+)
+);
+
+element.innerHTML =
+events
+.map(
+event => `
+
+<div class="history-item">
+
+<strong>
+
+${escapeHtml(
+event.title || "Event"
+)}
+
+</strong>
+
+<br>
+
+👤 ${escapeHtml(
+event.name || ""
+)}
+
+<br>
+
+🕐 ${formatTime(
+event.timestamp
+)}
+
+${
+event.location
+? `
+
+<br>
+
+📍 ${
+escapeHtml(
+event.location.address ||
+(
+event.location.lat +
+", " +
+event.location.lng
+)
+)
+}
+
+`
+: ""
+}
+
+</div>
+
+`
+)
+.join("");
+
+}
+
+
+function collectEvents(cargo) {
+
+const events = [];
+
+const stages =
+normalizeStages(
+cargo.stages
+);
+
+stages.forEach(
+stage => {
+
+const history =
+normalizeHistory(
+stage.history
+);
+
+history.forEach(
+item => {
+
+events.push({
+
+...item,
+
+title:
+item.action === "RECEIVE"
+? `Agent ${stage.stage} amepokea`
+: item.action === "RELEASE"
+? `Agent ${stage.stage} ametoa`
+: item.action ||
+`Agent ${stage.stage}`,
+
+name:
+stage.name ||
+`Agent ${stage.stage}`
+
+});
+
+}
+);
+
+}
+);
+
+const bossHistory =
+normalizeHistory(
+cargo.boss?.history
+);
+
+bossHistory.forEach(
+item => {
+
+events.push({
+
+...item,
+
+title:
+item.action ===
+"BOSS_RECEIVE"
+? "Boss amepokea mzigo"
+: item.action ||
+"Boss",
+
+name:
+cargo.bossName ||
+"Boss"
+
+});
+
+}
+);
+
+return events;
+
+}
+
+
+function formatTime(timestamp) {
+
+if(!timestamp)
+return "Muda haujulikani";
+
+const date =
+new Date(timestamp);
+
+if(
+isNaN(
+date.getTime()
+)
+) {
+
+return "Muda haujulikani";
+
+}
+
+return date.toLocaleString(
+"sw-TZ",
+{
+
+dateStyle:"medium",
+
+timeStyle:"short"
+
+}
+);
+
+}
+
+
+/* =========================================================
+AGENT 1 PIN MANAGEMENT
+========================================================= */
+
+function renderAgentResetButtons(cargo) {
+
+const dashboard =
+document.getElementById(
+"dashboardContent"
+);
+
+if(!dashboard)
+return;
+
+const stages =
+normalizeStages(
+cargo.stages
+);
+
+const others =
+stages.filter(
+stage =>
+Number(stage.stage) >= 2
+);
+
+if(!others.length)
+return;
+
+const box =
+document.createElement(
+"div"
+);
+
+box.className =
+"card";
+
+box.innerHTML = `
+
+<h2>
+🔑 Usimamizi wa PIN
+</h2>
+
+<p class="small">
+
+Kama Agent amepoteza PIN yake,
+unaweza kumpa PIN mpya.
+
+</p>
+
+<br>
+
+<div class="grid">
+
+${
+others
+.map(
+stage => `
+
+<div class="agent-box">
+
+<h4>
+Agent
+${escapeHtml(
+stage.stage
+)}
+</h4>
+
+<p>
+
+${escapeHtml(
+stage.name || ""
+)}
+
+</p>
+
+<br>
+
+<button
+class="warning"
+onclick="resetAgentPin(
+${Number(stage.stage)}
+)">
+
+🔑 MPA PIN MPYA
+
+</button>
+
+</div>
+
+`
+)
+.join("")
+}
+
+</div>
+
+`;
+
+dashboard.appendChild(
+box
+);
+
+
+/* =========================================================
+ESCAPE
+========================================================= */
+
+function escapeHtml(value) {
+
+if(
+value === null ||
+value === undefined
+) {
+
+return "";
+
+}
+
+return String(value)
+
+.replace(
+/&/g,
+"&amp;"
+)
+
+.replace(
+/</g,
+"&lt;"
+)
+
+.replace(
+/>/g,
+"&gt;"
+)
+
+.replace(
+/"/g,
+"&quot;"
+)
+
+.replace(
+/'/g,
+"&#039;"
+);
+
+}
+
+
+/* =========================================================
+ADMIN
+========================================================= */
+
+async function loadAdminDashboard() {
+
+const adminAgents =
+document.getElementById(
+"adminAgents"
+);
+
+const adminTransporters =
+document.getElementById(
+"adminTransporters"
+);
+
+const adminCargo =
+document.getElementById(
+"adminCargo"
+);
+
+if(!adminAgents)
+return;
+
+try {
+
+const token =
+await getToken();
+
+const response =
+await fetch(
+SERVER +
+"/api/admin/dashboard",
+{
+
+headers:{
+
+"Authorization":
+"Bearer " + token
+
+}
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Admin dashboard haipatikani."
+);
+
+}
+
+const agents =
+Array.isArray(data.agents)
+? data.agents
+: [];
+
+const transporters =
+Array.isArray(data.transporters)
+? data.transporters
+: [];
+
+const cargos =
+Array.isArray(data.cargos)
+? data.cargos
+: [];
+
+document
+.getElementById(
+"adminAgentCount"
+)
+.textContent =
+agents.length;
+
+document
+.getElementById(
+"adminTransporterCount"
+)
+.textContent =
+transporters.length;
+
+document
+.getElementById(
+"adminCargoCount"
+)
+.textContent =
+cargos.length;
+
+adminAgents.innerHTML =
+renderAdminPeople(
+agents,
+"agent"
+);
+
+adminTransporters.innerHTML =
+renderAdminPeople(
+transporters,
+"transporter"
+);
+
+adminCargo.innerHTML =
+renderAdminCargo(
+cargos
+);
+
+} catch(error) {
+
+console.error(
+"ADMIN ERROR:",
+error
+);
+
+adminAgents.innerHTML = `
+
+<div class="notice error">
+
+❌ ${escapeHtml(
+error.message
+)}
+
+</div>
+
+<p class="small">
+
+Backend inahitaji endpoint:
+<strong>
+/api/admin/dashboard
+</strong>
+
+</p>
+
+`;
+
+adminTransporters.innerHTML = "";
+
+adminCargo.innerHTML = "";
+
+}
+
+}
+
+
+function renderAdminPeople(
+items,
+type
+) {
+
+if(!items.length) {
+
+return `
+
+<div class="empty">
+Hakuna taarifa.
+</div>
+
+`;
+
+}
+
+return `
+
+<table class="admin-table">
+
+<thead>
+
+<tr>
+
+<th>
+Jina
+</th>
+
+<th>
+Simu
+</th>
+
+<th>
+Eneo
+</th>
+
+<th>
+Action
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+${
+items
+.map(
+item => `
+
+<tr>
+
+<td>
+
+${escapeHtml(
+item.name || ""
+)}
+
+</td>
+
+<td>
+
+${escapeHtml(
+item.phone || ""
+)}
+
+</td>
+
+<td>
+
+${escapeHtml(
+item.location || ""
+)}
+
+</td>
+
+<td>
+
+<button
+class="danger"
+onclick="adminDelete(
+${JSON.stringify(
+item.id || ""
+)},
+${JSON.stringify(type)}
+)">
+
+🗑️ Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`
+)
+.join("")
+}
+
+</tbody>
+
+</table>
+
+`;
+
+}
+
+
+function renderAdminCargo(
+items
+) {
+
+if(!items.length) {
+
+return `
+
+<div class="empty">
+
+Hakuna Cargo.
+
+</div>
+
+`;
+
+}
+
+return `
+
+<table class="admin-table">
+
+<thead>
+
+<tr>
+
+<th>
+Tracking ID
+</th>
+
+<th>
+Cargo
+</th>
+
+<th>
+Status
+</th>
+
+<th>
+Action
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+${
+items
+.map(
+item => `
+
+<tr>
+
+<td>
+
+${escapeHtml(
+item.trackingId || ""
+)}
+
+</td>
+
+<td>
+
+${escapeHtml(
+item.cargoName || ""
+)}
+
+</td>
+
+<td>
+
+${escapeHtml(
+formatPublicStatus(
+item.status
+)
+)}
+
+</td>
+
+<td>
+
+<button
+class="danger"
+onclick="adminDelete(
+${JSON.stringify(
+item.id ||
+item.trackingId ||
+""
+)},
+${JSON.stringify("cargo")}
+)">
+
+🗑️ Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`
+)
+.join("")
+}
+
+</tbody>
+
+</table>
+
+`;
+
+}
+
+
+/* =========================================================
+ADMIN DELETE
+========================================================= */
+
+async function adminDelete(
+id,
+type
+) {
+
+if(!currentSession) {
+
+alert("Hujaingia.");
+
+return;
+
+}
+
+if(!id)
+return;
+
+if(
+!confirm(
+"Una uhakika unataka kufuta taarifa hii?"
+)
+) return;
+
+try {
+
+const token =
+await getToken();
+
+const response =
+await fetch(
+SERVER +
+"/api/admin/delete",
+{
+
+method:"DELETE",
+
+headers:{
+
+"Content-Type":
+"application/json",
+
+"Authorization":
+"Bearer " + token
+
+},
+
+body:
+JSON.stringify({
+
+id,
+type
+
+})
+
+}
+);
+
+const data =
+await response.json();
+
+if(
+!response.ok ||
+!data.ok
+) {
+
+throw new Error(
+data.error ||
+"Delete imeshindikana."
+);
+
+}
+
+alert(
+"✅ Imefutwa."
+);
+
+loadAdminDashboard();
+
+} catch(error) {
+
+alert(
+"❌ " +
+error.message
+);
+
+}
+
+}
+
+
+/* =========================================================
+AUTH STATE
+========================================================= */
+
+auth.onAuthStateChanged(
+user => {
+
+currentUser =
+user;
+
+if(user) {
+
+document
+.getElementById(
+"logoutBtn"
+)
+.classList
+.remove("hidden");
+
+setupForegroundNotifications();
+
+} else {
+
+document
+.getElementById(
+"logoutBtn"
+)
+.classList
+.add("hidden");
+
+}
+
+}
+);
+
+
+/* =========================================================
+START
+========================================================= */
+
+buildAgents();
+
+changeLanguage(
+currentLanguage
+);
+
+console.log(
+"🚚 MAKYAMA TRANSPORT SYSTEM READY"
+);
+
 </script>
+
 </body>
-</html>
+
+ </html>
